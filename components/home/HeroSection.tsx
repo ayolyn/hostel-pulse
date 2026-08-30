@@ -22,18 +22,6 @@ export function HeroSection() {
             <div className="max-w-7xl mx-auto px-6 h-full flex flex-col lg:flex-row items-center relative z-10 gap-12 lg:gap-0">
                 {/* Left Content */}
                 <div className="flex-1 flex flex-col justify-center text-center lg:text-left">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="flex items-center gap-2 mb-8 justify-center lg:justify-start"
-                    >
-                        <span className="relative flex h-3 w-3">
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#BEF264]"></span>
-                        </span>
-                        <span className="text-neutral-900 dark:text-[#BEF264] text-xs font-bold uppercase tracking-widest">Ogbomoso Hub Live</span>
-                    </motion.div>
-
                     <HeroHeadline />
 
                     <motion.p
