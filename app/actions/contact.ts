@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@supabase/supabase-js";
-import { resend } from "@/lib/email/resend";
+import { sendNotificationEmail } from "@/lib/email/resend";
 
 export async function submitContactForm(formData: FormData) {
     try {
@@ -28,16 +28,12 @@ export async function submitContactForm(formData: FormData) {
         }
 
         // 2. Send email via Resend
-        if (process.env.RESEND_API_KEY) {
-            const adminEmail = process.env.RESEND_FROM_EMAIL || "juliusayolyn@gmail.com";
-            
-            await resend.emails.send({
-                from: "HostelPulse <onboarding@resend.dev>",
-                to: adminEmail,
-                subject: "New Inquiry: " + subject,
-                html: "<h2>New Contact Form Submission</h2><p><strong>Name:</strong> " + name + "</p><p><strong>Email:</strong> " + email + "</p><p><strong>Subject:</strong> " + subject + "</p><br/><p><strong>Message:</strong></p><p>" + message + "</p>"
-            });
-        }
+        const adminEmail = process.env.RESEND_FROM_EMAIL || "juliusayolyn@gmail.com";
+        await sendNotificationEmail(
+            adminEmail,
+            "New Inquiry: " + subject,
+            "<h2>New Contact Form Submission</h2><p><strong>Name:</strong> " + name + "</p><p><strong>Email:</strong> " + email + "</p><p><strong>Subject:</strong> " + subject + "</p><br/><p><strong>Message:</strong></p><p>" + message + "</p>"
+        );
 
         return { success: true };
     } catch (err) {
