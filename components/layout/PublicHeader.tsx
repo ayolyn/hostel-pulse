@@ -36,7 +36,7 @@ export function PublicHeader() {
 
     return (
         <nav className={cn(
-            "fixed top-0 w-full z-50 transition-all duration-500 border-b",
+            "fixed top-0 inset-x-0 z-50 transition-all duration-500 border-b",
             "bg-white dark:bg-neutral-900 border-neutral-200 dark:border-white/10 shadow-sm"
         )}>
             <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
@@ -116,16 +116,17 @@ export function PublicHeader() {
                                 role === 'non_student' ? '/dashboard/non-student' :
                                 '/dashboard'
                             }
-                            className="bg-[#BEF264] text-black text-xs sm:text-sm font-black uppercase tracking-widest px-6 py-3 rounded-xl hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/10 hover:shadow-xl hover:scale-105"
+                            className="bg-[#BEF264] text-black text-[10px] sm:text-sm font-black uppercase tracking-widest px-3 py-2 sm:px-6 sm:py-3 rounded-xl hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/10 hover:shadow-xl hover:scale-105"
                         >
-                            My Dashboard
+                            <span className="sm:hidden">Dashboard</span>
+                            <span className="hidden sm:inline">My Dashboard</span>
                         </Link>
                     ) : (
                         <>
                             <Link
                                 href="/auth?mode=signin"
                                 className={cn(
-                                    "text-sm font-bold uppercase tracking-widest px-4 py-2 transition-colors",
+                                    "text-xs sm:text-sm font-bold uppercase tracking-widest px-2 sm:px-4 py-2 transition-colors",
                                     "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white"
                                 )}
                             >
@@ -133,9 +134,10 @@ export function PublicHeader() {
                             </Link>
                             <Link
                                 href="/auth?mode=signup"
-                                className="bg-[#BEF264] text-black text-xs sm:text-sm font-black uppercase tracking-widest px-6 py-3 rounded-xl hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/10 hover:shadow-xl hover:scale-105"
+                                className="bg-[#BEF264] text-black text-[10px] sm:text-sm font-black uppercase tracking-widest px-3 py-2 sm:px-6 sm:py-3 rounded-xl hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/10 hover:shadow-xl hover:scale-105"
                             >
-                                List your home
+                                <span className="sm:hidden">List Home</span>
+                                <span className="hidden sm:inline">List your home</span>
                             </Link>
                         </>
                     )}

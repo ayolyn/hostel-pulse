@@ -25,7 +25,7 @@ export function WhyHostelPulse() {
           
           {/* Main Card: Escrow Protection (Spans 2 columns on Desktop) */}
           <div 
-            className="md:col-span-2 md:row-span-2 relative p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden group flex flex-col justify-end"
+            className="row-span-2 md:col-span-2 relative p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden group flex flex-col justify-end"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
