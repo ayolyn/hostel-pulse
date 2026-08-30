@@ -1,8 +1,7 @@
 export const runtime = 'edge';
 import { HeroSection } from '@/components/home/HeroSection';
 import { UniversalSearch } from '@/components/home/UniversalSearch';
-import { AboutSection } from '@/components/home/AboutSection';
-import { SocialProofSection } from '@/components/home/SocialProofSection';
+import { WhyHostelPulse } from '@/components/home/WhyHostelPulse';
 import { FAQSection } from '@/components/home/FAQSection';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 
@@ -20,12 +19,9 @@ export default function LandingPage() {
                 </div>
 
                 {/* Section 3: Why HOSTELPULSE */}
-                <AboutSection />
+                <WhyHostelPulse />
 
-                {/* Section 4: Social Proof */}
-                <SocialProofSection />
-
-                {/* Section 5: FAQ */}
+                {/* Section 4: FAQ */}
                 <FAQSection />
             </main>
         </div>

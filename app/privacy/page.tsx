@@ -1,9 +1,11 @@
 export const runtime = 'edge';
 import React from 'react';
+import { PublicHeader } from '@/components/layout/PublicHeader';
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-white dark:bg-black/90 text-gray-900 dark:text-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white dark:bg-black/90 text-gray-900 dark:text-gray-100 pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+      <PublicHeader />
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl font-extrabold tracking-tight mb-4">Privacy Policy</h1>
         <p className="text-gray-500 dark:text-gray-400 mb-10">Last Updated: August 2026</p>
@@ -70,3 +72,5 @@ export default function PrivacyPolicy() {
     </div>
   );
 }
+
+

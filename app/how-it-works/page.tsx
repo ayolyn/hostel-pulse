@@ -1,9 +1,11 @@
 export const runtime = 'edge';
 import React from 'react';
+import { PublicHeader } from '@/components/layout/PublicHeader';
 
 export default function HowItWorks() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black/90 text-gray-900 dark:text-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-black/90 text-gray-900 dark:text-gray-100 pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+      <PublicHeader />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-gray-900 dark:text-white mb-4">
@@ -66,3 +68,4 @@ export default function HowItWorks() {
     </div>
   );
 }
+

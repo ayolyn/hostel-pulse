@@ -1,9 +1,11 @@
 export const runtime = 'edge';
 import React from 'react';
+import { PublicHeader } from '@/components/layout/PublicHeader';
 
 export default function Safety() {
   return (
-    <div className="min-h-screen bg-white dark:bg-black/90 text-gray-900 dark:text-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white dark:bg-black/90 text-gray-900 dark:text-gray-100 pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+      <PublicHeader />
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center p-3 bg-green-100 dark:bg-green-900/30 rounded-full mb-6">
@@ -80,3 +82,5 @@ export default function Safety() {
     </div>
   );
 }
+
+

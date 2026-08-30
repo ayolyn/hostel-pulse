@@ -27,7 +27,6 @@ const navLinks = [
 export function PublicHeader() {
     const pathname = usePathname();
     const { user, role } = useAuth();
-    const isHome = pathname === '/';
     const { pulseColor, pulseLabel } = useHostelPulse(user?.id || null);
 
     const pulseStyles = useMemo(() => ({
@@ -127,7 +126,7 @@ export function PublicHeader() {
                                 href="/auth?mode=signin"
                                 className={cn(
                                     "text-sm font-bold uppercase tracking-widest px-4 py-2 transition-colors",
-                                    isHome ? "text-white hover:text-[#BEF264]" : "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white"
+                                    "text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white"
                                 )}
                             >
                                 Sign In
@@ -145,3 +144,4 @@ export function PublicHeader() {
         </nav>
     );
 }
+
