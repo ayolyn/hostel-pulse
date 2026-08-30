@@ -42,17 +42,17 @@ export function StudentIdUpload() {
             }
 
             const file = event.target.files[0];
-            const filePath = ${user?.id}/student_id_ + Date.now();
+            const filePath = `${user?.id}/student_id_${Date.now()}`;
 
             const { error: uploadError } = await supabase.storage
                 .from('public_assets')
-                .upload(kyc/ + filePath, file, { upsert: true });
+                .upload(`kyc/${filePath}`, file, { upsert: true });
 
             if (uploadError) {
                 throw uploadError;
             }
 
-            const { data } = supabase.storage.from('public_assets').getPublicUrl(kyc/ + filePath);
+            const { data } = supabase.storage.from('public_assets').getPublicUrl(`kyc/${filePath}`);
             
             setStudentIdUrl(data.publicUrl);
             
