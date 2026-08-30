@@ -1,5 +1,5 @@
-export const runtime = 'edge';
 'use client';
+export const runtime = 'edge';
 
 import { MessageList } from '@/components/messages/MessageList';
 import { MessagingLayout } from '@/components/messages/MessagingLayout';

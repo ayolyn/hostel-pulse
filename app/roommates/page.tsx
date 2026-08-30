@@ -1,5 +1,5 @@
-export const runtime = 'edge';
 'use client';
+export const runtime = 'edge';
 
 import { StudentDashboardShell } from '@/components/layout/StudentDashboardShell';
 import { RoommateDiscovery } from '@/components/roommates/RoommateDiscovery';
