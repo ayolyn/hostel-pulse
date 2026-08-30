@@ -1,7 +1,6 @@
 export const runtime = 'edge';
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import crypto from "node:crypto";
 
 export async function POST(req: NextRequest) {
     try {
@@ -10,10 +9,21 @@ export async function POST(req: NextRequest) {
         const SECRET_KEY = process.env.OPAY_SECRET_KEY!;
 
         // OPay signs the request using HMAC-SHA512 of the JSON payload
-        const expectedSignature = crypto
-            .createHmac("sha512", SECRET_KEY)
-            .update(payloadStr)
-            .digest("hex");
+        const encoder = new TextEncoder();
+        const keyData = encoder.encode(SECRET_KEY);
+        const messageData = encoder.encode(payloadStr);
+        
+        const cryptoKey = await crypto.subtle.importKey(
+            'raw',
+            keyData,
+            { name: 'HMAC', hash: 'SHA-512' },
+            false,
+            ['sign']
+        );
+        
+        const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, messageData);
+        const signatureArray = Array.from(new Uint8Array(signatureBuffer));
+        const expectedSignature = signatureArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         if (signature !== expectedSignature) {
             // For test mode, you might want to skip this if OPay sends different headers, but the standard is this.

@@ -112,8 +112,6 @@ export async function processOpayTransfer(amount: number, bankName: string, acco
             return { success: true, simulated: true };
         }
 
-        const crypto = await import('node:crypto');
-
         // Generate a unique reference for the payout
         const reference = `HP-OUT-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
@@ -143,7 +141,23 @@ export async function processOpayTransfer(amount: number, bankName: string, acco
         };
 
         const payloadString = JSON.stringify(payload);
-        const signature = crypto.createHmac('sha512', SECRET_KEY).update(payloadString).digest('hex');
+
+        // Use Web Crypto API for Edge compatibility
+        const encoder = new TextEncoder();
+        const keyData = encoder.encode(SECRET_KEY);
+        const messageData = encoder.encode(payloadString);
+        
+        const cryptoKey = await crypto.subtle.importKey(
+            'raw',
+            keyData,
+            { name: 'HMAC', hash: 'SHA-512' },
+            false,
+            ['sign']
+        );
+        
+        const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, messageData);
+        const signatureArray = Array.from(new Uint8Array(signatureBuffer));
+        const signature = signatureArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         const response = await fetch("https://testapi.opaycheckout.com/api/v3/transfer/toBank", {
             method: "POST",
