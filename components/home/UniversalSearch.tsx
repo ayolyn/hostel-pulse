@@ -52,13 +52,13 @@ export function UniversalSearch() {
     return (
         <div className="w-full max-w-4xl mx-auto mt-10 relative z-20">
             {/* 1. Category Tabs */}
-            <div className="flex gap-2 mb-4 ml-2">
+            <div className="flex gap-2 mb-4 ml-2 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {categories.map((cat) => (
                     <button
                         key={cat.id}
                         onClick={() => setActiveTab(cat.id)}
                         className={cn(
-                            "flex items-center gap-2 px-4 py-2 rounded-t-2xl transition-all text-sm font-bold",
+                            "flex items-center gap-2 px-4 py-2 rounded-t-2xl transition-all text-xs md:text-sm font-bold whitespace-nowrap",
                             activeTab === cat.id
                                 ? "bg-white dark:bg-neutral-900 text-black dark:text-white shadow-lg"
                                 : "bg-black/10 dark:bg-black/40 text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-white"

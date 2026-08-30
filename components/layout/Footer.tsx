@@ -5,8 +5,8 @@ import { Facebook, Twitter, Instagram, Linkedin, ArrowRight } from "lucide-react
 
 export default function Footer() {
     return (
-        <footer className="bg-black text-gray-400 py-24 px-6 border-t border-white/5">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
+        <footer className="bg-black text-gray-400 py-12 md:py-24 px-6 border-t border-white/5">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-16">
 
                 {/* Brand Section */}
                 <div className="space-y-6">
@@ -27,7 +27,7 @@ export default function Footer() {
                 </div>
 
                 {/* Gig Economy Card */}
-                <div className="lg:col-span-1 bg-[#BEF264]/5 p-8 rounded-[2.5rem] border border-[#BEF264]/20 space-y-4">
+                <div className="lg:col-span-1 bg-[#BEF264]/5 p-6 md:p-8 rounded-[2rem] border border-[#BEF264]/20 space-y-4">
                     <div className="flex items-center gap-2">
                         <span className="text-xl">💰</span>
                         <h4 className="text-white font-black uppercase tracking-tight">Make Money</h4>
@@ -35,36 +35,39 @@ export default function Footer() {
                     <p className="text-xs font-medium leading-relaxed">
                         Join 500+ agents in Ogbomoso earning ₦100k+ monthly. List houses, manage inspections, get paid safely.
                     </p>
-                    <Link href="/agent" className="block w-full bg-[#BEF264] text-black text-center py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-xl shadow-[#BEF264]/10">
+                    <Link href="/agent" className="block w-full bg-[#BEF264] text-black text-center py-3 md:py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-xl shadow-[#BEF264]/10">
                         Become a Verified Agent
                     </Link>
                 </div>
 
-                {/* Explore Links */}
-                <div>
-                    <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-8">Explore Ogbomoso</h4>
-                    <ul className="space-y-4 text-sm font-bold">
-                        <li><Link href="/rent" className="hover:text-[#BEF264] transition-all">Student Hostels</Link></li>
-                        <li><Link href="/search?category=Shop" className="hover:text-[#BEF264] transition-all">Commercial Shops</Link></li>
-                        <li><Link href="/buy" className="hover:text-[#BEF264] transition-all">Lands & Houses</Link></li>
-                        <li><Link href="/search?category=Shortlet" className="hover:text-[#BEF264] transition-all">Shortlet Hotels</Link></li>
-                    </ul>
-                </div>
+                {/* Links Container for Mobile Grid */}
+                <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-2 gap-8">
+                    {/* Explore Links */}
+                    <div>
+                        <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-6">Explore</h4>
+                        <ul className="space-y-4 text-sm font-bold">
+                            <li><Link href="/rent" className="hover:text-[#BEF264] transition-all">Hostels</Link></li>
+                            <li><Link href="/search?category=Shop" className="hover:text-[#BEF264] transition-all">Shops</Link></li>
+                            <li><Link href="/buy" className="hover:text-[#BEF264] transition-all">Lands</Link></li>
+                            <li><Link href="/search?category=Shortlet" className="hover:text-[#BEF264] transition-all">Shortlets</Link></li>
+                        </ul>
+                    </div>
 
-                {/* Platform Links */}
-                <div>
-                    <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-8">Platform</h4>
-                    <ul className="space-y-4 text-sm font-bold">
-                        <li><Link href="/how-it-works" className="hover:text-[#BEF264] transition-all">How it Works</Link></li>
-                        <li><Link href="/safety" className="hover:text-[#BEF264] transition-all">Safety Center</Link></li>
-                        <li><Link href="/admin" className="hover:text-[#BEF264] transition-all">HQ Admin</Link></li>
-                        <li><Link href="/contact" className="hover:text-[#BEF264] transition-all">Contact Us</Link></li>
-                    </ul>
+                    {/* Platform Links */}
+                    <div>
+                        <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-6">Platform</h4>
+                        <ul className="space-y-4 text-sm font-bold">
+                            <li><Link href="/how-it-works" className="hover:text-[#BEF264] transition-all">How it Works</Link></li>
+                            <li><Link href="/safety" className="hover:text-[#BEF264] transition-all">Safety Center</Link></li>
+                            <li><Link href="/admin" className="hover:text-[#BEF264] transition-all">HQ Admin</Link></li>
+                            <li><Link href="/contact" className="hover:text-[#BEF264] transition-all">Contact Us</Link></li>
+                        </ul>
+                    </div>
                 </div>
 
             </div>
 
-            <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="max-w-7xl mx-auto mt-12 md:mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-gray-500">
                     &copy; {new Date().getFullYear()} HOSTELPULSE. Built for LAUTECH & Beyond.
                 </p>
