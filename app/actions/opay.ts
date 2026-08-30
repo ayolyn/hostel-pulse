@@ -112,7 +112,7 @@ export async function processOpayTransfer(amount: number, bankName: string, acco
             return { success: true, simulated: true };
         }
 
-        const crypto = await import('crypto');
+        const crypto = await import('node:crypto');
 
         // Generate a unique reference for the payout
         const reference = `HP-OUT-${Date.now()}-${Math.floor(Math.random() * 1000)}`;

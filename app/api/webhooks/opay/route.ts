@@ -1,7 +1,7 @@
 export const runtime = 'edge';
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 export async function POST(req: NextRequest) {
     try {
