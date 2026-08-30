@@ -4,8 +4,6 @@ import { createClient } from '@supabase/supabase-js';
 import { createClient as createServerClient } from '@/lib/supabase/server';
 import { createNotification } from '@/lib/notifications';
 import { sendNotificationEmail } from '@/lib/email/resend';
-import { EscrowReleasedEmail } from '@/components/emails/EscrowReleasedEmail';
-import { render } from '@react-email/render';
 
 function getAdminClient() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -82,10 +80,19 @@ export async function releaseEscrowFunds(transactionId: string) {
             ? await db.from('properties').select('title').eq('id', transaction.property_id).single()
             : { data: null };
             
-        const htmlBody = await render(EscrowReleasedEmail({ 
-            propertyName: property?.title || 'Property',
-            amount: Number(transaction.amount).toLocaleString()
-        }));
+        const htmlBody = `
+            <div style="background-color: #f6f9fc; font-family: sans-serif; padding: 40px 0;">
+                <div style="background-color: #ffffff; padding: 40px; border-radius: 4px; margin: 0 auto; max-width: 600px;">
+                    <h2 style="font-size: 24px; font-weight: bold; color: #16a34a; margin-top: 0;">Funds Released to Wallet 💰</h2>
+                    <p style="font-size: 16px; color: #555;">
+                        Great news! The escrow funds of <strong>₦${Number(transaction.amount).toLocaleString()}</strong> for <strong>${property?.title || 'Property'}</strong> have been released to your wallet.
+                    </p>
+                    <p style="font-size: 16px; color: #555;">
+                        You can now withdraw these funds to your local bank account at any time.
+                    </p>
+                </div>
+            </div>
+        `;
         
         await sendNotificationEmail(
             sellerUser.email,

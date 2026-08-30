@@ -3,8 +3,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { sendNotificationEmail } from '@/lib/email/resend';
-import { WelcomeEmail } from '@/components/emails/WelcomeEmail';
-import { render } from '@react-email/render';
 
 export async function submitProviderReview(payload: {
     providerId: string;
@@ -85,7 +83,7 @@ export async function submitProviderReview(payload: {
 
         // 7. Send Welcome/Thank You Email
         if (user.email) {
-            const htmlBody = await render(WelcomeEmail({ userName: user.email.split('@')[0] }));
+            const htmlBody = "<h1>Thanks for your review!</h1>";
             await sendNotificationEmail(
                 user.email,
                 'Thanks for your review! 🎉',

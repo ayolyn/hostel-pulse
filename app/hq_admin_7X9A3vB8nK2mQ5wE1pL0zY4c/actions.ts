@@ -1,9 +1,6 @@
 "use server";
 
 import { sendNotificationEmail } from '@/lib/email/resend';
-import { render } from '@react-email/render';
-import { WithdrawalApprovedEmail } from '@/components/emails/WithdrawalApprovedEmail';
-import { WithdrawalRejectedEmail } from '@/components/emails/WithdrawalRejectedEmail';
 import { createClient } from '@supabase/supabase-js';
 import { createNotification } from '@/lib/notifications';
 import { createServerClient } from '@supabase/ssr';
@@ -642,11 +639,7 @@ export async function approveWithdrawal(id: string) {
         );
 
         if (withdrawal.profiles?.contact_email) {
-            const html = await render(WithdrawalApprovedEmail({ 
-                amount: Number(withdrawal.amount).toLocaleString(),
-                bankName: withdrawal.bank_name,
-                accountNumber: withdrawal.account_number
-            }));
+            const html = "<h1>Withdrawal Approved</h1><p>Your funds are on the way.</p>";
             await sendNotificationEmail(withdrawal.profiles.contact_email, 'Withdrawal Approved 💸', html);
         }
     }
@@ -680,9 +673,7 @@ export async function rejectWithdrawal(id: string) {
         );
 
         if (withdrawal.profiles?.contact_email) {
-            const html = await render(WithdrawalRejectedEmail({ 
-                amount: Number(withdrawal.amount).toLocaleString()
-            }));
+            const html = "<h1>Withdrawal Rejected</h1><p>Your withdrawal request was declined. Please contact support.</p>";
             await sendNotificationEmail(withdrawal.profiles.contact_email, 'Withdrawal Rejected ❌', html);
         }
     }

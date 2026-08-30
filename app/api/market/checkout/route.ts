@@ -4,8 +4,6 @@ import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { createNotification } from '@/lib/notifications';
 import { sendNotificationEmail } from '@/lib/email/resend';
-import { BookingConfirmedEmail } from '@/components/emails/BookingConfirmedEmail';
-import { render } from '@react-email/render';
 
 export async function POST(req: Request) {
     try {
@@ -134,11 +132,7 @@ export async function POST(req: Request) {
 
         // 6. Send Email Notification
         if (user.email) {
-            const htmlBody = await render(BookingConfirmedEmail({ 
-                propertyName: listing.title || 'Market Item',
-                checkInDate: 'N/A (Market Purchase)',
-                amount: totalCost.toLocaleString()
-            }));
+            const htmlBody = "<h1>Checkout Confirmed!</h1><p>Your purchase was successful.</p>";
             
             await sendNotificationEmail(
                 user.email,
