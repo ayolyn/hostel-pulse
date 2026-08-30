@@ -54,7 +54,10 @@ export async function initializeOpayPayment(amount: number) {
             return { error: "Failed to initialize transaction" };
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === "production" ? "https://hostelpulse.com.ng" : "http://localhost:3000");
+        const headersList = await import('next/headers').then(m => m.headers());
+        const host = headersList.get('host') || 'hostel-pulse.pages.dev';
+        const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
         
         // We send the payload directly in the fetch body.
         
