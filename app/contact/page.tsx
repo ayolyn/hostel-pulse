@@ -49,8 +49,8 @@ export default function Contact() {
                 <div className="ml-6">
                   <h3 className="text-xl font-bold mb-1">Email Us</h3>
                   <p className="text-gray-600 dark:text-gray-400">
-                    Support: hello@hostelpulse.ng<br />
-                    Agents: partners@hostelpulse.ng
+                    Support: info@hostelpulse.app<br />
+                    Admin: juliusayolyn@gmail.com
                   </p>
                 </div>
               </div>

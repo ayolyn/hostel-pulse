@@ -29,7 +29,7 @@ export async function submitContactForm(formData: FormData) {
 
         // 2. Send email via Resend
         if (process.env.RESEND_API_KEY) {
-            const adminEmail = process.env.RESEND_FROM_EMAIL || "hello@hostelpulse.ng";
+            const adminEmail = process.env.RESEND_FROM_EMAIL || "juliusayolyn@gmail.com";
             
             await resend.emails.send({
                 from: "HostelPulse <onboarding@resend.dev>",
