@@ -29,9 +29,35 @@ export function WhyHostelPulse() {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
+            {/* Center Graphic: CSS Phone Mockup */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+                <div className="w-56 h-[350px] bg-neutral-950 rounded-[2rem] border-[6px] border-neutral-800 shadow-2xl translate-y-24 md:translate-y-12 flex flex-col items-center justify-start pt-8 relative opacity-40 group-hover:opacity-100 transition-all duration-700 group-hover:-translate-y-2 md:group-hover:-translate-y-8">
+                    {/* Phone Notch */}
+                    <div className="absolute top-0 inset-x-0 h-4 flex justify-center">
+                        <div className="w-20 h-full bg-neutral-800 rounded-b-xl" />
+                    </div>
+                    
+                    {/* Mockup Screen Content */}
+                    <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mt-6 mb-4">
+                        {isHovered ? <Unlock className="w-8 h-8 text-green-400" /> : <Lock className="w-8 h-8 text-green-400" />}
+                    </div>
+                    <div className="text-xl font-bold text-white mb-1 tracking-tight">₦150,000</div>
+                    <div className="text-[10px] text-gray-400 mb-6 font-medium uppercase tracking-wider">
+                        {isHovered ? "Ready to Release" : "Secured in Escrow"}
+                    </div>
+                    
+                    {/* Mock UI Rows */}
+                    <div className="w-40 h-10 bg-white/5 rounded-xl border border-white/10 mb-3" />
+                    <div className="w-40 h-10 bg-white/5 rounded-xl border border-white/10" />
+                    
+                    {/* Bottom fade */}
+                    <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-neutral-950 to-transparent" />
+                </div>
+            </div>
+
             {/* Interactive Animated Escrow Pill */}
             <div className="absolute top-8 left-8 right-8 flex justify-center items-center">
-              <div className={"transition-all duration-500 ease-in-out flex items-center gap-3 px-6 py-4 rounded-full border shadow-xl ${isHovered ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'bg-red-500/20 border-red-500/50 text-red-400'}"}>
+              <div className={`transition-all duration-500 ease-in-out flex items-center gap-3 px-6 py-4 rounded-full border shadow-xl ${isHovered ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'bg-red-500/20 border-red-500/50 text-red-400'}`}>
                  {isHovered ? <Unlock className="w-6 h-6" /> : <Lock className="w-6 h-6" />}
                  <span className="font-semibold text-sm md:text-base">
                    {isHovered ? "Funds Released on Key Handover" : "Funds Locked in Secure Escrow"}
