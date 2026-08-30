@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 'use client';
 
 import { StudentDashboardShell } from '@/components/layout/StudentDashboardShell';

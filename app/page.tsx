@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import { HeroSection } from '@/components/home/HeroSection';
 import { UniversalSearch } from '@/components/home/UniversalSearch';
 import { AboutSection } from '@/components/home/AboutSection';

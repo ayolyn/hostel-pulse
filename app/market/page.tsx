@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 import { StudentDashboardShell } from '@/components/layout/StudentDashboardShell';
 import { CampusMarket } from '@/components/market/CampusMarket';
