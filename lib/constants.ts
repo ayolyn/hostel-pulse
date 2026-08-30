@@ -1,0 +1,22 @@
+export const CAMPUS_ZONES = [
+    '1500LT',
+    'Aba / Abaa',
+    'Adenike',
+    'Akowonjo',
+    'Aroje',
+    'Caretaker',
+    'General Area',
+    'Hamama',
+    'Isale-General',
+    'Kuye',
+    'Lawyer Ahmed Stadium',
+    'New Gen',
+    'New Sawmill',
+    'Nurudeen',
+    'Oke Afin',
+    'Pastor Bode',
+    'Randa',
+    'Stadium Area',
+    'Under-G',
+    'Yoaco'
+];

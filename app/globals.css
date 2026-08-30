@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 224 71.4% 4.1%;
+        --card: 0 0% 100%;
+        --card-foreground: 224 71.4% 4.1%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 224 71.4% 4.1%;
+        --primary: 220.9 39.3% 11%;
+        --primary-foreground: 210 20% 98%;
+        --secondary: 187 100% 42%; /* Teal accent */
+        --secondary-foreground: 220.9 39.3% 11%;
+        --muted: 220 14.3% 95.9%;
+        --muted-foreground: 220 8.9% 46.1%;
+        --accent: 187 100% 42%;
+        --accent-foreground: 220.9 39.3% 11%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 20% 98%;
+        --border: 220 13% 91%;
+        --input: 220 13% 91%;
+        --ring: 224 71.4% 4.1%;
+        --radius: 1.5rem;
+    }
+
+    .dark {
+        --background: 222.2 84% 4.9%; /* Deep Navy/Black */
+        --foreground: 210 40% 98%;
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 210 40% 98%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 74 82% 67%; /* #BEF264 Neon Green anchor */
+        --secondary-foreground: 210 40% 98%;
+        --muted: 217.2 32.6% 12%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 74 82% 67%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 212.7 26.8% 83.9%;
+        color-scheme: dark;
+    }
+
+    .dark select option {
+        background-color: #0f172a;
+        color: white;
+    }
+
+    * {
+        @apply transition-colors duration-300;
+    }
+}
+
+
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+    .animate-marquee {
+        animation: marquee 30s linear infinite;
+    }
+
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #BEF264;
+        border-radius: 10px;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #BEF264;
+    }
+
+    @keyframes pulse-glow {
+        0% { box-shadow: 0 0 0 0px rgba(190, 242, 100, 0.7); }
+        100% { box-shadow: 0 0 0 10px rgba(190, 242, 100, 0); }
+    }
+
+    @keyframes strobe-gold {
+        0%, 100% { background-color: #fbbf24; box-shadow: 0 0 15px #fbbf24; }
+        50% { background-color: #d97706; box-shadow: 0 0 2px #fbbf24; }
+    }
+
+    .pulse-breathing {
+        animation: pulse-glow 2s infinite;
+    }
+
+    .pulse-strobe {
+        animation: strobe-gold 0.5s infinite;
+    }
+
+    /* Auth Switch Styles */
+    .auth-switch-container {
+        @apply relative flex p-1 bg-white/5 rounded-full border border-white/10 w-full mb-8;
+    }
+    .auth-switch-btn {
+        @apply relative flex-1 py-3 text-xs font-black uppercase tracking-widest transition-all z-10;
+    }
+    .auth-switch-active-bg {
+        @apply absolute top-1 bottom-1 bg-[#BEF264] rounded-full transition-all duration-300 ease-out;
+    }
+
+    /* Phone Input Overrides */
+    .PhoneInput {
+        @apply flex items-center w-full bg-white/5 border border-white/10 rounded-full py-5 px-6 focus-within:border-[#BEF264] transition-all;
+    }
+    .PhoneInputInput {
+        @apply flex-grow bg-transparent border-none text-white text-sm focus:ring-0 placeholder-gray-500 font-medium ml-3 !important;
+    }
+    .PhoneInputCountry {
+        @apply flex items-center gap-2;
+    }
+    .PhoneInputCountrySelect {
+        @apply opacity-0 absolute w-full h-full cursor-pointer;
+    }
+    .PhoneInputCountryIcon {
+        @apply w-6 h-4 rounded-sm overflow-hidden flex-shrink-0;
+    }
+
+    @keyframes heartbeat {
+        0%   { transform: scale(1); }
+        14%  { transform: scale(1.12); }
+        28%  { transform: scale(1); }
+        42%  { transform: scale(1.08); }
+        70%  { transform: scale(1); }
+        100% { transform: scale(1); }
+    }
+}

@@ -1,0 +1,588 @@
+Created At: 2026-06-13T06:00:59Z
+Completed At: 2026-06-13T06:01:02Z
+File Path: `file:///c:/Users/USER/Documents/hostelio-app/app/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c/page.tsx`
+Total Lines: 556
+Total Bytes: 39914
+Showing lines 1 to 556
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: "use client";
+2: 
+3: import React, { useState, useEffect, Suspense } from 'react';
+4: import { useSearchParams } from 'next/navigation';
+5: import { createClient } from '@/lib/supabase/client';
+6: import { getAdminMetrics, getPendingAccounts, approveAccount, rejectAccount, getDisputedTransactions, getAuditChat, resolveDispute, getAnalyticsData, getAllUsers, revokeVerification, suspendAccount, banDevice, getPendingEscrows, forceReleaseEscrow, forceRefundEscrow, getSupportTickets, updateTicketStatus, broadcastSystemAlert } from './actions';
+7: import {
+8:     CheckCircle,
+9:     AlertTriangle,
+10:     Play,
+11:     Eye,
+12:     ShieldCheck,
+13:     Users,
+14:     MessageSquare,
+15:     Zap,
+16:     Lock,
+17:     RefreshCcw,
+18:     MapPin,
+19:     Search,
+20:     ChevronRight,
+21:     Bell,
+22:     Wallet,
+23:     HeadphonesIcon,
+24:     Megaphone,
+25:     XCircle,
+26:     UserX,
+27:     ShieldOff
+28: } from 'lucide-react';
+29: 
+30: const AccountApprovalCard = ({ account, onApprove, onReject }: { account: any, onApprove: () => void, onReject: () => void }) => {
+31:     const isLandlord = account._tableName === 'landlord_accounts';
+32: 
+33:     return (
+34:         <div className="bg-[#1e293b] rounded-[2.5rem] p-6 border border-white/5 hover:border-[#BEF264]/30 transition-all group">
+35:             <div className="flex flex-col md:flex-row gap-6">
+36:                 {/* User Avatar Placeholder */}
+37:                 <div className="relative w-24 h-24 bg-black rounded-[2rem] overflow-hidden flex items-center justify-center border border-white/10 group-hover:border-[#BEF264]/50 transition-colors shrink-0">
+38:                     {account.logo_url || account.selfie_url ? (
+39:                         <img src={account.logo_url || account.selfie_url} alt="Profile" className="w-full h-full object-cover" />
+40:                     ) : (
+41:                         <Users className="text-[#BEF264] opacity-50" size={32} />
+42:                     )}
+43:                 </div>
+44: 
+45:                 {/* Account Brief */}
+46:                 <div className="flex-grow flex flex-col justify-between py-2">
+47:                     <div>
+48:                         <div className="flex justify-between items-start">
+49:                             <div>
+50:                                 <div className="flex items-center gap-2 mb-2">
+51:                                     <span className={`text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${account._tableName === 'student_accounts' ? 'bg-blue-500/20 text-blue-400' :
+52:                                         account._tableName === 'agent_accounts' ? 'bg-purple-500/20 text-purple-400' :
+53:                                             account._tableName === 'landlord_accounts' ? 'bg-orange-500/20 text-orange-400' :
+54:                                                 'bg-emerald-500/20 text-emerald-400'
+55:                                         }`}>
+56:                                         {account._tableName ? account._tableName.split('_')[0] : 'account'}
+57:                                     </span>
+58:                                 </div>
+59:                                 <h3 className="text-xl font-black text-white tracking-tight leading-none">
+60:                                     {account.full_name || (account.first_name ? `${account.first_name} ${account.last_name || ''}` : 'Unknown Name')}
+61:                                 </h3>
+62:                                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">
+63:                                     {account.phone || account.phone_number || 'No Phone provided'} • {account.contact_email || account.email || 'No Email'}
+64:                                 </p>
+65:                             </div>
+66:                             <span className="bg-yellow-500/10 text-yellow-500 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest border border-yellow-500/20">
+67:                                 Pending
+68:                             </span>
+69:                         </div>
+70:                     </div>
+71: 
+72:                     {/* Extended Details for All Profiles / Landlords */}
+73:                     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white/5 rounded-2xl p-4 border border-white/5">
+74:                         {isLandlord && (
+75:                             <>
+76:                                 <div>
+77:                                     <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Business Detail</p>
+78:                                     <p className="text-sm font-bold text-white">{account.business_name || 'N/A'}</p>
+79:                                     <p className="text-xs text-gray-400 mt-1">{account.business_category} • {account.office_state}</p>
+80:                                 </div>
+81:                                 <div>
+82:                                     <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Address</p>
+83:                                     <p className="text-sm font-medium text-white">{account.office_address || 'No address'}</p>
+84:                                 </div>
+85:                             </>
+86:                         )}
+87:                         {!isLandlord && account.department && (
+88:                             <div>
+89:                                 <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Student Details</p>
+90:                                 <p className="text-sm font-bold text-white">{account.department}</p>
+91:                                 <p className="text-xs text-gray-400 mt-1">Level {account.level}</p>
+92:                             </div>
+93:                         )}
+94:                         
+95:                         {/* Documents */}
+96:                         <div className="col-span-1 sm:col-span-2 mt-2 pt-4 border-t border-white/5">
+97:                             <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-3">Compliance Docs</p>
+98:                             <div className="flex flex-wrap gap-2">
+99:                                 {account.student_id_url && (
+100:                                     <a href={account.student_id_url} target="_blank" className="text-xs bg-blue-500/20 text-blue-300 px-3 py-1.5 rounded-lg border border-blue-500/30 hover:bg-blue-500/30 transition-colors">Student ID Card</a>
+101:                                 )}
+102:                                 {account.govt_id_url && (
+103:                                     <a href={account.govt_id_url} target="_blank" className="text-xs bg-blue-500/20 text-blue-300 px-3 py-1.5 rounded-lg border border-blue-500/30 hover:bg-blue-500/30 transition-colors">Govt ID</a>
+104:                                 )}
+105:                                 {account.selfie_url && (
+106:                                     <a href={account.selfie_url} target="_blank" className="text-xs bg-purple-500/20 text-purple-300 px-3 py-1.5 rounded-lg border border-purple-500/30 hover:bg-purple-500/30 transition-colors">Selfie</a>
+107:                                 )}
+108:                                 {account.cac_document_url && (
+109:                                     <a href={account.cac_document_url} target="_blank" className="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1.5 rounded-lg border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors">CAC Document</a>
+110:                                 )}
+111:                                 {(!account.govt_id_url && !account.selfie_url && !account.student_id_url) && (
+112:                                     <span className="text-xs text-red-500 font-bold uppercase tracking-widest mt-1">No Documents Provided</span>
+113:                                 )}
+114:                             </div>
+115:                         </div>
+116:                     </div>
+117: 
+118:                     {/* Action Buttons */}
+119:                     <div className="mt-6 flex gap-3">
+120:                         <button
+121:                             onClick={onApprove}
+122:                             className="flex-grow bg-[#BEF264] hover:bg-[#d9ff96] text-black text-[10px] font-black py-4 rounded-2xl transition-all uppercase tracking-widest shadow-lg shadow-[#BEF264]/10 active:scale-95"
+123:                         >
+124:                             Approve Account
+125:                         </button>
+126:                         <button
+127: "use client";
+128: 
+129: import React, { useState, useEffect, Suspense } from 'react';
+130: import { useSearchParams } from 'next/navigation';
+131: import { createClient } from '@/lib/supabase/client';
+132: import { getAdminMetrics, getPendingAccounts, approveAccount, rejectAccount, getDisputedTransactions, getAuditChat, resolveDispute, getAnalyticsData, getAllUsers, revokeVerification, suspendAccount, banDevice, getPendingEscrows, forceReleaseEscrow, forceRefundEscrow, getSupportTickets, updateTicketStatus, broadcastSystemAlert } from './actions';
+133: import {
+134:     CheckCircle,
+135:     AlertTriangle,
+136:     Play,
+137:     Eye,
+138:     ShieldCheck,
+139:     Users,
+140:     MessageSquare,
+141:     Zap,
+142:     Lock,
+143:     RefreshCcw,
+144:     MapPin,
+145:     Search,
+146:     ChevronRight,
+147:     Bell,
+148:     Wallet,
+149:     HeadphonesIcon,
+150:     Megaphone,
+151:     XCircle,
+152:     UserX,
+153:     ShieldOff
+154: } from 'lucide-react';
+155: 
+156: const AccountApprovalCard = ({ account, onApprove, onReject }: { account: any, onApprove: () => void, onReject: () => void }) => {
+157:     const isLandlord = account._tableName === 'landlord_accounts';
+158: 
+159:     return (
+160:         <div className="bg-[#1e293b] rounded-[2.5rem] p-6 border border-white/5 hover:border-[#BEF264]/30 transition-all group">
+161:             <div className="flex flex-col md:flex-row gap-6">
+162:                 {/* User Avatar Placeholder */}
+163:                 <div className="relative w-24 h-24 bg-black rounded-[2rem] overflow-hidden flex items-center justify-center border border-white/10 group-hover:border-[#BEF264]/50 transition-colors shrink-0">
+164:                     {account.logo_url || account.selfie_url ? (
+165:                         <img src={account.logo_url || account.selfie_url} alt="Profile" className="w-full h-full object-cover" />
+166:                     ) : (
+167:                         <Users className="text-[#BEF264] opacity-50" size={32} />
+168:                     )}
+169:                 </div>
+170: 
+171:                 {/* Account Brief */}
+172:                 <div className="flex-grow flex flex-col justify-between py-2">
+173:                     <div>
+174:                         <div className="flex justify-between items-start">
+175:                             <div>
+176:                                 <div className="flex items-center gap-2 mb-2">
+177:                                     <span className={`text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${account._tableName === 'student_accounts' ? 'bg-blue-500/20 text-blue-400' :
+178:                                         account._tableName === 'agent_accounts' ? 'bg-purple-500/20 text-purple-400' :
+179:                                             account._tableName === 'landlord_accounts' ? 'bg-orange-500/20 text-orange-400' :
+180:                                                 'bg-emerald-500/20 text-emerald-400'
+181:                                         }`}>
+182:                                         {account._tableName ? account._tableName.split('_')[0] : 'account'}
+183:                                     </span>
+184:                                 </div>
+185:                                 <h3 className="text-xl font-black text-white tracking-tight leading-none">
+186:                                     {account.full_name || (account.first_name ? `${account.first_name} ${account.last_name || ''}` : 'Unknown Name')}
+187:                                 </h3>
+188:                                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">
+189:                                     {account.phone || account.phone_number || 'No Phone provided'} • {account.contact_email || account.email || 'No Email'}
+190:                                 </p>
+191:                             </div>
+192:                             <span className="bg-yellow-500/10 text-yellow-500 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest border border-yellow-500/20">
+193:                                 Pending
+194:                             </span>
+195:                         </div>
+196:                         )}
+197:                     </div>
+198:                 )}
+199: 
+200:                 {activeTab === 'analytics' && (
+201:                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+202:                         <div className="flex items-center justify-between px-4">
+203:                             <h2 className="text-3xl font-black uppercase tracking-tight text-[#BEF264]">Deep Matrix Analytics</h2>
+204:                             <span className="bg-[#BEF264]/10 text-[#BEF264] px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-[#BEF264]/20 animate-pulse">
+205:                                 Live Sync Active
+206:                             </span>
+207:                         </div>
+208: 
+209:                         {!analytics ? (
+210:                             <div className="bg-[#1e293b] rounded-[3rem] p-12 border border-white/5 text-center shadow-2xl">
+211:                                 <Zap className="w-16 h-16 text-[#BEF264]/50 mx-auto mb-6 animate-pulse" />
+212:                                 <h3 className="text-xl font-bold uppercase tracking-widest text-[#BEF264] mb-2">Crunching Data...</h3>
+213:                                 <p className="text-gray-400">Pulling historic datasets and aggregations.</p>
+214:                             </div>
+215:                         ) : (
+216:                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+217:                                 {/* Zone Heatmap */}
+218:                                 <div className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl relative overflow-hidden">
+219:                                     <MapPin className="absolute -right-4 -bottom-4 w-32 h-32 text-white/5 rotate-12" />
+220:                                     <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-6 flex items-center gap-2">
+221:                                         <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" /> Zone Heatmap (Searches / Activity)
+222:                                     </h3>
+223:                                     
+224:                                     <div className="space-y-4 relative z-10">
+225:                                         {analytics.heatMap.map((zone: any, i: number) => {
+226:                                             const max = Math.max(...analytics.heatMap.map((z: any) => z.count), 1);
+227:                                             const width = `${(zone.count / max) * 100}%`;
+228:                                             return (
+229:                                                 <div key={i}>
+230:                                                     <div className="flex justify-between text-xs font-bold text-gray-300 mb-1">
+231:                                                         <span>{zone.name}</span>
+232:                                                         <span>{zone.count}</span>
+233:                                                     </div>
+234:                                                     <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+235:                                                         <div className="h-full bg-blue-500 rounded-full" style={{ width }} />
+236:                                                     </div>
+237:                                                 </div>
+238:                                             );
+239:                                         })}
+240:                                         {analytics.heatMap.length === 0 && <p className="text-xs text-gray-500">No zone data available.</p>}
+241:                                     </div>
+242:                                 </div>
+243: 
+244:                                 {/* Category Split */}
+245:                                 <div className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl relative overflow-hidden">
+246:                                     <MessageSquare className="absolute -right-4 -bottom-4 w-32 h-32 text-white/5 -rotate-12" />
+247:                                     <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-6 flex items-center gap-2">
+248:                                         <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" /> Category Split (Campus Market)
+249:                                     </h3>
+250:                                     
+251:                                     <div className="space-y-4 relative z-10">
+252:                                         {analytics.categorySplit.map((cat: any, i: number) => {
+253:                                             const max = Math.max(...analytics.categorySplit.map((c: any) => c.count), 1);
+254:                                             const width = `${(cat.count / max) * 100}%`;
+255:                                             return (
+256:                                                 <div key={i}>
+257:                                                     <div className="flex justify-between text-xs font-bold text-gray-300 mb-1">
+258:                                                         <span>{cat.name}</span>
+259:                                                         <span>{cat.count}</span>
+260:                                                     </div>
+261:                                                     <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+262:                                                         <div className="h-full bg-purple-500 rounded-full" style={{ width }} />
+263:                                                     </div>
+264:                                                 </div>
+265:                                             );
+266:                                         })}
+267:                                         {analytics.categorySplit.length === 0 && <p className="text-xs text-gray-500">No category data available.</p>}
+268:                                     </div>
+269:                                 </div>
+270:                             </div>
+271:                         )}
+272:                     </div>
+273:                 )}
+274: 
+275:                 {/* ======================================= */}
+276:                 {/* USER MANAGEMENT MODULE */}
+277:                 {/* ======================================= */}
+278:                 {activeTab === 'users' && (
+279:                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+280:                         <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-4 gap-4">
+281:                             <div>
+282:                                 <h2 className="text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+283:                                     <Users className="w-8 h-8 text-blue-500" /> User Management
+284:                                 </h2>
+285:                                 <p className="text-sm text-gray-400 font-bold uppercase tracking-widest mt-1">Action Center</p>
+286:                             </div>
+287:                             <div className="relative w-full md:w-auto">
+288:                                 <Search className="w-5 h-5 text-gray-500 absolute left-4 top-1/2 -translate-y-1/2" />
+289:                                 <input 
+290:                                     type="text" 
+291:                                     placeholder="Search Name or Email..." 
+292:                                     value={userSearchTerm}
+293:                                     onChange={(e) => setUserSearchTerm(e.target.value)}
+294:                                     className="w-full md:w-80 bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:border-blue-500/50 outline-none"
+295:                                 />
+296:                             </div>
+297:                         </div>
+298: 
+299:                         <div className="bg-[#1e293b] rounded-[3rem] border border-white/5 shadow-2xl overflow-hidden">
+300:                             <div className="overflow-x-auto">
+301:                                 <table className="w-full text-left text-sm text-gray-300">
+302:                                     <thead className="text-[10px] text-gray-500 uppercase tracking-widest bg-black/20 border-b border-white/5">
+303:                                         <tr>
+304:                                             <th className="px-6 py-4 font-black">User Details</th>
+305:                                             <th className="px-6 py-4 font-black">Role / Account</th>
+306:                                             <th className="px-6 py-4 font-black">Status</th>
+307:                                             <th className="px-6 py-4 font-black">Admin Actions</th>
+308:                                         </tr>
+309:                                     </thead>
+310:                                     <tbody className="divide-y divide-white/5">
+311:                                         {allUsersData.filter(u => 
+312:                                             (u.full_name || '').toLowerCase().includes(userSearchTerm.toLowerCase()) || 
+313:                                             (u.email || '').toLowerCase().includes(userSearchTerm.toLowerCase())
+314:                                         ).map((user) => (
+315:                                             <tr key={user.id} className="hover:bg-white/5 transition-colors">
+316:                                                 <td className="px-6 py-4">
+317:                                                     <div className="font-bold text-white">{user.full_name || user.first_name || 'Unknown'}</div>
+318:                                                     <div className="text-xs text-gray-500 mt-1">{user.email || user.contact_email}</div>
+319:                                                 </td>
+320:                                                 <td className="px-6 py-4">
+321:                                                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+322:                                                         user._tableName === 'student_accounts' ? 'bg-blue-500/20 text-blue-400' :
+323:                                                         user._tableName === 'landlord_accounts' ? 'bg-orange-500/20 text-orange-400' :
+324:                                                         'bg-purple-500/20 text-purple-400'
+325:                                                     }`}>
+326:                                                         {user._tableName.split('_')[0]}
+327:                                                     </span>
+328:                                                 </td>
+329:                                                 <td className="px-6 py-4">
+330:                                                     <span className={`flex items-center gap-2 text-xs font-bold uppercase tracking-widest ${
+331:                                                         user.status === 'suspended' ? 'text-red-400' : 
+332:                                                         user.status === 'banned' ? 'text-red-600' : 
+333:                                                         'text-emerald-400'
+334:                                                     }`}>
+335:                                                         {user.status === 'suspended' || user.status === 'banned' ? <XCircle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+336:                                                         {user.status || 'Active'}
+337:                                                     </span>
+338:                                                 </td>
+339:                                                 <td className="px-6 py-4">
+340:                                                     <div className="flex gap-2">
+341:                                                         {user.is_verified && (
+342:                                                             <button 
+343:                                                                 onClick={async () => {
+344:                                                                     if (confirm("Revoke verification?")) {
+345:                                                                         await revokeVerification(user.id, user._tableName);
+346:                                                                         const updated = await getAllUsers();
+347:                                                                         setAllUsersData(updated);
+348:                                                                     }
+349:                                                                 }}
+350:                                                                 className="p-2 bg-yellow-500/10 text-yellow-500 rounded-lg hover:bg-yellow-500/20" title="Revoke Verification">
+351:                                                                 <ShieldOff className="w-4 h-4" />
+352:                                                             </button>
+353:                                                         )}
+354:                                                         <button 
+355:                                                             onClick={async () => {
+356:                                                                 if (confirm("Suspend this account immediately?")) {
+357:                                                                     await suspendAccount(user.id, user._tableName);
+358:                                                                     const updated = await getAllUsers();
+359:                                                                     setAllUsersData(updated);
+360:                                                                 }
+361:                                                             }}
+362:                                                             className="p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20" title="Suspend Account">
+363:                                                             <UserX className="w-4 h-4" />
+364:                                                         </button>
+365:                                                         <button 
+366:                                                             onClick={async () => {
+367:                                                                 if (confirm("HARD BAN this user?")) {
+368:                                                                     await banDevice(user.id, user._tableName);
+369:                                                                     const updated = await getAllUsers();
+370:                                                                     setAllUsersData(updated);
+371:                                                                 }
+372:                                                             }}
+373:                                                             className="px-3 py-2 bg-red-900/40 text-red-400 border border-red-900 rounded-lg hover:bg-red-900/60 text-[10px] font-black uppercase tracking-widest" title="Ban Device/IP">
+374:                                                             Ban
+375:                                                         </button>
+376:                                                     </div>
+377:                                                 </td>
+378:                                             </tr>
+379:                                         ))}
+380:                                     </tbody>
+381:                                 </table>
+382:                                 {allUsersData.length === 0 && (
+383:                                     <div className="p-12 text-center text-gray-500 font-bold uppercase tracking-widest">No users found.</div>
+384:                                 )}
+385:                             </div>
+386:                         </div>
+387:                     </div>
+388:                 )}
+389: 
+390:                 {/* ======================================= */}
+391:                 {/* ESCROW CONTROL MODULE */}
+392:                 {/* ======================================= */}
+393:                 {activeTab === 'escrow' && (
+394:                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+395:                         <div className="flex items-center justify-between px-4">
+396:                             <h2 className="text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+397:                                 <Wallet className="w-8 h-8 text-orange-500" /> Escrow Ledger
+398:                             </h2>
+399:                             <span className="bg-orange-500/10 text-orange-500 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-orange-500/20">
+400:                                 {pendingEscrows.length} Active Holds
+401:                             </span>
+402:                         </div>
+403: 
+404:                         <div className="grid grid-cols-1 gap-6">
+405:                             {pendingEscrows.length === 0 ? (
+406:                                 <div className="bg-[#1e293b] rounded-[3rem] p-12 border border-white/5 text-center shadow-2xl">
+407:                                     <Wallet className="w-16 h-16 text-orange-500/50 mx-auto mb-6 opacity-50" />
+408:                                     <h3 className="text-xl font-bold uppercase tracking-widest text-orange-500 mb-2">Ledger Empty</h3>
+409:                                     <p className="text-gray-400">No active escrow holds at the moment.</p>
+410:                                 </div>
+411:                             ) : pendingEscrows.map((escrow) => (
+412:                                 <div key={escrow.id} className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-orange-500/20 shadow-xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+413:                                     <div>
+414:                                         <div className="flex items-center gap-3 mb-3">
+415:                                             <span className="bg-orange-500/20 text-orange-400 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest border border-orange-500/30">
+416:                                                 Status: {escrow.status}
+417:                                             </span>
+418:                                             <span className="text-xs text-gray-500 font-mono">{escrow.id}</span>
+419:                                         </div>
+420:                                         <h3 className="text-xl font-black text-white">{escrow.market_items?.title || 'Unknown Item'}</h3>
+421:                                         <p className="text-2xl font-black text-[#BEF264] mt-2">₦{Number(escrow.amount).toLocaleString()}</p>
+422:                                     </div>
+423: 
+424:                                     <div className="flex gap-3 w-full lg:w-auto">
+425:                                         <button 
+426:                                             onClick={async () => {
+427:                                                 if (confirm("Force Refund back to Buyer?")) {
+428:                                                     await forceRefundEscrow(escrow.id);
+429:                                                     const updated = await getPendingEscrows();
+430:                                                     setPendingEscrows(updated || []);
+431:                                                 }
+432:                                             }}
+433:                                             className="flex-1 lg:flex-none bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px] font-black py-4 px-6 rounded-xl uppercase tracking-widest transition-colors"
+434:                                         >
+435:                                             Force Refund
+436:                                         </button>
+437:                                         <button 
+438:                                             onClick={async () => {
+439:                                                 if (confirm("Force Release to Seller?")) {
+440:                                                     await forceReleaseEscrow(escrow.id);
+441:                                                     const updated = await getPendingEscrows();
+442:                                                     setPendingEscrows(updated || []);
+443:                                                 }
+444:                                             }}
+445:                                             className="flex-1 lg:flex-none bg-[#BEF264]/10 hover:bg-[#BEF264]/20 text-[#BEF264] border border-[#BEF264]/30 text-[10px] font-black py-4 px-6 rounded-xl uppercase tracking-widest transition-colors"
+446:                                         >
+447:                                             Force Release
+448:                                         </button>
+449:                                     </div>
+450:                                 </div>
+451:                             ))}
+452:                         </div>
+453:                     </div>
+454:                 )}
+455: 
+456:                 {/* ======================================= */}
+457:                 {/* LIVE SUPPORT MODULE */}
+458:                 {/* ======================================= */}
+459:                 {activeTab === 'support' && (
+460:                     <div className="animate-in slide-in-from-bottom-4 duration-500">
+461:                         <div className="flex items-center justify-between px-4 mb-8">
+462:                             <h2 className="text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+463:                                 <HeadphonesIcon className="w-8 h-8 text-purple-500" /> Support Desk
+464:                             </h2>
+465:                         </div>
+466: 
+467:                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[70vh]">
+468:                             {/* Tickets List */}
+469:                             <div className="col-span-1 bg-[#1e293b] rounded-[2.5rem] border border-white/5 overflow-hidden flex flex-col">
+470:                                 <div className="p-6 border-b border-white/5">
+471:                                     <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest">Active Tickets</h3>
+472:                                 </div>
+473:                                 <div className="flex-1 overflow-y-auto p-4 space-y-3">
+474:                                     {supportTickets.length === 0 ? (
+475:                                         <p className="text-center text-gray-500 text-sm mt-10 uppercase font-bold tracking-widest">No Active Tickets</p>
+476:                                     ) : supportTickets.map(ticket => (
+477:                                         <button 
+478:                                             key={ticket.id}
+479:                                             onClick={() => setActiveTicket(ticket)}
+480:                                             className={`w-full text-left p-5 rounded-2xl border transition-all ${
+481:                                                 activeTicket?.id === ticket.id 
+482:                                                 ? 'bg-purple-500/20 border-purple-500/50 shadow-lg shadow-purple-500/10' 
+483:                                                 : 'bg-white/5 border-white/5 hover:border-white/20'
+484:                                             }`}
+485:                                         >
+486:                                             <div className="flex justify-between items-center mb-2">
+487:                                                 <span className={`text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${
+488:                                                     ticket.status === 'Open' ? 'bg-red-500/20 text-red-400' :
+489:                                                     ticket.status === 'Pending' ? 'bg-yellow-500/20 text-yellow-400' :
+490:                                                     'bg-emerald-500/20 text-emerald-400'
+491:                                                 }`}>
+492:                                                     {ticket.status}
+493:                                                 </span>
+494:                                                 <span className="text-[10px] text-gray-500 font-bold">{new Date(ticket.created_at).toLocaleDateString()}</span>
+495:                                             </div>
+496:                                             <p className="font-bold text-white text-sm truncate">{ticket.subject}</p>
+497:                                             <p className="text-xs text-gray-400 mt-1 truncate">{ticket.profiles?.full_name}</p>
+498:                                         </button>
+499:                                     ))}
+500:                                 </div>
+501:                             </div>
+502: 
+503:                             {/* Chat View */}
+504:                             <div className="col-span-1 lg:col-span-2 bg-[#1e293b] rounded-[2.5rem] border border-white/5 overflow-hidden flex flex-col">
+505:                                 {activeTicket ? (
+506:                                     <>
+507:                                         <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
+508:                                             <div>
+509:                                                 <h3 className="font-black text-white text-lg">{activeTicket.subject}</h3>
+510:                                                 <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mt-1">User: {activeTicket.profiles?.full_name}</p>
+511:                                             </div>
+512:                                             <select 
+513:                                                 value={activeTicket.status}
+514:                                                 onChange={async (e) => {
+515:                                                     const newStatus = e.target.value as any;
+516:                                                     await updateTicketStatus(activeTicket.id, newStatus);
+517:                                                     setActiveTicket({ ...activeTicket, status: newStatus });
+518:                                                     const updated = await getSupportTickets();
+519:                                                     setSupportTickets(updated || []);
+520:                                                 }}
+521:                                                 className="bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-300 focus:border-purple-500/50 outline-none"
+522:                                             >
+523:                                                 <option value="Open">Open</option>
+524:                                                 <option value="Pending">Pending</option>
+525:                                                 <option value="Resolved">Resolved</option>
+526:                                             </select>
+527:                                         </div>
+528:                                         <div className="flex-1 overflow-y-auto p-6 flex flex-col justify-center items-center text-center">
+529:                                             <MessageSquare className="w-16 h-16 text-purple-500/20 mb-4" />
+530:                                             <h4 className="text-lg font-black uppercase tracking-widest text-gray-400 mb-2">Encrypted Comms</h4>
+531:                                             <p className="text-sm text-gray-500 max-w-sm">Support Chat UI is coming in v2. For now, track and manage ticket status here.</p>
+532:                                         </div>
+533:                                     </>
+534:                                 ) : (
+535:                                     <div className="flex-1 flex flex-col items-center justify-center text-center p-10">
+536:                                         <HeadphonesIcon className="w-20 h-20 text-white/5 mb-6" />
+537:                                         <p className="text-gray-500 font-bold uppercase tracking-widest">Select a ticket to begin resolution</p>
+538:                                     </div>
+539:                                 )}
+540:                             </div>
+541:                         </div>
+542:                     </div>
+543:                 )}
+544:             </main>
+545:         </div>
+546:     );
+547: };
+548: 
+549: export default function AdminHqPortalWrapper() {
+550:     return (
+551:         <Suspense fallback={<div className="min-h-screen bg-[#0F172A] p-10 text-white">Loading Admin Portal...</div>}>
+552:             <AdminHqPortal />
+553:         </Suspense>
+554:     );
+555: }
+556: 
+The above content shows the entire, complete file contents of the requested file.
+
+const fs = require('fs');
+
+const transcriptPath = 'C:\\Users\\USER\\.gemini\\antigravity\\brain\\f3159b35-58ce-4b96-aa97-0b4226b0855f\\.system_generated\\logs\\transcript_full.jsonl';
+const outputPath = 'C:\\Users\\USER\\Documents\\hostelio-app\\dump.txt';
+
+const content = fs.readFileSync(transcriptPath, 'utf-8');
+const lines = content.split('\n');
+
+let out = '';
+let count = 0;
+
+for (let line of lines) {
+    if (!line.trim()) continue;
+    if (line.includes('AdminHqPortal') && line.includes('export default function')) {
+        out += `\n\n--- MATCH ${count} ---\n`;
+        out += line;
+        count++;
+    }
+}
+
+fs.writeFileSync(outputPath, out, 'utf-8');
+console.log(`Dumped ${count} matches to ${outputPath}`);
+
