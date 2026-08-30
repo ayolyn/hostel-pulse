@@ -1,8 +1,5 @@
 import { Resend } from 'resend';
 
-// Initialize the Resend client using the API key
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 /**
  * Sends a notification email using Resend
  * 
@@ -16,6 +13,9 @@ export async function sendNotificationEmail(to: string, subject: string, htmlTem
             console.warn('RESEND_API_KEY is not defined. Email will not be sent.');
             return { success: false, error: 'Missing RESEND_API_KEY' };
         }
+
+        // Initialize inside the function to prevent build-time crashes when env vars are missing
+        const resend = new Resend(process.env.RESEND_API_KEY);
 
         const { data, error } = await resend.emails.send({
             from: 'Hostel Pulse <info@hostelpulse.app>',
