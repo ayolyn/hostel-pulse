@@ -173,9 +173,13 @@ export function ProfileSettings() {
                     )}
                 </button>
             </div>
+            
+            {/* Student ID Verification Section */}
+            <StudentIdUpload />
         </div>
     );
 }
 
 // Just importing User icon for the empty state
 import { User } from 'lucide-react';
+import { StudentIdUpload } from './StudentIdUpload';

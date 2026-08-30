@@ -141,7 +141,7 @@ export default function BuyPage() {
                     <BuyContent />
                 </Suspense>
             </main>
-            <Footer />
+            
         </div>
     );
 }

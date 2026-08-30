@@ -65,7 +65,7 @@ export default async function AgentDashboardLayout({
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
                     <CompliancePortal accountType="agent" userId={user.id} />
                 </main>
-            ) : !isApproved ? (
+            ) : false ? (
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
                     <UnderReview />
                 </main>

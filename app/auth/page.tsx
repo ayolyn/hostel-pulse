@@ -3,7 +3,7 @@ export const runtime = 'edge';
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Mail, Lock, User, Phone, ChevronRight, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, User, Phone, ChevronRight, AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import { HostelPulseLogo } from '@/components/ui/HostelPulseLogo';
 import { createClient } from '@/lib/supabase/client';
@@ -15,7 +15,9 @@ function AuthPageContent() {
     const router = useRouter();
     const modeParam = searchParams.get('mode');
     
-    const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+    const [mode, setMode] = useState<'signin' | 'signup' | 'verify'>('signin');
+    const [otp, setOtp] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -209,6 +211,24 @@ function AuthPageContent() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {mode === 'verify' && (
+                        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+                            <p className="text-gray-400 text-sm mb-6 text-center">
+                                Enter the 6-digit code sent to <strong className="text-white">{email}</strong>
+                            </p>
+                            <div className="relative">
+                                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-[#BEF264]" />
+                                <input 
+                                    type="text"
+                                    required
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                    placeholder="000000"
+                                    className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-14 pr-6 text-white text-center tracking-[0.5em] text-lg focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-bold placeholder-gray-500"
+                                />
+                            </div>
+                        </div>
+                    )}
                     {mode === 'signup' && (
                         <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
                             <div className="relative">
@@ -264,14 +284,21 @@ function AuthPageContent() {
 
                     <div className="relative">
                         <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input 
-                            type="password"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                            className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-14 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
-                        />
+                            <input 
+                                type={showPassword ? "text" : "password"}
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Password"
+                                className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-14 pr-12 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                            >
+                                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                            </button>
                         {mode === 'signin' && (
                             <button 
                                 onClick={handleForgotPassword}
@@ -302,7 +329,7 @@ function AuthPageContent() {
                         disabled={loading || (mode === 'signup' && !agreedToTerms)}
                         className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-5 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-30 disabled:scale-100 disabled:grayscale disabled:cursor-not-allowed flex items-center justify-center gap-2 group mt-4 text-sm"
                     >
-                        {loading ? 'Processing...' : (mode === 'signin' ? 'Sign In' : 'Create Account')}
+                        {loading ? 'Processing...' : (mode === 'signin' ? 'Sign In' : mode === 'verify' ? 'Verify Code' : 'Create Account')}
                         {!loading && <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
                     </button>
                 </form>

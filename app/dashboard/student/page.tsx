@@ -252,6 +252,7 @@ function StudentDashboardContent() {
                 onSuccess={() => {
                     setRefreshCount(prev => prev + 1);
                     setSelectedInspectionToPay(null);
+                    router.push('/dashboard/student?tab=wallet');
                 }}
             />
 

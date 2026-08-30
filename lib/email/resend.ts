@@ -1,7 +1,5 @@
-import { Resend } from 'resend';
-
 /**
- * Sends a notification email using Resend
+ * Sends a notification email using Resend API via raw fetch to avoid Edge runtime crashes.
  * 
  * @param to The recipient email address
  * @param subject The subject line of the email
@@ -14,19 +12,25 @@ export async function sendNotificationEmail(to: string, subject: string, htmlTem
             return { success: false, error: 'Missing RESEND_API_KEY' };
         }
 
-        // Initialize inside the function to prevent build-time crashes when env vars are missing
-        const resend = new Resend(process.env.RESEND_API_KEY);
-
-        const { data, error } = await resend.emails.send({
-            from: 'Hostel Pulse <info@hostelpulse.app>',
-            to: [to],
-            subject: subject,
-            html: htmlTemplate,
+        const res = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                from: 'Hostel Pulse <info@hostelpulse.app>',
+                to: [to],
+                subject: subject,
+                html: htmlTemplate,
+            })
         });
 
-        if (error) {
-            console.error('Resend Error:', error);
-            return { success: false, error: error.message };
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error('Resend API Error:', data);
+            return { success: false, error: data.message };
         }
 
         console.log(`Email successfully sent to ${to}: ${data?.id}`);

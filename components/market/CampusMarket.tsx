@@ -496,9 +496,8 @@ export function CampusMarket() {
                         item={selectedItem} 
                         onClose={() => setSelectedItem(null)} 
                         onSuccess={(purchasedItemId) => {
-                            // Let the real-time subscription or router.refresh handle the DOM update
                             setSelectedItem(null);
-                            router.refresh();
+                            router.push('?tab=wallet');
                         }}
                     />
                 </div>

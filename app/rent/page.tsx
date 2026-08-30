@@ -141,7 +141,7 @@ export default function RentPage() {
                     <RentContent />
                 </Suspense>
             </main>
-            <Footer />
+            
         </div>
     );
 }

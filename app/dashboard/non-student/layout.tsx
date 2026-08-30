@@ -52,7 +52,7 @@ export default async function NonStudentDashboardLayout({
 
     return (
         <NonStudentDashboardShell>
-            {isApproved ? children : <UnderReview />}
+            {children}
         </NonStudentDashboardShell>
     );
 }

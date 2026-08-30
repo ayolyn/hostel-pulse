@@ -86,7 +86,7 @@ export default function AgentTermsPage() {
                         <FileText className="w-6 h-6 text-[#BEF264]" />
                     </div>
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase">
+                        <h1 className="text-2xl md:text-xl md:text-2xl font-black text-white tracking-tight uppercase">
                             HostelPulse Agent Agreement
                         </h1>
                         <p className="text-gray-400 font-medium text-sm mt-1">
@@ -104,8 +104,8 @@ export default function AgentTermsPage() {
 
                 <div className="prose prose-invert max-w-none text-gray-300 font-medium space-y-8 h-[50vh] overflow-y-auto pr-4 custom-scrollbar">
                     <section>
-                        <h2 className="text-xl font-bold text-white mb-3">1. DEFINITIONS AND INTERPRETATIONS</h2>
-                        <ul className="list-disc pl-5 space-y-2">
+                        <h2 className="text-base font-bold text-white mb-3">1. DEFINITIONS AND INTERPRETATIONS</h2>
+                        <ul className="list-disc pl-5 space-y-2 text-sm text-gray-400">
                             <li><strong>“Effective Date”</strong> means the date the Agent/Landlord signs up on the Platform by ticking the “I agree” feature.</li>
                             <li><strong>“Platform”</strong> means the HostelPulse App or website.</li>
                             <li><strong>“Transaction”</strong> means the successful payment of rent, agency fees, or connection fees placed by the User on the Platform.</li>
@@ -114,18 +114,18 @@ export default function AgentTermsPage() {
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-white mb-3">2. SERVICES</h2>
+                        <h2 className="text-base font-bold text-white mb-3">2. SERVICES</h2>
                         <p className="mb-2">HostelPulse shall provide the following Services to the Agent:</p>
-                        <ul className="list-disc pl-5 space-y-2">
+                        <ul className="list-disc pl-5 space-y-2 text-sm text-gray-400">
                             <li>Promote and manage property listings to students and prospective tenants.</li>
                             <li>Facilitate roommate matching and housing connection services.</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-white mb-3">3. OBLIGATIONS OF THE AGENT / LANDLORD</h2>
+                        <h2 className="text-base font-bold text-white mb-3">3. OBLIGATIONS OF THE AGENT / LANDLORD</h2>
                         <p className="mb-2">The Agent shall perform the following obligations:</p>
-                        <ul className="list-disc pl-5 space-y-2">
+                        <ul className="list-disc pl-5 space-y-2 text-sm text-gray-400">
                             <li>Provide accurate Property Content and facility details upon sign-up.</li>
                             <li>Ensure that the listed properties are safe, legally available for rent, and accurately represented without misleading photographs.</li>
                             <li>Maintain all requisite licenses required by law to lease and manage real estate in Nigeria.</li>
@@ -134,40 +134,40 @@ export default function AgentTermsPage() {
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-white mb-3">4. FEES AND SETTLEMENT</h2>
-                        <ul className="list-disc pl-5 space-y-2">
+                        <h2 className="text-base font-bold text-white mb-3">4. FEES AND SETTLEMENT</h2>
+                        <ul className="list-disc pl-5 space-y-2 text-sm text-gray-400">
                             <li>In consideration of the Services, the Agent shall pay HostelPulse the agreed commission based on the selected Pricing Tier (“Fee”).</li>
                             <li>Where payments are processed directly through the Platform, HostelPulse shall be entitled to deduct the Fee at source and transfer the balance to the Agent&apos;s designated bank account within +1 Business Day.</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-white mb-3">5. REPRESENTATIONS AND WARRANTIES</h2>
-                        <ul className="list-disc pl-5 space-y-2">
+                        <h2 className="text-base font-bold text-white mb-3">5. REPRESENTATIONS AND WARRANTIES</h2>
+                        <ul className="list-disc pl-5 space-y-2 text-sm text-gray-400">
                             <li>The Agent warrants that they are the legal owner of the property or have the documented legal authority to lease the property.</li>
                             <li>The Agent warrants that all information supplied is accurate and does not constitute any misrepresentation or fraud.</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-white mb-3">6. INDEMNITY & LIMITATION OF LIABILITY</h2>
-                        <ul className="list-disc pl-5 space-y-2">
+                        <h2 className="text-base font-bold text-white mb-3">6. INDEMNITY & LIMITATION OF LIABILITY</h2>
+                        <ul className="list-disc pl-5 space-y-2 text-sm text-gray-400">
                             <li>The Agent agrees to indemnify HostelPulse for any direct loss, injury, or damages arising from a breach of tenancy laws, unsafe living conditions, or fraudulent listings.</li>
                             <li>HostelPulse’s maximum liability to the Agent is limited to the commission fees paid to HostelPulse for the specific transaction in dispute.</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-white mb-3">7. DATA PROTECTION & NON-DISCRIMINATION</h2>
-                        <ul className="list-disc pl-5 space-y-2">
+                        <h2 className="text-base font-bold text-white mb-3">7. DATA PROTECTION & NON-DISCRIMINATION</h2>
+                        <ul className="list-disc pl-5 space-y-2 text-sm text-gray-400">
                             <li>Each Party shall comply with the Nigeria Data Protection Act 2023. The Agent agrees not to misuse student data, phone numbers, or personal information for any purpose outside of finalizing the tenancy agreement.</li>
                             <li>The Agent shall not engage in any form of discrimination or harassment toward any student. Violation of this will result in immediate termination.</li>
                         </ul>
                     </section>
 
                     <section>
-                        <h2 className="text-xl font-bold text-white mb-3">8. SUSPENSION OF SERVICE & DISPUTE RESOLUTION</h2>
-                        <ul className="list-disc pl-5 space-y-2">
+                        <h2 className="text-base font-bold text-white mb-3">8. SUSPENSION OF SERVICE & DISPUTE RESOLUTION</h2>
+                        <ul className="list-disc pl-5 space-y-2 text-sm text-gray-400">
                             <li>HostelPulse shall immediately suspend the Agent&apos;s account where the Platform is misused, fraudulent listings are detected, or multiple reports of scam/harassment are received.</li>
                             <li>This Agreement shall be governed by the laws of the Federal Republic of Nigeria. Unresolved disputes shall be submitted to Mediation at a recognized Multi-Door Courthouse in Nigeria.</li>
                         </ul>

@@ -88,8 +88,12 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                 <section className="mb-8 relative group">
                     {/* Desktop Gallery */}
                     <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-4 h-[500px] rounded-3xl overflow-hidden">
-                        <div className="col-span-2 row-span-2 relative cursor-pointer hover:opacity-95 transition-opacity">
-                            <Image src={images[0]} alt="Main" fill className="object-cover" priority />
+                        <div className="col-span-2 row-span-2 relative cursor-pointer hover:opacity-95 transition-opacity bg-black">
+                            {property.video_url ? (
+                                <video src={property.video_url} autoPlay muted loop playsInline controls className="w-full h-full object-cover" />
+                            ) : (
+                                <Image src={images[0]} alt="Main" fill className="object-cover" priority />
+                            )}
                         </div>
                         <div className="relative cursor-pointer hover:opacity-95 transition-opacity">
                             <Image src={images[1] || images[0]} alt="Interior" fill className="object-cover" />
@@ -110,7 +114,11 @@ export default async function PropertyPage({ params }: { params: { id: string } 
 
                     {/* Mobile Slider Placeholder */}
                     <div className="md:hidden relative h-[350px] w-full bg-gray-100">
-                        <Image src={images[0]} alt="Main" fill className="object-cover" priority />
+                        {property.video_url ? (
+                            <video src={property.video_url} autoPlay muted loop playsInline controls className="w-full h-full object-cover" />
+                        ) : (
+                            <Image src={images[0]} alt="Main" fill className="object-cover" priority />
+                        )}
                         <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
                             1/{images.length}
                         </div>

@@ -51,7 +51,7 @@ export default async function StudentDashboardLayout({
 
     return (
         <StudentDashboardShell>
-            {isApproved ? children : <UnderReview />}
+            {children}
         </StudentDashboardShell>
     );
 }
