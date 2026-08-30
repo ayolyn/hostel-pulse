@@ -54,7 +54,7 @@ export async function initializeOpayPayment(amount: number) {
             return { error: "Failed to initialize transaction" };
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === "production" ? "https://hostelpulse.com.ng" : "http://localhost:3000");
         
         // We send the payload directly in the fetch body.
         
@@ -82,8 +82,8 @@ export async function initializeOpayPayment(amount: number) {
                     currency: "NGN"
                 },
                 country: "NG",
-                returnUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/student`,
-                callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/opay`,
+                returnUrl: `${appUrl}/dashboard`,
+                callbackUrl: `${appUrl}/api/webhooks/opay`,
                 expireAt: "10"
             })
         });
