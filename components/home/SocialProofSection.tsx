@@ -40,22 +40,17 @@ export function SocialProofSection() {
             <div className="max-w-7xl mx-auto relative z-10">
                 {/* 94% Badge */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
+                    initial={{ opacity: 1, scale: 1 }}
                     className="flex flex-col items-center mb-16"
                 >
-                    <motion.div
-                        animate={{ scale: [1, 1.05, 1] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                    <div
                         className="relative w-48 h-48 rounded-full bg-gradient-to-br from-[#BEF264] to-emerald-500 flex items-center justify-center mb-6 shadow-2xl shadow-[#BEF264]/20"
                     >
                         <div className="text-center">
                             <div className="text-6xl font-black text-black">94%</div>
                             <div className="text-sm font-bold text-black/80">Recommend</div>
                         </div>
-                    </motion.div>
+                    </div>
                     <h2 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white text-center">
                         Trusted by <span className="text-[#BEF264]">LAUTECH</span> Students
                     </h2>

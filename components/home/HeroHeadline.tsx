@@ -8,7 +8,7 @@ export function HeroHeadline() {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-6xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-8"
+            className="text-6xl md:text-8xl font-black text-black dark:text-white leading-[0.9] tracking-tighter mb-8"
         >
             BOOK YOUR <br />
             <motion.span

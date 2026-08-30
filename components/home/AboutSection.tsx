@@ -33,10 +33,7 @@ export function AboutSection() {
             <div className="max-w-7xl mx-auto relative z-10">
                 {/* Heading */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
+                    initial={{ opacity: 1, y: 0 }}
                     className="text-center mb-16"
                 >
                     <h2 className="text-5xl md:text-6xl font-black text-neutral-900 dark:text-white mb-4">
@@ -52,10 +49,7 @@ export function AboutSection() {
                     {features.map((feature, index) => (
                         <motion.div
                             key={feature.title}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: index * 0.2 }}
+                            initial={{ opacity: 1, y: 0 }}
                             whileHover={{ y: -8, transition: { duration: 0.2 } }}
                             className="group relative"
                         >

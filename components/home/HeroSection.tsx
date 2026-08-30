@@ -29,7 +29,6 @@ export function HeroSection() {
                         className="flex items-center gap-2 mb-8 justify-center lg:justify-start"
                     >
                         <span className="relative flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#BEF264] opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-3 w-3 bg-[#BEF264]"></span>
                         </span>
                         <span className="text-neutral-900 dark:text-[#BEF264] text-xs font-bold uppercase tracking-widest">Ogbomoso Hub Live</span>
@@ -70,7 +69,7 @@ export function HeroSection() {
                 </div>
 
                 {/* Right Content - 3D Scene / Visual */}
-                <div className="flex-1 w-full relative h-[500px] lg:h-[650px]">
+                <div className="flex-1 w-full relative h-[350px] md:h-[500px] lg:h-[650px]">
                     <SplineScene
                         scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
                         className="w-full h-full"
