@@ -1,5 +1,6 @@
 export const runtime = 'edge';
 import React from 'react';
+import { ContactForm } from '@/components/contact/ContactForm';
 
 export default function Contact() {
   return (
@@ -74,53 +75,7 @@ export default function Contact() {
           {/* Contact Form */}
           <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 lg:p-10 border border-gray-100 dark:border-gray-800">
             <h3 className="text-2xl font-bold mb-6">Send us a message</h3>
-            <form className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
-                <input 
-                  type="text" 
-                  id="name" 
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#16a34a] dark:focus:ring-[#BEF264] focus:border-transparent transition-colors outline-none"
-                  placeholder="John Doe"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#16a34a] dark:focus:ring-[#BEF264] focus:border-transparent transition-colors outline-none"
-                  placeholder="john@example.com"
-                />
-              </div>
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject</label>
-                <select 
-                  id="subject" 
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#16a34a] dark:focus:ring-[#BEF264] focus:border-transparent transition-colors outline-none"
-                >
-                  <option>General Inquiry</option>
-                  <option>Issue with a Booking</option>
-                  <option>Report an Agent</option>
-                  <option>Partnership</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Message</label>
-                <textarea 
-                  id="message" 
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#16a34a] dark:focus:ring-[#BEF264] focus:border-transparent transition-colors outline-none resize-none"
-                  placeholder="How can we help you?"
-                ></textarea>
-              </div>
-              <button 
-                type="button"
-                className="w-full bg-[#16a34a] hover:bg-green-700 dark:bg-[#BEF264] dark:hover:bg-[#a8e04b] text-white dark:text-gray-900 font-bold py-4 px-8 rounded-xl transition-colors shadow-sm"
-              >
-                Send Message
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </div>
       </div>
