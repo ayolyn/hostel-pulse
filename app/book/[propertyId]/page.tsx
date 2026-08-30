@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import { PublicHeader } from "@/components/layout/PublicHeader";

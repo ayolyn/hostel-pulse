@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import { createClient } from '@/lib/supabase/server';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { ShieldCheck, Lock, QrCode, Building2, MapPin, CheckCircle2, ChevronRight, AlertTriangle } from 'lucide-react';
