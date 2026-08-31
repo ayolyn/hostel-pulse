@@ -13,11 +13,11 @@ export function UnderReview() {
                 <div className="absolute bottom-1/4 right-1/4 w-[40%] h-[40%] bg-teal-500 rounded-full blur-[120px]" />
             </div>
 
-            <div className="w-full max-w-lg bg-white/50 dark:bg-[#1E293B]/50 backdrop-blur-2xl p-10 rounded-[3rem] border border-gray-200 dark:border-white/5 relative z-10 shadow-2xl dark:shadow-none text-center">
+            <div className="w-full max-w-lg bg-white/50 dark:bg-[#1E293B]/50 backdrop-blur-2xl p-6 rounded-3xl border border-gray-200 dark:border-white/5 relative z-10 shadow-2xl dark:shadow-none text-center">
 
                 <div className="relative mx-auto w-24 h-24 mb-8">
-                    <div className="absolute inset-0 bg-amber-500/20 rounded-[2rem]" />
-                    <div className="relative w-full h-full bg-amber-500/20 rounded-[2rem] flex items-center justify-center rotate-3 ring-4 ring-amber-500/30">
+                    <div className="absolute inset-0 bg-amber-500/20 rounded-2xl" />
+                    <div className="relative w-full h-full bg-amber-500/20 rounded-2xl flex items-center justify-center rotate-3 ring-4 ring-amber-500/30">
                         <ShieldAlert className="w-10 h-10 text-amber-500 -rotate-3" />
                     </div>
                 </div>

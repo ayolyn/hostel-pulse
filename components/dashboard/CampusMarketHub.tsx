@@ -22,7 +22,7 @@ export function CampusMarketHub() {
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-white dark:bg-neutral-900 p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm relative overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-white dark:bg-neutral-900 p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-[#BEF264] rounded-full blur-[100px] opacity-10 pointer-events-none" />
                 <div className="relative z-10">
                     <h1 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Campus Market</h1>
@@ -41,7 +41,7 @@ export function CampusMarketHub() {
             </div>
 
             {/* Under Development Card */}
-            <div className="flex items-center justify-center p-12 sm:p-24 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-[3rem] shadow-2xl relative overflow-hidden">
+            <div className="flex items-center justify-center p-12 sm:p-24 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-3xl shadow-2xl relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent pointer-events-none" />
                 <div className="absolute -top-32 -left-32 w-64 h-64 bg-[#BEF264] rounded-full blur-[120px] opacity-20 pointer-events-none" />
                 <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-emerald-500 rounded-full blur-[120px] opacity-20 pointer-events-none" />

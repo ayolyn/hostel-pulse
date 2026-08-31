@@ -89,12 +89,12 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
     }
 
     return (
-        <div className="bg-white dark:bg-neutral-900 rounded-[2.5rem] border border-neutral-100 dark:border-white/5 w-full max-w-sm mx-auto shadow-2xl relative overflow-hidden">
+        <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-white/5 w-full max-w-sm mx-auto shadow-2xl relative overflow-hidden">
             <button onClick={onClose} className="absolute top-6 right-6 p-2 text-gray-400 hover:text-black dark:hover:text-white transition-colors z-10">
                 <X className="w-5 h-5" />
             </button>
 
-            <div className="p-8 overflow-y-auto max-h-[80vh] custom-scrollbar">
+            <div className="p-5 overflow-y-auto max-h-[80vh] custom-scrollbar">
                 {step === 1 ? (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center gap-2 mb-6">

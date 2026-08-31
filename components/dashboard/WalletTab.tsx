@@ -173,8 +173,8 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
 
     if (loading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
-                {[1, 2, 3].map(i => <div key={i} className="h-40 bg-white/5 rounded-[2rem] border border-white/5" />)}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-pulse">
+                {[1, 2, 3].map(i => <div key={i} className="h-40 bg-white/5 rounded-2xl border border-white/5" />)}
             </div>
         );
     }
@@ -202,13 +202,13 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                 </div>
 
                 {transactions.length === 0 ? (
-                    <div className="bg-gray-50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 rounded-[3rem] p-20 text-center">
+                    <div className="bg-gray-50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-20 text-center">
                         <Wallet className="w-16 h-16 text-gray-200 dark:text-white/5 mx-auto mb-6" />
                         <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Your Wallet is Empty</h3>
                         <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-2 px-10">Start listing properties in Under-G to earn your first commission!</p>
                     </div>
                 ) : (
-                    <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[2.5rem] overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl overflow-hidden shadow-sm">
                         <div className="divide-y divide-gray-100 dark:divide-white/5">
                             {transactions.map((tx) => {
                                 const isHeld = tx.status === 'Held' || tx.status === 'pending';
@@ -220,11 +220,11 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                     <div 
                                         key={tx.id} 
                                         onClick={() => setSelectedTx(tx)}
-                                        className="p-6 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-between group cursor-pointer"
+                                        className="p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-between group cursor-pointer"
                                     >
-                                        <div className="flex items-center gap-6">
-                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${isDisputed ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : tx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : isHeld ? 'bg-amber-50 dark:bg-amber-400/10 border-amber-100 dark:border-amber-400/20 text-amber-500 dark:text-amber-400' : isReleased ? 'bg-emerald-50 dark:bg-[#BEF264]/10 border-emerald-100 dark:border-[#BEF264]/20 text-[#0D9488] dark:text-[#BEF264]' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
-                                                {tx.type === 'Withdrawal' ? <ArrowUpRight className="w-6 h-6" /> : isReleased ? <ArrowDownLeft className="w-6 h-6" /> : <ArrowUpRight className="w-6 h-6" />}
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${isDisputed ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : tx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : isHeld ? 'bg-amber-50 dark:bg-amber-400/10 border-amber-100 dark:border-amber-400/20 text-amber-500 dark:text-amber-400' : isReleased ? 'bg-emerald-50 dark:bg-[#BEF264]/10 border-emerald-100 dark:border-[#BEF264]/20 text-[#0D9488] dark:text-[#BEF264]' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
+                                                {tx.type === 'Withdrawal' ? <ArrowUpRight className="w-5 h-5" /> : isReleased ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
                                             </div>
                                             <div>
                                                 <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{tx.type} Payment</h4>
@@ -232,7 +232,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className={`text-lg font-black ${isRefunded ? 'text-red-500 line-through' : 'text-gray-900 dark:text-white'}`}>₦{tx.amount.toLocaleString()}</p>
+                                            <p className={`text-base font-black ${isRefunded ? 'text-red-500 line-through' : 'text-gray-900 dark:text-white'}`}>₦{tx.amount.toLocaleString()}</p>
                                             <div className="flex items-center justify-end gap-2 mt-1">
                                                 {isDisputed ? (
                                                     <div className="group/tooltip relative">
@@ -277,7 +277,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
             {/* Transaction Details Modal */}
             {selectedTx && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-white dark:bg-neutral-900 rounded-[2.5rem] w-full max-w-md p-8 relative shadow-2xl overflow-hidden">
+                    <div className="bg-white dark:bg-neutral-900 rounded-3xl w-full max-w-md p-5 relative shadow-2xl overflow-hidden">
                         <button 
                             onClick={() => setSelectedTx(null)}
                             className="absolute top-6 right-6 w-10 h-10 bg-gray-100 dark:bg-neutral-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
@@ -308,7 +308,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                             </div>
                             <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-white/5">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Amount</span>
-                                <span className="text-lg font-black text-gray-900 dark:text-white">₦{selectedTx.amount.toLocaleString()}</span>
+                                <span className="text-base font-black text-gray-900 dark:text-white">₦{selectedTx.amount.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-white/5">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Status</span>
@@ -317,7 +317,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                 </span>
                             </div>
                             
-                            <div className="flex flex-col sm:flex-row gap-2 mt-8 flex-wrap">
+                            <div className="flex flex-col sm:flex-row gap-2 mt-4 flex-wrap">
                                 {selectedTx.buyer_id && (
                                     <Link 
                                         href={`/dashboard/agent?tab=messages&userId=${selectedTx.buyer_id}`}

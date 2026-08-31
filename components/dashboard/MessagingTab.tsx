@@ -436,7 +436,7 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
     if (rooms.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-3xl border border-gray-100 shadow-sm">
-                <div className="w-24 h-24 bg-gray-50 rounded-[2rem] flex items-center justify-center mb-8 border border-gray-100">
+                <div className="w-24 h-24 bg-gray-50 rounded-2xl flex items-center justify-center mb-8 border border-gray-100">
                     <MessageCircle className="w-12 h-12 text-gray-200" />
                 </div>
                 <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tighter mb-2">Inbox Quiet</h2>

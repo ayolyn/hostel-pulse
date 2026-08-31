@@ -22,9 +22,9 @@ export function WalletOverviewCards({ availableBalance, escrowBalance, totalVolu
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {cards.map((card, i) => (
-                <div key={i} className={`bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-white/5 p-8 rounded-[2.5rem] flex flex-col justify-between group hover:shadow-xl transition-all ${card.isMain ? 'border-[#BEF264]/40 border-2' : ''}`}>
+                <div key={i} className={`bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-white/5 p-5 rounded-3xl flex flex-col justify-between group hover:shadow-xl transition-all ${card.isMain ? 'border-[#BEF264]/40 border-2' : ''}`}>
                     <div className="flex justify-between items-start">
                         <div className={`p-4 rounded-2xl ${card.bg} ${card.color}`}>
                             <card.icon className="w-6 h-6" />
@@ -33,8 +33,8 @@ export function WalletOverviewCards({ availableBalance, escrowBalance, totalVolu
                             <span className="text-[10px] font-black uppercase tracking-widest text-black bg-[#BEF264] px-3 py-1 rounded-full shadow-lg">Main Balance</span>
                         )}
                     </div>
-                    <div className="mt-8">
-                        <p className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter flex items-center justify-between gap-4 flex-wrap">
+                    <div className="mt-4">
+                        <p className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter flex items-center justify-between gap-4 flex-wrap">
                             <span>₦{(card.val || 0).toLocaleString()}</span>
                             {card.isMain && card.actionType === 'withdraw' && onWithdraw && (
                                 <button 

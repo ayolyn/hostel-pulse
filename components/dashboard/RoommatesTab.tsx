@@ -127,14 +127,14 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
     if (loading) {
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
-                {[1, 2, 3].map(i => <div key={i} className="h-64 bg-white/5 dark:bg-neutral-900 rounded-[2rem] border border-white/5" />)}
+                {[1, 2, 3].map(i => <div key={i} className="h-64 bg-white/5 dark:bg-neutral-900 rounded-2xl border border-white/5" />)}
             </div>
         );
     }
 
     if (!hasProfile) {
         return (
-            <div className="max-w-2xl mx-auto bg-white dark:bg-neutral-900 p-8 rounded-[3rem] border border-gray-100 dark:border-neutral-800 shadow-xl">
+            <div className="max-w-2xl mx-auto bg-white dark:bg-neutral-900 p-5 rounded-3xl border border-gray-100 dark:border-neutral-800 shadow-xl">
                 <div className="text-center mb-8">
                     <div className="w-16 h-16 bg-[#BEF264]/20 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Users className="w-8 h-8 text-[#BEF264]" />
@@ -244,7 +244,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
             </div>
 
             {profiles.length === 0 ? (
-                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[3rem] p-16 text-center">
+                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-16 text-center">
                     <Users className="w-12 h-12 text-gray-200 dark:text-neutral-800 mx-auto mb-4" />
                     <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">No Profiles Found</h3>
                     <p className="text-gray-500 mt-2 text-sm">Be the first to create a profile, or check back later when more students join.</p>
@@ -252,8 +252,8 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {profiles.map((p) => (
-                        <div key={p.user_id} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-6 rounded-[2rem] flex flex-col hover:border-[#BEF264]/40 transition-all shadow-sm group relative overflow-hidden">
-                            <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#BEF264] rounded-full blur-[60px] opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none" />
+                        <div key={p.user_id} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-6 rounded-2xl flex flex-col hover:border-[#BEF264]/40 transition-all shadow-sm group relative overflow-hidden">
+                            <div className="absolute -top-6 -right-10 w-32 h-32 bg-[#BEF264] rounded-full blur-[60px] opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none" />
                             
                             <div className="flex items-start gap-4 mb-4 relative z-10">
                                 <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-neutral-800 border-2 border-white dark:border-neutral-800 overflow-hidden shrink-0">

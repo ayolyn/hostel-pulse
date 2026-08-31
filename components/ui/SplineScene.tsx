@@ -47,7 +47,7 @@ export function SplineScene({ scene, className = '' }: SplineSceneProps) {
             <motion.div
               animate={{ y: [0, -20, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="relative p-12 bg-white/10 dark:bg-white/5 backdrop-blur-xl rounded-[3rem] border border-white/20 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] z-20 flex flex-col items-center gap-6"
+              className="relative p-12 bg-white/10 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-white/20 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] z-20 flex flex-col items-center gap-6"
             >
               <div className="w-24 h-24 bg-gradient-to-br from-[#BEF264] to-[#86b333] rounded-3xl flex items-center justify-center shadow-[0_0_50px_rgba(190,242,100,0.4)]">
                 <Home size={56} className="text-black" />

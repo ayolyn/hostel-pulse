@@ -46,7 +46,7 @@ export function PublicHeader() {
                 </Link>
 
                 {/* Navigation Links */}
-                <div className="hidden lg:flex items-center gap-8">
+                <div className="hidden lg:flex items-center gap-5">
                     {navLinks.map((link) => {
                         const hasDropdown = link.name === 'Buy' || link.name === 'Rent';
                         const dropdownItems = link.name === 'Buy' 

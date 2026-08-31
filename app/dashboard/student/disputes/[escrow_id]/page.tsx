@@ -192,19 +192,19 @@ export default function StudentCaseRoom() {
     };
 
     if (loading) {
-        return <div className="p-8 text-center text-white font-black tracking-widest uppercase">Initializing Secure Case Room...</div>;
+        return <div className="p-5 text-center text-white font-black tracking-widest uppercase">Initializing Secure Case Room...</div>;
     }
 
     return (
-        <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
+        <div className="max-w-4xl mx-auto p-4 md:p-5 space-y-6">
             <Link href="/dashboard/student?tab=wallet" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
                 <ChevronLeft className="w-4 h-4" />
                 <span className="text-xs font-black uppercase tracking-widest">Back to Wallet</span>
             </Link>
 
-            <div className="bg-[#1e293b] rounded-[2.5rem] border border-red-500/20 overflow-hidden shadow-2xl">
+            <div className="bg-[#1e293b] rounded-3xl border border-red-500/20 overflow-hidden shadow-2xl">
                 {/* Header */}
-                <div className="p-6 md:p-8 border-b border-white/5 bg-red-500/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="p-6 md:p-5 border-b border-white/5 bg-red-500/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center border border-red-500/20">
                             <AlertTriangle className="w-6 h-6 text-red-500" />
@@ -224,7 +224,7 @@ export default function StudentCaseRoom() {
                 </div>
 
                 {/* Chat Area */}
-                <div className="h-[50vh] overflow-y-auto p-6 md:p-8 space-y-6 bg-[#0f172a]/50">
+                <div className="h-[50vh] overflow-y-auto p-6 md:p-5 space-y-6 bg-[#0f172a]/50">
                     {messages.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-gray-500">
                             <MessageSquare className="w-12 h-12 mb-4 opacity-50" />

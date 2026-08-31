@@ -99,16 +99,16 @@ export default function ProfileTab({ userId }: ProfileTabProps) {
 
     return (
         <div className="max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {/* Left: Avatar Section */}
                 <div className="md:col-span-1">
-                    <div className="bg-white/5 border border-white/5 rounded-3xl p-8 text-center sticky top-24">
+                    <div className="bg-white/5 border border-white/5 rounded-3xl p-5 text-center sticky top-24">
                         <div className="relative w-32 h-32 mx-auto mb-6 group">
                             <div className="w-full h-full rounded-full border-4 border-[#BEF264]/20 overflow-hidden bg-neutral-800">
                                 {profile.avatar_url ? (
                                     <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                                 ) : (
-                                    <User className="w-full h-full p-8 text-gray-600" />
+                                    <User className="w-full h-full p-5 text-gray-600" />
                                 )}
                             </div>
                             <label className="absolute bottom-0 right-0 w-10 h-10 bg-[#BEF264] rounded-full flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95 transition-all shadow-lg">
@@ -123,7 +123,7 @@ export default function ProfileTab({ userId }: ProfileTabProps) {
 
                 {/* Right: Form Section */}
                 <div className="md:col-span-2 space-y-6">
-                    <div className="bg-white/5 border border-white/5 rounded-3xl p-8 space-y-6">
+                    <div className="bg-white/5 border border-white/5 rounded-3xl p-5 space-y-6">
                         <div className="flex items-center gap-3 mb-4">
                             <CheckCircle2 className="w-5 h-5 text-[#BEF264]" />
                             <h2 className="text-xl font-black text-white uppercase tracking-tight font-outfit">Identity & Contact</h2>

@@ -57,7 +57,7 @@ export function LandlordHeader({ onMenuClick }: LandlordHeaderProps) {
                 </div>
 
                 {/* Center Navigation (Stay logged in but explore site) */}
-                <div className="hidden lg:flex items-center gap-8">
+                <div className="hidden lg:flex items-center gap-5">
                     {publicLinks.map((link) => (
                         <Link
                             key={link.name}

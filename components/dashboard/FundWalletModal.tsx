@@ -43,7 +43,7 @@ export function FundWalletModal({ userId, onClose }: FundWalletModalProps) {
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="bg-white dark:bg-neutral-900 rounded-[2.5rem] w-full max-w-md p-8 relative shadow-2xl">
+            <div className="bg-white dark:bg-neutral-900 rounded-3xl w-full max-w-md p-5 relative shadow-2xl">
                 <button 
                     onClick={onClose}
                     className="absolute top-6 right-6 w-10 h-10 bg-gray-100 dark:bg-neutral-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"

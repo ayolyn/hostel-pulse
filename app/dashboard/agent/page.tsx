@@ -150,7 +150,7 @@ function AgentDashboardContent() {
                         {[1, 2, 3].map(i => <div key={i} className="bg-white/5 animate-pulse h-20 rounded-2xl" />) }
                     </div>
                 ) : inspections.length === 0 ? (
-                    <div className="bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-3xl p-10 text-center">
+                    <div className="bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-3xl p-6 text-center">
                         <Calendar className="w-10 h-10 text-gray-200 dark:text-white/10 mx-auto mb-3" />
                         <p className="font-black text-gray-500 uppercase tracking-tight">No inspections assigned yet</p>
                         <p className="text-gray-600 text-sm mt-1">Inspections will appear here once you are assigned by HQ.</p>
@@ -232,7 +232,7 @@ function AgentDashboardContent() {
                 )}
 
                 {activeTab === 'profile' && userId && account && (
-                    <div className="bg-white dark:bg-neutral-950 p-6 sm:p-10 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-white dark:bg-neutral-950 p-6 sm:p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <DetailedProfileForm account={account} userId={userId} />
                     </div>
                 )}
@@ -242,15 +242,15 @@ function AgentDashboardContent() {
                 )}
                 
                 {activeTab === 'support' && (
-                    <div className="bg-white dark:bg-neutral-950 p-6 sm:p-10 rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="bg-white dark:bg-neutral-950 p-6 sm:p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <SupportHub />
                     </div>
                 )}
                 
                 {isAddModalOpen && userId && (
                     <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-                        <div className="w-full max-w-4xl bg-white dark:bg-neutral-950 rounded-[3rem] border border-gray-100 dark:border-white/5 shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden">
-                            <div className="absolute top-8 right-8 z-[160]">
+                        <div className="w-full max-w-4xl bg-white dark:bg-neutral-950 rounded-3xl border border-gray-100 dark:border-white/5 shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden">
+                            <div className="absolute top-5 right-8 z-[160]">
                                 <button onClick={() => setIsAddModalOpen(false)} className="p-3 bg-gray-50 dark:bg-neutral-900 rounded-2xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">
                                     <X className="w-6 h-6 text-gray-400" />
                                 </button>

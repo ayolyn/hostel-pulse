@@ -251,7 +251,7 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {/* Govt ID */}
                                 <label className="relative group cursor-pointer">
-                                    <div className="aspect-[4/5] bg-neutral-100 dark:bg-neutral-900 border-2 border-dashed border-neutral-200 dark:border-white/5 rounded-[2.5rem] flex flex-col items-center justify-center p-6 text-center hover:border-[#BEF264] transition-all group-hover:scale-[1.02]">
+                                    <div className="aspect-[4/5] bg-neutral-100 dark:bg-neutral-900 border-2 border-dashed border-neutral-200 dark:border-white/5 rounded-3xl flex flex-col items-center justify-center p-6 text-center hover:border-[#BEF264] transition-all group-hover:scale-[1.02]">
                                         <div className="w-16 h-16 bg-white dark:bg-black rounded-3xl flex items-center justify-center mb-4 shadow-xl">
                                             <FileText className="w-8 h-8 text-neutral-400" />
                                         </div>
@@ -264,7 +264,7 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
 
                                 {/* Selfie */}
                                 <label className="relative group cursor-pointer">
-                                    <div className="aspect-[4/5] bg-neutral-100 dark:bg-neutral-900 border-2 border-dashed border-neutral-200 dark:border-white/5 rounded-[2.5rem] flex flex-col items-center justify-center p-6 text-center hover:border-[#BEF264] transition-all group-hover:scale-[1.02]">
+                                    <div className="aspect-[4/5] bg-neutral-100 dark:bg-neutral-900 border-2 border-dashed border-neutral-200 dark:border-white/5 rounded-3xl flex flex-col items-center justify-center p-6 text-center hover:border-[#BEF264] transition-all group-hover:scale-[1.02]">
                                         <div className="w-16 h-16 bg-white dark:bg-black rounded-3xl flex items-center justify-center mb-4 shadow-xl">
                                             <Camera className="w-8 h-8 text-neutral-400" />
                                         </div>
@@ -277,7 +277,7 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
 
                                 {/* CAC */}
                                 <label className="relative group cursor-pointer opacity-80">
-                                    <div className="aspect-[4/5] bg-neutral-100 dark:bg-neutral-900 border-2 border-dashed border-neutral-200 dark:border-white/5 rounded-[2.5rem] flex flex-col items-center justify-center p-6 text-center hover:border-purple-500 transition-all group-hover:scale-[1.02]">
+                                    <div className="aspect-[4/5] bg-neutral-100 dark:bg-neutral-900 border-2 border-dashed border-neutral-200 dark:border-white/5 rounded-3xl flex flex-col items-center justify-center p-6 text-center hover:border-purple-500 transition-all group-hover:scale-[1.02]">
                                         <div className="w-16 h-16 bg-white dark:bg-black rounded-3xl flex items-center justify-center mb-4 shadow-xl">
                                             <Building2 className="w-8 h-8 text-neutral-400" />
                                         </div>
@@ -307,7 +307,7 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
                     <button 
                         onClick={nextStep}
                         disabled={loading || (currentStep === 0 && (!formData.full_name || !formData.phone)) || (currentStep === 2 && (!formData.bank_name || !formData.account_number)) || (currentStep === 3 && (!files.govt_id || !files.selfie))}
-                        className={`group relative flex items-center justify-center gap-3 px-12 py-5 rounded-[2rem] font-black uppercase tracking-widest text-xs transition-all active:scale-95 disabled:opacity-50
+                        className={`group relative flex items-center justify-center gap-3 px-12 py-5 rounded-2xl font-black uppercase tracking-widest text-xs transition-all active:scale-95 disabled:opacity-50
                             ${currentStep === STEPS.length - 1 ? 'bg-red-600 text-white shadow-2xl shadow-red-500/30' : 'bg-black dark:bg-[#BEF264] text-white dark:text-black'}
                         `}
                     >

@@ -27,7 +27,7 @@ export default function Footer() {
                 </div>
 
                 {/* Gig Economy Card */}
-                <div className="hidden lg:col-span-1 bg-[#BEF264]/5 md:block p-6 md:p-8 rounded-[2rem] border border-[#BEF264]/20 space-y-4">
+                <div className="hidden lg:col-span-1 bg-[#BEF264]/5 md:block p-6 md:p-5 rounded-2xl border border-[#BEF264]/20 space-y-4">
                     <div className="flex items-center gap-2">
                         <span className="text-xl">💰</span>
                         <h4 className="text-white font-black uppercase tracking-tight">Make Money</h4>
@@ -41,7 +41,7 @@ export default function Footer() {
                 </div>
 
                 {/* Links Container for Mobile Grid */}
-                <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-2 gap-8">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2 grid grid-cols-2 gap-5">
                     {/* Explore Links */}
                     <div>
                         <h4 className="text-white font-black uppercase tracking-widest text-[10px] mb-6">Explore</h4>
@@ -71,7 +71,7 @@ export default function Footer() {
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-gray-500">
                     &copy; {new Date().getFullYear()} HOSTELPULSE. Built for LAUTECH & Beyond.
                 </p>
-                <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                <div className="flex gap-5 text-[10px] font-black uppercase tracking-widest text-gray-500">
                     <Link href="#" className="hover:text-white transition-all">Privacy</Link>
                     <Link href="#" className="hover:text-white transition-all">Terms</Link>
                 </div>

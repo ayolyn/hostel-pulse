@@ -227,8 +227,8 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
 
     if (loading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-pulse">
-                {[1, 2].map(i => <div key={i} className="h-40 bg-white/5 dark:bg-neutral-900 rounded-[2rem] border border-white/5" />)}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
+                {[1, 2].map(i => <div key={i} className="h-40 bg-white/5 dark:bg-neutral-900 rounded-2xl border border-white/5" />)}
             </div>
         );
     }
@@ -265,9 +265,9 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                 </div>
 
                 {escrowTransactions.length === 0 ? (
-                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[3rem] p-10 text-center">
+                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-6 text-center">
                         <ShieldCheck className="w-12 h-12 text-gray-100 dark:text-neutral-800 mx-auto mb-4" />
-                        <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">No Active Escrows</h3>
+                        <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">No Active Escrows</h3>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 gap-4">
@@ -280,7 +280,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                         'bg-purple-50 dark:bg-purple-500/10 text-purple-500'
                                     }`}>
                                         {t.type === 'Property' ? <Building2 className="w-6 h-6" /> : 
-                                         t.type === 'Sale' ? <ArrowUpRight className="w-6 h-6" /> :
+                                         t.type === 'Sale' ? <ArrowUpRight className="w-5 h-5" /> :
                                          <Package className="w-6 h-6" />}
                                     </div>
                                     <div>
@@ -293,7 +293,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                     </div>
                                 </div>
                                 <div className="flex flex-col md:items-end gap-3">
-                                    <p className="text-lg font-black tracking-tighter text-amber-500">
+                                    <p className="text-base font-black tracking-tighter text-amber-500">
                                         ₦{Math.abs(t.amount).toLocaleString()}
                                     </p>
                                     
@@ -365,7 +365,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                 </div>
 
                 {historyTransactions.length === 0 ? (
-                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[3rem] p-20 text-center">
+                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-20 text-center">
                         <Wallet className="w-16 h-16 text-gray-100 dark:text-neutral-800 mx-auto mb-6" />
                         <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">No Transactions Yet</h3>
                         <p className="text-gray-500 mt-2 font-medium">When you pay for a hostel or market item, it will appear here.</p>
@@ -385,7 +385,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                         {t.type === 'Property' ? <Building2 className="w-6 h-6" /> : 
                                          t.type === 'Withdrawal' ? <Building className="w-6 h-6" /> :
                                          t.type === 'Deposit' ? <PlusCircle className="w-6 h-6" /> :
-                                         t.type === 'Sale' ? <ArrowUpRight className="w-6 h-6" /> :
+                                         t.type === 'Sale' ? <ArrowUpRight className="w-5 h-5" /> :
                                          <Package className="w-6 h-6" />}
                                     </div>
                                     <div>
@@ -400,7 +400,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className={`text-lg font-black tracking-tighter ${
+                                    <p className={`text-base font-black tracking-tighter ${
                                         t.amount < 0 ? 'text-red-500' : 
                                         (t.type === 'Deposit' || t.type === 'Sale') ? 'text-emerald-500' : 
                                         'text-gray-900 dark:text-white'
@@ -507,7 +507,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
             {/* Transaction Details Modal */}
             {selectedTx && (
                 <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-neutral-900 rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl relative animate-in fade-in zoom-in-95 duration-200 border border-neutral-100 dark:border-white/5">
+                    <div className="bg-white dark:bg-neutral-900 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative animate-in fade-in zoom-in-95 duration-200 border border-neutral-100 dark:border-white/5">
                         <button 
                             onClick={() => setSelectedTx(null)}
                             className="absolute top-4 right-4 w-10 h-10 bg-gray-50 dark:bg-neutral-800 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-neutral-700 hover:text-black dark:hover:text-white transition-colors"
@@ -546,7 +546,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                 </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-2 mt-8 flex-wrap">
+                            <div className="flex flex-col sm:flex-row gap-2 mt-4 flex-wrap">
                                 {selectedTx.payee_id && selectedTx.amount < 0 && (
                                     <Link 
                                         href={`/dashboard/student?tab=messages&userId=${selectedTx.payee_id}`}

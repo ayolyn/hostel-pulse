@@ -107,9 +107,9 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-neutral-900 rounded-[2.5rem] border border-neutral-100 dark:border-white/5 w-full max-w-xl mx-auto shadow-2xl relative overflow-hidden">
+        <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-neutral-100 dark:border-white/5 w-full max-w-xl mx-auto shadow-2xl relative overflow-hidden">
             {/* Header */}
-            <div className="p-8 border-b border-neutral-100 dark:border-white/5 flex items-center justify-between">
+            <div className="p-5 border-b border-neutral-100 dark:border-white/5 flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Sell Something</h2>
                     <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest mt-1">Step {step} of 3 • Marketplace Posting</p>
@@ -119,14 +119,14 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                 </button>
             </div>
 
-            <div className="p-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
+            <div className="p-5 overflow-y-auto max-h-[70vh] custom-scrollbar">
                 {checkingLimits ? (
                     <div className="py-20 text-center animate-pulse">
                         <div className="w-12 h-12 border-2 border-[#BEF264] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                         <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Checking limits...</p>
                     </div>
                 ) : activeCount >= 3 ? (
-                    <div className="bg-neutral-900/40 backdrop-blur-xl border border-white/10 rounded-[2rem] p-8 text-center animate-in zoom-in-95 duration-500">
+                    <div className="bg-neutral-900/40 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-center animate-in zoom-in-95 duration-500">
                         <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                             <X className="w-8 h-8 text-red-500" />
                         </div>

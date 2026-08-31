@@ -12,8 +12,8 @@ const AgentLeaderboard = () => {
     ];
 
     return (
-        <div className="bg-black text-white p-8 rounded-[3rem] border border-white/5 shadow-2xl relative overflow-hidden h-full flex flex-col">
-            <div className="absolute top-0 right-0 p-8 opacity-10">
+        <div className="bg-black text-white p-5 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden h-full flex flex-col">
+            <div className="absolute top-0 right-0 p-5 opacity-10">
                 <Award className="w-24 h-24 text-[#BEF264]" />
             </div>
 

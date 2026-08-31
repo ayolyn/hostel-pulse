@@ -133,7 +133,7 @@ export function NotificationBell() {
                     
                     <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
                         {notifications.length === 0 ? (
-                            <div className="p-8 text-center text-neutral-500">
+                            <div className="p-5 text-center text-neutral-500">
                                 <Bell className="w-8 h-8 mx-auto mb-3 opacity-20" />
                                 <p className="text-xs font-bold uppercase tracking-widest">You're all caught up!</p>
                             </div>

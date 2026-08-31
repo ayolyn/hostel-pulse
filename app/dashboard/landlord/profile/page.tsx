@@ -106,7 +106,7 @@ export default function LandlordProfilePage() {
     };
 
     if (loading) {
-        return <div className="p-8 animate-pulse flex space-x-4">
+        return <div className="p-5 animate-pulse flex space-x-4">
             <div className="rounded-full bg-neutral-200 dark:bg-neutral-800 h-20 w-20"></div>
             <div className="flex-1 space-y-6 py-1">
                 <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded w-3/4"></div>
@@ -138,7 +138,7 @@ export default function LandlordProfilePage() {
             <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl overflow-hidden shadow-sm">
                 
                 {/* Logo Section */}
-                <div className="p-6 sm:p-10 border-b border-neutral-100 dark:border-neutral-800 flex items-center gap-6">
+                <div className="p-6 sm:p-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center gap-6">
                     <div className="relative group">
                         <div className="w-24 h-24 rounded-full border-4 border-white dark:border-neutral-800 shadow-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
                             {logoUrl ? (
@@ -159,7 +159,7 @@ export default function LandlordProfilePage() {
                 </div>
 
                 {/* Main Form */}
-                <form onSubmit={handleSaveProfile} className="p-6 sm:p-10 space-y-8">
+                <form onSubmit={handleSaveProfile} className="p-6 sm:p-6 space-y-8">
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>

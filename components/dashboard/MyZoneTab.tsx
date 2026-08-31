@@ -144,7 +144,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
                 {[1, 2, 3].map(i => (
-                    <div key={i} className="aspect-[4/5] bg-white/5 rounded-[2.5rem] border border-white/5" />
+                    <div key={i} className="aspect-[4/5] bg-white/5 rounded-3xl border border-white/5" />
                 ))}
             </div>
         );
@@ -153,7 +153,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
     if (properties.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in-95 duration-500">
-                <div className="w-32 h-32 bg-white/5 rounded-[3rem] flex items-center justify-center mb-8 border border-white/5">
+                <div className="w-32 h-32 bg-white/5 rounded-3xl flex items-center justify-center mb-8 border border-white/5">
                     <Building2 className="w-16 h-16 text-white/10" />
                 </div>
                 <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-2">No Listings Found</h2>
@@ -162,7 +162,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                 </p>
                 <button 
                     onClick={onAddClick}
-                    className="flex items-center gap-3 bg-[#BEF264] text-black font-black px-10 py-5 rounded-[2rem] uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#BEF264]/20"
+                    className="flex items-center gap-3 bg-[#BEF264] text-black font-black px-10 py-5 rounded-2xl uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#BEF264]/20"
                 >
                     <Plus className="w-5 h-5" />
                     List Your First Property
@@ -195,7 +195,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                     const mainImage = property.images?.[0] || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=800';
 
                     return (
-                        <div key={property.id} className="group relative aspect-[4/5] bg-white/5 rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-[#BEF264]/30 transition-all">
+                        <div key={property.id} className="group relative aspect-[4/5] bg-white/5 rounded-3xl overflow-hidden border border-white/5 hover:border-[#BEF264]/30 transition-all">
                             {/* Image Overlay */}
                             <img 
                                 src={mainImage} 
@@ -248,7 +248,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                             </div>
 
                             {/* Title/Info */}
-                            <div className="absolute bottom-0 left-0 w-full p-8 pt-20">
+                            <div className="absolute bottom-0 left-0 w-full p-5 pt-20">
                                 {editingId === property.id ? (
                                     <div className="space-y-3 bg-black/60 backdrop-blur-xl p-4 rounded-2xl border border-white/10 animate-in slide-in-from-bottom-2">
                                         <input 

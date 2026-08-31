@@ -103,7 +103,7 @@ export function ComplianceForm({ accountType, userId }: { accountType: 'landlord
                 </div>
             </div>
 
-            <div className="p-8">
+            <div className="p-5">
                 {errorMsg && (
                     <div className="mb-6 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 p-4 rounded-xl flex items-center gap-3">
                         <AlertCircle className="w-5 h-5 shrink-0" />

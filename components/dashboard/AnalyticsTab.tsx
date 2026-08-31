@@ -97,7 +97,7 @@ export default function AnalyticsTab({ userId }: { userId: string }) {
     }, [userId]);
 
     return (
-        <div className="flex flex-col gap-8 bg-white dark:bg-neutral-900 rounded-3xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
+        <div className="flex flex-col gap-4 bg-white dark:bg-neutral-900 rounded-3xl border border-gray-200 dark:border-white/5 p-4 md:p-5 shadow-sm">
             <div>
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Analytics & Performance</h2>
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Track your property views, leads, and market reach over the last 30 days.</p>

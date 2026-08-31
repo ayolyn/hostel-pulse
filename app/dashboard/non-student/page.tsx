@@ -129,7 +129,7 @@ function DashboardOverview() {
                     <Calendar className="w-5 h-5 text-[#BEF264]" /> Recent Inspections
                 </h2>
                 {inspections.length === 0 ? (
-                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-10 text-center">
+                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-6 text-center">
                         <Calendar className="w-10 h-10 text-gray-300 mx-auto mb-3" />
                         <p className="font-black text-gray-500 uppercase tracking-tight">No inspections booked yet</p>
                         <p className="text-gray-400 text-sm mt-1">Browse properties and request an inspection.</p>
@@ -227,7 +227,7 @@ function RequestsTab() {
         <div className="space-y-6">
             <h1 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">My Requests</h1>
             {inspections.length === 0 ? (
-                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-10 text-center">
+                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-6 text-center">
                     <Calendar className="w-10 h-10 text-gray-300 mx-auto mb-3" />
                     <p className="font-black text-gray-500 uppercase tracking-tight">No inspection requests</p>
                     <Link href="/rent" className="mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest bg-[#BEF264] text-black px-6 py-3 rounded-2xl hover:bg-[#a6d456] transition-all">
@@ -317,7 +317,7 @@ function SavedTab() {
         <div className="space-y-6">
             <h1 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Saved Properties</h1>
             {saved.length === 0 ? (
-                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-10 text-center">
+                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-6 text-center">
                     <Heart className="w-10 h-10 text-gray-300 mx-auto mb-3" />
                     <p className="font-black text-gray-500 uppercase tracking-tight">Nothing saved yet</p>
                     <Link href="/rent" className="mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest bg-[#BEF264] text-black px-6 py-3 rounded-2xl hover:bg-[#a6d456] transition-all">
@@ -362,12 +362,12 @@ function NonStudentDashboardContent() {
             {tab === 'wallet' && userId && <BuyerWalletTab userId={userId} />}
             {tab === 'messages' && userId && <MessagingTab userId={userId} userRole="buyer" />}
             {tab === 'profile' && (
-                <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
                     <ProfileSettings />
                 </div>
             )}
             {tab === 'support' && (
-                <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
                     <SupportHub />
                 </div>
             )}

@@ -197,7 +197,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                 <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Mandatory 30s Video Tour</label>
                 <button 
                     onClick={() => videoInputRef.current?.click()}
-                    className={`w-full aspect-video border-2 border-dashed rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center transition-all ${media.video ? 'border-[#BEF264] bg-[#BEF264]/5' : 'border-neutral-200 dark:border-white/5 hover:border-[#BEF264]'}`}
+                    className={`w-full aspect-video border-2 border-dashed rounded-3xl flex flex-col items-center justify-center p-5 text-center transition-all ${media.video ? 'border-[#BEF264] bg-[#BEF264]/5' : 'border-neutral-200 dark:border-white/5 hover:border-[#BEF264]'}`}
                 >
                     {media.video ? (
                         <>
@@ -308,7 +308,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
                 <div className="w-full max-w-md bg-white dark:bg-neutral-950 rounded-[3.5rem] border border-white/10 p-12 text-center shadow-2xl relative overflow-hidden group">
                     <div className="absolute top-0 left-0 w-full h-2 bg-red-500/20" />
-                    <div className="w-24 h-24 bg-red-500/10 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform">
+                    <div className="w-24 h-24 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform">
                         <ShieldCheck className="w-12 h-12 text-red-500" />
                     </div>
                     <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-tight px-4">Legal Guard Active</h2>
@@ -318,7 +318,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                     <div className="mt-10">
                         <button 
                             onClick={handleGoToProfile}
-                            className="w-full py-6 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-black/20 flex items-center justify-center gap-3"
+                            className="w-full py-6 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-black/20 flex items-center justify-center gap-3"
                         >
                             <UserCog className="w-4 h-4" />
                             Go to Profile Settings
@@ -331,9 +331,9 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="w-full max-w-xl bg-white dark:bg-neutral-950 rounded-[3rem] border border-white/10 shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden">
+            <div className="w-full max-w-xl bg-white dark:bg-neutral-950 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden">
                 {/* Header */}
-                <div className="p-8 border-b border-white/5 flex items-center justify-between">
+                <div className="p-5 border-b border-white/5 flex items-center justify-between">
                     <div>
                         <p className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] mb-1">Step {step} of 4</p>
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
@@ -351,7 +351,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-8 no-scrollbar">
+                <div className="flex-1 overflow-y-auto p-5 no-scrollbar">
                     {error && (
                         <div className="mb-6 bg-red-600/10 border border-red-600/20 text-red-500 px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-3">
                             <AlertCircle className="w-5 h-5 shrink-0" />
@@ -366,7 +366,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                 </div>
 
                 {/* Footer */}
-                <div className="p-8 border-t border-white/5 flex items-center justify-between bg-neutral-50 dark:bg-neutral-900/50">
+                <div className="p-5 border-t border-white/5 flex items-center justify-between bg-neutral-50 dark:bg-neutral-900/50">
                     <button 
                         onClick={() => step > 1 ? setStep(s => s - 1) : onClose()}
                         className="text-xs font-black uppercase tracking-widest text-neutral-500 hover:text-white transition-all flex items-center gap-2"
@@ -378,7 +378,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                     <button 
                         onClick={() => step < 4 ? setStep(s => s + 1) : handleSubmit()}
                         disabled={loading || (step === 1 && (!form.title || !form.price)) || (step === 2 && !media.video)}
-                        className={`px-10 py-5 rounded-[2rem] font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-3 shadow-xl
+                        className={`px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-3 shadow-xl
                             ${step === 4 ? 'bg-[#BEF264] text-black shadow-[#BEF264]/20' : 'bg-white dark:bg-white text-black'}
                         `}
                     >

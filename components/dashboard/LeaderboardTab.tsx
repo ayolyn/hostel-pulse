@@ -70,7 +70,7 @@ export default function LeaderboardTab({ userId }: { userId: string }) {
 
     if (loading && agents.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-40 gap-8">
+            <div className="flex flex-col items-center justify-center py-40 gap-5">
                 <div className="w-24 h-24 border-4 border-[#BEF264]/20 border-t-[#BEF264] rounded-full animate-spin" />
                 <p className="text-sm font-black uppercase tracking-[0.3em] text-gray-500 animate-pulse">Analyzing Market Data...</p>
             </div>
@@ -99,12 +99,12 @@ export default function LeaderboardTab({ userId }: { userId: string }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end pt-10">
                 {/* 2nd Place */}
                 {top3[1] && (
-                    <div className="order-2 md:order-1 bg-white/5 border border-white/5 p-8 rounded-[3rem] text-center relative group hover:bg-white/10 transition-all scale-95">
-                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 bg-gray-400/20 rounded-[2rem] flex items-center justify-center border border-gray-400/30 shadow-2xl">
+                    <div className="order-2 md:order-1 bg-white/5 border border-white/5 p-5 rounded-3xl text-center relative group hover:bg-white/10 transition-all scale-95">
+                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-20 h-20 bg-gray-400/20 rounded-2xl flex items-center justify-center border border-gray-400/30 shadow-2xl">
                             <Medal className="w-10 h-10 text-gray-400" />
                         </div>
                         <div className="mt-8 mb-6 relative inline-block">
-                             <div className="w-24 h-24 rounded-[2.5rem] bg-neutral-800 border-2 border-gray-400 overflow-hidden shadow-2xl">
+                             <div className="w-24 h-24 rounded-3xl bg-neutral-800 border-2 border-gray-400 overflow-hidden shadow-2xl">
                                 <img src={top3[1].avatar_url || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=100'} className="w-full h-full object-cover" />
                              </div>
                              <div className="absolute -bottom-3 -right-3 w-10 h-10 bg-neutral-900 border border-gray-400 text-gray-400 font-black rounded-xl flex items-center justify-center shadow-xl">#2</div>
@@ -120,8 +120,8 @@ export default function LeaderboardTab({ userId }: { userId: string }) {
 
                 {/* 1st Place - The King */}
                 {top3[0] && (
-                    <div className="order-1 md:order-2 bg-neutral-950 border-2 border-[#BEF264]/50 p-10 rounded-[3.5rem] text-center relative shadow-[0_0_50px_rgba(190,242,100,0.1)] group hover:scale-[1.02] transition-all">
-                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-[#BEF264] rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-[#BEF264]/30">
+                    <div className="order-1 md:order-2 bg-neutral-950 border-2 border-[#BEF264]/50 p-6 rounded-[3.5rem] text-center relative shadow-[0_0_50px_rgba(190,242,100,0.1)] group hover:scale-[1.02] transition-all">
+                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-[#BEF264] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#BEF264]/30">
                             <Trophy className="w-12 h-12 text-black" />
                         </div>
                         <div className="mt-10 mb-8 relative inline-block">
@@ -144,12 +144,12 @@ export default function LeaderboardTab({ userId }: { userId: string }) {
 
                 {/* 3rd Place */}
                 {top3[2] && (
-                    <div className="order-3 bg-white/5 border border-white/5 p-8 rounded-[3rem] text-center relative group hover:bg-white/10 transition-all scale-90">
-                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 bg-orange-400/20 rounded-[2rem] flex items-center justify-center border border-orange-400/30 shadow-2xl">
+                    <div className="order-3 bg-white/5 border border-white/5 p-5 rounded-3xl text-center relative group hover:bg-white/10 transition-all scale-90">
+                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-20 h-20 bg-orange-400/20 rounded-2xl flex items-center justify-center border border-orange-400/30 shadow-2xl">
                             <Medal className="w-10 h-10 text-orange-400" />
                         </div>
                         <div className="mt-8 mb-6 relative inline-block">
-                             <div className="w-24 h-24 rounded-[2.5rem] bg-neutral-800 border-2 border-orange-400 overflow-hidden shadow-2xl">
+                             <div className="w-24 h-24 rounded-3xl bg-neutral-800 border-2 border-orange-400 overflow-hidden shadow-2xl">
                                 <img src={top3[2].avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100'} className="w-full h-full object-cover" />
                              </div>
                              <div className="absolute -bottom-3 -right-3 w-10 h-10 bg-neutral-900 border border-orange-400 text-orange-400 font-black rounded-xl flex items-center justify-center shadow-xl">#3</div>
@@ -170,7 +170,7 @@ export default function LeaderboardTab({ userId }: { userId: string }) {
                      <TrendingUp className="w-5 h-5 text-[#BEF264]" />
                      System-Wide Rank
                 </h2>
-                <div className="divide-y divide-white/5 bg-white/5 border border-white/5 rounded-[2.5rem] overflow-hidden">
+                <div className="divide-y divide-white/5 bg-white/5 border border-white/5 rounded-3xl overflow-hidden">
                     {others.map((agent, i) => (
                         <div key={agent.agent_id} className="p-6 flex items-center justify-between hover:bg-white/[0.08] transition-all group">
                             <div className="flex items-center gap-6">
@@ -210,7 +210,7 @@ export default function LeaderboardTab({ userId }: { userId: string }) {
             {/* My Performance Sticky Footer */}
             {myData && (
                  <div className="fixed bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 pointer-events-none">
-                     <div className="pointer-events-auto bg-black/90 backdrop-blur-2xl border-2 border-[#BEF264]/50 p-6 rounded-[2.5rem] shadow-[0_-20px_50px_rgba(190,242,100,0.1)] flex items-center justify-between group">
+                     <div className="pointer-events-auto bg-black/90 backdrop-blur-2xl border-2 border-[#BEF264]/50 p-6 rounded-3xl shadow-[0_-20px_50px_rgba(190,242,100,0.1)] flex items-center justify-between group">
                          <div className="flex items-center gap-6">
                             <div className="w-14 h-14 bg-[#BEF264] rounded-2xl flex items-center justify-center text-black font-black text-xl shadow-xl shadow-[#BEF264]/20">
                                  #{myRank}

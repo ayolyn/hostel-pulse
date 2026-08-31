@@ -308,7 +308,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
     const renderMyProfile = () => (
         <div className="space-y-8 animate-in fade-in duration-500">
-             <div className="flex items-center gap-6 pb-6 border-b border-gray-100 dark:border-white/5">
+             <div className="flex items-center gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
                 <label className="w-24 h-24 rounded-full bg-gray-100 dark:bg-neutral-900 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-300 dark:border-white/10 shadow-inner group relative cursor-pointer">
                     <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploadingAvatar} />
                     {(formData.avatar_url || formData.logo_url) ? (
@@ -337,7 +337,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
             <div className="space-y-6">
                 <h4 className="font-black text-[10px] uppercase tracking-[0.2em] text-gray-400">Personnel Details</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-sm font-medium">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm font-medium">
                     <div>
                         <p className="text-gray-400 dark:text-neutral-500 text-[9px] font-black uppercase tracking-widest mb-2">Contact Name</p>
                         <p className="text-gray-900 dark:text-white font-bold">{formData.contact_name || '—'}</p>
@@ -424,7 +424,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
             {/* Terms Block for Agents/Landlords */}
             {(userRole === 'agent' || userRole === 'landlord') && !(account?.is_approved || account?.is_verified) && (
-                <div className={`p-8 rounded-[2.5rem] border-2 transition-all flex flex-col sm:flex-row items-center gap-6 ${termsAcceptedAt ? 'bg-emerald-50 dark:bg-emerald-900/5 border-emerald-100 dark:border-emerald-900/10' : 'bg-amber-50 dark:bg-amber-900/5 border-amber-100 dark:border-amber-900/10'}`}>
+                <div className={`p-5 rounded-3xl border-2 transition-all flex flex-col sm:flex-row items-center gap-4 ${termsAcceptedAt ? 'bg-emerald-50 dark:bg-emerald-900/5 border-emerald-100 dark:border-emerald-900/10' : 'bg-amber-50 dark:bg-amber-900/5 border-amber-100 dark:border-amber-900/10'}`}>
                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ${termsAcceptedAt ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600' : 'bg-amber-100 dark:bg-amber-900/20 text-amber-600'}`}>
                         <ShieldCheck className="w-8 h-8" />
                     </div>
@@ -446,7 +446,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
             {userRole === 'student' ? (
                 <>
                     <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2">Academic Identity</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Full Name (Legal)</label>
                             <input 
@@ -455,7 +455,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                                 onChange={handleTextChange} 
                                 disabled={account?.is_approved}
                                 placeholder="Your full name" 
-                                className="w-full p-6 rounded-[2rem] bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all disabled:opacity-50 disabled:grayscale" 
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all disabled:opacity-50 disabled:grayscale" 
                             />
                         </div>
                         <div className="space-y-3">
@@ -466,24 +466,24 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                                 onChange={handleTextChange} 
                                 disabled={account?.is_approved}
                                 placeholder="e.g. Physiology Dept" 
-                                className="w-full p-6 rounded-[2rem] bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all disabled:opacity-50 disabled:grayscale" 
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all disabled:opacity-50 disabled:grayscale" 
                             />
                         </div>
                     </div>
 
                     <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2 pt-6">Personnel Tracking</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Contact Email</label>
-                            <input name="contact_email" value={formData.contact_email} onChange={handleTextChange} placeholder="Tracking Email" className="w-full p-6 rounded-[2rem] bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                            <input name="contact_email" value={formData.contact_email} onChange={handleTextChange} placeholder="Tracking Email" className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                         </div>
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Phone Number</label>
-                            <input name="phone_number" value={formData.phone_number} onChange={handleTextChange} placeholder="080..." className="w-full p-6 rounded-[2rem] bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                            <input name="phone_number" value={formData.phone_number} onChange={handleTextChange} placeholder="080..." className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                         </div>
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Date of Birth</label>
-                            <input type="date" name="dob" value={formData.dob} onChange={handleTextChange} className="w-full p-6 rounded-[2rem] bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                            <input type="date" name="dob" value={formData.dob} onChange={handleTextChange} className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                         </div>
                     </div>
                     
@@ -494,7 +494,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
             ) : (
                 <>
                     <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2">Professional Identity</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Business Name</label>
                             <input name="business_name" value={formData.business_name} onChange={handleTextChange} placeholder="Real Estate Firm Name" className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
@@ -604,18 +604,18 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                     </div>
 
                     <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2 pt-6">Personnel Tracking</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Contact Email</label>
-                            <input name="contact_email" value={formData.contact_email} onChange={handleTextChange} placeholder="Tracking Email" className="w-full p-6 rounded-[2rem] bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                            <input name="contact_email" value={formData.contact_email} onChange={handleTextChange} placeholder="Tracking Email" className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                         </div>
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Phone Number</label>
-                            <input name="phone_number" value={formData.phone_number} onChange={handleTextChange} placeholder="080..." className="w-full p-6 rounded-[2rem] bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                            <input name="phone_number" value={formData.phone_number} onChange={handleTextChange} placeholder="080..." className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                         </div>
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Date of Birth</label>
-                            <input type="date" name="dob" value={formData.dob} onChange={handleTextChange} className="w-full p-6 rounded-[2rem] bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                            <input type="date" name="dob" value={formData.dob} onChange={handleTextChange} className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                         </div>
                     </div>
                 </>
@@ -623,8 +623,8 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
             {/* Legal Governance Block */}
             {!termsAcceptedAt && !(account?.is_approved || account?.is_verified) && (
-                <div className="mt-12 p-10 bg-black dark:bg-[#BEF264]/5 border-2 border-[#BEF264]/30 rounded-[3rem] relative overflow-hidden group shadow-2xl">
-                    <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                <div className="mt-6 p-6 bg-black dark:bg-[#BEF264]/5 border-2 border-[#BEF264]/30 rounded-3xl relative overflow-hidden group shadow-2xl">
+                    <div className="absolute top-0 right-0 p-5 opacity-10 group-hover:opacity-20 transition-opacity">
                         <ShieldCheck className="w-24 h-24 text-[#BEF264]" />
                     </div>
                     <div className="relative z-10">
@@ -634,7 +634,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                         <h4 className="text-2xl font-black text-white dark:text-neutral-900 uppercase tracking-tighter leading-tight mb-4 max-w-sm">
                             Accept the Professional Terms of Service
                         </h4>
-                        <p className="text-sm font-medium text-gray-400 dark:text-neutral-600 mb-8 max-w-md italic">
+                        <p className="text-sm font-medium text-gray-400 dark:text-neutral-600 mb-6 max-w-md italic">
                             "In Ogbomoso, we operate with integrity. You must enter a digital contract with HOSTELPULSE regarding escrow safety and document privacy before you can proceed."
                         </p>
                         <button 
@@ -690,7 +690,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                 ))}
             </div>
 
-            <div className="bg-white dark:bg-neutral-950/40 p-10 rounded-[3rem] border border-gray-100 dark:border-white/5 shadow-2xl relative overflow-hidden backdrop-blur-3xl">
+            <div className="bg-white dark:bg-neutral-950/40 p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-2xl relative overflow-hidden backdrop-blur-3xl">
                 {activeSubTab === 'My Profile' ? renderMyProfile() : renderEditFields()}
             </div>
 

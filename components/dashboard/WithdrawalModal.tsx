@@ -66,9 +66,9 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white dark:bg-[#0F172A] w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 relative transform scale-100 transition-transform duration-300">
+            <div className="bg-white dark:bg-[#0F172A] w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100 dark:border-white/10 relative transform scale-100 transition-transform duration-300">
                 
-                <div className="p-6 md:p-8 flex flex-col items-center border-b border-gray-100 dark:border-white/5 relative bg-neutral-50 dark:bg-neutral-900/50">
+                <div className="p-6 md:p-5 flex flex-col items-center border-b border-gray-100 dark:border-white/5 relative bg-neutral-50 dark:bg-neutral-900/50">
                     <button 
                         onClick={onClose}
                         className="absolute right-6 top-6 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200/50 dark:bg-neutral-800 text-gray-500 hover:text-black dark:hover:text-white transition-colors"
@@ -86,7 +86,7 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+                <form onSubmit={handleSubmit} className="p-6 md:p-5 space-y-6">
                     <div className="space-y-4">
                         <div className="relative">
                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Amount (₦)</label>

@@ -221,7 +221,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
         return (
             <div className="space-y-6 animate-pulse">
                 {[1, 2, 3].map(i => (
-                    <div key={i} className="h-48 bg-gray-50 dark:bg-white/5 rounded-[2.5rem] border border-gray-100 dark:border-white/5" />
+                    <div key={i} className="h-48 bg-gray-50 dark:bg-white/5 rounded-3xl border border-gray-100 dark:border-white/5" />
                 ))}
             </div>
         );
@@ -230,7 +230,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
     if (inspections.length === 0 && moveIns.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-24 text-center">
-                <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-[3rem] flex items-center justify-center mb-10 border border-gray-100 dark:border-white/5">
+                <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-10 border border-gray-100 dark:border-white/5">
                     <Calendar className="w-16 h-16 text-gray-200 dark:text-white/5" />
                 </div>
                 <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Queue is Clear</h2>
@@ -258,7 +258,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                     const propertyImg = item.properties?.images?.[0] || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=200';
 
                     return (
-                        <div key={item.id} className={`bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 shadow-sm rounded-[2.5rem] p-8 flex flex-col md:flex-row gap-8 transition-all hover:border-[#BEF264]/30 hover:shadow-md ${isCompleted ? 'opacity-60' : ''}`}>
+                        <div key={item.id} className={`bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 shadow-sm rounded-3xl p-5 flex flex-col md:flex-row gap-5 transition-all hover:border-[#BEF264]/30 hover:shadow-md ${isCompleted ? 'opacity-60' : ''}`}>
                             {/* Student Identity */}
                             <div className="flex-1 space-y-4">
                                 <div className="flex items-center gap-4">
@@ -387,7 +387,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
             {/* Inspection Details Modal */}
             {selectedInspectionDetails && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
-                    <div className="w-full max-w-sm bg-white dark:bg-neutral-900 rounded-[3rem] border border-gray-100 dark:border-white/10 p-10 relative shadow-2xl space-y-4">
+                    <div className="w-full max-w-sm bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/10 p-6 relative shadow-2xl space-y-4">
                         <div className="flex justify-between items-center mb-2">
                             <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase">Inspection Details</h3>
                             <button onClick={() => setSelectedInspectionDetails(null)} className="text-gray-500 hover:text-gray-900 dark:hover:text-white">
@@ -441,7 +441,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                     
                     <div className="grid grid-cols-1 gap-6">
                         {moveIns.map((tx) => (
-                            <div key={tx.id} className="bg-white dark:bg-white/5 border border-emerald-200 dark:border-[#BEF264]/20 rounded-[2.5rem] p-8 flex flex-col md:flex-row gap-8 items-center bg-gradient-to-br from-emerald-50 dark:from-white/5 to-emerald-100/50 dark:to-[#BEF264]/5 shadow-sm">
+                            <div key={tx.id} className="bg-white dark:bg-white/5 border border-emerald-200 dark:border-[#BEF264]/20 rounded-3xl p-5 flex flex-col md:flex-row gap-5 items-center bg-gradient-to-br from-emerald-50 dark:from-white/5 to-emerald-100/50 dark:to-[#BEF264]/5 shadow-sm">
                                 <div className="flex-1 space-y-2">
                                     <div className="flex items-center gap-3">
                                         <ShieldCheck className="w-5 h-5 text-[#BEF264]" />
@@ -471,7 +471,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
             {/* QR Modal */}
             {selectedTx && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
-                    <div className="w-full max-w-sm bg-white dark:bg-neutral-900 rounded-[3rem] border border-gray-100 dark:border-white/10 p-10 text-center relative shadow-2xl">
+                    <div className="w-full max-w-sm bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/10 p-6 text-center relative shadow-2xl">
                         <button 
                             onClick={() => setSelectedTx(null)}
                             className="absolute top-6 right-6 text-gray-500 hover:text-gray-900 dark:hover:text-white"

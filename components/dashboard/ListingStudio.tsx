@@ -336,7 +336,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
     if (!hasTerms) {
         return (
             <div className="p-20 text-center space-y-10 bg-white dark:bg-neutral-950 rounded-[4rem] border border-gray-100 dark:border-white/5 shadow-2xl animate-in zoom-in-95 duration-500">
-                <div className="w-24 h-24 bg-red-500/10 rounded-[2.5rem] flex items-center justify-center mx-auto mb-2">
+                <div className="w-24 h-24 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-2">
                     <ShieldCheck className="w-12 h-12 text-red-500" />
                 </div>
                 <div className="max-w-md mx-auto">
@@ -353,7 +353,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                         const target = data?.role === 'landlord' ? '/dashboard/landlord' : '/dashboard/agent';
                         router.push(`${target}?tab=profile`);
                     }}
-                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-12 py-6 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20"
+                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-12 py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20"
                 >
                     Update Official Profile
                 </button>
@@ -364,12 +364,12 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
     // ─── STEP 1: Choose Category ────────────────────────────────────────────
     if (step === 1) return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
-            <div className="bg-black p-10 rounded-[2.5rem] text-white relative overflow-hidden">
+            <div className="bg-black p-6 rounded-3xl text-white relative overflow-hidden">
                 <div className="relative z-10">
                     <h3 className="text-3xl font-black uppercase tracking-tight">Listing Studio</h3>
                     <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] mt-2">Ogbomoso Master Inventory</p>
                 </div>
-                <div className="absolute top-0 right-0 p-10 opacity-10">
+                <div className="absolute top-0 right-0 p-6 opacity-10">
                     <Building2 className="w-32 h-32" />
                 </div>
             </div>
@@ -388,7 +388,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                             setForm(prev => ({ ...prev, listing_type: getListingType(cat.id as Category) }));
                             setStep(2); 
                         }}
-                        className="p-8 border-[3px] border-gray-50 rounded-[2.5rem] text-center hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group relative overflow-hidden"
+                        className="p-5 border-[3px] border-gray-50 rounded-3xl text-center hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group relative overflow-hidden"
                     >
                         <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#BEF264] group-hover:text-black transition-all">
                             <cat.icon className="w-6 h-6" />
@@ -583,7 +583,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 />
                 <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-8 text-center cursor-pointer hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group"
+                    className="border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-5 text-center cursor-pointer hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group"
                 >
                     {uploadingImages ? (
                         <Loader2 className="w-8 h-8 text-[#BEF264] animate-spin mx-auto" />
@@ -784,10 +784,10 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
     // ─── STEP 4: Success ──────────────────────────────────────────────────────
     return (
         <div className="text-center py-20 animate-in zoom-in-95">
-            <div className="w-24 h-24 bg-[#BEF264]/10 text-[#BEF264] rounded-[2.5rem] flex items-center justify-center mx-auto rotate-3 shadow-xl border border-[#BEF264]/20">
+            <div className="w-24 h-24 bg-[#BEF264]/10 text-[#BEF264] rounded-3xl flex items-center justify-center mx-auto rotate-3 shadow-xl border border-[#BEF264]/20">
                 <CheckCircle2 className="w-12 h-12" />
             </div>
-            <div className="mt-8 text-black p-10 rounded-[2.5rem] border border-gray-100 shadow-sm bg-white">
+            <div className="mt-8 text-black p-6 rounded-3xl border border-gray-100 shadow-sm bg-white">
                 <h3 className="text-3xl font-black uppercase tracking-tighter">Listing Live! 🎉</h3>
                 <p className="text-gray-500 font-medium tracking-wide mt-2">Your {category} listing is now visible to all users on HOSTELPULSE.</p>
                 {uploadedImageUrls.length > 0 && (

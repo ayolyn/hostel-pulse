@@ -91,7 +91,7 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex items-center justify-between bg-black p-8 rounded-[2.5rem] text-white relative overflow-hidden">
+            <div className="flex items-center justify-between bg-black p-5 rounded-3xl text-white relative overflow-hidden">
                 <div className="relative z-10">
                     <h2 className="text-2xl font-black uppercase tracking-tight">Management Suite</h2>
                     <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">
@@ -105,7 +105,7 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
                 >
                     <Plus className="w-6 h-6" />
                 </button>
-                <div className="absolute top-0 right-0 p-10 opacity-10">
+                <div className="absolute top-0 right-0 p-6 opacity-10">
                     <Building2 className="w-24 h-24" />
                 </div>
             </div>
@@ -115,7 +115,7 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
                     const mainImage = property.images?.[0] || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=800';
 
                     return (
-                        <div key={property.id} className="group relative aspect-[4/5] bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all">
+                        <div key={property.id} className="group relative aspect-[4/5] bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all">
                             {/* Image */}
                             <img 
                                 src={mainImage} 
@@ -160,7 +160,7 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
                             </div>
 
                             {/* Title/Price */}
-                            <div className="absolute bottom-0 left-0 w-full p-8 pt-20 pointer-events-none">
+                            <div className="absolute bottom-0 left-0 w-full p-5 pt-20 pointer-events-none">
                                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#BEF264] mb-1">{property.category}</p>
                                 <h3 className="text-xl font-black text-white uppercase tracking-tighter line-clamp-1">{property.title}</h3>
                                 <div className="flex items-center justify-between mt-4">

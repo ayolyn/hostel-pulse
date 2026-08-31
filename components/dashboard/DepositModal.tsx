@@ -47,7 +47,7 @@ export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) 
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="w-full max-w-md bg-white dark:bg-neutral-950 rounded-[2rem] sm:rounded-[3rem] border border-gray-100 dark:border-white/10 shadow-2xl relative overflow-hidden">
+            <div className="w-full max-w-md bg-white dark:bg-neutral-950 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-white/10 shadow-2xl relative overflow-hidden">
                 <button 
                     onClick={onClose}
                     className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 bg-gray-100 dark:bg-white/5 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
@@ -55,7 +55,7 @@ export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) 
                     <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 </button>
 
-                <div className="p-6 sm:p-8 border-b border-gray-100 dark:border-white/5 text-center">
+                <div className="p-6 sm:p-5 border-b border-gray-100 dark:border-white/5 text-center">
                     <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#BEF264]/10 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Wallet className="w-6 h-6 sm:w-8 sm:h-8 text-[#BEF264]" />
                     </div>
@@ -63,7 +63,7 @@ export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) 
                     <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-500 mt-2">Add funds to secure properties or items</p>
                 </div>
                 
-                <div className="p-6 sm:p-8 space-y-5 sm:space-y-6">
+                <div className="p-6 sm:p-5 space-y-5 sm:space-y-6">
                     <div className="relative">
                         <span className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-xl sm:text-2xl font-black text-gray-400">₦</span>
                         <input 

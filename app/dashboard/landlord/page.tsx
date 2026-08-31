@@ -211,7 +211,7 @@ function DashboardContent() {
                     { label: 'Total Views', value: loading ? '...' : totalViews.toLocaleString(), icon: Eye },
                     { label: 'Total Properties', value: loading ? '...' : String(properties.length), icon: CreditCard },
                 ].map(stat => (
-                    <div key={stat.label} className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between group hover:border-[#BEF264]/30 transition-all">
+                    <div key={stat.label} className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between group hover:border-[#BEF264]/30 transition-all">
                         <div>
                             <p className="text-gray-500 text-xs font-black uppercase tracking-widest mb-1">{stat.label}</p>
                             <h3 className="text-4xl font-black text-gray-900">{stat.value}</h3>
@@ -246,7 +246,7 @@ function DashboardContent() {
                         {[1, 2].map(i => <div key={i} className="bg-gray-100 animate-pulse h-24 rounded-3xl" />)}
                     </div>
                 ) : properties.length === 0 ? (
-                    <div className="bg-white rounded-[3rem] border-2 border-dashed border-gray-200 p-12 text-center space-y-4">
+                    <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-12 text-center space-y-4">
                         <Building2 className="w-12 h-12 text-gray-200 mx-auto" />
                         <p className="font-black text-gray-500 uppercase tracking-tight">No properties listed yet</p>
                         <button onClick={() => handleTabChange('listings')} className="inline-flex items-center gap-2 bg-black text-[#BEF264] px-8 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all">
@@ -302,7 +302,7 @@ function DashboardContent() {
                 />
             </div>
             {escrowTxs.length === 0 ? (
-                <div className="bg-white rounded-[3rem] border-2 border-dashed border-gray-200 p-12 text-center">
+                <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-12 text-center">
                     <Wallet className="w-12 h-12 text-gray-200 mx-auto mb-4" />
                     <p className="font-black text-gray-500 uppercase tracking-tight">No transactions yet</p>
                     <p className="text-gray-400 text-sm mt-2">Escrow payments for your properties will appear here.</p>
@@ -333,14 +333,14 @@ function DashboardContent() {
             {/* Transaction Details Modal */}
             {selectedTx && (
                 <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+                    <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
                         <button 
                             onClick={() => setSelectedTx(null)}
                             className="absolute top-4 right-4 w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-black transition-colors"
                         >
                             ✕
                         </button>
-                        <div className="p-8">
+                        <div className="p-5">
                             <div className="w-16 h-16 bg-[#BEF264]/20 rounded-2xl flex items-center justify-center mb-6">
                                 <Wallet className="w-8 h-8 text-[#BEF264]" />
                             </div>
@@ -401,8 +401,8 @@ function DashboardContent() {
     );
 
     const renderRestrictedAccess = (title: string, requiredFor: string) => (
-        <div className="max-w-3xl mx-auto rounded-[2rem] border border-gray-100 bg-white overflow-hidden shadow-sm mt-8">
-            <div className="bg-[#cc3300] p-6 sm:p-8 flex items-start gap-4 text-white">
+        <div className="max-w-3xl mx-auto rounded-2xl border border-gray-100 bg-white overflow-hidden shadow-sm mt-8">
+            <div className="bg-[#cc3300] p-6 sm:p-5 flex items-start gap-4 text-white">
                 <ShieldCheck className="w-8 h-8 shrink-0 mt-1 text-white" />
                 <div>
                     <h2 className="text-xl sm:text-2xl font-bold tracking-tight">Legal & Compliance Guard Active</h2>
@@ -411,7 +411,7 @@ function DashboardContent() {
                     </p>
                 </div>
             </div>
-            <div className="p-8 sm:p-12 text-center bg-white">
+            <div className="p-5 sm:p-12 text-center bg-white">
                 <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Lock className="w-8 h-8 text-gray-400" />
                 </div>
@@ -437,14 +437,14 @@ function DashboardContent() {
                     {activeTab === 'overview' && renderOverview()}
                     
                     {activeTab === 'profile' && (
-                        <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col gap-8">
+                        <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col gap-5">
                             <DetailedProfileForm account={account} userId={userId as string} />
                         </div>
                     )}
                     
                     {activeTab === 'listings' && (
                         isApproved ? (
-                            <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                            <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
                                 { (isAddingNew || properties.length === 0 || editId) ? (
                                     <ListingStudio 
                                         editId={editId}
@@ -484,7 +484,7 @@ function DashboardContent() {
                     )}
 
                     {activeTab === 'support' && (
-                        <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                        <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
                             <SupportHub />
                         </div>
                     )}
@@ -496,7 +496,7 @@ function DashboardContent() {
 
 export default function LandlordDashboard() {
     return (
-        <Suspense fallback={<div className="p-10 text-center animate-pulse tracking-widest font-black uppercase text-gray-400">Loading Dashboard...</div>}>
+        <Suspense fallback={<div className="p-6 text-center animate-pulse tracking-widest font-black uppercase text-gray-400">Loading Dashboard...</div>}>
             <DashboardContent />
         </Suspense>
     );

@@ -324,7 +324,7 @@ function StudentDashboardContent() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <button 
                             onClick={() => setActiveTab('Inspections')}
-                            className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-[2rem] flex flex-col gap-4 text-left hover:scale-105 transition-transform active:scale-95"
+                            className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-2xl flex flex-col gap-4 text-left hover:scale-105 transition-transform active:scale-95"
                         >
                             <Calendar className="w-6 h-6 text-[#BEF264]" />
                             <div>
@@ -335,7 +335,7 @@ function StudentDashboardContent() {
                             </div>
                         </button>
                         
-                        <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-[2rem] flex flex-col gap-4">
+                        <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-2xl flex flex-col gap-4">
                             <Wallet className="w-6 h-6 text-[#BEF264]" />
                             <div>
                                 <p className="text-3xl font-black text-gray-900 dark:text-white text-emerald-500">
@@ -345,7 +345,7 @@ function StudentDashboardContent() {
                             </div>
                         </div>
 
-                        <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-[2rem] flex flex-col gap-4 relative overflow-hidden">
+                        <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-2xl flex flex-col gap-4 relative overflow-hidden">
                             <ShieldCheck className={`w-8 h-8 ${accountData?.is_approved ? 'text-[#BEF264]' : 'text-gray-400'}`} />
                             <div>
                                 <p className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
@@ -379,11 +379,11 @@ function StudentDashboardContent() {
                         {loading ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {[1, 2, 3].map(i => (
-                                    <div key={i} className="bg-gray-100 dark:bg-neutral-900 animate-pulse aspect-square rounded-[2rem]" />
+                                    <div key={i} className="bg-gray-100 dark:bg-neutral-900 animate-pulse aspect-square rounded-2xl" />
                                 ))}
                             </div>
                         ) : savedProperties.length === 0 ? (
-                            <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-10 text-center">
+                            <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-6 text-center">
                                 <Heart className="w-10 h-10 text-gray-200 dark:text-neutral-800 mx-auto mb-3" />
                                 <p className="font-black text-gray-400 uppercase tracking-tight text-sm">No saved hostels yet</p>
                                 <p className="text-gray-400 text-xs mt-1">Tap ❤️ on any hostel to save it here.</p>
@@ -414,9 +414,9 @@ function StudentDashboardContent() {
 
                     {/* Area Guides Card */}
                     <section>
-                        <div className="bg-gradient-to-br from-black to-neutral-900 border border-neutral-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+                        <div className="bg-gradient-to-br from-black to-neutral-900 border border-neutral-800 rounded-3xl p-5 shadow-2xl relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-[#BEF264] rounded-full blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none" />
-                            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+                            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
                                 <div className="max-w-xl">
                                     <h2 className="text-2xl font-black text-white uppercase tracking-tight mb-3">
                                         Area Guides
@@ -513,7 +513,7 @@ function StudentDashboardContent() {
                                 ))}
                             </div>
                         ) : inspections.length === 0 ? (
-                            <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/5 rounded-3xl p-10 text-center">
+                            <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/5 rounded-3xl p-6 text-center">
                                 <Calendar className="w-10 h-10 text-gray-300 dark:text-neutral-700 mx-auto mb-3" />
                                 <p className="font-black text-gray-400 uppercase tracking-tight">No inspections yet</p>
                                 <p className="text-gray-400 text-sm mt-1">Browse hostels and book your first inspection.</p>
@@ -616,11 +616,11 @@ function StudentDashboardContent() {
                     <SupportHub />
                 </div>
             ) : (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 flex flex-col gap-8">
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 flex flex-col gap-5">
                     {/* Welcome Section */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div className="flex items-center gap-6">
-                            <label className="relative w-24 h-24 rounded-[2rem] overflow-hidden group cursor-pointer shadow-2xl block border-4 border-white dark:border-neutral-950">
+                            <label className="relative w-24 h-24 rounded-2xl overflow-hidden group cursor-pointer shadow-2xl block border-4 border-white dark:border-neutral-950">
                                 <div className="w-full h-full bg-white dark:bg-neutral-900 flex items-center justify-center relative">
                                     {avatarUrl ? (
                                         <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />

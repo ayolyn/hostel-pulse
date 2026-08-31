@@ -55,7 +55,7 @@ export function EscrowCheckoutModal({ item, onClose, onSuccess }: EscrowCheckout
     return (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
             <div 
-                className="bg-white dark:bg-neutral-900 rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl border border-gray-100 dark:border-white/10 relative p-8"
+                className="bg-white dark:bg-neutral-900 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl border border-gray-100 dark:border-white/10 relative p-5"
                 onClick={e => e.stopPropagation()}
             >
                 <button 
