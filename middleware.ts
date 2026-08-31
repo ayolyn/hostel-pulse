@@ -6,6 +6,19 @@ import { NextResponse, type NextRequest } from 'next/server';
  * Protects all /dashboard/* routes: unauthenticated users are redirected to /join.
  * Also refreshes expired Supabase sessions automatically.
  */
+
+function applySecurityHeaders(res: NextResponse) {
+    res.headers.set('X-DNS-Prefetch-Control', 'on');
+    res.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+    res.headers.set('X-XSS-Protection', '1; mode=block');
+    res.headers.set('X-Frame-Options', 'SAMEORIGIN');
+    res.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    res.headers.set('X-Content-Type-Options', 'nosniff');
+    res.headers.set('Referrer-Policy', 'origin-when-cross-origin');
+    res.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' blob: data: https:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https:;");
+    return res;
+}
+
 export async function middleware(request: NextRequest) {
     let supabaseResponse = NextResponse.next({ request });
 
@@ -50,14 +63,14 @@ export async function middleware(request: NextRequest) {
     if (isDashboard && !user) {
         const redirectUrl = new URL('/join', request.url);
         redirectUrl.searchParams.set('next', request.nextUrl.pathname);
-        return NextResponse.redirect(redirectUrl);
+        return applySecurityHeaders(NextResponse.redirect(redirectUrl));
     }
 
     // Protected admin routes
     const isAdmin = request.nextUrl.pathname.startsWith('/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c');
     if (isAdmin) {
         if (!user) {
-            return NextResponse.redirect(new URL('/join', request.url));
+            return applySecurityHeaders(NextResponse.redirect(new URL('/join', request.url)));
         }
         
         // Lock path so only super_admin can enter
@@ -68,11 +81,13 @@ export async function middleware(request: NextRequest) {
             .single();
             
         if (roleData?.role !== 'super_admin') {
-            return NextResponse.redirect(new URL('/join', request.url)); // or /dashboard
+            return applySecurityHeaders(NextResponse.redirect(new URL('/join', request.url))); // or /dashboard
         }
     }
 
-    return supabaseResponse;
+
+    return applySecurityHeaders(supabaseResponse);
+
 }
 
 export const config = {
