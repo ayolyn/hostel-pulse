@@ -620,8 +620,8 @@ function StudentDashboardContent() {
                     {/* Welcome Section */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div className="flex items-center gap-6">
-                            <div className="relative group">
-                                <div className="w-24 h-24 bg-white dark:bg-neutral-900 rounded-[2rem] border-4 border-white dark:border-neutral-950 shadow-2xl overflow-hidden flex items-center justify-center">
+                            <label className="relative w-24 h-24 rounded-[2rem] overflow-hidden group cursor-pointer shadow-2xl block border-4 border-white dark:border-neutral-950">
+                                <div className="w-full h-full bg-white dark:bg-neutral-900 flex items-center justify-center relative">
                                     {avatarUrl ? (
                                         <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
                                     ) : (
@@ -633,15 +633,11 @@ function StudentDashboardContent() {
                                         </div>
                                     )}
                                 </div>
-                                <button 
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="absolute -bottom-2 -right-2 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black p-2.5 rounded-2xl shadow-xl hover:scale-110 transition-all border-4 border-white dark:border-neutral-950"
-                                >
+                                <div className="absolute -bottom-2 -right-2 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black p-2.5 rounded-2xl shadow-xl hover:scale-110 transition-all border-4 border-white dark:border-neutral-950">
                                     <Camera className="w-4 h-4" />
-                                </button>
+                                </div>
                                 <input 
                                     type="file" 
-                                    ref={fileInputRef} 
                                     onChange={handleAvatarUpload} 
                                     accept="image/*" 
                                     className="hidden" 
@@ -649,7 +645,7 @@ function StudentDashboardContent() {
                             </div>
                             <div>
                                 <p className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] mb-1">Student Hub</p>
-                                <h1 className="text-4xl font-black text-gray-900 dark:text-white/80 tracking-tighter leading-none italic">
+                                <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white/80 tracking-tighter leading-none italic">
                                     Welcome back{fullName ? `, ${fullName}` : ''}
                                 </h1>
                                 <p className="text-gray-400 font-bold text-xs mt-2 uppercase tracking-wide opacity-60 italic">Find, inspect and secure your space near LAUTECH.</p>

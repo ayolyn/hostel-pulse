@@ -20,10 +20,10 @@ export const HostelPulseLogo: React.FC<LogoProps> = ({
     const isIcon = variant === 'icon';
 
     return (
-        <div className={`flex items-center gap-1 ${className}`} style={{ height: size }}>
+        <div className={`flex items-center gap-0 ${className}`} style={{ height: size }}>
             <svg 
-                width="40" 
-                height="40" 
+                width="28" 
+                height="28" 
                 viewBox="0 0 100 100" 
                 fill="none" 
                 xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +69,7 @@ export const HostelPulseLogo: React.FC<LogoProps> = ({
             </svg>
             
             {!isIcon && (
-                <div className="flex font-black uppercase tracking-tighter text-2xl">
+                <div className="flex font-black uppercase tracking-tighter text-xl">
                     <span className={
                         variant === 'dark' ? "text-white" : 
                         variant === 'light' ? "text-neutral-900" : 

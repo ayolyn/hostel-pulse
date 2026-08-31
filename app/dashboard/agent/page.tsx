@@ -193,7 +193,7 @@ function AgentDashboardContent() {
                 {/* Header Context */}
                 <div className="mb-10">
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#BEF264] mb-2">Agent HQ / {activeTab}</p>
-                    <h1 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                    <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                         {activeTab === 'overview' ? `Welcome, ${account?.full_name?.split(' ')[0]}` : activeTab}
                     </h1>
                 </div>

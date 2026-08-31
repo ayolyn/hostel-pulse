@@ -191,7 +191,7 @@ export default function OnboardingPage() {
                 {step === 1 ? (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                         <div className="text-left mb-8">
-                            <h1 className="text-3xl font-black text-white mb-2 tracking-tight">
+                            <h1 className="text-2xl font-black text-white mb-2 tracking-tight">
                                 How are you using HOSTELPULSE?
                             </h1>
                             <p className="text-gray-400 font-medium">
@@ -238,7 +238,7 @@ export default function OnboardingPage() {
                 ) : (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                         <div className="text-left mb-8">
-                            <h1 className="text-3xl font-black text-white mb-2 tracking-tight">
+                            <h1 className="text-2xl font-black text-white mb-2 tracking-tight">
                                 Complete your profile.
                             </h1>
                             <p className="text-gray-400 font-medium">

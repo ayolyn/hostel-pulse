@@ -313,7 +313,9 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                                         {formData.student_id_url && <a href={formData.student_id_url} target="_blank" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">View</a>}
                                     </div>
                                 ) : (
-                                    <span className="text-[10px] text-red-500 font-black uppercase tracking-widest">Action Required</span>
+                                    <button type="button" onClick={() => setActiveSubTab('Edit Profile')} className="text-[10px] text-red-500 font-black uppercase tracking-widest hover:underline text-right">
+                                        Action Required<br/><span className="text-[8px] text-red-400">Click to upload</span>
+                                    </button>
                                 )}
                             </div>
                         ) : (
@@ -330,9 +332,9 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                                                 {url && <a href={url} target="_blank" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">View</a>}
                                             </div>
                                         ) : (
-                                            <span className={`text-[10px] font-black uppercase tracking-widest ${isMandatory ? 'text-red-500' : 'text-gray-400'}`}>
-                                                {isMandatory ? 'Missing Document' : 'Optional'}
-                                            </span>
+                                            <button type="button" onClick={() => isMandatory && setActiveSubTab('Edit Profile')} className={`text-[10px] font-black uppercase tracking-widest text-right ${isMandatory ? 'text-red-500 hover:underline' : 'text-gray-400 cursor-default'}`}>
+                                                {isMandatory ? <><span className="block">Missing Document</span><span className="text-[8px] text-red-400">Click to upload</span></> : 'Optional'}
+                                            </button>
                                         )}
                                     </div>
                                 )
