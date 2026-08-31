@@ -319,7 +319,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                     ) : t.type === 'Withdrawal' ? (
                                         <div className="flex flex-col items-end gap-2">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-neutral-500 px-3 py-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full border border-neutral-200 dark:border-white/5">
-                                                {t.status === 'pending' || t.status === 'Pending' ? 'Pending Admin Approval' : t.status}
+                                                {t.status === 'pending' || t.status === 'Pending' ? 'Processing' : t.status}
                                             </span>
                                         </div>
                                     ) : (

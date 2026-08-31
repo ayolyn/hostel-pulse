@@ -24,7 +24,7 @@ export function UnderReview() {
 
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 mb-4">
                     <div className="w-2 h-2 rounded-full bg-amber-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">Pending Admin Approval</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">Pending Verification</span>
                 </div>
 
                 <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight uppercase italic">
