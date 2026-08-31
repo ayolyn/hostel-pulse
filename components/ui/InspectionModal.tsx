@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Calendar, Clock, Loader2, CheckCircle2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { createNotification } from '@/lib/notifications';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { useFlutterwave } from '@/hooks/useFlutterwave';
 import toast from 'react-hot-toast';

@@ -42,18 +42,28 @@ export async function createNotification(userId: string, title: string, message:
             'VERIFICATION_SUCCESS', 'account_approved', 
             'VERIFICATION_FAILED', 'account_rejected', 
             'dispute_resolved', 'warning', 'account_suspended', 
-            'account_banned'
+            'account_banned', 'inspection', 'booking', 'booking_requested', 'booking_success'
         ];
 
         if (emailTriggerTypes.includes(type)) {
+            let userEmail = '';
             const { data: profile } = await supabaseAdmin.from('profiles').select('contact_email').eq('id', userId).single();
             if (profile?.contact_email) {
+                userEmail = profile.contact_email;
+            } else {
+                const { data: authData } = await supabaseAdmin.auth.admin.getUserById(userId);
+                if (authData?.user?.email) {
+                    userEmail = authData.user.email;
+                }
+            }
+
+            if (userEmail) {
                 const { sendNotificationEmail } = await import('@/lib/email/resend');
                 const { render } = await import('@react-email/render');
                 const { SystemAlertEmail } = await import('@/components/emails/SystemAlertEmail');
                 
                 const html = await render(SystemAlertEmail({ title, message, link }));
-                await sendNotificationEmail(profile.contact_email, title, html);
+                await sendNotificationEmail(userEmail, title, html);
             }
         }
     } catch (e) {

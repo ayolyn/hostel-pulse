@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { ShieldCheck, Lock, Calendar, CreditCard, Wallet } from "lucide-react";
+import {  ShieldCheck, Lock, Calendar, CreditCard, Wallet , Smartphone } from 'lucide-react';
 import toast from "react-hot-toast";
 
 interface Props {
@@ -47,7 +47,7 @@ export default function MockCheckoutClient({
         fetchWallet();
     }, [studentId, supabase]);
 
-    const executePayment = async (method: 'WALLET' | 'CARD') => {
+    const executePayment = async (method: 'WALLET' | 'CARD' | 'OPAY') => {
         if (!checkInDate) {
             toast.error("Please select a move-in date");
             return;
@@ -61,7 +61,7 @@ export default function MockCheckoutClient({
         }
 
         setIsProcessing(true);
-        toast.loading(`Processing payment via ${method === 'WALLET' ? 'Wallet' : 'Card'}...`, { id: "payment" });
+        toast.loading(`Processing payment via ${method === 'WALLET' ? 'Wallet' : method === 'OPAY' ? 'OPay' : 'Paystack'}...`, { id: "payment" });
 
         try {
             if (method === 'WALLET') {
@@ -241,7 +241,19 @@ export default function MockCheckoutClient({
                             >
                                 {isProcessing ? "Processing..." : (
                                     <>
-                                        <CreditCard className="w-5 h-5" /> Pay with Card (Mock)
+                                        <CreditCard className="w-5 h-5" /> Pay with Paystack
+                                    </>
+                                )}
+                            </button>
+
+                            <button 
+                                onClick={() => executePayment('OPAY')}
+                                disabled={isProcessing}
+                                className="w-full bg-[#1dbf73] text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-[#18a061] transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-200 disabled:opacity-50"
+                            >
+                                {isProcessing ? "Processing..." : (
+                                    <>
+                                        <Smartphone className="w-5 h-5" /> Pay with OPay
                                     </>
                                 )}
                             </button>
