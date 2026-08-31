@@ -5,6 +5,7 @@ import { UploadCloud, CheckCircle2, AlertCircle, Trash2, Link as LinkIcon, Build
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { StudentIdUpload } from '@/components/profile/StudentIdUpload';
 import { TermsModal } from '@/components/modals/TermsModal';
 
 interface ProfileFormProps {
@@ -418,6 +419,10 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Date of Birth</label>
                             <input type="date" name="dob" value={formData.dob} onChange={handleTextChange} className="w-full p-6 rounded-[2rem] bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                         </div>
+                    </div>
+                    
+                    <div className="pt-6">
+                        <StudentIdUpload />
                     </div>
                 </>
             ) : (
