@@ -173,7 +173,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
 
     if (loading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-pulse">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 animate-pulse">
                 {[1, 2, 3].map(i => <div key={i} className="h-40 bg-white/5 rounded-2xl border border-white/5" />)}
             </div>
         );
@@ -194,17 +194,17 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
             {/* Transaction Ledger */}
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                    <h2 className="text-2xl font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                         <Receipt className="w-6 h-6 text-[#0D9488] dark:text-[#BEF264]" />
                         Transaction History
                     </h2>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-600">{transactions.length} Total</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest text-gray-600">{transactions.length} Total</span>
                 </div>
 
                 {transactions.length === 0 ? (
                     <div className="bg-gray-50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-20 text-center">
                         <Wallet className="w-16 h-16 text-gray-200 dark:text-white/5 mx-auto mb-6" />
-                        <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Your Wallet is Empty</h3>
+                        <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Your Wallet is Empty</h3>
                         <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-2 px-10">Start listing properties in Under-G to earn your first commission!</p>
                     </div>
                 ) : (
@@ -220,15 +220,15 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                     <div 
                                         key={tx.id} 
                                         onClick={() => setSelectedTx(tx)}
-                                        className="py-3 px-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-between group cursor-pointer"
+                                        className="py-2 px-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-between group cursor-pointer"
                                     >
-                                        <div className="flex items-center gap-4">
-                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${isDisputed ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : tx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : isHeld ? 'bg-amber-50 dark:bg-amber-400/10 border-amber-100 dark:border-amber-400/20 text-amber-500 dark:text-amber-400' : isReleased ? 'bg-emerald-50 dark:bg-[#BEF264]/10 border-emerald-100 dark:border-[#BEF264]/20 text-[#0D9488] dark:text-[#BEF264]' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-6 h-6 rounded-md flex items-center justify-center border ${isDisputed ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : tx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : isHeld ? 'bg-amber-50 dark:bg-amber-400/10 border-amber-100 dark:border-amber-400/20 text-amber-500 dark:text-amber-400' : isReleased ? 'bg-emerald-50 dark:bg-[#BEF264]/10 border-emerald-100 dark:border-[#BEF264]/20 text-[#0D9488] dark:text-[#BEF264]' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
                                                 {tx.type === 'Withdrawal' ? <ArrowUpRight className="w-4 h-4" /> : isReleased ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
                                             </div>
                                             <div>
-                                                <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{tx.type} Payment</h4>
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">Paid by {tx.student_name}</p>
+                                                <h4 className="text-xs font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight">{tx.type} Payment</h4>
+                                                <p className="text-[8px] font-black uppercase tracking-widest text-gray-500 mt-1">Paid by {tx.student_name}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
@@ -239,7 +239,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                                         <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-500 cursor-help">
                                                             FROZEN / DISPUTED
                                                         </span>
-                                                        <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-red-500/20 text-gray-700 dark:text-red-400 text-[10px] rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all shadow-xl z-10 text-left">
+                                                        <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-white dark:bg-neutral-900 border border-gray-100 dark:border-red-500/20 text-gray-700 dark:text-red-400 text-[9px] rounded-lg opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all shadow-xl z-10 text-left">
                                                             The buyer has reported an issue. An admin is reviewing this transaction.
                                                         </div>
                                                     </div>
@@ -286,33 +286,33 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                         </button>
                         
                         <div className="text-center mb-8">
-                            <div className="w-16 h-16 bg-[#BEF264]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-12 h-12 bg-[#BEF264]/10 rounded-full flex items-center justify-center mx-auto mb-3">
                                 <Receipt className="w-8 h-8 text-[#0D9488] dark:text-[#BEF264]" />
                             </div>
-                            <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Transaction Details</h3>
-                            <p className="text-[10px] font-bold text-gray-500 mt-1 uppercase tracking-widest">{selectedTx.type} Payment</p>
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Transaction Details</h3>
+                            <p className="text-[9px] font-bold text-gray-500 mt-1 uppercase tracking-widest">{selectedTx.type} Payment</p>
                         </div>
                         
                         <div className="space-y-4">
-                            <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Transaction ID</span>
+                            <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-white/5">
+                                <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">Transaction ID</span>
                                 <span className="text-xs font-bold text-gray-900 dark:text-white">{selectedTx.id.split('-')[0]}...</span>
                             </div>
-                            <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Date</span>
+                            <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-white/5">
+                                <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">Date</span>
                                 <span className="text-xs font-bold text-gray-900 dark:text-white">{new Date(selectedTx.created_at).toLocaleDateString()}</span>
                             </div>
-                            <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Buyer</span>
+                            <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-white/5">
+                                <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">Buyer</span>
                                 <span className="text-xs font-bold text-gray-900 dark:text-white">{selectedTx.student_name}</span>
                             </div>
-                            <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Amount</span>
+                            <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-white/5">
+                                <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">Amount</span>
                                 <span className="text-base font-black text-gray-900 dark:text-white">₦{selectedTx.amount.toLocaleString()}</span>
                             </div>
-                            <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-white/5">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Status</span>
-                                <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-full ${selectedTx.status === 'Held' || selectedTx.status === 'pending' ? 'bg-amber-100 dark:bg-amber-400/10 text-amber-600 dark:text-amber-400' : selectedTx.status === 'Released' || selectedTx.status === 'completed' ? 'bg-emerald-100 dark:bg-[#BEF264]/10 text-emerald-600 dark:text-[#BEF264]' : 'bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-500'}`}>
+                            <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-white/5">
+                                <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">Status</span>
+                                <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-full ${selectedTx.status === 'Held' || selectedTx.status === 'pending' ? 'bg-amber-100 dark:bg-amber-400/10 text-amber-600 dark:text-amber-400' : selectedTx.status === 'Released' || selectedTx.status === 'completed' ? 'bg-emerald-100 dark:bg-[#BEF264]/10 text-emerald-600 dark:text-[#BEF264]' : 'bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-500'}`}>
                                     {selectedTx.status}
                                 </span>
                             </div>
@@ -321,14 +321,14 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                 {selectedTx.buyer_id && (
                                     <Link 
                                         href={`/dashboard/agent?tab=messages&userId=${selectedTx.buyer_id}`}
-                                        className="flex-1 bg-blue-500 text-white font-black py-3 rounded-xl uppercase tracking-widest text-[10px] hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
+                                        className="flex-1 bg-blue-500 text-white font-black py-3 rounded-xl uppercase tracking-widest text-[9px] hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
                                     >
                                         <MessageCircle className="w-4 h-4" /> Message Buyer
                                     </Link>
                                 )}
                                 <button 
                                     onClick={() => setSelectedTx(null)}
-                                    className="flex-1 bg-black dark:bg-white text-white dark:text-black font-black py-3 rounded-xl uppercase tracking-widest text-[10px] hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all"
+                                    className="flex-1 bg-black dark:bg-white text-white dark:text-black font-black py-3 rounded-xl uppercase tracking-widest text-[9px] hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all"
                                 >
                                     Close Details
                                 </button>
