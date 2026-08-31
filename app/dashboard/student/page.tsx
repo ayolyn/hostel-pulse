@@ -642,7 +642,7 @@ function StudentDashboardContent() {
                                     accept="image/*" 
                                     className="hidden" 
                                 />
-                            </div>
+                            </label>
                             <div>
                                 <p className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] mb-1">Student Hub</p>
                                 <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white/80 tracking-tighter leading-none italic">
