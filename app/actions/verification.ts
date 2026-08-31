@@ -23,7 +23,7 @@ export async function verifyStudentIdAuto(userId: string, imageUrl: string) {
                 {
                     role: "user",
                     content: [
-                        { type: "text", text: "Analyze this image strictly. Is it a valid, official student ID card for LAUTECH (Ladoke Akintola University of Technology)? You must find the university name "Ladoke Akintola University of Technology" or "LAUTECH" clearly visible, along with a student photo. If ANY of these are missing, or if it is a random image, reply with exactly 'NO'. Only reply 'YES' if it is unmistakably a LAUTECH student ID." },
+                        { type: "text", text: "Analyze this image strictly. Is it a valid, official student ID card for LAUTECH (Ladoke Akintola University of Technology)? You must find the university name 'Ladoke Akintola University of Technology' or 'LAUTECH' clearly visible, along with a student photo. If ANY of these are missing, or if it is a random image, reply with exactly 'NO'. Only reply 'YES' if it is unmistakably a LAUTECH student ID." },
                         { type: "image_url", image_url: { url: imageUrl } }
                     ]
                 }
