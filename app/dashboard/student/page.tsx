@@ -352,7 +352,7 @@ function StudentDashboardContent() {
                                     {accountData?.is_approved ? 'Verified Member' : 'Unverified'}
                                 </p>
                                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">
-                                    {accountData?.is_approved ? 'Full Platform Access' : 'Action Required in Profile'}
+                                    {accountData?.is_approved ? 'Full Platform Access' : 'Upload your University ID & complete your profile to unlock access.'}
                                 </p>
                             </div>
                             {!accountData?.is_approved && (
