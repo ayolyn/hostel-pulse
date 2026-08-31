@@ -279,7 +279,7 @@ export default function ProviderDirectoryPage() {
                     </div>
                 )}
             </main>
-            <Footer />
+            
         </div>
     );
 }

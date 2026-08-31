@@ -106,7 +106,7 @@ export default function SellPage() {
                     </div>
                 </section>
             </main>
-            <Footer />
+            
         </div>
     );
 }

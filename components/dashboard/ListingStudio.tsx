@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Home, MapPin, Building2, Zap, CheckCircle2, RefreshCcw, ShieldCheck, Loader2, Store, TreePine, UploadCloud, X, Image as ImageIcon } from 'lucide-react';
 import { LocationCombobox } from '@/components/ui/LocationCombobox';
+import toast from 'react-hot-toast';
 
 type Category = 'Hostel' | 'Shop' | 'House' | 'Hotel' | 'Land';
 
@@ -30,6 +31,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
     const [subCat, setSubCat] = useState('');
     const [loading, setLoading] = useState(false);
     const [uploadingImages, setUploadingImages] = useState(false);
+    const [uploadingVideo, setUploadingVideo] = useState(false);
     const [error, setError] = useState('');
     const [editId, setEditId] = useState<string | null>(null);
     const [hasTerms, setHasTerms] = useState(false);
@@ -64,6 +66,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     is_furnished: false,
                     is_serviced: false,
                     is_newly_built: false,
+          video_url: '',
                     youtube_video_url: '',
                     instagram_video_url: '',
                     virtual_tour_url: '',
@@ -102,6 +105,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     is_furnished: data.is_furnished || false,
                     is_serviced: data.is_serviced || false,
                     is_newly_built: data.is_newly_built || false,
+                      video_url: data.video_url || '',
                     youtube_video_url: data.youtube_video_url || '',
                     instagram_video_url: data.instagram_video_url || '',
                     virtual_tour_url: data.virtual_tour_url || '',
@@ -133,6 +137,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         is_furnished: false,
         is_serviced: false,
         is_newly_built: false,
+          video_url: '',
         youtube_video_url: '',
         instagram_video_url: '',
         virtual_tour_url: '',
@@ -178,6 +183,36 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         }
         setUploadedImageUrls(prev => [...prev, ...uploaded]);
         setUploadingImages(false);
+    };
+
+    
+    const handleVideoUpload = async (file: File) => {
+        if (!file) return;
+        if (file.size > 25 * 1024 * 1024) {
+            toast.error('Video must be less than 25MB');
+            return;
+        }
+        setUploadingVideo(true);
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { setUploadingVideo(false); return; }
+
+        const ext = file.name.split('.').pop();
+        const path = `properties/videos/${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+        const { data, error } = await supabase.storage
+            .from('market-images') // reuse existing public bucket
+            .upload(path, file, { upsert: false, cacheControl: '3600' });
+
+        if (!error && data) {
+            const { data: urlData } = supabase.storage
+                .from('market-images')
+                .getPublicUrl(data.path);
+            setForm(prev => ({ ...prev, video_url: urlData.publicUrl }));
+            toast.success('Video uploaded successfully!');
+        } else {
+            console.error('Video upload error:', error?.message);
+            toast.error('Failed to upload video');
+        }
+        setUploadingVideo(false);
     };
 
     const removeImage = (url: string) => {
@@ -228,7 +263,8 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             is_furnished: form.is_furnished,
             is_serviced: form.is_serviced,
             is_newly_built: form.is_newly_built,
-            youtube_video_url: form.youtube_video_url,
+            video_url: form.video_url,
+              youtube_video_url: form.youtube_video_url,
             instagram_video_url: form.instagram_video_url,
             virtual_tour_url: form.virtual_tour_url,
             features: form.features.length > 0 ? form.features : (category === 'Land' ? [] : ['Constant Power', 'Running Water']),
@@ -736,7 +772,8 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     <p className="text-xs text-[#BEF264] font-black uppercase tracking-widest mt-3">✓ {uploadedImageUrls.length} photo{uploadedImageUrls.length > 1 ? 's' : ''} uploaded</p>
                 )}
             </div>
-            <button onClick={() => { setStep(1); setUploadedImageUrls([]); setForm({ title: '', price: '', description: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false, youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', road_access: 'Tarred' }); onComplete(); }}
+            <button onClick={() => { setStep(1); setUploadedImageUrls([]); setForm({ title: '', price: '', description: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
+          video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', road_access: 'Tarred' }); onComplete(); }}
                 className="mt-8 text-black font-black uppercase tracking-widest text-[10px] underline underline-offset-8">
                 Add Another Listing
             </button>

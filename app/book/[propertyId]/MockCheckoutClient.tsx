@@ -157,7 +157,7 @@ export default function MockCheckoutClient({
                 <img src={propertyImage} alt={propertyTitle} className="w-24 h-24 object-cover rounded-2xl shadow-sm" />
                 <div className="flex-1 text-center md:text-left">
                     <p className="text-[#0D9488] font-black uppercase tracking-widest text-xs mb-1">Booking Request</p>
-                    <h2 className="text-2xl font-black text-gray-900 tracking-tight">{propertyTitle}</h2>
+                    <h2 className="text-xl font-black text-gray-900 tracking-tight">{propertyTitle}</h2>
                     <p className="text-gray-500 font-medium text-sm mt-1 flex items-center justify-center md:justify-start gap-2">
                         Hosted by {providerName} 
                         <ShieldCheck className="w-4 h-4 text-emerald-500" />
@@ -214,7 +214,7 @@ export default function MockCheckoutClient({
                             
                             <div className="flex justify-between items-center">
                                 <span className="font-black uppercase tracking-widest text-gray-900 text-sm">Total Due</span>
-                                <span className="font-black text-2xl text-gray-900">₦{totalAmount.toLocaleString()}</span>
+                                <span className="font-black text-xl text-gray-900">₦{totalAmount.toLocaleString()}</span>
                             </div>
                         </div>
 
