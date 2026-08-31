@@ -26,9 +26,8 @@ export async function POST(req: NextRequest) {
         const expectedSignature = signatureArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         if (signature !== expectedSignature) {
-            // For test mode, you might want to skip this if OPay sends different headers, but the standard is this.
-            // console.warn("OPay Signature mismatch. Expected:", expectedSignature, "Got:", signature);
-            // return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+            console.warn("OPay Signature mismatch. Expected:", expectedSignature, "Got:", signature);
+            return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
         }
 
         const payload = JSON.parse(payloadStr);

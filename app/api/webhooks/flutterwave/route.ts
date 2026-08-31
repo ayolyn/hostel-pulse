@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     const secretHash = process.env.FLW_SECRET_HASH;
 
     // 1. Verify Signature
-    if (secretHash && signature !== secretHash) {
+    if (!secretHash || signature !== secretHash) {
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
