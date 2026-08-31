@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { UploadCloud, CheckCircle2, AlertCircle, Trash2, Link as LinkIcon, Building2, CreditCard, GraduationCap, Phone, ShieldCheck, Lock, Scale, ChevronRight, Loader2, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { verifyStudentIdAuto } from '@/app/actions/verification';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import Image from 'next/image';
 import { StudentIdUpload } from '@/components/profile/StudentIdUpload';
 import { TermsModal } from '@/components/modals/TermsModal';
@@ -200,15 +202,30 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                 }).eq('id', userId);
                 if (studentError) throw studentError;
                 
-                await supabase.from('profiles').update({ 
-                    full_name: updates.contact_name, 
-                    avatar_url: updates.logo_url || formData.logo_url,
-                    department: updates.department, 
-                    level: updates.level, 
-                    student_id_url: updates.student_id_url || formData.student_id_url,
-                    dob: updates.dob,
-                    contact_email: updates.contact_email
-                }).eq('id', userId);
+                                    await supabase.from('profiles').update({ 
+                        full_name: updates.contact_name, 
+                        avatar_url: updates.logo_url || formData.logo_url,
+                        department: updates.department, 
+                        level: updates.level, 
+                        student_id_url: updates.student_id_url || formData.student_id_url,
+                        dob: updates.dob,
+                        contact_email: updates.contact_email
+                    }).eq('id', userId);
+
+                    // Trigger AI Verification in the background if a new ID was uploaded
+                    if (updates.student_id_url) {
+                        toast.loading("Analyzing student ID...", { id: 'ai-verification' });
+                        verifyStudentIdAuto(userId, updates.student_id_url).then(res => {
+                            if (res.success && res.approved) {
+                                toast.success("ID Verified! You have been approved.", { id: 'ai-verification' });
+                                if (onUpdate) onUpdate(); // Reload data
+                            } else if (res.success && !res.approved) {
+                                toast.error("Could not auto-verify. Flagged for Admin review.", { id: 'ai-verification' });
+                            } else {
+                                toast.dismiss('ai-verification');
+                            }
+                        });
+                    }
             } else if (userRole === 'agent') {
                 const complianceSubmitted = !!(updates.govt_id_url && updates.selfie_url);
                 const { error: agentError } = await supabase.from('agent_accounts').update({
