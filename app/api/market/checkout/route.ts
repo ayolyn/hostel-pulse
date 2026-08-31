@@ -7,7 +7,7 @@ import { sendNotificationEmail } from '@/lib/email/resend';
 
 export async function POST(req: Request) {
     try {
-        const { listing_id } = await req.json();
+        const { listing_id, method = 'WALLET' } = await req.json();
         const supabase = await createClient();
 
         const supabaseAdmin = createAdminClient(
@@ -61,18 +61,21 @@ export async function POST(req: Request) {
 
         const totalCost = Number(listing.price) + serviceFee;
 
-        if (balance < totalCost) {
-            return NextResponse.json({ error: "Insufficient funds in wallet." }, { status: 400 });
+        if (method === 'WALLET') {
+            if (balance < totalCost) {
+                return NextResponse.json({ error: "Insufficient funds in wallet." }, { status: 400 });
+            }
+
+            // Deduct the item price + fee from the buyer's wallet balance
+            const { error: deductError } = await supabase
+                .from('profiles')
+                .update({ wallet_balance: balance - totalCost })
+                .eq('id', user.id);
+
+            if (deductError) throw deductError;
         }
 
         // 4. The Escrow Execution
-        // Deduct the item price + fee from the buyer's wallet balance
-        const { error: deductError } = await supabase
-            .from('profiles')
-            .update({ wallet_balance: balance - totalCost })
-            .eq('id', user.id);
-
-        if (deductError) throw deductError;
 
         // Insert a new row into escrow_transactions
         const { error: escrowError } = await supabaseAdmin

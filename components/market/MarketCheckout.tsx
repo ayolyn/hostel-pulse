@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { ShieldCheck, Info, X, CheckCircle, CreditCard, ArrowRight } from 'lucide-react';
+import {  ShieldCheck, Info, X, CheckCircle, CreditCard, ArrowRight , Smartphone, Wallet } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { ReviewModal } from './ReviewModal';
@@ -38,7 +38,7 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
     }
     const total = Number(item.price) + serviceFee;
 
-    const handlePurchase = async () => {
+    const handlePurchase = async (method: 'WALLET' | 'CARD' | 'OPAY') => {
         setLoading(true);
         try {
             const { data: { user } } = await supabase.auth.getUser();
@@ -53,7 +53,7 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
             const res = await fetch('/api/market/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ listing_id: item.id })
+                body: JSON.stringify({ listing_id: item.id, method })
             });
 
             if (!res.ok) {
@@ -133,15 +133,33 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
                             </p>
                         </div>
 
-                        <button 
-                            onClick={handlePurchase}
-                            disabled={loading}
-                            className="w-full bg-black dark:bg-[#BEF264] dark:text-black text-white font-black py-5 rounded-2xl shadow-xl shadow-[#BEF264]/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
-                        >
-                            <CreditCard className="w-5 h-5" />
-                            <span className="uppercase tracking-widest text-[11px]">Pay & Secure Item</span>
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </button>
+                        <div className="space-y-3">
+                            <button 
+                                onClick={() => handlePurchase('WALLET')}
+                                disabled={loading}
+                                className="w-full bg-[#BEF264] text-black font-black py-5 rounded-2xl shadow-xl shadow-[#BEF264]/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
+                            >
+                                <Wallet className="w-5 h-5" />
+                                <span className="uppercase tracking-widest text-[11px]">Pay from Wallet</span>
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                            <button 
+                                onClick={() => handlePurchase('CARD')}
+                                disabled={loading}
+                                className="w-full bg-black text-[#BEF264] font-black py-5 rounded-2xl shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
+                            >
+                                <CreditCard className="w-5 h-5" />
+                                <span className="uppercase tracking-widest text-[11px]">Pay with Paystack</span>
+                            </button>
+                            <button 
+                                onClick={() => handlePurchase('OPAY')}
+                                disabled={loading}
+                                className="w-full bg-[#1dbf73] text-white font-black py-5 rounded-2xl shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
+                            >
+                                <Smartphone className="w-5 h-5" />
+                                <span className="uppercase tracking-widest text-[11px]">Pay with OPay</span>
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <div className="py-12 text-center animate-in zoom-in-95 duration-500">

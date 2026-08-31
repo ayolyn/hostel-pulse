@@ -352,11 +352,11 @@ export function CampusMarket() {
                     <p className="text-gray-400 text-sm">Be the first to list something in this category!</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                     {visibleItems.map((item) => {
                         const isOwner = currentUser?.id === item.seller_id;
                         return (
-                            <div key={item.id} className="bg-white dark:bg-neutral-900 rounded-[2rem] overflow-hidden border border-neutral-100 dark:border-white/5 shadow-sm hover:shadow-2xl transition-all group flex flex-col">
+                            <div key={item.id} className="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden border border-neutral-100 dark:border-white/5 shadow-sm hover:shadow-2xl transition-all group flex flex-col">
                                 {/* Image area */}
                                 <div className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-neutral-800">
                                     <Image 
@@ -407,7 +407,7 @@ export function CampusMarket() {
                                     )}
 
                                     <div className="absolute top-4 right-4 bg-white/95 dark:bg-neutral-900/95 backdrop-blur px-4 py-2 rounded-full shadow-lg">
-                                        <p className="text-[#0D9488] font-black text-sm">₦{Number(item.price).toLocaleString()}</p>
+                                        <p className="text-[#0D9488] font-black text-xs">₦{Number(item.price).toLocaleString()}</p>
                                     </div>
                                     <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur px-3 py-1 rounded-lg flex items-center gap-2">
                                         <p className="text-[8px] font-black text-white uppercase tracking-widest">{item.condition}</p>
@@ -418,10 +418,10 @@ export function CampusMarket() {
                                 </div>
 
                                 {/* Info area */}
-                                <div className="p-6 flex flex-col flex-1">
+                                <div className="p-3 sm:p-4 flex flex-col flex-1">
                                     <div className="mb-4">
                                         <div className="flex items-center justify-between mb-2">
-                                            <h3 className="font-black text-gray-900 dark:text-white uppercase tracking-tight line-clamp-1 group-hover:text-[#BEF264] transition-colors">{item.title}</h3>
+                                            <h3 className="font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight line-clamp-1 group-hover:text-[#BEF264] transition-colors">{item.title}</h3>
                                             {item.seller_profile?.trust_level && (
                                                 <Link 
                                                     href={`/profile/${item.seller_id}`}
@@ -444,7 +444,7 @@ export function CampusMarket() {
                                             <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Escrow Protected</span>
                                         </div>
                                         
-                                        <div className="grid grid-cols-2 gap-2">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                             <Link 
                                                 href={`/messages/${item.seller_id}?room_id=${item.id}&item_id=${item.id}&item_title=${encodeURIComponent(item.title)}&item_price=${item.price}`}
                                                 className={`py-3 rounded-xl font-black uppercase tracking-widest text-[8px] transition-all flex items-center justify-center gap-1 border

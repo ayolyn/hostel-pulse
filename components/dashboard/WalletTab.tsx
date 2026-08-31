@@ -317,18 +317,18 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                 </span>
                             </div>
                             
-                            <div className="flex gap-3 mt-8">
+                            <div className="flex flex-col sm:flex-row gap-2 mt-8 flex-wrap">
                                 {selectedTx.buyer_id && (
                                     <Link 
                                         href={`/dashboard/agent?tab=messages&userId=${selectedTx.buyer_id}`}
-                                        className="flex-1 bg-blue-500 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-xs hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
+                                        className="flex-1 bg-blue-500 text-white font-black py-3 rounded-xl uppercase tracking-widest text-[10px] hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
                                     >
                                         <MessageCircle className="w-4 h-4" /> Message Buyer
                                     </Link>
                                 )}
                                 <button 
                                     onClick={() => setSelectedTx(null)}
-                                    className="flex-1 bg-black dark:bg-white text-white dark:text-black font-black py-4 rounded-2xl uppercase tracking-widest text-xs hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all"
+                                    className="flex-1 bg-black dark:bg-white text-white dark:text-black font-black py-3 rounded-xl uppercase tracking-widest text-[10px] hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all"
                                 >
                                     Close Details
                                 </button>

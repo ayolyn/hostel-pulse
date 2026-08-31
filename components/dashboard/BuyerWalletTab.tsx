@@ -514,11 +514,11 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                         >
                             <X className="w-5 h-5" />
                         </button>
-                        <div className="p-8">
+                        <div className="p-6">
                             <div className="w-16 h-16 bg-[#BEF264]/20 rounded-2xl flex items-center justify-center mb-6">
                                 <Receipt className="w-8 h-8 text-[#BEF264]" />
                             </div>
-                            <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-1">Transaction Details</h3>
+                            <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-1">Transaction Details</h3>
                             <p className="text-gray-500 font-medium text-sm mb-8">Ref: {selectedTx.id}</p>
                             
                             <div className="space-y-4">
@@ -546,11 +546,11 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                 </div>
                             </div>
 
-                            <div className="flex gap-3 mt-8">
+                            <div className="flex flex-col sm:flex-row gap-2 mt-8 flex-wrap">
                                 {selectedTx.payee_id && selectedTx.amount < 0 && (
                                     <Link 
                                         href={`/dashboard/student?tab=messages&userId=${selectedTx.payee_id}`}
-                                        className="flex-1 bg-blue-500 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-xs hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
+                                        className="flex-1 bg-blue-500 text-white font-black py-3 rounded-xl uppercase tracking-widest text-[10px] hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
                                     >
                                         <MessageCircle className="w-4 h-4" /> Message Seller
                                     </Link>
@@ -561,14 +561,14 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                             setSelectedTx(null);
                                             setReviewModalProvider({ id: selectedTx.payee_id!, name: selectedTx.payee_name || 'Provider' });
                                         }}
-                                        className="flex-1 bg-[#BEF264] text-black font-black py-4 rounded-2xl uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all flex items-center justify-center gap-2"
+                                        className="flex-1 bg-[#BEF264] text-black font-black py-3 rounded-xl uppercase tracking-widest text-[10px] hover:bg-[#a6d456] transition-all flex items-center justify-center gap-2"
                                     >
                                         <Star className="w-4 h-4" /> Leave Review
                                     </button>
                                 )}
                                 <button 
                                     onClick={() => setSelectedTx(null)}
-                                    className="flex-1 bg-black dark:bg-white text-white dark:text-black font-black py-4 rounded-2xl uppercase tracking-widest text-xs hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all"
+                                    className="flex-1 bg-black dark:bg-white text-white dark:text-black font-black py-3 rounded-xl uppercase tracking-widest text-[10px] hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all"
                                 >
                                     Close Details
                                 </button>
