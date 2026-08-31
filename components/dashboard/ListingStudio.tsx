@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Home, MapPin, Building2, Zap, CheckCircle2, RefreshCcw, ShieldCheck, Loader2, Store, TreePine, UploadCloud, X, Image as ImageIcon } from 'lucide-react';
+import { Home, MapPin, Building2, Zap, CheckCircle2, RefreshCcw, ShieldCheck, Loader2, Store, TreePine, UploadCloud, X, Image as ImageIcon , Camera} from 'lucide-react';
 import { LocationCombobox } from '@/components/ui/LocationCombobox';
 import toast from 'react-hot-toast';
 

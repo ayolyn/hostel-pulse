@@ -81,6 +81,23 @@ function AuthPageContent() {
         setLoading(true);
         const supabase = createClient();
 
+                if (mode === 'verify') {
+            const { data, error } = await supabase.auth.verifyOtp({
+                email,
+                token: otp,
+                type: 'signup'
+            });
+
+            if (error) {
+                setErrorMsg(error.message);
+                setLoading(false);
+                return;
+            }
+            
+            router.push('/dashboard');
+            return;
+        }
+
         if (mode === 'signup') {
             const { data, error } = await supabase.auth.signUp({
                 email,
