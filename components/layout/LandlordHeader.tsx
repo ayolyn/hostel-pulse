@@ -49,8 +49,8 @@ export function LandlordHeader({ onMenuClick }: LandlordHeaderProps) {
                         </button>
                         
                         <Link href="/" className="group flex items-center">
-                            <Image src="/logo.png" alt="HostelPulse" width={140} height={40} className="h-8 w-auto object-contain transition-opacity group-hover:opacity-80 block dark:hidden" priority />
-                            <Image src="/logo-dark.png" alt="HostelPulse" width={140} height={40} className="h-8 w-auto object-contain transition-opacity group-hover:opacity-80 hidden dark:block" priority />
+                            <Image src="/logo.png" alt="HostelPulse" width={140} height={40} className="h-6 w-auto object-contain transition-opacity group-hover:opacity-80 block dark:hidden" priority />
+                            <Image src="/logo-dark.png" alt="HostelPulse" width={140} height={40} className="h-6 w-auto object-contain transition-opacity group-hover:opacity-80 hidden dark:block" priority />
                         </Link>
                         <Link href="/dashboard/landlord" className="text-[10px] font-black uppercase tracking-widest text-black bg-[#BEF264] px-2 py-1 rounded-md hidden sm:block ml-2">Landlord</Link>
                     </div>

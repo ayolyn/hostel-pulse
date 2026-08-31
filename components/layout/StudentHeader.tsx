@@ -36,8 +36,8 @@ export function StudentHeader() {
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/dashboard/student" className="flex items-center gap-3 group">
-                    <Image src="/logo.png" alt="HostelPulse" width={140} height={40} className="h-8 w-auto object-contain transition-opacity group-hover:opacity-80 block dark:hidden" priority />
-                    <Image src="/logo-dark.png" alt="HostelPulse" width={140} height={40} className="h-8 w-auto object-contain transition-opacity group-hover:opacity-80 hidden dark:block" priority />
+                    <Image src="/logo.png" alt="HostelPulse" width={140} height={40} className="h-6 w-auto object-contain transition-opacity group-hover:opacity-80 block dark:hidden" priority />
+                    <Image src="/logo-dark.png" alt="HostelPulse" width={140} height={40} className="h-6 w-auto object-contain transition-opacity group-hover:opacity-80 hidden dark:block" priority />
                     <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-2 py-1 rounded-md hidden sm:block">Student</span>
                 </Link>
 
