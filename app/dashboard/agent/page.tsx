@@ -233,7 +233,7 @@ function AgentDashboardContent() {
 
                 {activeTab === 'profile' && userId && account && (
                     <div className="bg-white dark:bg-neutral-950 p-6 sm:p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
-                        <DetailedProfileForm account={account} userId={userId} />
+                        <DetailedProfileForm account={account} userId={userId} onUpdate={() => window.location.reload()} />
                     </div>
                 )}
                 

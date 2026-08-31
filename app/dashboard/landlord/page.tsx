@@ -438,7 +438,7 @@ function DashboardContent() {
                     
                     {activeTab === 'profile' && (
                         <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col gap-5">
-                            <DetailedProfileForm account={account} userId={userId as string} />
+                            <DetailedProfileForm account={account} userId={userId as string} onUpdate={() => window.location.reload()} />
                         </div>
                     )}
                     

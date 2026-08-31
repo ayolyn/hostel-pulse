@@ -220,11 +220,11 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                     <div 
                                         key={tx.id} 
                                         onClick={() => setSelectedTx(tx)}
-                                        className="p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-between group cursor-pointer"
+                                        className="py-3 px-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-between group cursor-pointer"
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${isDisputed ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : tx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : isHeld ? 'bg-amber-50 dark:bg-amber-400/10 border-amber-100 dark:border-amber-400/20 text-amber-500 dark:text-amber-400' : isReleased ? 'bg-emerald-50 dark:bg-[#BEF264]/10 border-emerald-100 dark:border-[#BEF264]/20 text-[#0D9488] dark:text-[#BEF264]' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
-                                                {tx.type === 'Withdrawal' ? <ArrowUpRight className="w-5 h-5" /> : isReleased ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center border ${isDisputed ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : tx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : isHeld ? 'bg-amber-50 dark:bg-amber-400/10 border-amber-100 dark:border-amber-400/20 text-amber-500 dark:text-amber-400' : isReleased ? 'bg-emerald-50 dark:bg-[#BEF264]/10 border-emerald-100 dark:border-[#BEF264]/20 text-[#0D9488] dark:text-[#BEF264]' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
+                                                {tx.type === 'Withdrawal' ? <ArrowUpRight className="w-4 h-4" /> : isReleased ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
                                             </div>
                                             <div>
                                                 <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{tx.type} Payment</h4>
@@ -282,7 +282,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                             onClick={() => setSelectedTx(null)}
                             className="absolute top-6 right-6 w-10 h-10 bg-gray-100 dark:bg-neutral-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
                         >
-                            <XCircle className="w-5 h-5 text-gray-500" />
+                            <XCircle className="w-4 h-4 text-gray-500" />
                         </button>
                         
                         <div className="text-center mb-8">

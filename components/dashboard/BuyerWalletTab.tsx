@@ -280,7 +280,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                         'bg-purple-50 dark:bg-purple-500/10 text-purple-500'
                                     }`}>
                                         {t.type === 'Property' ? <Building2 className="w-6 h-6" /> : 
-                                         t.type === 'Sale' ? <ArrowUpRight className="w-5 h-5" /> :
+                                         t.type === 'Sale' ? <ArrowUpRight className="w-4 h-4" /> :
                                          <Package className="w-6 h-6" />}
                                     </div>
                                     <div>
@@ -293,7 +293,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                     </div>
                                 </div>
                                 <div className="flex flex-col md:items-end gap-3">
-                                    <p className="text-base font-black tracking-tighter text-amber-500">
+                                    <p className="text-sm font-black tracking-tighter text-amber-500">
                                         ₦{Math.abs(t.amount).toLocaleString()}
                                     </p>
                                     
@@ -385,7 +385,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                         {t.type === 'Property' ? <Building2 className="w-6 h-6" /> : 
                                          t.type === 'Withdrawal' ? <Building className="w-6 h-6" /> :
                                          t.type === 'Deposit' ? <PlusCircle className="w-6 h-6" /> :
-                                         t.type === 'Sale' ? <ArrowUpRight className="w-5 h-5" /> :
+                                         t.type === 'Sale' ? <ArrowUpRight className="w-4 h-4" /> :
                                          <Package className="w-6 h-6" />}
                                     </div>
                                     <div>
@@ -400,7 +400,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className={`text-base font-black tracking-tighter ${
+                                    <p className={`text-sm font-black tracking-tighter ${
                                         t.amount < 0 ? 'text-red-500' : 
                                         (t.type === 'Deposit' || t.type === 'Sale') ? 'text-emerald-500' : 
                                         'text-gray-900 dark:text-white'
@@ -512,7 +512,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                             onClick={() => setSelectedTx(null)}
                             className="absolute top-4 right-4 w-10 h-10 bg-gray-50 dark:bg-neutral-800 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-neutral-700 hover:text-black dark:hover:text-white transition-colors"
                         >
-                            <X className="w-5 h-5" />
+                            <X className="w-4 h-4" />
                         </button>
                         <div className="p-6">
                             <div className="w-16 h-16 bg-[#BEF264]/20 rounded-2xl flex items-center justify-center mb-6">
