@@ -1,6 +1,7 @@
 "use server";
 
 import { sendNotificationEmail } from '@/lib/email/resend';
+import { getEmailTemplate } from '@/app/actions/emailTemplates';
 import { createClient } from '@supabase/supabase-js';
 import { createNotification } from '@/lib/notifications';
 import { createServerClient } from '@supabase/ssr';
@@ -209,7 +210,23 @@ export async function approveAccount(id: string, tableName: string) {
         'landlord_accounts': '/dashboard/landlord',
         'agent_accounts': '/dashboard/agent'
     };
-    await createNotification(id, 'Account Approved! 🎊', 'Your professional account has been verified. You can now list properties.', roleMap[tableName] || '/dashboard', 'account_approved');
+    await createNotification(id, 'Account Approved! ??', 'Your professional account has been verified. You can now list properties.', roleMap[tableName] || '/dashboard', 'account_approved');
+    
+    const { data: profileForEmail } = await db.from('profiles').select('contact_email, email').eq('id', id).single();
+    if (profileForEmail) {
+        const emailToUse = profileForEmail.contact_email || profileForEmail.email;
+        if (emailToUse) {
+            const html = getEmailTemplate({
+                subHeading: 'COMPLIANCE UPDATE',
+                title: 'Account Approved! ??',
+                body: 'Great news! Your professional account has been verified by our compliance team. You now have full access to list properties and manage your dashboard.',
+                buttonText: 'Go to Dashboard',
+                buttonLink: 'https://hostel-pulse.pages.dev/dashboard/agent',
+                showFallbackLink: false
+            });
+            await sendNotificationEmail(emailToUse, 'Hostel Pulse: Account Approved!', html);
+        }
+    }
     
     return { success: true };
 }
@@ -436,6 +453,22 @@ export async function revokeVerification(id: string, tableName: string) {
         const { error } = await db.from('student_accounts').update({ is_approved: false, student_id_url: null }).eq('id', id); await db.from('profiles').update({ student_id_url: null }).eq('id', id);
         
         await createNotification(id, 'Verification Revoked', 'Your verification status has been revoked. Please contact support.', '/dashboard', 'warning');
+        
+        const { data: profileForEmail } = await db.from('profiles').select('contact_email, email').eq('id', id).single();
+        if (profileForEmail) {
+            const emailToUse = profileForEmail.contact_email || profileForEmail.email;
+            if (emailToUse) {
+                const html = getEmailTemplate({
+                    subHeading: 'ACCOUNT UPDATE',
+                    title: 'Verification Revoked',
+                    body: 'Your account verification has been revoked by our compliance team. You may need to re-upload clear and valid documents to regain access to full platform features.',
+                    buttonText: 'Update Documents',
+                    buttonLink: 'https://hostel-pulse.pages.dev/dashboard/agent',
+                    showFallbackLink: false
+                });
+                await sendNotificationEmail(emailToUse, 'Action Required: Verification Revoked', html);
+            }
+        }
 
         if (error) return { error: error.message };
         return { success: true };
@@ -443,6 +476,22 @@ export async function revokeVerification(id: string, tableName: string) {
     const { error } = await db.from(tableName).update({ is_verified: false, is_approved: false, govt_id_url: null, selfie_url: null, cac_document_url: null, compliance_submitted: false }).eq('id', id);
     
     await createNotification(id, 'Verification Revoked', 'Your verification status has been revoked. Please contact support.', '/dashboard', 'warning');
+        
+        const { data: profileForEmail } = await db.from('profiles').select('contact_email, email').eq('id', id).single();
+        if (profileForEmail) {
+            const emailToUse = profileForEmail.contact_email || profileForEmail.email;
+            if (emailToUse) {
+                const html = getEmailTemplate({
+                    subHeading: 'ACCOUNT UPDATE',
+                    title: 'Verification Revoked',
+                    body: 'Your account verification has been revoked by our compliance team. You may need to re-upload clear and valid documents to regain access to full platform features.',
+                    buttonText: 'Update Documents',
+                    buttonLink: 'https://hostel-pulse.pages.dev/dashboard/agent',
+                    showFallbackLink: false
+                });
+                await sendNotificationEmail(emailToUse, 'Action Required: Verification Revoked', html);
+            }
+        }
 
     if (error) return { error: error.message };
     return { success: true };
@@ -639,7 +688,14 @@ export async function approveWithdrawal(id: string) {
         );
 
         if (withdrawal.profiles?.contact_email) {
-            const html = "<h1>Withdrawal Approved</h1><p>Your funds are on the way.</p>";
+            const html = getEmailTemplate({
+                subHeading: 'WALLET UPDATE',
+                title: 'Withdrawal Approved',
+                body: 'Your funds are on the way to your linked bank account. Please check your bank statement in the next few hours.',
+                buttonText: 'View Wallet',
+                buttonLink: 'https://hostel-pulse.pages.dev/dashboard/agent?tab=wallet',
+                showFallbackLink: false
+            });
             await sendNotificationEmail(withdrawal.profiles.contact_email, 'Withdrawal Approved 💸', html);
         }
     }
@@ -673,7 +729,14 @@ export async function rejectWithdrawal(id: string) {
         );
 
         if (withdrawal.profiles?.contact_email) {
-            const html = "<h1>Withdrawal Rejected</h1><p>Your withdrawal request was declined. Please contact support.</p>";
+            const html = getEmailTemplate({
+                subHeading: 'WALLET UPDATE',
+                title: 'Withdrawal Rejected',
+                body: 'Your recent withdrawal request was declined. Please contact support or verify your bank details before trying again.',
+                buttonText: 'Contact Support',
+                buttonLink: 'mailto:hello@hostel-pulse.com',
+                showFallbackLink: false
+            });
             await sendNotificationEmail(withdrawal.profiles.contact_email, 'Withdrawal Rejected ❌', html);
         }
     }
