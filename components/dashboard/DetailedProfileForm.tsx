@@ -7,7 +7,6 @@ import { verifyStudentIdAuto } from '@/app/actions/verification';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
-import { StudentIdUpload } from '@/components/profile/StudentIdUpload';
 import { TermsModal } from '@/components/modals/TermsModal';
 
 interface ProfileFormProps {
@@ -487,9 +486,22 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                         </div>
                     </div>
                     
+                    
                     <div className="pt-6">
-                        <StudentIdUpload />
+                        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2">Identity Verification</h3>
+                        <div className="mt-4">
+                            <label className="block w-full border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#BEF264] rounded-2xl p-6 text-center cursor-pointer transition-colors group">
+                                <div className="w-12 h-12 bg-gray-50 dark:bg-white/5 group-hover:bg-[#BEF264]/20 rounded-full flex items-center justify-center mx-auto mb-3 transition-colors">
+                                    <UploadCloud className="w-6 h-6 text-gray-400 group-hover:text-[#BEF264]" />
+                                </div>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 block mb-1">
+                                    {files.student_id ? files.student_id.name : formData.student_id_url ? 'ID Uploaded (Click to replace)' : 'Upload Student ID'}
+                                </span>
+                                <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'student_id')} />
+                            </label>
+                        </div>
                     </div>
+
                 </>
             ) : (
                 <>

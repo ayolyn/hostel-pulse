@@ -244,7 +244,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
             </div>
 
             {profiles.length === 0 ? (
-                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-8 text-center">
+                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-6 text-center">
                     <Users className="w-12 h-12 text-gray-200 dark:text-neutral-800 mx-auto mb-4" />
                     <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">No Profiles Found</h3>
                     <p className="text-gray-500 mt-2 text-sm">Be the first to create a profile, or check back later when more students join.</p>

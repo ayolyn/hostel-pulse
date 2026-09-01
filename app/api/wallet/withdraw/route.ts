@@ -61,7 +61,7 @@ export async function POST(req: Request) {
                 bank_name: bankName,
                 account_number: accountNumber,
                 account_name: accountName,
-                status: 'pending'
+                status: 'completed'
             });
 
         if (withdrawError) {
@@ -73,8 +73,8 @@ export async function POST(req: Request) {
         // Add Notification
         await createNotification(
             user.id,
-            'Withdrawal Requested',
-            `Your withdrawal of ₦${withdrawAmount.toLocaleString()} to ${bankName} is pending processing.`,
+            'Withdrawal Successful',
+            `Your withdrawal of ₦${withdrawAmount.toLocaleString()} to ${bankName} was processed successfully.`,
             '/dashboard/student?tab=wallet',
             'withdrawal'
         );

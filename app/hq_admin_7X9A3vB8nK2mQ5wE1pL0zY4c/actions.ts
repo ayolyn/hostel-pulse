@@ -93,7 +93,7 @@ async function getPendingCount(db: any) {
         .from('profiles')
         .select('*', { count: 'exact', head: true })
         .eq('is_verified', false)
-        .not('student_id_url', 'is', null);
+        .not('student_id_url', 'is', null).neq('student_id_url', '');
     
     count += profilesCount || 0;
 
@@ -119,7 +119,7 @@ export async function getPendingAccounts() {
         .from('profiles')
         .select('*')
         .eq('is_verified', false)
-        .not('student_id_url', 'is', null) // We know business fields aren't inherently in profiles, but student_id_url is.
+        .not('student_id_url', 'is', null).neq('student_id_url', '') // We know business fields aren't inherently in profiles, but student_id_url is.
         .order('updated_at', { ascending: true });
 
     if (studentError) {
@@ -243,7 +243,7 @@ export async function rejectAccount(id: string, tableName: string) {
 
     const { error } = await db
         .from(tableName)
-        .delete()
+        .update({ is_approved: false, compliance_submitted: false, govt_id_url: null, selfie_url: null, cac_document_url: null })
         .eq('id', id);
 
     if (error) return { error: error.message };
@@ -433,14 +433,14 @@ export async function revokeVerification(id: string, tableName: string) {
     
     if (tableName === 'student_accounts' || tableName === 'profiles') {
         await db.from('profiles').update({ is_verified: false }).eq('id', id);
-        const { error } = await db.from('student_accounts').update({ is_approved: false }).eq('id', id);
+        const { error } = await db.from('student_accounts').update({ is_approved: false, student_id_url: null }).eq('id', id); await db.from('profiles').update({ student_id_url: null }).eq('id', id);
         
         await createNotification(id, 'Verification Revoked', 'Your verification status has been revoked. Please contact support.', '/dashboard', 'warning');
 
         if (error) return { error: error.message };
         return { success: true };
     }
-    const { error } = await db.from(tableName).update({ is_verified: false, is_approved: false }).eq('id', id);
+    const { error } = await db.from(tableName).update({ is_verified: false, is_approved: false, govt_id_url: null, selfie_url: null, cac_document_url: null, compliance_submitted: false }).eq('id', id);
     
     await createNotification(id, 'Verification Revoked', 'Your verification status has been revoked. Please contact support.', '/dashboard', 'warning');
 

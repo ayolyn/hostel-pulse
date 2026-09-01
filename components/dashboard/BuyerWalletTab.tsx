@@ -257,7 +257,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
             {/* Escrow Operations */}
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                    <h2 className="text-base font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                         <ShieldCheck className="w-6 h-6 text-[#BEF264]" />
                         Escrow Operations
                     </h2>
@@ -265,14 +265,14 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                 </div>
 
                 {escrowTransactions.length === 0 ? (
-                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-6 text-center">
+                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-4 text-center">
                         <ShieldCheck className="w-12 h-12 text-gray-100 dark:text-neutral-800 mx-auto mb-4" />
                         <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">No Active Escrows</h3>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 gap-2">
                         {escrowTransactions.map((t) => (
-                            <div key={t.id} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-6 rounded-3xl flex flex-col md:flex-row md:items-center justify-between hover:border-[#BEF264]/40 transition-all group gap-2">
+                            <div key={t.id} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex flex-col md:flex-row md:items-center justify-between hover:border-[#BEF264]/40 transition-all group gap-2">
                                 <div className="flex items-center gap-5">
                                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
                                         t.type === 'Property' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-500' : 
@@ -284,7 +284,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                          <Package className="w-6 h-6" />}
                                     </div>
                                     <div>
-                                        <h4 className="font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight text-sm line-clamp-1">{t.title}</h4>
+                                        <h4 className="font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight text-xs line-clamp-1">{t.title}</h4>
                                         <div className="flex items-center gap-2 mt-1">
                                             <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">{new Date(t.created_at).toLocaleDateString()}</span>
                                             <span className="w-1 h-1 rounded-full bg-gray-200 dark:bg-neutral-800" />
@@ -357,7 +357,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
             {/* Transaction Ledger */}
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                    <h2 className="text-base font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                         <Receipt className="w-6 h-6 text-[#BEF264]" />
                         Payment History
                     </h2>
@@ -367,13 +367,13 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                 {historyTransactions.length === 0 ? (
                     <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-20 text-center">
                         <Wallet className="w-16 h-16 text-gray-100 dark:text-neutral-800 mx-auto mb-6" />
-                        <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">No Transactions Yet</h3>
+                        <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">No Transactions Yet</h3>
                         <p className="text-gray-500 mt-2 font-medium">When you pay for a hostel or market item, it will appear here.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 gap-2">
                         {historyTransactions.map((t) => (
-                            <div key={t.id} onClick={() => setSelectedTx(t)} className="cursor-pointer bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-6 rounded-3xl flex items-center justify-between hover:border-[#BEF264]/40 transition-all group">
+                            <div key={t.id} onClick={() => setSelectedTx(t)} className="cursor-pointer bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex items-center justify-between hover:border-[#BEF264]/40 transition-all group">
                                 <div className="flex items-center gap-5">
                                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
                                         t.type === 'Property' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-500' : 
@@ -389,7 +389,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                          <Package className="w-6 h-6" />}
                                     </div>
                                     <div>
-                                        <h4 className="font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight text-sm line-clamp-1">{t.title}</h4>
+                                        <h4 className="font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight text-xs line-clamp-1">{t.title}</h4>
                                         <div className="flex items-center gap-2 mt-1">
                                             <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">{new Date(t.created_at).toLocaleDateString()}</span>
                                             <span className="w-1 h-1 rounded-full bg-gray-200 dark:bg-neutral-800" />
@@ -438,9 +438,9 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
             {/* Dispute Modal */}
             {disputeModal.id && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-neutral-900 rounded-3xl p-6 w-full max-w-md border border-gray-100 dark:border-white/10 shadow-2xl animate-in zoom-in-95 duration-200">
+                    <div className="bg-white dark:bg-neutral-900 rounded-3xl p-4 w-full max-w-md border border-gray-100 dark:border-white/10 shadow-2xl animate-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Report Issue</h3>
+                            <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Report Issue</h3>
                             <button 
                                 onClick={() => setDisputeModal({ id: null, reason: '' })}
                                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
@@ -449,7 +449,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                             </button>
                         </div>
                         <form onSubmit={handleDispute}>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
                                 Freezing funds will prevent the seller from accessing them while our admin team reviews your claim. Please explain the issue (e.g. "House doesn't match pictures", "Landlord unresponsive").
                             </p>
                             <textarea
@@ -457,7 +457,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                                 rows={4}
                                 value={disputeModal.reason}
                                 onChange={(e) => setDisputeModal({ ...disputeModal, reason: e.target.value })}
-                                className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-red-500 outline-none resize-none mb-6 text-sm"
+                                className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-red-500 outline-none resize-none mb-6 text-xs"
                                 placeholder="Describe the issue..."
                             />
                             <div className="flex gap-3">
@@ -514,17 +514,17 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                         >
                             <X className="w-4 h-4" />
                         </button>
-                        <div className="p-6">
+                        <div className="p-4">
                             <div className="w-12 h-12 bg-[#BEF264]/20 rounded-xl flex items-center justify-center mb-4">
                                 <Receipt className="w-5 h-5 text-[#BEF264]" />
                             </div>
-                            <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight mb-1">Transaction Details</h3>
+                            <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight mb-1">Transaction Details</h3>
                             <p className="text-gray-500 font-medium text-xs mb-4">Ref: {selectedTx.id}</p>
                             
                             <div className="space-y-4">
                                 <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/5">
                                     <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Amount</span>
-                                    <span className="font-black text-sm text-gray-900 dark:text-white">₦{Math.abs(selectedTx.amount).toLocaleString()}</span>
+                                    <span className="font-black text-xs text-gray-900 dark:text-white">₦{Math.abs(selectedTx.amount).toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/5">
                                     <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Item / Purpose</span>

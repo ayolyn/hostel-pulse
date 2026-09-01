@@ -17,23 +17,27 @@ export async function verifyStudentIdAuto(userId: string, imageUrl: string) {
             process.env.SUPABASE_SERVICE_ROLE_KEY! || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         );
 
+        
         const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "gpt-4o",
+            response_format: { type: "json_object" },
             messages: [
                 {
                     role: "user",
                     content: [
-                        { type: "text", text: "Analyze this image strictly. Is it a valid, official student ID card for LAUTECH (Ladoke Akintola University of Technology)? You must find the university name 'Ladoke Akintola University of Technology' or 'LAUTECH' clearly visible, along with a student photo. If ANY of these are missing, or if it is a random image, reply with exactly 'NO'. Only reply 'YES' if it is unmistakably a LAUTECH student ID." },
+                        { type: "text", text: "You are a strict KYC bot for Ladoke Akintola University of Technology (LAUTECH). Inspect this image. Return a JSON object with a single boolean field 'approved'. It must be true ONLY if the image is an official LAUTECH student ID card, clearly showing the name of the university and a student photo. If it is a random picture, a picture of the sky, or any other ID, return false." },
                         { type: "image_url", image_url: { url: imageUrl } }
                     ]
                 }
             ],
-            max_tokens: 10,
+            max_tokens: 200,
         });
 
-        const answer = response.choices[0].message.content?.trim().toUpperCase();
+        const answerString = response.choices[0].message.content || '{}';
+        const answer = JSON.parse(answerString);
 
-        if (answer?.includes('YES')) {
+        if (answer.approved === true) {
+
             // Auto-Approve
             await supabaseAdmin.from('student_accounts').update({ is_approved: true }).eq('id', userId);
             await supabaseAdmin.from('agent_accounts').update({ is_approved: true }).eq('id', userId);

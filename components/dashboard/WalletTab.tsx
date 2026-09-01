@@ -194,7 +194,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
             {/* Transaction Ledger */}
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                    <h2 className="text-base font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                         <Receipt className="w-6 h-6 text-[#0D9488] dark:text-[#BEF264]" />
                         Transaction History
                     </h2>
@@ -204,7 +204,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                 {transactions.length === 0 ? (
                     <div className="bg-gray-50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-20 text-center">
                         <Wallet className="w-16 h-16 text-gray-200 dark:text-white/5 mx-auto mb-6" />
-                        <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Your Wallet is Empty</h3>
+                        <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Your Wallet is Empty</h3>
                         <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-2 px-10">Start listing properties in Under-G to earn your first commission!</p>
                     </div>
                 ) : (
@@ -227,7 +227,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                                 {tx.type === 'Withdrawal' ? <ArrowUpRight className="w-4 h-4" /> : isReleased ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
                                             </div>
                                             <div>
-                                                <h4 className="text-xs font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight">{tx.type} Payment</h4>
+                                                <h4 className="text-xs font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight">{tx.type} Payment</h4>
                                                 <p className="text-[8px] font-black uppercase tracking-widest text-gray-500 mt-1">Paid by {tx.student_name}</p>
                                             </div>
                                         </div>
@@ -280,7 +280,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                     <div className="bg-white dark:bg-neutral-900 rounded-3xl w-full max-w-md p-5 relative shadow-2xl overflow-hidden">
                         <button 
                             onClick={() => setSelectedTx(null)}
-                            className="absolute top-6 right-6 w-10 h-10 bg-gray-100 dark:bg-neutral-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
+                            className="absolute top-4 right-6 w-10 h-10 bg-gray-100 dark:bg-neutral-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
                         >
                             <XCircle className="w-4 h-4 text-gray-500" />
                         </button>
@@ -289,7 +289,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                             <div className="w-12 h-12 bg-[#BEF264]/10 rounded-full flex items-center justify-center mx-auto mb-3">
                                 <Receipt className="w-8 h-8 text-[#0D9488] dark:text-[#BEF264]" />
                             </div>
-                            <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Transaction Details</h3>
+                            <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Transaction Details</h3>
                             <p className="text-[9px] font-bold text-gray-500 mt-1 uppercase tracking-widest">{selectedTx.type} Payment</p>
                         </div>
                         
