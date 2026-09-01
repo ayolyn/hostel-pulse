@@ -28,7 +28,7 @@ export default async function AdminCaseRoom({ params }: { params: { escrow_id: s
             <div className="flex h-screen items-center justify-center bg-[#0F172A] text-white">
                 <div className="text-center space-y-4">
                     <h1 className="text-2xl font-black text-red-500 uppercase tracking-widest">Database Error</h1>
-                    <p className="text-gray-400 font-bold uppercase p-10">{txError?.message || txError?.details || txError?.hint || 'Row not found'}</p>
+                    <p className="text-gray-400 font-bold uppercase p-6">{txError?.message || txError?.details || txError?.hint || 'Row not found'}</p>
                     <p className="text-xs text-gray-500">Could not find escrow transaction ID: {params.escrow_id}</p>
                 </div>
             </div>

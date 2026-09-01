@@ -30,7 +30,7 @@ export function AgentDashboardShell({
                 <AgentTopBar onMenuClick={toggleSidebar} isSidebarRetracted={isRetracted} />
 
                 <main className="w-full flex-1">
-                    <div className="max-w-7xl mx-auto px-6 lg:px-12 py-10 lg:py-16">
+                    <div className="max-w-7xl mx-auto px-6 lg:px-6 py-10 lg:py-16">
                         {children}
                     </div>
                 </main>

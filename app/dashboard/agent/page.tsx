@@ -255,7 +255,7 @@ function AgentDashboardContent() {
                                     <X className="w-6 h-6 text-gray-400" />
                                 </button>
                             </div>
-                            <div className="flex-1 overflow-y-auto p-12 no-scrollbar">
+                            <div className="flex-1 overflow-y-auto p-6 no-scrollbar">
                                 <ListingStudio 
                                     editId={editingPropertyId}
                                     onComplete={() => {

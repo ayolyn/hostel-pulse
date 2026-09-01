@@ -30,7 +30,7 @@ export function AgentTopBar({ onMenuClick, isSidebarRetracted }: AgentTopBarProp
 
 
     return (
-        <header className="h-20 lg:h-24 bg-white/80 dark:bg-black/80 backdrop-blur-2xl border-b border-neutral-200 dark:border-white/5 px-6 lg:px-12 flex items-center justify-between sticky top-0 z-50">
+        <header className="h-20 lg:h-24 bg-white/80 dark:bg-black/80 backdrop-blur-2xl border-b border-neutral-200 dark:border-white/5 px-6 lg:px-6 flex items-center justify-between sticky top-0 z-50">
             <div className="flex items-center gap-6">
                 <button 
                     onClick={onMenuClick}

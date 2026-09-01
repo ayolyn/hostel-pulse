@@ -135,7 +135,7 @@ export default function ProviderDirectoryPage() {
             <main className="pt-32 px-6 max-w-7xl mx-auto w-full">
                 {/* Hero Section */}
                 <div className="mb-12">
-                    <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-4">
+                    <h1 className="text-2xl sm:text-3xl md:text-3xl sm:text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-4">
                         Find Your <span className="text-gray-400 dark:text-gray-500">Trusted</span> Provider
                     </h1>
                     <p className="text-lg text-gray-500 dark:text-gray-400 font-medium max-w-2xl">
@@ -152,16 +152,16 @@ export default function ProviderDirectoryPage() {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search by name or area..."
-                            className="w-full pl-14 pr-6 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold text-gray-900"
+                            className="w-full pl-14 pr-6 py-3 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold text-gray-900"
                         />
                     </div>
                 </div>
 
                 {/* Agent Grid */}
                 {loading ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-32">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-32">
                         {[1, 2, 3, 4, 5, 6].map(i => (
-                            <div key={i} className="bg-white border border-gray-100 shadow-sm animate-pulse h-96 rounded-[3rem] p-8 flex flex-col gap-4">
+                            <div key={i} className="bg-white border border-gray-100 shadow-sm animate-pulse h-96 rounded-3xl p-5 flex flex-col gap-4">
                                 <div className="flex gap-6">
                                     <div className="w-24 h-24 bg-gray-100 rounded-[2rem]" />
                                     <div className="flex flex-col gap-2 flex-1 pt-2">
@@ -182,18 +182,18 @@ export default function ProviderDirectoryPage() {
                         ))}
                     </div>
                 ) : filteredProviders.length === 0 ? (
-                    <div className="bg-white border-2 border-dashed border-gray-100 rounded-3xl p-10 text-center pb-32">
+                    <div className="bg-white border-2 border-dashed border-gray-100 rounded-3xl p-6 text-center pb-32">
                         <User className="w-12 h-12 text-gray-200 mx-auto mb-4" />
                         <h4 className="text-lg font-black text-gray-900 uppercase tracking-tight">No providers found</h4>
                         <p className="text-gray-500 mt-2">Try adjusting your search query.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-32">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-32">
                         {filteredProviders.map((provider) => (
                             <motion.div
                                 key={provider.id}
                                 whileHover={{ y: -10 }}
-                                className="bg-white rounded-[3rem] p-8 border border-gray-100 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden flex flex-col"
+                                className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden flex flex-col"
                             >
                                 {/* Verified Badge */}
                                 <div className="absolute top-6 right-6 z-10">

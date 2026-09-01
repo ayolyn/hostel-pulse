@@ -71,7 +71,7 @@ export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) 
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             placeholder="0"
-                            className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl py-4 sm:py-6 pl-10 sm:pl-12 pr-4 sm:pr-6 text-2xl sm:text-3xl font-black text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-700 outline-none focus:border-[#BEF264] transition-colors"
+                            className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl py-3 sm:py-6 pl-10 sm:pl-12 pr-4 sm:pr-6 text-2xl sm:text-3xl font-black text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-700 outline-none focus:border-[#BEF264] transition-colors"
                         />
                     </div>
 
@@ -90,7 +90,7 @@ export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) 
                     <button 
                         onClick={handleDeposit}
                         disabled={isProcessing || !amount || Number(amount) <= 0}
-                        className="w-full bg-[#BEF264] disabled:bg-gray-200 dark:disabled:bg-white/5 disabled:text-gray-400 text-black py-4 sm:py-5 rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center justify-center gap-3 hover:bg-[#a6d456] transition-all"
+                        className="w-full bg-[#BEF264] disabled:bg-gray-200 dark:disabled:bg-white/5 disabled:text-gray-400 text-black py-3 sm:py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center justify-center gap-3 hover:bg-[#a6d456] transition-all"
                     >
                         {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Proceed to Pay'}
                     </button>

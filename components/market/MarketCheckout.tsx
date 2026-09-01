@@ -137,7 +137,7 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
                             <button 
                                 onClick={() => handlePurchase('WALLET')}
                                 disabled={loading}
-                                className="w-full bg-[#BEF264] text-black font-black py-5 rounded-2xl shadow-xl shadow-[#BEF264]/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
+                                className="w-full bg-[#BEF264] text-black font-black py-3 rounded-2xl shadow-xl shadow-[#BEF264]/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
                             >
                                 <Wallet className="w-5 h-5" />
                                 <span className="uppercase tracking-widest text-[11px]">Pay from Wallet</span>
@@ -146,7 +146,7 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
                             <button 
                                 onClick={() => handlePurchase('CARD')}
                                 disabled={loading}
-                                className="w-full bg-black text-[#BEF264] font-black py-5 rounded-2xl shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
+                                className="w-full bg-black text-[#BEF264] font-black py-3 rounded-2xl shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
                             >
                                 <CreditCard className="w-5 h-5" />
                                 <span className="uppercase tracking-widest text-[11px]">Pay with Paystack</span>
@@ -154,7 +154,7 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
                             <button 
                                 onClick={() => handlePurchase('OPAY')}
                                 disabled={loading}
-                                className="w-full bg-[#1dbf73] text-white font-black py-5 rounded-2xl shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
+                                className="w-full bg-[#1dbf73] text-white font-black py-3 rounded-2xl shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 group"
                             >
                                 <Smartphone className="w-5 h-5" />
                                 <span className="uppercase tracking-widest text-[11px]">Pay with OPay</span>
@@ -162,7 +162,7 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
                         </div>
                     </div>
                 ) : (
-                    <div className="py-12 text-center animate-in zoom-in-95 duration-500">
+                    <div className="py-6 text-center animate-in zoom-in-95 duration-500">
                         <div className="w-16 h-16 bg-[#BEF264]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                             <CheckCircle className="w-8 h-8 text-[#BEF264]" />
                         </div>
@@ -173,13 +173,13 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
                         <div className="space-y-3 mt-8">
                             <button 
                                 onClick={() => setShowReview(true)}
-                                className="w-full bg-[#BEF264] text-black py-4 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg hover:scale-[1.02] transition-all"
+                                className="w-full bg-[#BEF264] text-black py-3 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg hover:scale-[1.02] transition-all"
                             >
                                 Leave a Review
                             </button>
                             <button 
                                 onClick={onClose}
-                                className="w-full py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                                className="w-full py-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black dark:hover:text-white transition-colors"
                             >
                                 Back to Market
                             </button>

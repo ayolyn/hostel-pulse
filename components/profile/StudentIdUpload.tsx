@@ -76,7 +76,7 @@ export function StudentIdUpload() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center p-8">
+            <div className="flex items-center justify-center p-5">
                 <Loader2 className="w-6 h-6 animate-spin text-neutral-500" />
             </div>
         );

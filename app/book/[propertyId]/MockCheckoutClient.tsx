@@ -153,7 +153,7 @@ export default function MockCheckoutClient({
 
     return (
         <div className="bg-white rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden">
-            <div className="p-8 border-b border-gray-100 bg-gray-50 flex flex-col md:flex-row items-center gap-6">
+            <div className="p-5 border-b border-gray-100 bg-gray-50 flex flex-col md:flex-row items-center gap-6">
                 <img src={propertyImage} alt={propertyTitle} className="w-24 h-24 object-cover rounded-2xl shadow-sm" />
                 <div className="flex-1 text-center md:text-left">
                     <p className="text-[#0D9488] font-black uppercase tracking-widest text-xs mb-1">Booking Request</p>
@@ -165,8 +165,8 @@ export default function MockCheckoutClient({
                 </div>
             </div>
 
-            <div className="p-8">
-                <div className="grid md:grid-cols-2 gap-12">
+            <div className="p-5">
+                <div className="grid md:grid-cols-2 gap-6">
                     {/* Left Column: Form & details */}
                     <div className="space-y-8">
                         <div>
@@ -222,7 +222,7 @@ export default function MockCheckoutClient({
                             <button 
                                 onClick={() => executePayment('WALLET')}
                                 disabled={isProcessing || walletBalance === null || walletBalance < totalAmount}
-                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 flex items-center justify-between px-6 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 flex items-center justify-between px-6 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <span className="flex items-center gap-2">
                                     <Wallet className="w-5 h-5" /> Pay from Wallet
@@ -237,7 +237,7 @@ export default function MockCheckoutClient({
                             <button 
                                 onClick={() => executePayment('CARD')}
                                 disabled={isProcessing}
-                                className="w-full bg-black text-[#BEF264] font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-neutral-800 transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-200 disabled:opacity-50"
+                                className="w-full bg-black text-[#BEF264] font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-neutral-800 transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-200 disabled:opacity-50"
                             >
                                 {isProcessing ? "Processing..." : (
                                     <>
@@ -249,7 +249,7 @@ export default function MockCheckoutClient({
                             <button 
                                 onClick={() => executePayment('OPAY')}
                                 disabled={isProcessing}
-                                className="w-full bg-[#1dbf73] text-white font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-[#18a061] transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-200 disabled:opacity-50"
+                                className="w-full bg-[#1dbf73] text-white font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#18a061] transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-200 disabled:opacity-50"
                             >
                                 {isProcessing ? "Processing..." : (
                                     <>

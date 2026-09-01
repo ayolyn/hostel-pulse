@@ -8,11 +8,11 @@ export function WhyHostelPulse() {
 
   return (
     <section className="py-20 bg-[#0a0a0a] text-white overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-6 lg:px-4">
         
         {/* Section Header */}
         <div className="mb-12 text-center md:text-left">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-3xl sm:text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">
             Never Get Scammed on <span className="text-green-400">Rent Again.</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl">
@@ -25,7 +25,7 @@ export function WhyHostelPulse() {
           
           {/* Main Card: Escrow Protection (Spans 2 columns on Desktop) */}
           <div 
-            className="row-span-2 md:col-span-2 relative p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden group flex flex-col justify-end"
+            className="row-span-2 md:col-span-2 relative p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden group flex flex-col justify-end"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
@@ -56,8 +56,8 @@ export function WhyHostelPulse() {
             </div>
 
             {/* Interactive Animated Escrow Pill */}
-            <div className="absolute top-8 left-8 right-8 flex justify-center items-center">
-              <div className={`transition-all duration-500 ease-in-out flex items-center gap-3 px-6 py-4 rounded-full border shadow-xl ${isHovered ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'bg-red-500/20 border-red-500/50 text-red-400'}`}>
+            <div className="absolute top-5 left-8 right-8 flex justify-center items-center">
+              <div className={`transition-all duration-500 ease-in-out flex items-center gap-3 px-6 py-3 rounded-full border shadow-xl ${isHovered ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'bg-red-500/20 border-red-500/50 text-red-400'}`}>
                  {isHovered ? <Unlock className="w-6 h-6" /> : <Lock className="w-6 h-6" />}
                  <span className="font-semibold text-sm md:text-base">
                    {isHovered ? "Funds Released on Key Handover" : "Funds Locked in Secure Escrow"}
@@ -77,9 +77,9 @@ export function WhyHostelPulse() {
           </div>
 
           {/* Card 2: Video Walkthroughs */}
-          <div className="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md relative overflow-hidden flex flex-col justify-end group">
+          <div className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md relative overflow-hidden flex flex-col justify-end group">
             {/* Mockup Video Element Background */}
-            <div className="absolute -top-12 -right-8 w-48 h-48 bg-gradient-to-br from-green-400/10 to-transparent rounded-2xl border border-white/5 flex items-center justify-center transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
+            <div className="absolute -top-6 -right-8 w-48 h-48 bg-gradient-to-br from-green-400/10 to-transparent rounded-2xl border border-white/5 flex items-center justify-center transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
                <PlayCircle className="w-12 h-12 text-white/10 group-hover:text-green-400/50 transition-colors duration-300" />
             </div>
             
@@ -92,7 +92,7 @@ export function WhyHostelPulse() {
           </div>
 
           {/* Card 3: Direct to Verified Agents */}
-          <div className="p-8 rounded-3xl bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 backdrop-blur-md flex flex-col justify-end">
+          <div className="p-5 rounded-3xl bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 backdrop-blur-md flex flex-col justify-end">
             <h3 className="text-xl font-bold mb-2">Find in Minutes</h3>
             <p className="text-gray-400 text-sm mb-4">
               Skip endless middle-men taking ?2,000 just to show you an already occupied room.
@@ -107,7 +107,7 @@ export function WhyHostelPulse() {
         </div>
 
         {/* Social Proof Review Section */}
-        <div className="mt-8 p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md flex flex-col md:flex-row items-center gap-8">
+        <div className="mt-8 p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md flex flex-col md:flex-row items-center gap-5">
           
           {/* Avatar Stack & Rating */}
           <div className="flex-shrink-0 flex flex-col items-center md:items-start">

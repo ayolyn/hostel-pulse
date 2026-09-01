@@ -124,7 +124,7 @@ export function PostRoommateRequest({ onClose, onSuccess }: PostRoommateRequestP
 
     if (checkingVerification) {
         return (
-            <div className="bg-white dark:bg-neutral-900 p-12 rounded-[2.5rem] flex flex-col items-center justify-center min-h-[400px]">
+            <div className="bg-white dark:bg-neutral-900 p-6 rounded-[2.5rem] flex flex-col items-center justify-center min-h-[400px]">
                 <div className="w-12 h-12 border-4 border-[#BEF264] border-t-transparent rounded-full animate-spin" />
             </div>
         );
@@ -147,7 +147,7 @@ export function PostRoommateRequest({ onClose, onSuccess }: PostRoommateRequestP
                         if (onClose) onClose();
                         window.location.href = '/dashboard/student?tab=profile';
                     }}
-                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs px-8 py-4 rounded-2xl hover:scale-105 transition-all shadow-xl"
+                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs px-4 py-3 rounded-2xl hover:scale-105 transition-all shadow-xl"
                 >
                     Go to Profile →
                 </button>
@@ -156,7 +156,7 @@ export function PostRoommateRequest({ onClose, onSuccess }: PostRoommateRequestP
     }
 
     return (
-        <div className="bg-white dark:bg-neutral-900 p-8 rounded-[2.5rem] border border-neutral-100 dark:border-white/5 w-full max-w-xl mx-auto shadow-2xl relative">
+        <div className="bg-white dark:bg-neutral-900 p-5 rounded-[2.5rem] border border-neutral-100 dark:border-white/5 w-full max-w-xl mx-auto shadow-2xl relative">
             <button 
                 onClick={onClose}
                 className="absolute top-6 right-6 p-2 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
@@ -186,7 +186,7 @@ export function PostRoommateRequest({ onClose, onSuccess }: PostRoommateRequestP
                                 type="number" 
                                 required
                                 placeholder="e.g. 150000"
-                                className="w-full pl-11 pr-4 py-4 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
+                                className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
                                 value={formData.budget}
                                 onChange={(e) => setFormData({...formData, budget: e.target.value})}
                             />
@@ -198,7 +198,7 @@ export function PostRoommateRequest({ onClose, onSuccess }: PostRoommateRequestP
                         <div className="relative">
                             <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <select 
-                                className="w-full pl-11 pr-4 py-4 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm appearance-none"
+                                className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm appearance-none"
                                 value={formData.preferred_zone}
                                 onChange={(e) => setFormData({...formData, preferred_zone: e.target.value})}
                             >
@@ -219,7 +219,7 @@ export function PostRoommateRequest({ onClose, onSuccess }: PostRoommateRequestP
                                 type="text" 
                                 required
                                 placeholder="Enter your preferred location"
-                                className="w-full pl-11 pr-4 py-4 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
+                                className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
                                 value={formData.custom_zone}
                                 onChange={(e) => setFormData({...formData, custom_zone: e.target.value})}
                             />
@@ -234,7 +234,7 @@ export function PostRoommateRequest({ onClose, onSuccess }: PostRoommateRequestP
                         <textarea 
                             required
                             placeholder="e.g. 200L Engineering student, quiet, non-smoker, early riser..."
-                            className="w-full pl-11 pr-4 py-4 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all h-32 font-medium text-sm resize-none"
+                            className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all h-32 font-medium text-sm resize-none"
                             value={formData.habits}
                             onChange={(e) => setFormData({...formData, habits: e.target.value})}
                         />
@@ -254,7 +254,7 @@ export function PostRoommateRequest({ onClose, onSuccess }: PostRoommateRequestP
                     <button 
                         type="submit"
                         disabled={loading || stopping}
-                        className="flex-1 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs py-5 rounded-2xl hover:shadow-xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs py-3 rounded-2xl hover:shadow-xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? (
                             <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -269,7 +269,7 @@ export function PostRoommateRequest({ onClose, onSuccess }: PostRoommateRequestP
                             type="button"
                             onClick={handleStopLooking}
                             disabled={loading || stopping}
-                            className="bg-red-50 text-red-500 font-black uppercase tracking-widest text-xs py-5 px-6 rounded-2xl hover:bg-red-100 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                            className="bg-red-50 text-red-500 font-black uppercase tracking-widest text-xs py-3 px-6 rounded-2xl hover:bg-red-100 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                             {stopping ? (
                                 <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />

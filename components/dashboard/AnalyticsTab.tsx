@@ -112,7 +112,7 @@ export default function AnalyticsTab({ userId }: { userId: string }) {
                             <Eye className="w-4 h-4" />
                         </div>
                     </div>
-                    <span className="text-3xl font-black text-gray-900 dark:text-white">{stats.impressions.toLocaleString()}</span>
+                    <span className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">{stats.impressions.toLocaleString()}</span>
                 </div>
                 
                 <div className="bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex flex-col justify-between">
@@ -122,7 +122,7 @@ export default function AnalyticsTab({ userId }: { userId: string }) {
                             <MousePointerClick className="w-4 h-4" />
                         </div>
                     </div>
-                    <span className="text-3xl font-black text-gray-900 dark:text-white">{stats.views.toLocaleString()}</span>
+                    <span className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">{stats.views.toLocaleString()}</span>
                 </div>
                 
                 <div className="bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex flex-col justify-between">
@@ -132,7 +132,7 @@ export default function AnalyticsTab({ userId }: { userId: string }) {
                             <MessageCircle className="w-4 h-4" />
                         </div>
                     </div>
-                    <span className="text-3xl font-black text-gray-900 dark:text-white">{stats.leads.toLocaleString()}</span>
+                    <span className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">{stats.leads.toLocaleString()}</span>
                 </div>
                 
                 <div className="bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex flex-col justify-between">
@@ -142,7 +142,7 @@ export default function AnalyticsTab({ userId }: { userId: string }) {
                             <Zap className="w-4 h-4" />
                         </div>
                     </div>
-                    <span className="text-3xl font-black text-gray-900 dark:text-white">{stats.ctr.toFixed(1)}%</span>
+                    <span className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">{stats.ctr.toFixed(1)}%</span>
                 </div>
             </div>
 

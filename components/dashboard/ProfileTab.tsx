@@ -138,7 +138,7 @@ export default function ProfileTab({ userId }: ProfileTabProps) {
                                         type="text"
                                         value={profile.full_name}
                                         onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                                        className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-[#BEF264] focus:ring-1 focus:ring-[#BEF264] transition-all outline-none font-medium"
+                                        className="w-full bg-black/40 border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-white focus:border-[#BEF264] focus:ring-1 focus:ring-[#BEF264] transition-all outline-none font-medium"
                                         placeholder="Enter your full name"
                                     />
                                 </div>
@@ -153,7 +153,7 @@ export default function ProfileTab({ userId }: ProfileTabProps) {
                                             type="tel"
                                             value={profile.phone}
                                             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                                            className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-[#BEF264] focus:ring-1 focus:ring-[#BEF264] transition-all outline-none font-medium"
+                                            className="w-full bg-black/40 border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-white focus:border-[#BEF264] focus:ring-1 focus:ring-[#BEF264] transition-all outline-none font-medium"
                                             placeholder="e.g. 234..."
                                         />
                                     </div>
@@ -167,7 +167,7 @@ export default function ProfileTab({ userId }: ProfileTabProps) {
                                             type="tel"
                                             value={profile.whatsapp_number}
                                             onChange={(e) => setProfile({ ...profile, whatsapp_number: e.target.value })}
-                                            className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-[#BEF264] focus:ring-1 focus:ring-[#BEF264] transition-all outline-none font-medium"
+                                            className="w-full bg-black/40 border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-white focus:border-[#BEF264] focus:ring-1 focus:ring-[#BEF264] transition-all outline-none font-medium"
                                             placeholder="e.g. 234..."
                                         />
                                     </div>
@@ -179,7 +179,7 @@ export default function ProfileTab({ userId }: ProfileTabProps) {
                             <button
                                 onClick={handleSave}
                                 disabled={saving}
-                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-[0.2em] py-5 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-[0.2em] py-3 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 {saving ? (
                                     <>

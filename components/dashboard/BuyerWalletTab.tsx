@@ -242,13 +242,13 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
             <div className="flex flex-col sm:flex-row gap-2">
                 <button 
                     onClick={() => setShowDepositModal(true)}
-                    className="flex-1 bg-[#BEF264] text-black py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/20"
+                    className="flex-1 bg-[#BEF264] text-black py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/20"
                 >
                     Deposit Funds
                 </button>
                 <button 
                     onClick={() => setShowWithdrawalModal(true)}
-                    className="flex-1 bg-neutral-900 dark:bg-white/10 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all border border-neutral-800 dark:border-white/5"
+                    className="flex-1 bg-neutral-900 dark:bg-white/10 text-white py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all border border-neutral-800 dark:border-white/5"
                 >
                     Withdraw
                 </button>

@@ -73,14 +73,14 @@ export default function AgentTermsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0F172A] text-white flex flex-col items-center py-12 px-4 relative overflow-hidden">
+        <div className="min-h-screen bg-[#0F172A] text-white flex flex-col items-center py-6 px-4 relative overflow-hidden">
             {/* Background elements */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-10">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#BEF264] rounded-full blur-[120px]" />
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500 rounded-full blur-[120px]" />
             </div>
 
-            <div className="w-full max-w-3xl bg-[#1E293B]/50 backdrop-blur-2xl p-8 md:p-12 rounded-[2rem] border border-white/5 relative z-10 shadow-2xl">
+            <div className="w-full max-w-3xl bg-[#1E293B]/50 backdrop-blur-2xl p-5 md:p-6 rounded-[2rem] border border-white/5 relative z-10 shadow-2xl">
                 <div className="flex items-center gap-4 mb-8 border-b border-white/10 pb-6">
                     <div className="w-12 h-12 rounded-2xl bg-[#BEF264]/10 flex items-center justify-center">
                         <FileText className="w-6 h-6 text-[#BEF264]" />
@@ -187,14 +187,14 @@ export default function AgentTermsPage() {
                             <button
                                 onClick={() => handleAction('skipped')}
                                 disabled={submitting}
-                                className="w-1/3 bg-white/5 text-white font-black uppercase tracking-widest py-5 rounded-[1.5rem] hover:bg-white/10 transition-all text-sm"
+                                className="w-1/3 bg-white/5 text-white font-black uppercase tracking-widest py-3 rounded-[1.5rem] hover:bg-white/10 transition-all text-sm"
                             >
                                 Skip for Now
                             </button>
                             <button
                                 onClick={() => handleAction('accepted')}
                                 disabled={submitting}
-                                className="w-2/3 flex items-center justify-center gap-3 bg-[#BEF264] text-black font-black uppercase tracking-widest py-5 rounded-[1.5rem] hover:bg-[#a6d456] transition-all active:scale-95 shadow-xl shadow-[#BEF264]/20 disabled:opacity-60 text-sm"
+                                className="w-2/3 flex items-center justify-center gap-3 bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-[1.5rem] hover:bg-[#a6d456] transition-all active:scale-95 shadow-xl shadow-[#BEF264]/20 disabled:opacity-60 text-sm"
                             >
                                 {submitting ? 'Updating...' : 'I Have Read and Agree'}
                                 {!submitting && <CheckCircle2 className="w-5 h-5" />}
@@ -205,7 +205,7 @@ export default function AgentTermsPage() {
                     <div className="mt-10 pt-8 border-t border-white/10 flex justify-center">
                         <button
                             onClick={() => router.back()}
-                            className="px-8 py-3 bg-white/5 hover:bg-white/10 rounded-full text-white font-bold transition-colors text-sm"
+                            className="px-4 py-3 bg-white/5 hover:bg-white/10 rounded-full text-white font-bold transition-colors text-sm"
                         >
                             Go Back
                         </button>

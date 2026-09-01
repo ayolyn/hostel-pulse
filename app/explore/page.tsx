@@ -65,7 +65,7 @@ function ExploreContent() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] mb-1">Map View</p>
-                    <h1 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                         Explore Ogbomoso
                     </h1>
                     <p className="text-gray-500 font-medium mt-1 text-sm">
@@ -164,7 +164,7 @@ function ExploreContent() {
 
 export default function ExplorePage() {
     return (
-        <Suspense fallback={<div className="p-8 text-center text-gray-500">Loading Explore...</div>}>
+        <Suspense fallback={<div className="p-5 text-center text-gray-500">Loading Explore...</div>}>
             <StudentDashboardShell>
                 <ExploreContent />
             </StudentDashboardShell>

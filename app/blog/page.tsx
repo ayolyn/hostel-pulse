@@ -19,7 +19,7 @@ export default async function BlogPage() {
                 <PublicHeader />
                 <main className="pt-32 px-6 max-w-7xl mx-auto w-full pb-24 text-center">
                     <BookOpen className="w-16 h-16 text-gray-200 dark:text-neutral-800 mx-auto mb-4" />
-                    <h1 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-4">No Articles Yet</h1>
+                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-4">No Articles Yet</h1>
                 </main>
             </div>
         );
@@ -38,7 +38,7 @@ export default async function BlogPage() {
                             <BookOpen className="w-4 h-4" />
                             HOSTELPULSE Journal
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-4 max-w-2xl">
+                        <h1 className="text-2xl sm:text-3xl md:text-3xl sm:text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-4 max-w-2xl">
                             Insights for Students & Investors
                         </h1>
                         <p className="text-gray-500 dark:text-gray-400 font-medium max-w-2xl text-lg">
@@ -48,7 +48,7 @@ export default async function BlogPage() {
                 </div>
 
                 {/* Featured Post */}
-                <div className="bg-gray-900 rounded-[2.5rem] p-4 md:p-10 text-white flex flex-col md:flex-row gap-10 mb-16 items-center shadow-2xl relative overflow-hidden group">
+                <div className="bg-gray-900 rounded-[2.5rem] p-4 md:p-6 text-white flex flex-col md:flex-row gap-6 mb-16 items-center shadow-2xl relative overflow-hidden group">
                     <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900 to-transparent z-10 hidden md:block" />
 
                     <div className="relative w-full md:w-1/2 aspect-video md:aspect-square md:absolute md:right-0 md:top-0 md:bottom-0 rounded-3xl md:rounded-none overflow-hidden z-0 bg-gray-800">
@@ -67,7 +67,7 @@ export default async function BlogPage() {
                         <span className="inline-block px-3 py-1 bg-[#BEF264] text-black font-black uppercase tracking-widest text-xs rounded-full">
                             {featuredPost.category}
                         </span>
-                        <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-none">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl sm:text-2xl sm:text-3xl font-black tracking-tight leading-none">
                             {featuredPost.title}
                         </h2>
                         <p className="text-gray-400 font-medium text-lg max-w-lg">
@@ -88,7 +88,7 @@ export default async function BlogPage() {
                 {recentPosts.length > 0 && (
                     <>
                         <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-8">Latest Articles</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                             {recentPosts.map((post) => (
                                 <Link key={post.id} href={`/blog/${post.id}`} className="block group">
                                     <div className="relative aspect-[4/3] rounded-3xl overflow-hidden mb-5 shrink-0 bg-gray-100 dark:bg-neutral-800 border border-white/5">

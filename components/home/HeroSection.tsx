@@ -19,7 +19,7 @@ export function HeroSection() {
                 <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[120px] -ml-48 -mb-48" />
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 h-full flex flex-col lg:flex-row items-center relative z-10 gap-12 lg:gap-0">
+            <div className="max-w-7xl mx-auto px-6 h-full flex flex-col lg:flex-row items-center relative z-10 gap-6 lg:gap-0">
                 {/* Left Content */}
                 <div className="flex-1 flex flex-col justify-center text-center lg:text-left">
                     <HeroHeadline />
@@ -41,7 +41,7 @@ export function HeroSection() {
                     >
                         <button 
                             onClick={() => router.push('/rent')}
-                            className="bg-black dark:bg-[#BEF264] text-white dark:text-black font-black uppercase tracking-widest text-xs px-10 py-5 rounded-2xl shadow-2xl hover:scale-105 transition-all"
+                            className="bg-black dark:bg-[#BEF264] text-white dark:text-black font-black uppercase tracking-widest text-xs px-10 py-3 rounded-2xl shadow-2xl hover:scale-105 transition-all"
                         >
                             Explore Hostels
                         </button>
@@ -49,7 +49,7 @@ export function HeroSection() {
                             onClick={() => {
                                 document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
                             }}
-                            className="bg-white dark:bg-white/10 text-black dark:text-white border border-neutral-200 dark:border-white/20 font-black uppercase tracking-widest text-xs px-10 py-5 rounded-2xl hover:bg-neutral-50 dark:hover:bg-white/20 transition-all backdrop-blur-sm"
+                            className="bg-white dark:bg-white/10 text-black dark:text-white border border-neutral-200 dark:border-white/20 font-black uppercase tracking-widest text-xs px-10 py-3 rounded-2xl hover:bg-neutral-50 dark:hover:bg-white/20 transition-all backdrop-blur-sm"
                         >
                             How it works
                         </button>

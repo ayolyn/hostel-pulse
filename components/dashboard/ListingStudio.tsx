@@ -340,7 +340,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     <ShieldCheck className="w-12 h-12 text-red-500" />
                 </div>
                 <div className="max-w-md mx-auto">
-                    <h3 className="text-3xl font-black uppercase tracking-tighter text-gray-900 dark:text-white">Legal Guard Active</h3>
+                    <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tighter text-gray-900 dark:text-white">Legal Guard Active</h3>
                     <p className="text-[11px] font-bold text-gray-400 mt-4 uppercase tracking-[0.2em] italic leading-relaxed">
                         "In Ogbomoso, we keep things professional. You must accept the Professional Terms of Service in your profile before you can list properties."
                     </p>
@@ -353,7 +353,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                         const target = data?.role === 'landlord' ? '/dashboard/landlord' : '/dashboard/agent';
                         router.push(`${target}?tab=profile`);
                     }}
-                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-12 py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20"
+                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-6 py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20"
                 >
                     Update Official Profile
                 </button>
@@ -366,7 +366,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
             <div className="bg-black p-6 rounded-3xl text-white relative overflow-hidden">
                 <div className="relative z-10">
-                    <h3 className="text-3xl font-black uppercase tracking-tight">Listing Studio</h3>
+                    <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight">Listing Studio</h3>
                     <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] mt-2">Ogbomoso Master Inventory</p>
                 </div>
                 <div className="absolute top-0 right-0 p-6 opacity-10">
@@ -788,7 +788,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 <CheckCircle2 className="w-12 h-12" />
             </div>
             <div className="mt-8 text-black p-6 rounded-3xl border border-gray-100 shadow-sm bg-white">
-                <h3 className="text-3xl font-black uppercase tracking-tighter">Listing Live! 🎉</h3>
+                <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tighter">Listing Live! 🎉</h3>
                 <p className="text-gray-500 font-medium tracking-wide mt-2">Your {category} listing is now visible to all users on HOSTELPULSE.</p>
                 {uploadedImageUrls.length > 0 && (
                     <p className="text-xs text-[#BEF264] font-black uppercase tracking-widest mt-3">✓ {uploadedImageUrls.length} photo{uploadedImageUrls.length > 1 ? 's' : ''} uploaded</p>

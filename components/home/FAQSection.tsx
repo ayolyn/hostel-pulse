@@ -36,11 +36,11 @@ export function FAQSection() {
 
   return (
     <section className="py-20 bg-[#0a0a0a] text-white">
-      <div className="max-w-4xl mx-auto px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-6 lg:px-4">
         
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-3xl sm:text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">
             Common <span className="text-green-400">Questions</span>
           </h2>
           <p className="text-gray-400 text-lg">

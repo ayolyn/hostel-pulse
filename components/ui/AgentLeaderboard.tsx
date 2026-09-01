@@ -22,7 +22,7 @@ const AgentLeaderboard = () => {
                     <TrendingUp className="w-4 h-4 text-[#BEF264]" />
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#BEF264]">Top Performers</span>
                 </div>
-                <h3 className="text-3xl font-black uppercase tracking-tighter">Agent Heroes</h3>
+                <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tighter">Agent Heroes</h3>
                 <p className="text-gray-500 text-xs font-medium">Top earners this week across LAUTECH zones.</p>
             </div>
 

@@ -44,7 +44,7 @@ export function ReviewSection({ providerId, providerName, reviews, canReview }: 
             </div>
 
             {reviews.length === 0 ? (
-                <div className="bg-white border border-gray-100 rounded-[2rem] p-10 text-center shadow-sm">
+                <div className="bg-white border border-gray-100 rounded-[2rem] p-6 text-center shadow-sm">
                     <Star className="w-12 h-12 text-gray-200 mx-auto mb-4" />
                     <h4 className="text-lg font-black text-gray-900 uppercase tracking-tight">No reviews yet</h4>
                     <p className="text-gray-500 mt-2">This provider doesn't have any reviews yet.</p>

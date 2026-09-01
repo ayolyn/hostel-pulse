@@ -48,7 +48,7 @@ export default function AreaGuidePage() {
                     <div className="inline-flex items-center justify-center p-3 bg-[#BEF264]/20 text-black dark:text-[#BEF264] rounded-2xl mb-6">
                         <Map className="w-8 h-8" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-4">
+                    <h1 className="text-2xl sm:text-3xl md:text-3xl sm:text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-4">
                         Area Guides
                     </h1>
                     <p className="text-gray-500 font-medium max-w-2xl mx-auto text-lg">
@@ -56,14 +56,14 @@ export default function AreaGuidePage() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {areas.map((area, idx) => (
                         <motion.div 
                             key={area.name}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.1 }}
-                            className="bg-white dark:bg-neutral-900 rounded-[2rem] border border-gray-100 dark:border-white/5 p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden group"
+                            className="bg-white dark:bg-neutral-900 rounded-[2rem] border border-gray-100 dark:border-white/5 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden group"
                         >
                             <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${area.color} opacity-10 rounded-bl-full group-hover:scale-110 transition-transform`} />
                             

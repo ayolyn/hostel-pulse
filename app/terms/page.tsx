@@ -4,10 +4,10 @@ import { PublicHeader } from '@/components/layout/PublicHeader';
 
 export default function TermsOfService() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black/90 text-gray-900 dark:text-gray-100 pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-black/90 text-gray-900 dark:text-gray-100 pt-32 pb-16 px-4 sm:px-6 lg:px-4">
       <PublicHeader />
-      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
-        <h1 className="text-4xl font-extrabold tracking-tight mb-4">Terms of Service</h1>
+      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 p-5 md:p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">Terms of Service</h1>
         <p className="text-gray-500 dark:text-gray-400 mb-10 border-b border-gray-200 dark:border-gray-800 pb-6">Effective Date: August 26, 2026</p>
 
         <div className="space-y-8">

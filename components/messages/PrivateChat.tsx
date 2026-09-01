@@ -689,7 +689,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
     return (
         <div className="flex flex-col h-[calc(100vh-12rem)] bg-white dark:bg-neutral-900 rounded-[2.5rem] border border-neutral-100 dark:border-white/5 overflow-hidden shadow-xl relative">
             {/* Header */}
-            <div className="px-8 py-6 border-b border-neutral-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-neutral-800/30">
+            <div className="px-4 py-6 border-b border-neutral-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-neutral-800/30">
                 <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-white dark:hover:bg-neutral-700 rounded-xl transition-colors">
                     <ChevronLeft className="w-6 h-6" />
                 </button>
@@ -710,7 +710,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
 
             {/* Sticky Context Sub-Header */}
             {context && (
-                <div className="bg-[#BEF264]/10 dark:bg-[#BEF264]/5 border-b border-[#BEF264]/20 px-8 py-3 flex items-center justify-between shrink-0">
+                <div className="bg-[#BEF264]/10 dark:bg-[#BEF264]/5 border-b border-[#BEF264]/20 px-4 py-3 flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-white dark:bg-neutral-800 rounded-full overflow-hidden relative shadow-sm border border-white/10 shrink-0">
                             {context.type === 'market' ? (
@@ -756,7 +756,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
             )}
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-4">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4">
                 {messages.map((msg) => {
                     const isMine = msg.sender_id === userId;
                     const isOptimistic = msg.id.startsWith('temp-');
@@ -787,7 +787,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                     if (isInspectionLink || isInspectionConfirmed) {
                         return (
                             <div key={msg.id} className="flex justify-center my-6">
-                                <div className="bg-[#BEF264] text-black p-8 rounded-[2.5rem] max-w-md text-center shadow-2xl border-4 border-black/5 flex flex-col items-center">
+                                <div className="bg-[#BEF264] text-black p-5 rounded-[2.5rem] max-w-md text-center shadow-2xl border-4 border-black/5 flex flex-col items-center">
                                     <div className="w-16 h-16 bg-black text-[#BEF264] rounded-2xl flex items-center justify-center mb-6">
                                         {isInspectionConfirmed ? <CheckCheck className="w-8 h-8" /> : <Calendar className="w-8 h-8" />}
                                     </div>
@@ -797,7 +797,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                                     ) : isMine ? (
                                         <>
                                             <h4 className="text-xl font-black uppercase tracking-tighter mb-4 leading-tight">Inspection Pass Sent</h4>
-                                            <div className="bg-black/10 text-black/60 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest w-full">
+                                            <div className="bg-black/10 text-black/60 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest w-full">
                                                 Waiting for student to confirm & pay deposit
                                             </div>
                                         </>
@@ -806,7 +806,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                                             <h4 className="text-xl font-black uppercase tracking-tighter mb-4 leading-tight">Inspection Link Received</h4>
                                             <Link 
                                                 href={`/pay/escrow?msg_id=${msg.id}&prop_id=${propertyId}&amount=2000`}
-                                                className="bg-black text-[#BEF264] px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all w-full shadow-xl"
+                                                className="bg-black text-[#BEF264] px-10 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all w-full shadow-xl"
                                             >
                                                 Pay Inspection Fee (₦2,000)
                                             </Link>
@@ -935,7 +935,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 block">Note / Description</label>
                                 <input type="text" value={offerDescription} onChange={e => setOfferDescription(e.target.value)} className="w-full bg-gray-50 dark:bg-neutral-800 border-none rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-[#BEF264] outline-none" placeholder="e.g. Discounted without delivery" />
                             </div>
-                            <button onClick={sendCustomOffer} disabled={!offerPrice || processingOffer} className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest text-[10px] py-4 rounded-xl mt-2 hover:scale-[1.02] transition-transform disabled:opacity-50 flex justify-center items-center">
+                            <button onClick={sendCustomOffer} disabled={!offerPrice || processingOffer} className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest text-[10px] py-3 rounded-xl mt-2 hover:scale-[1.02] transition-transform disabled:opacity-50 flex justify-center items-center">
                                 {processingOffer ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send Offer to Buyer'}
                             </button>
                         </div>
@@ -973,7 +973,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                     value={input} 
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Type a message..." 
-                    className="flex-1 bg-white dark:bg-neutral-800 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-[#BEF264] outline-none transition-all shadow-sm"
+                    className="flex-1 bg-white dark:bg-neutral-800 border-none rounded-2xl px-6 py-3 text-sm font-medium focus:ring-2 focus:ring-[#BEF264] outline-none transition-all shadow-sm"
                 />
                 <button 
                     type="submit" 

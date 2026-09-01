@@ -454,7 +454,7 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
             {/* ── LEFT SIDEBAR ── */}
             <div className={`w-full md:w-80 border-r border-gray-200 dark:border-white/5 flex flex-col bg-gray-50 dark:bg-neutral-800/50 ${activeRoom ? 'hidden md:flex' : 'flex'}`}>
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-gray-200 dark:border-white/5 bg-white dark:bg-neutral-900">
+                <div className="px-6 py-3 border-b border-gray-200 dark:border-white/5 bg-white dark:bg-neutral-900">
                     <h2 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-widest mb-4">Student Inquiries</h2>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -473,7 +473,7 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
                         <button
                             key={room.id}
                             onClick={() => selectRoom(room)}
-                            className={`w-full px-5 py-4 flex items-center gap-3 hover:bg-white dark:hover:bg-neutral-800 transition-all border-b border-gray-100 dark:border-white/5 text-left relative ${activeRoom?.id === room.id ? 'bg-white dark:bg-neutral-800 border-l-4 border-l-[#BEF264]' : 'border-l-4 border-l-transparent'}`}
+                            className={`w-full px-5 py-3 flex items-center gap-3 hover:bg-white dark:hover:bg-neutral-800 transition-all border-b border-gray-100 dark:border-white/5 text-left relative ${activeRoom?.id === room.id ? 'bg-white dark:bg-neutral-800 border-l-4 border-l-[#BEF264]' : 'border-l-4 border-l-transparent'}`}
                         >
                             {/* Avatar */}
                             <div className="relative shrink-0">
@@ -527,7 +527,7 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
                 ) : (
                     <>
                         {/* Chat Header */}
-                        <div className="px-6 py-4 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
+                        <div className="px-6 py-3 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <button onClick={() => setActiveRoom(null)} className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-neutral-800 rounded-xl mr-1">
                                     <ChevronLeft className="w-5 h-5 text-gray-600" />
@@ -664,7 +664,7 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
                         </div>
 
                         {/* Input */}
-                        <div className="px-5 py-4 border-t border-gray-200 dark:border-white/5 bg-white dark:bg-neutral-900">
+                        <div className="px-5 py-3 border-t border-gray-200 dark:border-white/5 bg-white dark:bg-neutral-900">
                             <div className="flex items-center gap-3 bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-white/5 rounded-2xl px-4 py-2 focus-within:ring-2 focus-within:ring-[#BEF264] focus-within:border-transparent transition-all">
                                 <input
                                     value={input}

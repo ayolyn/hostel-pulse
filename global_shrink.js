@@ -1,36 +1,46 @@
 const fs = require('fs');
-const glob = require('fs').readdirSync;
 const path = require('path');
 
-function walk(dir, fileList = []) {
-    const files = fs.readdirSync(dir);
-    for (const file of files) {
-        const stat = fs.statSync(path.join(dir, file));
-        if (stat.isDirectory()) {
-            fileList = walk(path.join(dir, file), fileList);
-        } else {
-            if (file.endsWith('.tsx') || file.endsWith('.ts')) {
-                fileList.push(path.join(dir, file));
-            }
+function walk(dir, ext) {
+    let results = [];
+    let list = fs.readdirSync(dir);
+    list.forEach(function(file) {
+        file = dir + '/' + file;
+        let stat = fs.statSync(file);
+        if (stat && stat.isDirectory()) { 
+            results = results.concat(walk(file, ext));
+        } else { 
+            if (file.endsWith(ext)) results.push(file);
         }
-    }
-    return fileList;
+    });
+    return results;
 }
 
-const allFiles = [...walk('app/dashboard'), ...walk('components/dashboard'), ...walk('components/ui'), ...walk('components/layout')];
+const files = [...walk('app', '.tsx'), ...walk('components', '.tsx')];
 
-allFiles.forEach(file => {
+let count = 0;
+
+for (let file of files) {
     let content = fs.readFileSync(file, 'utf-8');
     let original = content;
-
-    content = content.replace(/rounded-\[3rem\]/g, 'rounded-3xl');
-    content = content.replace(/rounded-\[2\.5rem\]/g, 'rounded-3xl');
-    content = content.replace(/rounded-\[2rem\]/g, 'rounded-2xl');
+    
+    // Aggressive Shrink
+    content = content.replace(/text-5xl/g, 'text-3xl sm:text-4xl');
+    content = content.replace(/text-4xl/g, 'text-2xl sm:text-3xl');
+    // For text-3xl, only if it's not already sm:text-3xl or md:text-3xl
+    content = content.replace(/(?<!sm:|md:|lg:|xl:)text-3xl/g, 'text-xl sm:text-2xl');
+    
     content = content.replace(/p-10/g, 'p-6');
     content = content.replace(/p-8/g, 'p-5');
-
+    content = content.replace(/rounded-\[3rem\]/g, 'rounded-3xl');
+    
+    // Some buttons are px-12 py-5, make them px-8 py-4
+    content = content.replace(/px-12 py-5/g, 'px-8 py-4');
+    
     if (content !== original) {
         fs.writeFileSync(file, content, 'utf-8');
-        console.log("Global shrink patched", file);
+        count++;
     }
-});
+}
+
+console.log(`Shrunk elements in ${count} files globally`);

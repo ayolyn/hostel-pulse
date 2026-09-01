@@ -43,7 +43,7 @@ export default function SellPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <h1 className="text-5xl md:text-7xl font-black text-gray-900 uppercase tracking-tighter mb-6">
+                        <h1 className="text-xl sm:text-2xl sm:text-2xl sm:text-3xl md:text-4xl sm:text-5xl font-black text-gray-900 uppercase tracking-tighter mb-6">
                             List Your Property <br />
                             <span className="text-gray-400">With HOSTELPULSE</span>
                         </h1>
@@ -52,7 +52,7 @@ export default function SellPage() {
                         </p>
                         <Link
                             href="/dashboard/landlord?tab=listings"
-                            className="bg-[#BEF264] text-black font-black uppercase tracking-widest px-10 py-5 rounded-2xl hover:bg-[#a6d456] transition-all shadow-xl hover:scale-105 inline-flex items-center gap-3"
+                            className="bg-[#BEF264] text-black font-black uppercase tracking-widest px-10 py-3 rounded-2xl hover:bg-[#a6d456] transition-all shadow-xl hover:scale-105 inline-flex items-center gap-3"
                         >
                             Start Listing Now
                             <ArrowRight className="w-5 h-5" />
@@ -63,14 +63,14 @@ export default function SellPage() {
                 {/* Features Grid */}
                 <section className="bg-gray-50 py-24 px-6">
                     <div className="max-w-7xl mx-auto">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {features.map((feature, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                                    className="p-8 bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100"
+                                    className="p-5 bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100"
                                 >
                                     <div className="mb-6 p-4 bg-[#BEF264]/10 rounded-2xl w-fit">
                                         {feature.icon}
@@ -85,9 +85,9 @@ export default function SellPage() {
 
                 {/* Sell CTA */}
                 <section className="py-24 px-6 max-w-7xl mx-auto w-full">
-                    <div className="bg-black rounded-[3rem] p-12 md:p-20 relative overflow-hidden">
+                    <div className="bg-black rounded-3xl p-6 md:p-20 relative overflow-hidden">
                         <div className="relative z-10 max-w-3xl">
-                            <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-8">
+                            <h2 className="text-2xl sm:text-3xl md:text-3xl sm:text-4xl font-black text-white uppercase tracking-tighter mb-8">
                                 Ready to sell or <br /> lease out your space?
                             </h2>
                             <p className="text-gray-400 text-lg mb-10 font-medium">
@@ -95,7 +95,7 @@ export default function SellPage() {
                             </p>
                             <Link
                                 href="/dashboard/landlord?tab=listings"
-                                className="bg-white text-black font-black uppercase tracking-widest px-8 py-4 rounded-xl hover:bg-gray-100 transition-all inline-flex items-center gap-3"
+                                className="bg-white text-black font-black uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-gray-100 transition-all inline-flex items-center gap-3"
                             >
                                 Get Started
                                 <ArrowRight className="w-5 h-5" />

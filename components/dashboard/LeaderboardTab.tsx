@@ -70,7 +70,7 @@ export default function LeaderboardTab({ userId }: { userId: string }) {
 
     if (loading && agents.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-40 gap-5">
+            <div className="flex flex-col items-center justify-center py-30 gap-5">
                 <div className="w-24 h-24 border-4 border-[#BEF264]/20 border-t-[#BEF264] rounded-full animate-spin" />
                 <p className="text-sm font-black uppercase tracking-[0.3em] text-gray-500 animate-pulse">Analyzing Market Data...</p>
             </div>
@@ -121,7 +121,7 @@ export default function LeaderboardTab({ userId }: { userId: string }) {
                 {/* 1st Place - The King */}
                 {top3[0] && (
                     <div className="order-1 md:order-2 bg-neutral-950 border-2 border-[#BEF264]/50 p-6 rounded-[3.5rem] text-center relative shadow-[0_0_50px_rgba(190,242,100,0.1)] group hover:scale-[1.02] transition-all">
-                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-[#BEF264] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#BEF264]/30">
+                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-24 h-24 bg-[#BEF264] rounded-3xl flex items-center justify-center shadow-2xl shadow-[#BEF264]/30">
                             <Trophy className="w-12 h-12 text-black" />
                         </div>
                         <div className="mt-10 mb-8 relative inline-block">

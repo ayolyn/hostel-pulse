@@ -5,11 +5,11 @@ import { ContactForm } from '@/components/contact/ContactForm';
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black/90 text-gray-900 dark:text-gray-100 pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-black/90 text-gray-900 dark:text-gray-100 pt-32 pb-16 px-4 sm:px-6 lg:px-4">
       <PublicHeader />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl text-gray-900 dark:text-white mb-4">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight sm:text-3xl sm:text-2xl sm:text-3xl text-gray-900 dark:text-white mb-4">
             Get in <span className="text-[#16a34a] dark:text-[#BEF264]">Touch</span>
           </h1>
           <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
@@ -17,10 +17,10 @@ export default function Contact() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Contact Information */}
           <div>
-            <h2 className="text-3xl font-bold mb-8">Contact Information</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mb-8">Contact Information</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-10 text-lg">
               Reach out to us directly through any of the channels below. We aim to respond to all inquiries within 2 hours during business days.
             </p>
@@ -75,7 +75,7 @@ export default function Contact() {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 lg:p-10 border border-gray-100 dark:border-gray-800">
+          <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-5 lg:p-6 border border-gray-100 dark:border-gray-800">
             <h3 className="text-2xl font-bold mb-6">Send us a message</h3>
             <ContactForm />
           </div>

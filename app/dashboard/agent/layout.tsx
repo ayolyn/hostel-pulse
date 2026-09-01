@@ -57,11 +57,12 @@ export default async function AgentDashboardLayout({
         .single();
 
     const isApproved = account?.is_approved ?? false;
+    const skippedCompliance = cookieStore.get('skip_compliance')?.value === 'true';
     const hasSubmittedCompliance = account?.compliance_submitted ?? false;
 
     return (
         <div className="min-h-screen bg-white dark:bg-black">
-            {!hasSubmittedCompliance ? (
+            {(!hasSubmittedCompliance && !skippedCompliance) ? (
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
                     <CompliancePortal accountType="agent" userId={user.id} />
                 </main>

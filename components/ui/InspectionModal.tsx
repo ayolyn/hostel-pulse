@@ -296,7 +296,7 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
 
                                 <button
                                     disabled={loading}
-                                    className="w-full flex items-center justify-center gap-2 bg-[#BEF264] text-black font-black uppercase tracking-widest py-4 rounded-xl hover:bg-[#a6d456] transition-colors shadow-lg shadow-[#BEF264]/20 mt-4 disabled:opacity-50"
+                                    className="w-full flex items-center justify-center gap-2 bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-xl hover:bg-[#a6d456] transition-colors shadow-lg shadow-[#BEF264]/20 mt-4 disabled:opacity-50"
                                 >
                                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Request'}
                                 </button>

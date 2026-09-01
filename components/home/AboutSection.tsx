@@ -36,7 +36,7 @@ export function AboutSection() {
                     initial={{ opacity: 1, y: 0 }}
                     className="text-center mb-16"
                 >
-                    <h2 className="text-5xl md:text-6xl font-black text-neutral-900 dark:text-white mb-4">
+                    <h2 className="text-xl sm:text-2xl sm:text-2xl sm:text-3xl md:text-3xl sm:text-4xl font-black text-neutral-900 dark:text-white mb-4">
                         Why <span className="text-[#BEF264]">HOSTELPULSE</span>?
                     </h2>
                     <p className="text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
@@ -45,7 +45,7 @@ export function AboutSection() {
                 </motion.div>
 
                 {/* Feature Grid */}
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid md:grid-cols-3 gap-5">
                     {features.map((feature, index) => (
                         <motion.div
                             key={feature.title}
@@ -57,7 +57,7 @@ export function AboutSection() {
                             <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
                             {/* Card */}
-                            <div className="relative bg-neutral-50 dark:bg-neutral-900/50 backdrop-blur-xl border border-neutral-200 dark:border-neutral-800 group-hover:border-[#BEF264]/30 rounded-2xl p-8 transition-all duration-300">
+                            <div className="relative bg-neutral-50 dark:bg-neutral-900/50 backdrop-blur-xl border border-neutral-200 dark:border-neutral-800 group-hover:border-[#BEF264]/30 rounded-2xl p-5 transition-all duration-300">
                                 {/* Icon */}
                                 <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6`}>
                                     <feature.icon className="w-8 h-8 text-[#BEF264]" />

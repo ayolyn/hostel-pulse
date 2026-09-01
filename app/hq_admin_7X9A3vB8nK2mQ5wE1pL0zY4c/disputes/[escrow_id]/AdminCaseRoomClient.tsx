@@ -111,7 +111,7 @@ export default function AdminCaseRoomClient({
 
     return (
         <div className="h-screen flex flex-col bg-[#0F172A] text-white">
-            <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-10 shrink-0">
+            <header className="h-20 border-b border-white/5 flex items-center justify-between px-4 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-10 shrink-0">
                 <div className="flex items-center gap-4">
                     <Link href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c?tab=disputes" className="w-10 h-10 rounded-full hover:bg-white/5 flex items-center justify-center transition-colors">
                         <ChevronLeft className="w-5 h-5" />
@@ -125,13 +125,13 @@ export default function AdminCaseRoomClient({
 
             <main className="flex-1 flex overflow-hidden">
                 {/* Left Panel: Details & Resolution */}
-                <div className="w-1/3 border-r border-white/5 p-8 flex flex-col gap-8 overflow-y-auto bg-black/20">
-                    <div className="bg-red-500/10 border border-red-500/20 px-6 py-4 rounded-2xl flex flex-col gap-2">
+                <div className="w-1/3 border-r border-white/5 p-5 flex flex-col gap-5 overflow-y-auto bg-black/20">
+                    <div className="bg-red-500/10 border border-red-500/20 px-6 py-3 rounded-2xl flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-red-500">
                             <Clock className="w-5 h-5" />
                             <span className="text-[10px] font-black uppercase tracking-widest">SLA Deadline</span>
                         </div>
-                        <p className="text-3xl font-black text-white font-mono tracking-tighter">{timeLeft || 'Calculating...'}</p>
+                        <p className="text-xl sm:text-2xl font-black text-white font-mono tracking-tighter">{timeLeft || 'Calculating...'}</p>
                     </div>
 
                     <div className="space-y-4">
@@ -172,14 +172,14 @@ export default function AdminCaseRoomClient({
                             <button 
                                 onClick={() => handleResolve('Refunded')}
                                 disabled={resolving}
-                                className="w-full px-6 py-4 bg-blue-500/10 text-blue-400 font-black uppercase tracking-widest text-xs rounded-xl border border-blue-500/20 hover:bg-blue-500/20 transition-all disabled:opacity-50"
+                                className="w-full px-6 py-3 bg-blue-500/10 text-blue-400 font-black uppercase tracking-widest text-xs rounded-xl border border-blue-500/20 hover:bg-blue-500/20 transition-all disabled:opacity-50"
                             >
                                 Force Refund to Buyer
                             </button>
                             <button 
                                 onClick={() => handleResolve('Released')}
                                 disabled={resolving}
-                                className="w-full px-6 py-4 bg-emerald-500/10 text-emerald-400 font-black uppercase tracking-widest text-xs rounded-xl border border-emerald-500/20 hover:bg-emerald-500/20 transition-all disabled:opacity-50"
+                                className="w-full px-6 py-3 bg-emerald-500/10 text-emerald-400 font-black uppercase tracking-widest text-xs rounded-xl border border-emerald-500/20 hover:bg-emerald-500/20 transition-all disabled:opacity-50"
                             >
                                 Force Release to Seller
                             </button>
@@ -189,7 +189,7 @@ export default function AdminCaseRoomClient({
 
                 {/* Right Panel: Chat Feed */}
                 <div className="flex-1 flex flex-col bg-[#0f172a]">
-                    <div className="flex-1 overflow-y-auto p-8 space-y-6">
+                    <div className="flex-1 overflow-y-auto p-5 space-y-6">
                         {messages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-gray-500">
                                 <MessageSquare className="w-12 h-12 mb-4 opacity-50" />
@@ -248,12 +248,12 @@ export default function AdminCaseRoomClient({
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
                                     placeholder="Send an official message to both parties..."
-                                    className="flex-1 bg-black/20 border border-red-500/20 rounded-2xl px-6 py-4 text-white text-sm focus:outline-none focus:border-red-500/50 transition-colors"
+                                    className="flex-1 bg-black/20 border border-red-500/20 rounded-2xl px-6 py-3 text-white text-sm focus:outline-none focus:border-red-500/50 transition-colors"
                                 />
                                 <button 
                                     type="submit"
                                     disabled={!newMessage.trim() || sending}
-                                    className="bg-red-500/20 text-red-400 border border-red-500/30 px-8 rounded-2xl flex items-center justify-center hover:bg-red-500/30 font-black uppercase tracking-widest text-xs transition-all disabled:opacity-50 shrink-0"
+                                    className="bg-red-500/20 text-red-400 border border-red-500/30 px-4 rounded-2xl flex items-center justify-center hover:bg-red-500/30 font-black uppercase tracking-widest text-xs transition-all disabled:opacity-50 shrink-0"
                                 >
                                     {sending ? 'Sending...' : 'Send as Admin'}
                                 </button>

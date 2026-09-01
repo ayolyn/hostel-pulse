@@ -90,7 +90,7 @@ export function ContactForm() {
             <button 
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full flex justify-center items-center gap-2 bg-[#16a34a] hover:bg-green-700 dark:bg-[#BEF264] dark:hover:bg-[#a8e04b] text-white dark:text-gray-900 font-bold py-4 px-8 rounded-xl transition-colors shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full flex justify-center items-center gap-2 bg-[#16a34a] hover:bg-green-700 dark:bg-[#BEF264] dark:hover:bg-[#a8e04b] text-white dark:text-gray-900 font-bold py-3 px-4 rounded-xl transition-colors shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
             >
                 {status === 'loading' ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send Message'}
             </button>

@@ -43,7 +43,7 @@ export default function BlogCMS() {
     return (
         <div className="flex h-screen bg-[#0F172A] text-white overflow-hidden w-full">
             <main className="flex-1 flex flex-col h-screen overflow-y-auto w-full">
-                <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-10">
+                <header className="h-20 border-b border-white/5 flex items-center justify-between px-4 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-10">
                     <div className="flex items-center gap-4">
                         <Link href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c" className="text-gray-400 hover:text-white transition-colors text-sm font-bold uppercase tracking-widest">
                             ← Back to Dashboard
@@ -54,8 +54,8 @@ export default function BlogCMS() {
                     </div>
                 </header>
 
-                <div className="p-8 max-w-4xl mx-auto w-full">
-                    <div className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl">
+                <div className="p-5 max-w-4xl mx-auto w-full">
+                    <div className="bg-[#1e293b] rounded-[2.5rem] p-5 border border-white/5 shadow-2xl">
                         <div className="flex items-center gap-3 mb-8">
                             <BookOpen className="w-8 h-8 text-[#BEF264]" />
                             <h3 className="text-2xl font-black uppercase tracking-tight">Create New Post</h3>
@@ -138,7 +138,7 @@ export default function BlogCMS() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full bg-[#BEF264] hover:bg-[#a6d456] text-black font-black uppercase tracking-widest py-4 rounded-xl transition-all shadow-lg shadow-[#BEF264]/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="w-full bg-[#BEF264] hover:bg-[#a6d456] text-black font-black uppercase tracking-widest py-3 rounded-xl transition-all shadow-lg shadow-[#BEF264]/20 flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 {isLoading ? (
                                     <>

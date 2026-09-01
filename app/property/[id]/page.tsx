@@ -43,9 +43,9 @@ export default async function PropertyPage({ params }: { params: { id: string } 
         return (
             <div className="min-h-screen bg-white flex flex-col items-center justify-center text-center p-6">
                 <Building2 className="w-20 h-20 text-gray-200 mb-6" />
-                <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-2">Property Not Found</h1>
+                <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tighter mb-2">Property Not Found</h1>
                 <p className="text-gray-500 mb-8">The listing you're looking for doesn't exist or has been removed.</p>
-                <Link href="/rent" className="bg-[#BEF264] text-black px-8 py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all">
+                <Link href="/rent" className="bg-[#BEF264] text-black px-4 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all">
                     Browse Properties
                 </Link>
             </div>
@@ -135,7 +135,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                     </div>
                 </section>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 px-6 md:px-0">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-6 md:px-0">
                     <div className="lg:col-span-2 space-y-8">
                         <div>
                             <div className="flex flex-wrap gap-2 mb-4">
@@ -171,7 +171,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                                 </Badge>
                             </div>
 
-                            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 uppercase tracking-tighter leading-none">{property.title}</h1>
+                            <h1 className="text-xl sm:text-2xl md:text-2xl sm:text-3xl font-bold text-gray-900 mb-2 uppercase tracking-tighter leading-none">{property.title}</h1>
                             <div className="flex items-center text-gray-500 font-medium">
                                 <MapPin className="w-4 h-4 mr-1 text-gray-400" />
                                 {property.location}

@@ -55,11 +55,11 @@ export function SavedPropertiesTab() {
                     ))}
                 </div>
             ) : savedProperties.length === 0 ? (
-                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-16 text-center">
+                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-8 text-center">
                     <Heart className="w-12 h-12 text-gray-200 dark:text-neutral-800 mx-auto mb-4" />
                     <p className="font-black text-gray-400 uppercase tracking-tight text-lg">No saved hostels yet</p>
                     <p className="text-gray-400 text-sm mt-2">Tap ❤️ on any hostel to save it here.</p>
-                    <Link href="/rent" className="mt-6 inline-block bg-[#BEF264] text-black font-black uppercase tracking-widest text-[10px] px-8 py-3 rounded-xl hover:bg-[#a5d852] transition-colors">
+                    <Link href="/rent" className="mt-6 inline-block bg-[#BEF264] text-black font-black uppercase tracking-widest text-[10px] px-4 py-3 rounded-xl hover:bg-[#a5d852] transition-colors">
                         Browse Hostels
                     </Link>
                 </div>

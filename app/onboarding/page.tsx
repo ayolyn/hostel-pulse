@@ -170,7 +170,7 @@ export default function OnboardingPage() {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500 rounded-full blur-[120px]" />
             </div>
 
-            <div className="w-full max-w-lg mt-8 bg-[#1E293B]/50 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/5 relative z-10 shadow-2xl">
+            <div className="w-full max-w-lg mt-8 bg-[#1E293B]/50 backdrop-blur-2xl p-6 rounded-3xl border border-white/5 relative z-10 shadow-2xl">
                 <div className="flex justify-between items-center mb-10">
                     <div className="flex gap-2">
                         <div className={`w-3 h-3 rounded-full ${step === 1 ? 'bg-[#BEF264]' : 'bg-white/20'}`} />
@@ -229,7 +229,7 @@ export default function OnboardingPage() {
                         <button
                             onClick={() => setStep(2)}
                             disabled={!selectedRole}
-                            className="w-full flex items-center justify-center gap-2 bg-[#BEF264] text-black font-black uppercase tracking-widest py-5 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:active:scale-100"
+                            className="w-full flex items-center justify-center gap-2 bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:active:scale-100"
                         >
                             Continue
                             <ChevronRight className="w-5 h-5" />
@@ -255,7 +255,7 @@ export default function OnboardingPage() {
                                     value={fullName}
                                     onChange={e => setFullName(e.target.value)}
                                     placeholder="e.g. John Doe"
-                                    className="w-full bg-white/5 border border-white/10 rounded-full py-4 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                                 />
                             </div>
 
@@ -267,7 +267,7 @@ export default function OnboardingPage() {
                                     value={phone}
                                     onChange={e => setPhone(e.target.value)}
                                     placeholder="e.g. +234 800 000 0000"
-                                    className="w-full bg-white/5 border border-white/10 rounded-full py-4 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                                 />
                             </div>
 
@@ -279,7 +279,7 @@ export default function OnboardingPage() {
                                         value={matricNumber}
                                         onChange={e => setMatricNumber(e.target.value)}
                                         placeholder="e.g. 210000"
-                                        className="w-full bg-white/5 border border-white/10 rounded-full py-4 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                        className="w-full bg-white/5 border border-white/10 rounded-full py-3 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                                     />
                                 </div>
                             )}
@@ -292,7 +292,7 @@ export default function OnboardingPage() {
                                         value={occupation}
                                         onChange={e => setOccupation(e.target.value)}
                                         placeholder="e.g. Software Engineer"
-                                        className="w-full bg-white/5 border border-white/10 rounded-full py-4 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                        className="w-full bg-white/5 border border-white/10 rounded-full py-3 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                                     />
                                 </div>
                             )}
@@ -307,7 +307,7 @@ export default function OnboardingPage() {
                                             value={businessName}
                                             onChange={e => setBusinessName(e.target.value)}
                                             placeholder="e.g. HOSTELPULSE Properties Co."
-                                            className="w-full bg-white/5 border border-white/10 rounded-full py-4 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                            className="w-full bg-white/5 border border-white/10 rounded-full py-3 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                                         />
                                     </div>
                                     <div>
@@ -318,7 +318,7 @@ export default function OnboardingPage() {
                                             value={whatsappNumber}
                                             onChange={e => setWhatsappNumber(e.target.value)}
                                             placeholder="e.g. +234 800 000 0000"
-                                            className="w-full bg-white/5 border border-white/10 rounded-full py-4 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                            className="w-full bg-white/5 border border-white/10 rounded-full py-3 px-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                                         />
                                     </div>
                                 </>
@@ -328,14 +328,14 @@ export default function OnboardingPage() {
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="w-1/3 bg-white/5 text-white font-black uppercase tracking-widest py-5 rounded-full hover:bg-white/10 transition-all text-sm"
+                                    className="w-1/3 bg-white/5 text-white font-black uppercase tracking-widest py-3 rounded-full hover:bg-white/10 transition-all text-sm"
                                 >
                                     Back
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={submitting}
-                                    className="w-2/3 flex items-center justify-center gap-2 bg-[#BEF264] text-black font-black uppercase tracking-widest py-5 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 text-sm"
+                                    className="w-2/3 flex items-center justify-center gap-2 bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 text-sm"
                                 >
                                     {submitting ? 'Saving...' : 'Complete Profile'}
                                 </button>

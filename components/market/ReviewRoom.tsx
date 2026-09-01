@@ -64,7 +64,7 @@ export function ReviewRoom({ item, sellerId, sellerName, buyerId, onComplete, on
       <motion.div 
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="bg-white dark:bg-neutral-900 p-8 rounded-[40px] shadow-2xl max-w-md w-full border border-gray-100 dark:border-white/5 relative z-10"
+        className="bg-white dark:bg-neutral-900 p-5 rounded-[40px] shadow-2xl max-w-md w-full border border-gray-100 dark:border-white/5 relative z-10"
       >
         <div className="flex flex-col items-center text-center">
           <div className="w-20 h-20 bg-[#BEF264] rounded-full flex items-center justify-center mb-6 shadow-lg shadow-[#BEF264]/20">
@@ -103,7 +103,7 @@ export function ReviewRoom({ item, sellerId, sellerName, buyerId, onComplete, on
           <button 
             disabled={rating === 0 || isSubmitting}
             onClick={handleSubmit}
-            className="w-full bg-black dark:bg-[#BEF264] dark:text-black text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] transition-all shadow-xl shadow-[#BEF264]/10"
+            className="w-full bg-black dark:bg-[#BEF264] dark:text-black text-white py-3 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] transition-all shadow-xl shadow-[#BEF264]/10"
           >
             {isSubmitting ? (
                 <Loader2 className="w-5 h-5 animate-spin" />

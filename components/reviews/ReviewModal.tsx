@@ -42,7 +42,7 @@ export function ReviewModal({ providerId, providerName, onClose }: ReviewModalPr
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="bg-white dark:bg-neutral-900 rounded-[2.5rem] w-full max-w-md p-8 relative shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
+            <div className="bg-white dark:bg-neutral-900 rounded-[2.5rem] w-full max-w-md p-5 relative shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
                 <button 
                     onClick={onClose}
                     className="absolute top-6 right-6 w-10 h-10 bg-gray-100 dark:bg-neutral-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
@@ -94,7 +94,7 @@ export function ReviewModal({ providerId, providerName, onClose }: ReviewModalPr
                     <button 
                         type="submit"
                         disabled={loading || rating === 0}
-                        className="w-full flex items-center justify-center gap-2 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black py-5 rounded-[1.8rem] uppercase tracking-widest text-sm shadow-xl shadow-black/10 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all"
+                        className="w-full flex items-center justify-center gap-2 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black py-3 rounded-[1.8rem] uppercase tracking-widest text-sm shadow-xl shadow-black/10 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all"
                     >
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit Review"}
                     </button>

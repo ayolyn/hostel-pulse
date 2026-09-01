@@ -214,7 +214,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
             <div className="sticky top-24 bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50">
                 <div className="flex justify-between items-start mb-6">
                     <div>
-                        <span className="text-3xl font-black text-gray-900 tracking-tighter">₦{Number(price).toLocaleString()}</span>
+                        <span className="text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">₦{Number(price).toLocaleString()}</span>
                         <span className="text-gray-500 font-bold ml-1 text-sm uppercase">{priceLabel}</span>
                     </div>
                 </div>
@@ -295,7 +295,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                                 trackPropertyEvent(propertyId, 'lead');
                                 setIsModalOpen(true);
                             })}
-                            className="flex-1 bg-[#BEF264] text-black font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20"
+                            className="flex-1 bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20"
                         >
                             Request Inspection
                         </button>
@@ -313,7 +313,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                 {isOwner && (
                     <button
                         onClick={() => router.push(`/dashboard?tab=listing-studio&edit=${propertyId}`)}
-                        className="w-full border-2 border-[#BEF264] text-gray-900 font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-[#BEF264]/10 transition-transform active:scale-95 shadow-sm mb-3 flex items-center justify-center gap-2"
+                        className="w-full border-2 border-[#BEF264] text-gray-900 font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#BEF264]/10 transition-transform active:scale-95 shadow-sm mb-3 flex items-center justify-center gap-2"
                     >
                         <PencilLine className="w-5 h-5" /> Edit My Listing
                     </button>
@@ -324,7 +324,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                         trackPropertyEvent(propertyId, 'lead');
                         router.push(`/book/${propertyId}`);
                     })}
-                    className="w-full bg-black text-[#BEF264] font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-neutral-800 transition-transform active:scale-95 shadow-lg shadow-gray-200 mb-3"
+                    className="w-full bg-black text-[#BEF264] font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-neutral-800 transition-transform active:scale-95 shadow-lg shadow-gray-200 mb-3"
                 >
                     Request to Book
                 </button>
@@ -373,7 +373,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                 ) : (
                     <button
                         onClick={() => handleProtectedAction(() => setIsMessaging(true))}
-                        className="w-full border-2 border-dashed border-gray-200 text-gray-500 font-black uppercase tracking-widest py-4 rounded-2xl hover:border-gray-900 hover:text-gray-900 transition-all"
+                        className="w-full border-2 border-dashed border-gray-200 text-gray-500 font-black uppercase tracking-widest py-3 rounded-2xl hover:border-gray-900 hover:text-gray-900 transition-all"
                     >
                         {agent
                             ? `Message ${agent.full_name?.split(' ')[0] || 'Agent'}`

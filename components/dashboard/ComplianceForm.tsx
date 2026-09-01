@@ -194,7 +194,7 @@ export function ComplianceForm({ accountType, userId }: { accountType: 'landlord
                     <button
                         type="submit"
                         disabled={loading || !govtIdFile || !selfieFile}
-                        className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-5 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2"
+                        className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2"
                     >
                         {loading ? 'Uploading & Verifying...' : 'Submit Documents'}
                     </button>

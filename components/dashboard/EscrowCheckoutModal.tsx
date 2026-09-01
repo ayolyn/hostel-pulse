@@ -74,7 +74,7 @@ export function EscrowCheckoutModal({ item, onClose, onSuccess }: EscrowCheckout
 
                 <div className="bg-gray-50 dark:bg-neutral-800 p-4 rounded-2xl mb-6">
                     <p className="text-sm font-bold text-gray-500 uppercase tracking-widest truncate">{item.title}</p>
-                    <p className="text-3xl font-black text-gray-900 dark:text-[#BEF264] mt-1">₦{Number(item.price).toLocaleString()}</p>
+                    <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-[#BEF264] mt-1">₦{Number(item.price).toLocaleString()}</p>
                 </div>
 
                 <p className="text-sm text-gray-600 dark:text-gray-400 font-medium leading-relaxed mb-8">
@@ -84,7 +84,7 @@ export function EscrowCheckoutModal({ item, onClose, onSuccess }: EscrowCheckout
                 <button 
                     onClick={handleLockFunds}
                     disabled={loading}
-                    className="w-full bg-[#BEF264] text-black py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] active:scale-[0.98] transition-all shadow-xl disabled:opacity-50"
+                    className="w-full bg-[#BEF264] text-black py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] active:scale-[0.98] transition-all shadow-xl disabled:opacity-50"
                 >
                     {loading ? 'Processing...' : 'Lock Funds Securely'}
                 </button>

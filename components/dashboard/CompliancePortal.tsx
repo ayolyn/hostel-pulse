@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { sendComplianceEmail } from '@/app/actions/email';
 
 interface CompliancePortalProps {
     accountType: 'landlord' | 'agent';
@@ -133,7 +134,7 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
     return (
         <div className="fixed inset-0 z-[100] bg-white dark:bg-neutral-950 overflow-y-auto no-scrollbar">
             {/* Header */}
-            <header className="fixed top-0 w-full bg-white dark:bg-neutral-950 border-b border-neutral-100 dark:border-white/5 px-6 py-4 flex flex-col z-10">
+            <header className="fixed top-0 w-full bg-white dark:bg-neutral-950 border-b border-neutral-100 dark:border-white/5 px-6 py-3 flex flex-col z-10">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-red-600 rounded-2xl flex items-center justify-center text-white">
@@ -179,17 +180,17 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
                     {currentStep === 0 && (
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                             <div>
-                                <h2 className="text-3xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter">Personal Identity</h2>
+                                <h2 className="text-xl sm:text-2xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter">Personal Identity</h2>
                                 <p className="text-neutral-500 font-medium">Please provide your official contact details as registered on your ID.</p>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 ml-1">Full Legal Name</label>
-                                    <input name="full_name" value={formData.full_name} onChange={handleTextChange} placeholder="John Doe" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
+                                    <input name="full_name" value={formData.full_name} onChange={handleTextChange} placeholder="John Doe" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 ml-1">WhatsApp Number (Mandatory)</label>
-                                    <input name="phone" value={formData.phone} onChange={handleTextChange} placeholder="0810 000 0000" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
+                                    <input name="phone" value={formData.phone} onChange={handleTextChange} placeholder="0810 000 0000" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
                                 </div>
                             </div>
                         </div>
@@ -199,17 +200,17 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
                     {currentStep === 1 && (
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                             <div>
-                                <h2 className="text-3xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter">Business Profile</h2>
+                                <h2 className="text-xl sm:text-2xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter">Business Profile</h2>
                                 <p className="text-neutral-500 font-medium">Where do you operate from? (Physical address required for verification).</p>
                             </div>
                             <div className="space-y-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 ml-1">Business Name (Optional)</label>
-                                    <input name="business_name" value={formData.business_name} onChange={handleTextChange} placeholder="e.g. HOSTELPULSE Realty" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
+                                    <input name="business_name" value={formData.business_name} onChange={handleTextChange} placeholder="e.g. HOSTELPULSE Realty" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 ml-1">Office Address</label>
-                                    <input name="office_address" value={formData.office_address} onChange={handleTextChange} placeholder="Plot 2, Under-G Area, Ogbomoso" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
+                                    <input name="office_address" value={formData.office_address} onChange={handleTextChange} placeholder="Plot 2, Under-G Area, Ogbomoso" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
                                 </div>
                             </div>
                         </div>
@@ -219,23 +220,23 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
                     {currentStep === 2 && (
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                             <div>
-                                <h2 className="text-3xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter">Payout Details</h2>
+                                <h2 className="text-xl sm:text-2xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter">Payout Details</h2>
                                 <p className="text-neutral-500 font-medium">Funds from sales and rents will be deposited here.</p>
                             </div>
                             <div className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 ml-1">Bank Name</label>
-                                        <input name="bank_name" value={formData.bank_name} onChange={handleTextChange} placeholder="e.g. GTBank / Kuda" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
+                                        <input name="bank_name" value={formData.bank_name} onChange={handleTextChange} placeholder="e.g. GTBank / Kuda" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 ml-1">Account Number</label>
-                                        <input name="account_number" value={formData.account_number} onChange={handleTextChange} placeholder="0123456789" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
+                                        <input name="account_number" value={formData.account_number} onChange={handleTextChange} placeholder="0123456789" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 ml-1">Account Holder Name</label>
-                                    <input name="account_name" value={formData.account_name} onChange={handleTextChange} placeholder="Ensuring it matches your ID" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
+                                    <input name="account_name" value={formData.account_name} onChange={handleTextChange} placeholder="Ensuring it matches your ID" className="w-full bg-neutral-100/50 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold" />
                                 </div>
                             </div>
                         </div>
@@ -245,7 +246,7 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
                     {currentStep === 3 && (
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                             <div>
-                                <h2 className="text-3xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter">Final Verification</h2>
+                                <h2 className="text-xl sm:text-2xl font-black text-neutral-900 dark:text-white uppercase tracking-tighter">Final Verification</h2>
                                 <p className="text-neutral-500 font-medium">Upload physical proof of identity to protect our community from scams.</p>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -303,11 +304,12 @@ export default function CompliancePortal({ accountType, userId }: CompliancePort
                     >
                         <ChevronLeft className="w-4 h-4" /> Back
                     </button>
+                    <button onClick={() => { document.cookie = 'skip_compliance=true; path=/'; window.location.reload(); }} className="text-[10px] font-black uppercase tracking-widest text-neutral-500 hover:text-black dark:hover:text-white underline decoration-dashed underline-offset-4 ml-4">Skip for now</button>
                     
                     <button 
                         onClick={nextStep}
-                        disabled={loading || (currentStep === 0 && (!formData.full_name || !formData.phone)) || (currentStep === 2 && (!formData.bank_name || !formData.account_number)) || (currentStep === 3 && (!files.govt_id || !files.selfie))}
-                        className={`group relative flex items-center justify-center gap-3 px-12 py-5 rounded-2xl font-black uppercase tracking-widest text-xs transition-all active:scale-95 disabled:opacity-50
+                        disabled={loading || (currentStep === 0 && (!formData.full_name || !formData.phone)) || (currentStep === 1 && !formData.office_address) || (currentStep === 2 && (!formData.bank_name || !formData.account_number)) || (currentStep === 3 && (!files.govt_id || !files.selfie))}
+                        className={`group relative flex items-center justify-center gap-3 px-4 py-3 rounded-2xl font-black uppercase tracking-widest text-xs transition-all active:scale-95 disabled:opacity-50
                             ${currentStep === STEPS.length - 1 ? 'bg-red-600 text-white shadow-2xl shadow-red-500/30' : 'bg-black dark:bg-[#BEF264] text-white dark:text-black'}
                         `}
                     >

@@ -66,7 +66,7 @@ export function SupportHub() {
             </div>
 
             {/* FAQ Section */}
-            <section className="bg-white dark:bg-neutral-900 rounded-[2rem] border border-gray-100 dark:border-white/5 p-6 md:p-8 shadow-sm">
+            <section className="bg-white dark:bg-neutral-900 rounded-[2rem] border border-gray-100 dark:border-white/5 p-6 md:p-5 shadow-sm">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                     <h2 className="text-lg font-black uppercase tracking-widest text-gray-900 dark:text-white">Frequently Asked Questions</h2>
                     <input 
@@ -79,7 +79,7 @@ export function SupportHub() {
                 </div>
                 <div className="space-y-8">
                     {filteredFaqs.length === 0 ? (
-                        <p className="text-gray-500 text-sm italic py-4">No FAQs match your search.</p>
+                        <p className="text-gray-500 text-sm italic py-3">No FAQs match your search.</p>
                     ) : (
                         Object.entries(groupedFaqs).map(([category, faqs]) => (
                             <div key={category} className="space-y-4">
@@ -121,7 +121,7 @@ export function SupportHub() {
 
             {/* Ticket History Section */}
             <section className="bg-white dark:bg-neutral-900 rounded-[2rem] border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm">
-                <div className="p-6 md:p-8 border-b border-gray-100 dark:border-white/5">
+                <div className="p-6 md:p-5 border-b border-gray-100 dark:border-white/5">
                     <h2 className="text-lg font-black uppercase tracking-widest text-gray-900 dark:text-white flex items-center gap-3">
                         <MessageSquare className="w-5 h-5 text-purple-500" /> Your Ticket History
                     </h2>
@@ -131,30 +131,30 @@ export function SupportHub() {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 dark:bg-black/20 text-[10px] uppercase tracking-widest text-gray-500">
-                                <th className="px-6 py-4 font-black">Ticket ID</th>
-                                <th className="px-6 py-4 font-black">Subject</th>
-                                <th className="px-6 py-4 font-black">Status</th>
-                                <th className="px-6 py-4 font-black">Date</th>
-                                <th className="px-6 py-4 font-black text-right">Action</th>
+                                <th className="px-6 py-3 font-black">Ticket ID</th>
+                                <th className="px-6 py-3 font-black">Subject</th>
+                                <th className="px-6 py-3 font-black">Status</th>
+                                <th className="px-6 py-3 font-black">Date</th>
+                                <th className="px-6 py-3 font-black text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {tickets.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-sm text-gray-500">
+                                    <td colSpan={5} className="px-6 py-6 text-center text-sm text-gray-500">
                                         No support tickets found. Need help? Use the chat widget!
                                     </td>
                                 </tr>
                             ) : (
                                 tickets.map(ticket => (
                                     <tr key={ticket.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group cursor-pointer" onClick={() => handleOpenTicket(ticket.id)}>
-                                        <td className="px-6 py-4 text-xs font-mono text-gray-500">
+                                        <td className="px-6 py-3 text-xs font-mono text-gray-500">
                                             #{ticket.id.slice(0, 8)}
                                         </td>
-                                        <td className="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white">
+                                        <td className="px-6 py-3 text-sm font-bold text-gray-900 dark:text-white">
                                             {ticket.subject}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-3">
                                             <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                                                 ticket.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
                                                 ticket.status === 'Pending Admin' ? 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400' :
@@ -163,10 +163,10 @@ export function SupportHub() {
                                                 {ticket.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-xs font-bold text-gray-500">
+                                        <td className="px-6 py-3 text-xs font-bold text-gray-500">
                                             {new Date(ticket.created_at).toLocaleDateString()}
                                         </td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-6 py-3 text-right">
                                             <button 
                                                 className="text-[10px] bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white px-3 py-1.5 rounded-lg font-black uppercase tracking-widest group-hover:bg-purple-500 group-hover:text-white transition-colors"
                                             >

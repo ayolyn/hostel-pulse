@@ -85,7 +85,7 @@ export function QRScanner({ onSuccess, onClose }: QRScannerProps) {
           <X size={24} />
         </button>
 
-        <div className="p-8 text-center bg-[#BEF264]/5 border-b border-[#BEF264]/10">
+        <div className="p-5 text-center bg-[#BEF264]/5 border-b border-[#BEF264]/10">
           <div className="w-12 h-12 bg-[#BEF264] rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Camera size={24} className="text-black" />
           </div>

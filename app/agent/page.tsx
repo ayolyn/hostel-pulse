@@ -29,7 +29,7 @@ const BecomeAgentPage = () => {
                         Now Hiring in Ogbomoso
                     </div>
 
-                    <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.9]">
+                    <h1 className="text-3xl sm:text-4xl md:text-8xl font-black tracking-tighter uppercase leading-[0.9]">
                         Turn Ogbomoso <br />
                         <span className="text-[#BEF264]">into your Office.</span>
                     </h1>
@@ -39,12 +39,12 @@ const BecomeAgentPage = () => {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-10">
-                        <Link href="/join?role=Business" className="bg-[#BEF264] text-black px-12 py-6 rounded-[2rem] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-[#BEF264]/20 flex items-center gap-3">
+                        <Link href="/join?role=Business" className="bg-[#BEF264] text-black px-6 py-6 rounded-[2rem] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-2xl shadow-[#BEF264]/20 flex items-center gap-3">
                             Apply Now <ChevronRight className="w-5 h-5" />
                         </Link>
                         <button
                             onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="px-12 py-6 rounded-[2rem] border border-white/20 font-black uppercase tracking-widest hover:bg-white/5 transition-all"
+                            className="px-6 py-6 rounded-[2rem] border border-white/20 font-black uppercase tracking-widest hover:bg-white/5 transition-all"
                         >
                             How it works
                         </button>
@@ -54,25 +54,25 @@ const BecomeAgentPage = () => {
 
             {/* Income Stats */}
             <section className="py-24 px-6 max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="p-10 bg-gray-50 rounded-[3rem] border border-gray-100 flex flex-col justify-between">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div className="p-6 bg-gray-50 rounded-3xl border border-gray-100 flex flex-col justify-between">
                         <TrendingUp className="w-12 h-12 text-[#BEF264] mb-8" />
                         <div>
-                            <h3 className="text-4xl font-black text-gray-900 mb-2">₦50,000</h3>
+                            <h3 className="text-2xl sm:text-3xl font-black text-gray-900 mb-2">₦50,000</h3>
                             <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">Avg. Commission per House</p>
                         </div>
                     </div>
-                    <div className="p-10 bg-black text-white rounded-[3rem] flex flex-col justify-between shadow-2xl">
+                    <div className="p-6 bg-black text-white rounded-3xl flex flex-col justify-between shadow-2xl">
                         <Users className="w-12 h-12 text-[#BEF264] mb-8" />
                         <div>
-                            <h3 className="text-4xl font-black text-white mb-2">500+</h3>
+                            <h3 className="text-2xl sm:text-3xl font-black text-white mb-2">500+</h3>
                             <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Active Agents in Ogbomoso</p>
                         </div>
                     </div>
-                    <div className="p-10 bg-gray-50 rounded-[3rem] border border-gray-100 flex flex-col justify-between">
+                    <div className="p-6 bg-gray-50 rounded-3xl border border-gray-100 flex flex-col justify-between">
                         <ShieldCheck className="w-12 h-12 text-[#BEF264] mb-8" />
                         <div>
-                            <h3 className="text-4xl font-black text-gray-900 mb-2">₦2,000</h3>
+                            <h3 className="text-2xl sm:text-3xl font-black text-gray-900 mb-2">₦2,000</h3>
                             <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">Per Inspection (Immediate Payout)</p>
                         </div>
                     </div>
@@ -82,16 +82,16 @@ const BecomeAgentPage = () => {
             {/* Roles Section */}
             <section id="how-it-works" className="py-24 px-6 bg-gray-50">
                 <div className="max-w-7xl mx-auto">
-                    <h2 className="text-4xl font-black text-gray-900 uppercase tracking-tighter text-center mb-16">Choose your Hustle</h2>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div className="bg-white p-12 rounded-[3.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
+                    <h2 className="text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-tighter text-center mb-16">Choose your Hustle</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <div className="bg-white p-6 rounded-[3.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
                             <div className="flex justify-between items-start mb-10">
                                 <div className="w-20 h-20 bg-[#BEF264]/10 rounded-[2.5rem] flex items-center justify-center text-[#BEF264] group-hover:bg-[#BEF264] group-hover:text-black transition-all">
                                     <MapPin className="w-10 h-10" />
                                 </div>
                                 <span className="bg-emerald-50 text-emerald-600 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">Verified Inspector</span>
                             </div>
-                            <h3 className="text-3xl font-black text-gray-900 mb-4 uppercase tracking-tight">The Inspector</h3>
+                            <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-4 uppercase tracking-tight">The Inspector</h3>
                             <p className="text-gray-500 font-medium leading-relaxed mb-10">
                                 Don't own a house? No problem. Use your knowledge of Under-G or Adenike to handle inspection tours for busy landlords. Earn ₦2,000 for every tour.
                             </p>
@@ -108,14 +108,14 @@ const BecomeAgentPage = () => {
                             </Link>
                         </div>
 
-                        <div className="bg-white p-12 rounded-[3.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
+                        <div className="bg-white p-6 rounded-[3.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group">
                             <div className="flex justify-between items-start mb-10">
                                 <div className="w-20 h-20 bg-gray-100 rounded-[2.5rem] flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-[#BEF264] transition-all">
                                     <DollarSign className="w-10 h-10" />
                                 </div>
                                 <span className="bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">Finder's Fee</span>
                             </div>
-                            <h3 className="text-3xl font-black text-gray-900 mb-4 uppercase tracking-tight">The Finder</h3>
+                            <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-4 uppercase tracking-tight">The Finder</h3>
                             <p className="text-gray-500 font-medium leading-relaxed mb-10">
                                 Know a house in General or Takie? Refer the landlord to HOSTELPULSE. If we list and rent the property, we pay you 10% of our commission.
                             </p>
@@ -137,7 +137,7 @@ const BecomeAgentPage = () => {
 
             {/* FAQ / Simple CTA */}
             <section className="py-32 px-6 text-center">
-                <h2 className="text-5xl md:text-6xl font-black text-gray-900 uppercase tracking-tighter leading-none mb-8">
+                <h2 className="text-xl sm:text-2xl sm:text-2xl sm:text-3xl md:text-3xl sm:text-4xl font-black text-gray-900 uppercase tracking-tighter leading-none mb-8">
                     Ogbomoso is waiting. <br />
                     <span className="text-gray-400">Ready to earn?</span>
                 </h2>

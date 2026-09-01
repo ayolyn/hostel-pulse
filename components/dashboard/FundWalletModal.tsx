@@ -69,7 +69,7 @@ export function FundWalletModal({ userId, onClose }: FundWalletModalProps) {
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 placeholder="0.00"
-                                className="w-full pl-10 pr-4 py-4 bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl text-lg font-black text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 transition-all"
+                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-neutral-800 border-none rounded-2xl text-lg font-black text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 transition-all"
                                 required
                                 min="100"
                             />
@@ -79,7 +79,7 @@ export function FundWalletModal({ userId, onClose }: FundWalletModalProps) {
                     <button 
                         type="submit"
                         disabled={isLoading || !amount || Number(amount) < 100}
-                        className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-xs hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full bg-blue-600 text-white font-black py-3 rounded-2xl uppercase tracking-widest text-xs hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Proceed to Checkout'}
                     </button>

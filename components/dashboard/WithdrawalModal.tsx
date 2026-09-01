@@ -76,7 +76,7 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
                         <X className="w-4 h-4" />
                     </button>
                     <div className="w-16 h-16 bg-[#BEF264]/20 rounded-full flex items-center justify-center mb-4">
-                        <span className="text-3xl font-black text-[#BEF264]">₦</span>
+                        <span className="text-xl sm:text-2xl font-black text-[#BEF264]">₦</span>
                     </div>
                     <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight text-center">
                         Request Payout
@@ -97,7 +97,7 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0.00"
-                                    className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-black text-lg focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
+                                    className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-3 pl-12 pr-4 text-gray-900 dark:text-white font-black text-lg focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
                                     required
                                     min="100"
                                 />
@@ -111,7 +111,7 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
                                 <select
                                     value={bankName}
                                     onChange={(e) => setBankName(e.target.value)}
-                                    className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all appearance-none"
+                                    className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-3 pl-12 pr-4 text-gray-900 dark:text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all appearance-none"
                                     required
                                 >
                                     <option value="" disabled>Select Bank</option>
@@ -131,7 +131,7 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
                                     value={accountNumber}
                                     onChange={(e) => setAccountNumber(e.target.value)}
                                     placeholder="10-digit number"
-                                    className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
+                                    className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-3 pl-12 pr-4 text-gray-900 dark:text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
                                     required
                                 />
                             </div>
@@ -146,7 +146,7 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
                                     value={accountName}
                                     readOnly={true}
                                     placeholder={verifying ? 'Verifying account details...' : 'Auto-filled upon verification'}
-                                    className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all opacity-80 cursor-not-allowed"
+                                    className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-3 pl-12 pr-4 text-gray-900 dark:text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all opacity-80 cursor-not-allowed"
                                     required
                                 />
                             </div>
@@ -156,7 +156,7 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest text-xs py-5 rounded-2xl hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/20 flex items-center justify-center gap-2 mt-4"
+                        className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest text-xs py-3 rounded-2xl hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/20 flex items-center justify-center gap-2 mt-4"
                     >
                         {loading ? 'Processing...' : 'Confirm Withdrawal'}
                     </button>

@@ -121,7 +121,7 @@ export default function LandlordProfilePage() {
     return (
         <div className="max-w-4xl mx-auto pb-10">
             <div className="mb-8">
-                <h1 className="text-3xl font-black text-neutral-900 dark:text-white">Business Profile</h1>
+                <h1 className="text-xl sm:text-2xl font-black text-neutral-900 dark:text-white">Business Profile</h1>
                 <p className="text-neutral-500 dark:text-neutral-400 mt-1">Manage your public organization details and branding.</p>
             </div>
 
@@ -248,7 +248,7 @@ export default function LandlordProfilePage() {
                         <button
                             type="submit"
                             disabled={saving}
-                            className="flex items-center gap-2 bg-[#BEF264] text-black px-8 py-3 rounded-full font-black uppercase tracking-wider hover:bg-[#a6d456] transition-transform active:scale-95 disabled:opacity-50"
+                            className="flex items-center gap-2 bg-[#BEF264] text-black px-4 py-3 rounded-full font-black uppercase tracking-wider hover:bg-[#a6d456] transition-transform active:scale-95 disabled:opacity-50"
                         >
                             <Save className="w-5 h-5" />
                             {saving ? 'Saving...' : 'Save Profile'}

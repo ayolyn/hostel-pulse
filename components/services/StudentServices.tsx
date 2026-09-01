@@ -95,15 +95,15 @@ export function StudentServices() {
     return (
         <div className="space-y-12">
             <div>
-                <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Student Services</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Student Services</h2>
                 <p className="text-gray-500 font-medium text-sm">Verified local providers delivered to your doorstep in Ogbomoso.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {services.map((service) => (
-                    <div key={service.id} className="bg-white dark:bg-neutral-900 rounded-[2.5rem] p-8 border border-neutral-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all flex flex-col group relative overflow-hidden">
+                    <div key={service.id} className="bg-white dark:bg-neutral-900 rounded-[2.5rem] p-5 border border-neutral-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all flex flex-col group relative overflow-hidden">
                         {/* Status badge in background style */}
-                        <div className={`absolute top-0 right-0 p-12 opacity-5 translate-x-4 -translate-y-4 group-hover:opacity-10 transition-opacity`}>
+                        <div className={`absolute top-0 right-0 p-6 opacity-5 translate-x-4 -translate-y-4 group-hover:opacity-10 transition-opacity`}>
                             <service.icon className="w-32 h-32" />
                         </div>
 
@@ -131,7 +131,7 @@ export function StudentServices() {
                                 <button 
                                     onClick={() => handleBooking(service)}
                                     disabled={loading === service.id}
-                                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
+                                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
                                 >
                                     {loading === service.id ? 'Booking...' : 'Book Pickup'}
                                 </button>
@@ -151,7 +151,7 @@ export function StudentServices() {
                                         });
                                         router.push(`/messages/${supportId}`);
                                     }}
-                                    className="bg-white dark:bg-neutral-900 text-black dark:text-white border border-neutral-200 dark:border-white/10 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-2"
+                                    className="bg-white dark:bg-neutral-900 text-black dark:text-white border border-neutral-200 dark:border-white/10 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-center gap-2"
                                 >
                                     <MessageSquare className="w-4 h-4" />
                                     Chat
@@ -166,7 +166,7 @@ export function StudentServices() {
             {selectedService?.success && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setSelectedService(null)} />
-                    <div className="bg-white dark:bg-neutral-900 p-10 rounded-[3rem] text-center max-w-sm relative shadow-2xl animate-in zoom-in-95 duration-500">
+                    <div className="bg-white dark:bg-neutral-900 p-6 rounded-3xl text-center max-w-sm relative shadow-2xl animate-in zoom-in-95 duration-500">
                         <div className="w-20 h-20 bg-[#BEF264]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                             <CheckCircle className="w-10 h-10 text-[#BEF264]" />
                         </div>
@@ -176,7 +176,7 @@ export function StudentServices() {
                         </p>
                         <button 
                             onClick={() => setSelectedService(null)}
-                            className="w-full bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black py-4 rounded-2xl font-black uppercase tracking-widest text-[10px]"
+                            className="w-full bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black py-3 rounded-2xl font-black uppercase tracking-widest text-[10px]"
                         >
                             Got It
                         </button>

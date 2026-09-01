@@ -127,13 +127,13 @@ const AccountApprovalCard = ({ account, onApprove, onReject }: { account: any, o
                     <div className="mt-6 flex gap-3">
                         <button
                             onClick={onApprove}
-                            className="flex-grow bg-[#BEF264] hover:bg-[#d9ff96] text-black text-[10px] font-black py-4 rounded-2xl transition-all uppercase tracking-widest shadow-lg shadow-[#BEF264]/10 active:scale-95"
+                            className="flex-grow bg-[#BEF264] hover:bg-[#d9ff96] text-black text-[10px] font-black py-3 rounded-2xl transition-all uppercase tracking-widest shadow-lg shadow-[#BEF264]/10 active:scale-95"
                         >
                             Approve Account
                         </button>
                         <button
                             onClick={onReject}
-                            className="flex-grow bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 text-[10px] font-black py-4 rounded-2xl transition-all uppercase tracking-widest active:scale-95"
+                            className="flex-grow bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 text-[10px] font-black py-3 rounded-2xl transition-all uppercase tracking-widest active:scale-95"
                         >
                             Reject & Delete
                         </button>
@@ -214,23 +214,23 @@ const AdminHqPortal = () => {
         <div className="flex h-screen bg-[#0F172A] text-white overflow-hidden w-full">
              <main className="flex-1 flex flex-col h-screen overflow-y-auto w-full">
                  {/* Topbar */}
-                 <header className="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-10">
+                 <header className="h-20 border-b border-white/5 flex items-center justify-between px-4 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-10">
                      <h2 className="text-xl font-black uppercase tracking-widest">
                          {activeTab}
                      </h2>
                  </header>
 
-                 <div className="p-8 max-w-7xl mx-auto w-full">
+                 <div className="p-5 max-w-7xl mx-auto w-full">
 
                 {activeTab === 'verifications' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center justify-between px-4">
-                            <h2 className="text-3xl font-black uppercase tracking-tight text-[#BEF264]">Account Queue</h2>
+                            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-[#BEF264]">Account Queue</h2>
                             <span className="bg-[#BEF264]/10 text-[#BEF264] px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-[#BEF264]/20 animate-pulse">
                                 {pendingAccounts.length} Awaiting
                             </span>
                         </div>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                             {pendingAccounts.map((acc: any) => (
                                 <AccountApprovalCard 
                                     key={acc.id} 
@@ -258,14 +258,14 @@ const AdminHqPortal = () => {
                 {activeTab === 'disputes' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center justify-between px-4">
-                            <h2 className="text-3xl font-black uppercase tracking-tight text-red-500">Active Disputes</h2>
+                            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-red-500">Active Disputes</h2>
                             <span className="bg-red-500/10 text-red-500 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-red-500/20">
                                 {disputes.length} Disputes
                             </span>
                         </div>
-                        <div className="grid grid-cols-1 gap-8">
+                        <div className="grid grid-cols-1 gap-5">
                             {disputes.map((d: any) => (
-                                <div key={d.id} className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-red-500/20 hover:border-red-500/50 transition-all shadow-xl">
+                                <div key={d.id} className="bg-[#1e293b] rounded-[2.5rem] p-5 border border-red-500/20 hover:border-red-500/50 transition-all shadow-xl">
                                     <div className="flex justify-between items-start mb-6">
                                         <div>
                                             <div className="flex items-center gap-3 mb-2">
@@ -337,14 +337,14 @@ const AdminHqPortal = () => {
                 {activeTab === 'analytics' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center justify-between px-4">
-                            <h2 className="text-3xl font-black uppercase tracking-tight text-[#BEF264]">Deep Matrix Analytics</h2>
+                            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-[#BEF264]">Deep Matrix Analytics</h2>
                             <span className="bg-[#BEF264]/10 text-[#BEF264] px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-[#BEF264]/20 animate-pulse">
                                 Live Sync Active
                             </span>
                         </div>
 
                         {!analytics ? (
-                            <div className="bg-[#1e293b] rounded-[3rem] p-12 border border-white/5 text-center shadow-2xl">
+                            <div className="bg-[#1e293b] rounded-3xl p-6 border border-white/5 text-center shadow-2xl">
                                 <Zap className="w-16 h-16 text-[#BEF264]/50 mx-auto mb-6 animate-pulse" />
                                 <h3 className="text-xl font-bold uppercase tracking-widest text-[#BEF264] mb-2">Crunching Data...</h3>
                                 <p className="text-gray-400">Pulling historic datasets and aggregations.</p>
@@ -355,22 +355,22 @@ const AdminHqPortal = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div className="bg-[#1e293b] rounded-3xl p-6 border border-white/5 shadow-xl">
                                         <h3 className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Total Volume Processed</h3>
-                                        <div className="text-3xl font-black text-white">₦{analytics.financials.totalVolume.toLocaleString()}</div>
+                                        <div className="text-xl sm:text-2xl font-black text-white">₦{analytics.financials.totalVolume.toLocaleString()}</div>
                                     </div>
                                     <div className="bg-[#1e293b] rounded-3xl p-6 border border-white/5 shadow-xl">
                                         <h3 className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Active Escrow Held</h3>
-                                        <div className="text-3xl font-black text-[#BEF264]">₦{analytics.financials.activeEscrow.toLocaleString()}</div>
+                                        <div className="text-xl sm:text-2xl font-black text-[#BEF264]">₦{analytics.financials.activeEscrow.toLocaleString()}</div>
                                     </div>
                                     <div className="bg-[#1e293b] rounded-3xl p-6 border border-white/5 shadow-xl">
                                         <h3 className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-2">Avg. Transaction Value</h3>
-                                        <div className="text-3xl font-black text-blue-400">₦{analytics.financials.avgTransactionValue.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+                                        <div className="text-xl sm:text-2xl font-black text-blue-400">₦{analytics.financials.avgTransactionValue.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
                                     </div>
                                 </div>
 
                                 {/* Charts Grid */}
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                                     {/* Market Gap Analysis */}
-                                    <div className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl">
+                                    <div className="bg-[#1e293b] rounded-[2.5rem] p-5 border border-white/5 shadow-2xl">
                                         <h3 className="text-sm font-black uppercase tracking-widest text-white mb-6">Market Gap Analysis</h3>
                                         <div className="h-72 w-full">
                                             <ResponsiveContainer width="100%" height="100%">
@@ -388,7 +388,7 @@ const AdminHqPortal = () => {
                                     </div>
 
                                     {/* Conversion Funnel */}
-                                    <div className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl">
+                                    <div className="bg-[#1e293b] rounded-[2.5rem] p-5 border border-white/5 shadow-2xl">
                                         <h3 className="text-sm font-black uppercase tracking-widest text-white mb-6">Conversion Funnel</h3>
                                         <div className="h-72 w-full">
                                             <ResponsiveContainer width="100%" height="100%">
@@ -410,7 +410,7 @@ const AdminHqPortal = () => {
                                     </div>
 
                                     {/* User Engagement (DAU) */}
-                                    <div className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl lg:col-span-2">
+                                    <div className="bg-[#1e293b] rounded-[2.5rem] p-5 border border-white/5 shadow-2xl lg:col-span-2">
                                         <h3 className="text-sm font-black uppercase tracking-widest text-white mb-6">User Engagement (DAU)</h3>
                                         <div className="h-72 w-full">
                                             <ResponsiveContainer width="100%" height="100%">
@@ -440,7 +440,7 @@ const AdminHqPortal = () => {
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-4 gap-4">
                             <div>
-                                <h2 className="text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+                                <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight flex items-center gap-3">
                                     <Users className="w-8 h-8 text-blue-500" /> User Management
                                 </h2>
                                 <p className="text-sm text-gray-400 font-bold uppercase tracking-widest mt-1">Action Center</p>
@@ -457,15 +457,15 @@ const AdminHqPortal = () => {
                             </div>
                         </div>
 
-                        <div className="bg-[#1e293b] rounded-[3rem] border border-white/5 shadow-2xl overflow-hidden">
+                        <div className="bg-[#1e293b] rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-sm text-gray-300">
                                     <thead className="text-[10px] text-gray-500 uppercase tracking-widest bg-black/20 border-b border-white/5">
                                         <tr>
-                                            <th className="px-6 py-4 font-black">User Details</th>
-                                            <th className="px-6 py-4 font-black">Role / Account</th>
-                                            <th className="px-6 py-4 font-black">Status</th>
-                                            <th className="px-6 py-4 font-black">Admin Actions</th>
+                                            <th className="px-6 py-3 font-black">User Details</th>
+                                            <th className="px-6 py-3 font-black">Role / Account</th>
+                                            <th className="px-6 py-3 font-black">Status</th>
+                                            <th className="px-6 py-3 font-black">Admin Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-white/5">
@@ -474,11 +474,11 @@ const AdminHqPortal = () => {
                                             (u.email || '').toLowerCase().includes(userSearchTerm.toLowerCase())
                                         ).map((user) => (
                                             <tr key={user.id} className="hover:bg-white/5 transition-colors">
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-3">
                                                     <div className="font-bold text-white">{user.full_name || user.first_name || 'Unknown'}</div>
                                                     <div className="text-xs text-gray-500 mt-1">{user.email || user.contact_email}</div>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-3">
                                                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                                                         user._tableName === 'student_accounts' ? 'bg-blue-500/20 text-blue-400' :
                                                         user._tableName === 'landlord_accounts' ? 'bg-orange-500/20 text-orange-400' :
@@ -487,7 +487,7 @@ const AdminHqPortal = () => {
                                                         {user._tableName.split('_')[0]}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-3">
                                                     <span className={`flex items-center gap-2 text-xs font-bold uppercase tracking-widest ${
                                                         user.status === 'suspended' ? 'text-red-400' : 
                                                         user.status === 'banned' ? 'text-red-600' : 
@@ -497,7 +497,7 @@ const AdminHqPortal = () => {
                                                         {user.status || 'Active'}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-3">
                                                     <div className="flex gap-2">
                                                         {user.is_verified && (
                                                             <button 
@@ -541,7 +541,7 @@ const AdminHqPortal = () => {
                                     </tbody>
                                 </table>
                                 {allUsersData.length === 0 && (
-                                    <div className="p-12 text-center text-gray-500 font-bold uppercase tracking-widest">No users found.</div>
+                                    <div className="p-6 text-center text-gray-500 font-bold uppercase tracking-widest">No users found.</div>
                                 )}
                             </div>
                         </div>
@@ -554,7 +554,7 @@ const AdminHqPortal = () => {
                 {activeTab === 'escrow' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center justify-between px-4">
-                            <h2 className="text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+                            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight flex items-center gap-3">
                                 <Wallet className="w-8 h-8 text-orange-500" /> Escrow Ledger
                             </h2>
                             <span className="bg-orange-500/10 text-orange-500 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-orange-500/20">
@@ -564,13 +564,13 @@ const AdminHqPortal = () => {
 
                         <div className="grid grid-cols-1 gap-6">
                             {pendingEscrows.length === 0 ? (
-                                <div className="bg-[#1e293b] rounded-[3rem] p-12 border border-white/5 text-center shadow-2xl">
+                                <div className="bg-[#1e293b] rounded-3xl p-6 border border-white/5 text-center shadow-2xl">
                                     <Wallet className="w-16 h-16 text-orange-500/50 mx-auto mb-6 opacity-50" />
                                     <h3 className="text-xl font-bold uppercase tracking-widest text-orange-500 mb-2">Ledger Empty</h3>
                                     <p className="text-gray-400">No active escrow holds at the moment.</p>
                                 </div>
                             ) : pendingEscrows.map((escrow) => (
-                                <div key={escrow.id} className="bg-[#1e293b] rounded-[2.5rem] p-8 border border-orange-500/20 shadow-xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                                <div key={escrow.id} className="bg-[#1e293b] rounded-[2.5rem] p-5 border border-orange-500/20 shadow-xl flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                                     <div>
                                         <div className="flex items-center gap-3 mb-3">
                                             <span className="bg-orange-500/20 text-orange-400 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest border border-orange-500/30">
@@ -591,7 +591,7 @@ const AdminHqPortal = () => {
                                                     setPendingEscrows(updated || []);
                                                 }
                                             }}
-                                            className="flex-1 lg:flex-none bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px] font-black py-4 px-6 rounded-xl uppercase tracking-widest transition-colors"
+                                            className="flex-1 lg:flex-none bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px] font-black py-3 px-6 rounded-xl uppercase tracking-widest transition-colors"
                                         >
                                             Force Refund
                                         </button>
@@ -603,7 +603,7 @@ const AdminHqPortal = () => {
                                                     setPendingEscrows(updated || []);
                                                 }
                                             }}
-                                            className="flex-1 lg:flex-none bg-[#BEF264]/10 hover:bg-[#BEF264]/20 text-[#BEF264] border border-[#BEF264]/30 text-[10px] font-black py-4 px-6 rounded-xl uppercase tracking-widest transition-colors"
+                                            className="flex-1 lg:flex-none bg-[#BEF264]/10 hover:bg-[#BEF264]/20 text-[#BEF264] border border-[#BEF264]/30 text-[10px] font-black py-3 px-6 rounded-xl uppercase tracking-widest transition-colors"
                                         >
                                             Force Release
                                         </button>
@@ -620,7 +620,7 @@ const AdminHqPortal = () => {
                 {activeTab === 'support' && (
                     <div className="animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center justify-between px-4 mb-8">
-                            <h2 className="text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+                            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight flex items-center gap-3">
                                 <HeadphonesIcon className="w-8 h-8 text-purple-500" /> Support Desk
                             </h2>
                         </div>
@@ -712,7 +712,7 @@ const AdminHqPortal = () => {
                                         <AdminChatWindow ticketId={activeTicket.id} />
                                     </>
                                 ) : (
-                                    <div className="flex-1 flex flex-col items-center justify-center text-center p-10">
+                                    <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
                                         <HeadphonesIcon className="w-20 h-20 text-white/5 mb-6" />
                                         <p className="text-gray-500 font-bold uppercase tracking-widest">Select a ticket to begin resolution</p>
                                     </div>
@@ -728,12 +728,12 @@ const AdminHqPortal = () => {
                 {activeTab === 'alerts' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center justify-between px-4 mb-8">
-                            <h2 className="text-3xl font-black uppercase tracking-tight flex items-center gap-3">
+                            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight flex items-center gap-3">
                                 <Megaphone className="w-8 h-8 text-[#BEF264]" /> System Broadcasts
                             </h2>
                         </div>
                         
-                        <div className="bg-[#1e293b] rounded-[3rem] p-10 border border-white/5 shadow-2xl max-w-2xl">
+                        <div className="bg-[#1e293b] rounded-3xl p-6 border border-white/5 shadow-2xl max-w-2xl">
                             <h3 className="text-lg font-bold text-white mb-6 uppercase tracking-widest">New Announcement</h3>
                             <div className="space-y-6">
                                 <div>
@@ -783,7 +783,7 @@ const AdminHqPortal = () => {
                                 </div>
                                 <button 
                                     onClick={handleBroadcast}
-                                    className="w-full bg-[#BEF264] hover:bg-[#d9ff96] text-black font-black uppercase tracking-widest py-4 rounded-2xl transition-transform active:scale-95 mt-4"
+                                    className="w-full bg-[#BEF264] hover:bg-[#d9ff96] text-black font-black uppercase tracking-widest py-3 rounded-2xl transition-transform active:scale-95 mt-4"
                                 >
                                     Fire Broadcast 📢
                                 </button>
@@ -799,7 +799,7 @@ const AdminHqPortal = () => {
 
 export default function AdminHqPortalWrapper() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-[#0F172A] p-10 text-white">Loading Admin Portal...</div>}>
+        <Suspense fallback={<div className="min-h-screen bg-[#0F172A] p-6 text-white">Loading Admin Portal...</div>}>
             <AdminHqPortal />
         </Suspense>
     );

@@ -166,7 +166,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                 <input 
                     name="title" value={form.title} onChange={handleTextChange}
                     placeholder="e.g. Executive Self-con near LAUTECH"
-                    className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold text-gray-900 dark:text-white"
+                    className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold text-gray-900 dark:text-white"
                 />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -175,14 +175,14 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                     <input 
                         name="price" value={form.price} onChange={handleTextChange}
                         placeholder="350000"
-                        className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold text-gray-900 dark:text-white"
+                        className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold text-gray-900 dark:text-white"
                     />
                 </div>
                 <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Category</label>
                     <select 
                         name="category" value={form.category} onChange={handleTextChange}
-                        className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold text-gray-900 dark:text-white appearance-none"
+                        className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-bold text-gray-900 dark:text-white appearance-none"
                     >
                         {CATEGORIES.map(cat => <option key={cat}>{cat}</option>)}
                     </select>
@@ -290,7 +290,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                     name="description" value={form.description} onChange={handleTextChange}
                     placeholder="Write a internal note about light frequency, water quality, or landlord vibes..."
                     rows={4}
-                    className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-gray-900 dark:text-white resize-none"
+                    className="w-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/5 rounded-2xl px-6 py-3 outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-gray-900 dark:text-white resize-none"
                 />
             </div>
         </div>
@@ -306,12 +306,12 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
     if (!hasAcceptedTerms) {
         return (
             <div className="fixed inset-0 z-[201] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
-                <div className="w-full max-w-md bg-white dark:bg-neutral-950 rounded-[3.5rem] border border-white/10 p-12 text-center shadow-2xl relative overflow-hidden group">
+                <div className="w-full max-w-md bg-white dark:bg-neutral-950 rounded-[3.5rem] border border-white/10 p-6 text-center shadow-2xl relative overflow-hidden group">
                     <div className="absolute top-0 left-0 w-full h-2 bg-red-500/20" />
                     <div className="w-24 h-24 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform">
                         <ShieldCheck className="w-12 h-12 text-red-500" />
                     </div>
-                    <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-tight px-4">Legal Guard Active</h2>
+                    <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter leading-tight px-4">Legal Guard Active</h2>
                     <p className="text-[11px] font-bold text-gray-500 leading-relaxed italic mt-4 px-2">
                         "In Ogbomoso, we keep things professional. You must accept the Professional Terms of Service in your profile before you can list a property."
                     </p>
@@ -353,7 +353,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto p-5 no-scrollbar">
                     {error && (
-                        <div className="mb-6 bg-red-600/10 border border-red-600/20 text-red-500 px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-3">
+                        <div className="mb-6 bg-red-600/10 border border-red-600/20 text-red-500 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-3">
                             <AlertCircle className="w-5 h-5 shrink-0" />
                             {error}
                         </div>
@@ -378,7 +378,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                     <button 
                         onClick={() => step < 4 ? setStep(s => s + 1) : handleSubmit()}
                         disabled={loading || (step === 1 && (!form.title || !form.price)) || (step === 2 && !media.video)}
-                        className={`px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-3 shadow-xl
+                        className={`px-10 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-3 shadow-xl
                             ${step === 4 ? 'bg-[#BEF264] text-black shadow-[#BEF264]/20' : 'bg-white dark:bg-white text-black'}
                         `}
                     >

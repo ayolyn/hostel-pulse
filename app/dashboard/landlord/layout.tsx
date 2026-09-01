@@ -59,6 +59,7 @@ export default async function LandlordDashboardLayout({
         .single();
 
     const isApproved = account?.is_approved ?? false;
+    const skippedCompliance = cookieStore.get('skip_compliance')?.value === 'true';
     const hasSubmitted = account?.compliance_submitted ?? false;
 
     return (

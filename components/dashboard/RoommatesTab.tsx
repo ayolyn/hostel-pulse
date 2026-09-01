@@ -154,7 +154,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                 required
                                 value={budgetMax}
                                 onChange={e => setBudgetMax(e.target.value)}
-                                className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-[#BEF264] outline-none"
+                                className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none"
                                 placeholder="e.g. 150000"
                             />
                         </div>
@@ -167,7 +167,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                 <select 
                                     value={sleepSchedule}
                                     onChange={e => setSleepSchedule(e.target.value)}
-                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-[#BEF264] outline-none"
+                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none"
                                 >
                                     <option value="Early Bird">Early Bird</option>
                                     <option value="Night Owl">Night Owl</option>
@@ -181,7 +181,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                 <select 
                                     value={cleanliness}
                                     onChange={e => setCleanliness(e.target.value)}
-                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-[#BEF264] outline-none"
+                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none"
                                 >
                                     <option value="Very Clean">Very Clean</option>
                                     <option value="Average">Average</option>
@@ -199,7 +199,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                 required
                                 value={department}
                                 onChange={e => setDepartment(e.target.value)}
-                                className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-[#BEF264] outline-none"
+                                className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none"
                                 placeholder="e.g. Computer Science"
                             />
                         </div>
@@ -213,7 +213,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                 value={bio}
                                 onChange={e => setBio(e.target.value)}
                                 rows={4}
-                                className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-[#BEF264] outline-none resize-none"
+                                className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none resize-none"
                                 placeholder="A little about yourself, hobbies, what you look for in a roommate..."
                             />
                         </div>
@@ -222,7 +222,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                     <button 
                         type="submit"
                         disabled={submitting}
-                        className="w-full bg-[#BEF264] text-black py-4 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-[#a6d456] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#BEF264]/20"
+                        className="w-full bg-[#BEF264] text-black py-3 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-[#a6d456] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#BEF264]/20"
                     >
                         {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Users className="w-5 h-5" /> Save Profile</>}
                     </button>
@@ -244,7 +244,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
             </div>
 
             {profiles.length === 0 ? (
-                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-16 text-center">
+                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-8 text-center">
                     <Users className="w-12 h-12 text-gray-200 dark:text-neutral-800 mx-auto mb-4" />
                     <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">No Profiles Found</h3>
                     <p className="text-gray-500 mt-2 text-sm">Be the first to create a profile, or check back later when more students join.</p>

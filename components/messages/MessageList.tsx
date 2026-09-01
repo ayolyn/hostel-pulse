@@ -279,7 +279,7 @@ export function MessageList() {
                 )}
 
                 {filteredConversations.length === 0 ? (
-                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[2.5rem] p-16 text-center relative overflow-hidden mt-4">
+                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[2.5rem] p-8 text-center relative overflow-hidden mt-4">
                         <MessageSquare className="w-16 h-16 text-gray-200 dark:text-neutral-800 mx-auto mb-6" />
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">No {filter !== 'ALL' ? filter.toLowerCase() : ''} Messages</h2>
                         <p className="text-gray-500 max-w-sm mx-auto mb-8 font-medium">

@@ -21,9 +21,9 @@ export default async function BlogPostPage({ params }: { params: { id: string } 
                 <PublicHeader />
                 <main className="pt-40 px-6 max-w-3xl mx-auto w-full pb-24 text-center">
                     <BookOpen className="w-16 h-16 text-gray-200 mx-auto mb-6" />
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-4">Article Not Found</h1>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tighter mb-4">Article Not Found</h1>
                     <p className="text-gray-500 mb-8">This article may have been removed or the link is invalid.</p>
-                    <Link href="/blog" className="bg-[#BEF264] text-black px-8 py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all shadow-lg">
+                    <Link href="/blog" className="bg-[#BEF264] text-black px-4 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all shadow-lg">
                         Back to Journal
                     </Link>
                 </main>
@@ -51,7 +51,7 @@ export default async function BlogPostPage({ params }: { params: { id: string } 
                             <span className="text-gray-400">{post.read_time}</span>
                         </div>
                         
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 dark:text-white tracking-tighter leading-[1.1] mb-6">
+                        <h1 className="text-2xl sm:text-3xl md:text-3xl sm:text-2xl sm:text-3xl lg:text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tighter leading-[1.1] mb-6">
                             {post.title}
                         </h1>
                         

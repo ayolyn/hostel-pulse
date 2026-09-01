@@ -70,7 +70,7 @@ function SearchContent() {
     return (
         <>
             <div className="mb-12">
-                <h1 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Search Results</h1>
+                <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Search Results</h1>
                 <p className="text-gray-400 dark:text-zinc-300 font-medium">
                     {loading ? 'Searching properties...' : `${properties.length} match${properties.length !== 1 ? 'es' : ''} found in Ogbomoso`}
                 </p>
@@ -90,7 +90,7 @@ function SearchContent() {
                     <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search keywords.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pb-20 mt-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-20 mt-12">
                     {properties.map(p => (
                         <Link key={p.id} href={`/property/${p.id}`} className="block group">
                             <PropertyCard

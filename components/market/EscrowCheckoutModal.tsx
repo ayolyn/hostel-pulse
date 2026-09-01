@@ -69,7 +69,7 @@ export function EscrowCheckoutModal({ item, onClose, onSuccess }: EscrowCheckout
                 <X className="w-5 h-5" />
             </button>
 
-            <div className="p-8 text-center flex flex-col items-center">
+            <div className="p-5 text-center flex flex-col items-center">
                 <div className="w-16 h-16 bg-[#BEF264]/20 rounded-full flex items-center justify-center mb-4">
                     <ShieldCheck className="w-8 h-8 text-[#BEF264]" />
                 </div>
@@ -117,7 +117,7 @@ export function EscrowCheckoutModal({ item, onClose, onSuccess }: EscrowCheckout
                 <button 
                     onClick={handlePurchase}
                     disabled={loading}
-                    className="w-full bg-[#BEF264] text-black font-black py-4 rounded-2xl shadow-xl shadow-[#BEF264]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50 uppercase tracking-widest text-[11px]"
+                    className="w-full bg-[#BEF264] text-black font-black py-3 rounded-2xl shadow-xl shadow-[#BEF264]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50 uppercase tracking-widest text-[11px]"
                 >
                     <ShieldCheck className="w-4 h-4" />
                     {loading ? 'Processing...' : 'Lock Funds Securely'}

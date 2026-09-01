@@ -177,14 +177,14 @@ function AuthPageContent() {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500 rounded-full blur-[120px]" />
             </div>
 
-            <div className="w-full max-w-lg mt-12 bg-[#1E293B]/50 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/5 relative z-10 shadow-2xl">
+            <div className="w-full max-w-lg mt-12 bg-[#1E293B]/50 backdrop-blur-2xl p-6 rounded-3xl border border-white/5 relative z-10 shadow-2xl">
                 
                 <div className="flex justify-center mb-10">
                     <HostelPulseLogo variant="dark" size={64} className="hover:scale-105 transition-transform" />
                 </div>
 
                 <div className="text-center mb-8">
-                    <h1 className="text-4xl font-black text-white mb-2 tracking-tight uppercase">
+                    <h1 className="text-2xl sm:text-3xl font-black text-white mb-2 tracking-tight uppercase">
                         {mode === 'signup' && 'Create Account'}
                         {mode === 'signin' && 'Welcome Back'}
                     </h1>
@@ -201,13 +201,13 @@ function AuthPageContent() {
                     />
                     <button 
                         onClick={() => setMode('signin')}
-                        className={`flex-1 py-4 text-xs font-black uppercase tracking-widest relative z-10 transition-colors duration-300 ${mode === 'signin' ? 'text-black' : 'text-gray-400 hover:text-white'}`}
+                        className={`flex-1 py-3 text-xs font-black uppercase tracking-widest relative z-10 transition-colors duration-300 ${mode === 'signin' ? 'text-black' : 'text-gray-400 hover:text-white'}`}
                     >
                         Sign In
                     </button>
                     <button 
                         onClick={() => setMode('signup')}
-                        className={`flex-1 py-4 text-xs font-black uppercase tracking-widest relative z-10 transition-colors duration-300 ${mode === 'signup' ? 'text-black' : 'text-gray-400 hover:text-white'}`}
+                        className={`flex-1 py-3 text-xs font-black uppercase tracking-widest relative z-10 transition-colors duration-300 ${mode === 'signup' ? 'text-black' : 'text-gray-400 hover:text-white'}`}
                     >
                         Sign Up
                     </button>
@@ -241,7 +241,7 @@ function AuthPageContent() {
                                     value={otp}
                                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                     placeholder="000000"
-                                    className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-14 pr-6 text-white text-center tracking-[0.5em] text-lg focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-bold placeholder-gray-500"
+                                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-14 pr-6 text-white text-center tracking-[0.5em] text-lg focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-bold placeholder-gray-500"
                                 />
                             </div>
                         </div>
@@ -256,7 +256,7 @@ function AuthPageContent() {
                                     value={firstName}
                                     onChange={(e) => setFirstName(e.target.value)}
                                     placeholder="First Name"
-                                    className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-12 pr-4 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-4 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                                 />
                             </div>
                             <div className="relative">
@@ -267,7 +267,7 @@ function AuthPageContent() {
                                     value={lastName}
                                     onChange={(e) => setLastName(e.target.value)}
                                     placeholder="Last Name"
-                                    className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-12 pr-4 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-4 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                                 />
                             </div>
                         </div>
@@ -281,7 +281,7 @@ function AuthPageContent() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Email address"
-                            className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-14 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                            className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-14 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                         />
                     </div>
 
@@ -307,7 +307,7 @@ function AuthPageContent() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Password"
-                                className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-14 pr-24 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-14 pr-24 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                             />
                             <button
                                 type="button"
@@ -344,7 +344,7 @@ function AuthPageContent() {
 
                     <button 
                         disabled={loading || (mode === 'signup' && !agreedToTerms)}
-                        className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-5 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-30 disabled:scale-100 disabled:grayscale disabled:cursor-not-allowed flex items-center justify-center gap-2 group mt-4 text-sm"
+                        className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-30 disabled:scale-100 disabled:grayscale disabled:cursor-not-allowed flex items-center justify-center gap-2 group mt-4 text-sm"
                     >
                         {loading ? 'Processing...' : (mode === 'signin' ? 'Sign In' : mode === 'verify' ? 'Verify Code' : 'Create Account')}
                         {!loading && <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
@@ -360,7 +360,7 @@ function AuthPageContent() {
                 <button 
                     onClick={handleGoogleSignIn}
                     type="button"
-                    className="w-full flex items-center justify-center gap-4 bg-white text-black font-black py-5 rounded-full hover:bg-gray-100 transition-all active:scale-95 shadow-xl tracking-wide disabled:opacity-60 text-xs uppercase"
+                    className="w-full flex items-center justify-center gap-4 bg-white text-black font-black py-3 rounded-full hover:bg-gray-100 transition-all active:scale-95 shadow-xl tracking-wide disabled:opacity-60 text-xs uppercase"
                 >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="#EA4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -382,8 +382,8 @@ function AuthPageContent() {
             {/* Legal Modal */}
             {isLegalModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 backdrop-blur-md bg-black/60 animate-in fade-in duration-300">
-                    <div className="bg-[#1E293B] border border-white/10 w-full max-w-2xl rounded-[3rem] shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
-                        <div className="p-8 border-b border-white/5">
+                    <div className="bg-[#1E293B] border border-white/10 w-full max-w-2xl rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
+                        <div className="p-5 border-b border-white/5">
                             <div className="flex items-center justify-between mb-8">
                                 <h2 className="text-2xl font-black uppercase tracking-tighter text-white">Legal Hub</h2>
                                 <button onClick={() => setIsLegalModalOpen(false)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors group">
@@ -413,7 +413,7 @@ function AuthPageContent() {
                             </div>
                         </div>
                         
-                        <div className="flex-1 overflow-y-auto p-8 space-y-6 text-sm text-gray-400 leading-relaxed custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto p-5 space-y-6 text-sm text-gray-400 leading-relaxed custom-scrollbar">
                             {legalModalTab === 'terms' ? (
                                 <>
                                     <div className="mb-8 p-5 bg-[#BEF264]/10 border border-[#BEF264]/20 rounded-3xl">
@@ -481,10 +481,10 @@ function AuthPageContent() {
                             )}
                         </div>
 
-                        <div className="p-8 border-t border-white/5 flex justify-end">
+                        <div className="p-5 border-t border-white/5 flex justify-end">
                             <button 
                                 onClick={() => setIsLegalModalOpen(false)}
-                                className="bg-[#BEF264] text-black px-10 py-4 rounded-full font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] active:scale-95 transition-all shadow-lg shadow-[#BEF264]/20"
+                                className="bg-[#BEF264] text-black px-10 py-3 rounded-full font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] active:scale-95 transition-all shadow-lg shadow-[#BEF264]/20"
                             >
                                 Understood
                             </button>

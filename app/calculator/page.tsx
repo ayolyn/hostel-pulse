@@ -38,7 +38,7 @@ export default function CalculatorPage() {
                     <div className="inline-flex items-center justify-center p-3 bg-teal-50 text-teal-600 rounded-2xl mb-4">
                         <CalcIcon className="w-8 h-8" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter mb-4">
+                    <h1 className="text-2xl sm:text-3xl md:text-3xl sm:text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-tighter mb-4">
                         Investment Calculator
                     </h1>
                     <p className="text-gray-500 font-medium max-w-2xl mx-auto">
@@ -50,7 +50,7 @@ export default function CalculatorPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-5">
                         
                         {/* Interactive Controls */}
-                        <div className="p-8 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-100 space-y-8">
+                        <div className="p-5 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-100 space-y-8">
                             <div>
                                 <h2 className="text-xl font-black uppercase tracking-tight text-gray-900 mb-6">Property Parameters</h2>
                                 <div className="space-y-6">
@@ -111,7 +111,7 @@ export default function CalculatorPage() {
                         </div>
 
                         {/* Live Results Panel */}
-                        <div className="bg-gray-900 p-8 lg:col-span-2 text-white flex flex-col justify-center relative overflow-hidden">
+                        <div className="bg-gray-900 p-5 lg:col-span-2 text-white flex flex-col justify-center relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-[#BEF264] rounded-full blur-[100px] opacity-20 pointer-events-none" />
                             <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-500 rounded-full blur-[100px] opacity-20 pointer-events-none" />
                             
@@ -120,7 +120,7 @@ export default function CalculatorPage() {
                             <div className="space-y-8 relative z-10">
                                 <div>
                                     <p className="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Annual Revenue</p>
-                                    <p className="text-4xl font-black tracking-tighter">₦{results.annualRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                                    <p className="text-2xl sm:text-3xl font-black tracking-tighter">₦{results.annualRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                                 </div>
                                 
                                 <div className="h-px bg-white/10 w-full" />
@@ -135,7 +135,7 @@ export default function CalculatorPage() {
                                 <div>
                                     <p className="text-gray-400 text-xs font-black uppercase tracking-widest mb-2">Gross Rental Yield</p>
                                     <div className="flex items-baseline gap-2">
-                                        <p className="text-5xl font-black text-[#BEF264] tracking-tighter">{results.grossYield.toFixed(1)}%</p>
+                                        <p className="text-xl sm:text-2xl sm:text-2xl sm:text-3xl font-black text-[#BEF264] tracking-tighter">{results.grossYield.toFixed(1)}%</p>
                                         <span className="text-gray-400 text-sm font-medium">/ year</span>
                                     </div>
                                 </div>

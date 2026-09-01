@@ -277,7 +277,7 @@ export default function StudentCaseRoom() {
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 placeholder="Type your message or paste evidence links..."
-                                className="flex-1 bg-black/20 border border-white/10 rounded-2xl px-6 py-4 text-white text-sm focus:outline-none focus:border-[#BEF264]/50 transition-colors"
+                                className="flex-1 bg-black/20 border border-white/10 rounded-2xl px-6 py-3 text-white text-sm focus:outline-none focus:border-[#BEF264]/50 transition-colors"
                             />
                             <label className="bg-[#1e293b] border border-white/10 text-gray-400 w-14 h-14 rounded-2xl flex items-center justify-center hover:bg-white/5 transition-all cursor-pointer shrink-0">
                                 <Paperclip className="w-5 h-5" />

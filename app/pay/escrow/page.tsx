@@ -84,7 +84,7 @@ function EscrowPaymentContent() {
                 </div>
 
                 {/* Body */}
-                <div className="p-8">
+                <div className="p-5">
                     {isSuccess ? (
                         <div className="text-center py-8">
                             <div className="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -117,7 +117,7 @@ function EscrowPaymentContent() {
                             <button
                                 onClick={handlePayment}
                                 disabled={isProcessing}
-                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-[#a6d456] active:scale-95 transition-all shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:scale-100"
+                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-[#a6d456] active:scale-95 transition-all shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:scale-100"
                             >
                                 {isProcessing ? (
                                     <>

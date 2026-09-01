@@ -26,12 +26,12 @@ export default function RoommatesPage() {
     }, [supabase]);
 
     return (
-        <Suspense fallback={<div className="p-8 text-center text-gray-500">Loading Roommates...</div>}>
+        <Suspense fallback={<div className="p-5 text-center text-gray-500">Loading Roommates...</div>}>
             <StudentDashboardShell>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
                 <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] mb-1">Community match</p>
-                    <h1 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                         Roommate Discovery
                     </h1>
                     <p className="text-gray-500 font-medium">Find compatible students to share rent and lifestyle with.</p>
@@ -40,7 +40,7 @@ export default function RoommatesPage() {
                 <button 
                     onClick={() => setShowForm(!showForm)}
                     className={`
-                        flex items-center gap-3 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-lg
+                        flex items-center gap-3 px-4 py-3 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-lg
                         ${showForm 
                             ? 'bg-red-50 text-red-500 hover:bg-red-100 shadow-red-500/10' 
                             : 'bg-[#BEF264] text-black hover:bg-[#a6d456] shadow-[#BEF264]/20'

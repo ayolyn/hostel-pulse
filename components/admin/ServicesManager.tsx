@@ -33,7 +33,7 @@ export function ServicesManager({ services, isLoading = false }: { services: any
 
     if (isLoading) {
         return (
-            <div className="bg-[#1e293b] rounded-3xl p-16 border border-white/5 text-center shadow-xl flex flex-col items-center justify-center space-y-4">
+            <div className="bg-[#1e293b] rounded-3xl p-8 border border-white/5 text-center shadow-xl flex flex-col items-center justify-center space-y-4">
                 <div className="w-8 h-8 border-4 border-[#BEF264]/20 border-t-[#BEF264] rounded-full animate-spin"></div>
                 <p className="text-gray-400 font-medium animate-pulse">Loading campus gigs...</p>
             </div>
@@ -42,14 +42,14 @@ export function ServicesManager({ services, isLoading = false }: { services: any
 
     if (!services || services.length === 0) {
         return (
-            <div className="bg-[#1e293b] rounded-3xl p-8 border border-white/5 text-center shadow-xl">
+            <div className="bg-[#1e293b] rounded-3xl p-5 border border-white/5 text-center shadow-xl">
                 <p className="text-gray-400 font-medium">No campus gigs found.</p>
             </div>
         );
     }
 
     return (
-        <div className="bg-[#1e293b] rounded-[3rem] p-8 border border-white/5 shadow-2xl overflow-hidden">
+        <div className="bg-[#1e293b] rounded-3xl p-5 border border-white/5 shadow-2xl overflow-hidden">
             <h3 className="text-xl font-black text-white uppercase tracking-tighter mb-6">Campus Gigs Overview</h3>
             
             <div className="overflow-x-auto">
@@ -67,22 +67,22 @@ export function ServicesManager({ services, isLoading = false }: { services: any
                     <tbody className="divide-y divide-white/5">
                         {services.map((service) => (
                             <tr key={service.id} className="hover:bg-white/5 transition-colors">
-                                <td className="py-4 text-sm font-medium text-gray-400">
+                                <td className="py-3 text-sm font-medium text-gray-400">
                                     {new Date(service.created_at).toLocaleDateString()}
                                 </td>
-                                <td className="py-4">
+                                <td className="py-3">
                                     <p className="text-sm font-bold text-white">{service.profiles?.full_name || 'Unknown User'}</p>
                                     <p className="text-xs text-gray-500">{service.profiles?.contact_email}</p>
                                 </td>
-                                <td className="py-4">
+                                <td className="py-3">
                                     <p className="text-sm font-bold text-white line-clamp-1">{service.service_type}</p>
                                     <p className="text-[10px] text-gray-400 font-mono mt-1">Fulfiller: {service.details?.fulfiller_id ? service.details.fulfiller_id.substring(0,8) + '...' : 'None'}</p>
                                 </td>
-                                <td className="py-4">
+                                <td className="py-3">
                                     <p className="text-sm font-black text-[#BEF264]">₦{Number(service.total_cost).toLocaleString()}</p>
                                     <p className="text-[9px] font-black uppercase tracking-widest text-blue-400 mt-1">Fee: ₦{Number(service.service_fee).toLocaleString()}</p>
                                 </td>
-                                <td className="py-4">
+                                <td className="py-3">
                                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                                         service.status === 'OPEN' ? 'bg-blue-500/20 text-blue-400' :
                                         service.status === 'CLAIMED' ? 'bg-amber-500/20 text-amber-400' :
@@ -93,7 +93,7 @@ export function ServicesManager({ services, isLoading = false }: { services: any
                                         {service.status}
                                     </span>
                                 </td>
-                                <td className="py-4 text-right">
+                                <td className="py-3 text-right">
                                     <div className="flex justify-end gap-2">
                                         {['OPEN', 'CLAIMED'].includes(service.status) && (
                                             <button

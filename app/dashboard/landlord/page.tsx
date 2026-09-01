@@ -187,7 +187,7 @@ function DashboardContent() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tighter">
                         {account?.full_name ?? 'Landlord Hub'}
                     </h1>
                     <p className="text-gray-500 font-medium">Manage your properties and earnings in Ogbomoso.</p>
@@ -214,7 +214,7 @@ function DashboardContent() {
                     <div key={stat.label} className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between group hover:border-[#BEF264]/30 transition-all">
                         <div>
                             <p className="text-gray-500 text-xs font-black uppercase tracking-widest mb-1">{stat.label}</p>
-                            <h3 className="text-4xl font-black text-gray-900">{stat.value}</h3>
+                            <h3 className="text-2xl sm:text-3xl font-black text-gray-900">{stat.value}</h3>
                         </div>
                         <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-[#BEF264]/10 transition-colors">
                             <stat.icon className="w-7 h-7 text-gray-400 group-hover:text-[#BEF264] transition-colors" />
@@ -246,10 +246,10 @@ function DashboardContent() {
                         {[1, 2].map(i => <div key={i} className="bg-gray-100 animate-pulse h-24 rounded-3xl" />)}
                     </div>
                 ) : properties.length === 0 ? (
-                    <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-12 text-center space-y-4">
+                    <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-6 text-center space-y-4">
                         <Building2 className="w-12 h-12 text-gray-200 mx-auto" />
                         <p className="font-black text-gray-500 uppercase tracking-tight">No properties listed yet</p>
-                        <button onClick={() => handleTabChange('listings')} className="inline-flex items-center gap-2 bg-black text-[#BEF264] px-8 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all">
+                        <button onClick={() => handleTabChange('listings')} className="inline-flex items-center gap-2 bg-black text-[#BEF264] px-4 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all">
                             <Plus className="w-4 h-4" /> List a Property
                         </button>
                     </div>
@@ -302,7 +302,7 @@ function DashboardContent() {
                 />
             </div>
             {escrowTxs.length === 0 ? (
-                <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-12 text-center">
+                <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-6 text-center">
                     <Wallet className="w-12 h-12 text-gray-200 mx-auto mb-4" />
                     <p className="font-black text-gray-500 uppercase tracking-tight">No transactions yet</p>
                     <p className="text-gray-400 text-sm mt-2">Escrow payments for your properties will appear here.</p>
@@ -370,7 +370,7 @@ function DashboardContent() {
 
                             <button 
                                 onClick={() => setSelectedTx(null)}
-                                className="w-full bg-black text-white font-black py-4 rounded-2xl uppercase tracking-widest text-xs mt-8 hover:bg-neutral-800 transition-all"
+                                className="w-full bg-black text-white font-black py-3 rounded-2xl uppercase tracking-widest text-xs mt-8 hover:bg-neutral-800 transition-all"
                             >
                                 Close Details
                             </button>
@@ -411,7 +411,7 @@ function DashboardContent() {
                     </p>
                 </div>
             </div>
-            <div className="p-5 sm:p-12 text-center bg-white">
+            <div className="p-5 sm:p-6 text-center bg-white">
                 <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Lock className="w-8 h-8 text-gray-400" />
                 </div>
@@ -420,7 +420,7 @@ function DashboardContent() {
                 
                 <button 
                     onClick={() => handleTabChange('profile')}
-                    className="bg-black text-[#BEF264] px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all inline-flex items-center gap-2"
+                    className="bg-black text-[#BEF264] px-4 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all inline-flex items-center gap-2"
                 >
                     Complete Profile Now <UploadCloud className="w-4 h-4" />
                 </button>

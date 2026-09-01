@@ -155,7 +155,7 @@ export function RoommateDiscovery() {
 
     if (matches.length === 0) {
         return (
-            <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[2.5rem] p-16 text-center">
+            <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[2.5rem] p-8 text-center">
                 <User className="w-16 h-16 text-gray-200 dark:text-neutral-800 mx-auto mb-6" />
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">No Roommates Found</h2>
                 <p className="text-gray-500 max-w-sm mx-auto mb-8 font-medium">
@@ -173,7 +173,7 @@ export function RoommateDiscovery() {
                 <p className="text-gray-500 font-medium mb-8 max-w-sm">Upload your Student ID in the Profile section to unlock.</p>
                 <button 
                     onClick={() => router.push('/dashboard/student?tab=profile')}
-                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs px-8 py-4 rounded-2xl hover:scale-105 transition-all shadow-xl"
+                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs px-4 py-3 rounded-2xl hover:scale-105 transition-all shadow-xl"
                 >
                     Go to Profile →
                 </button>
@@ -220,7 +220,7 @@ export function RoommateDiscovery() {
             </div>
 
             {filteredMatches.length === 0 ? (
-                <div className="text-center py-12 bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[2.5rem]">
+                <div className="text-center py-6 bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-[2.5rem]">
                     <p className="text-gray-500 font-medium">No roommates match your current filters.</p>
                     <button 
                         onClick={() => {setSearchQuery(''); setZoneFilter(''); setBudgetFilter('');}} 
@@ -234,7 +234,7 @@ export function RoommateDiscovery() {
                     {filteredMatches.map((profile) => (
                         <div 
                             key={profile.id} 
-                            className="bg-white dark:bg-neutral-900 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-white/5 hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col h-full"
+                            className="bg-white dark:bg-neutral-900 p-5 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-white/5 hover:shadow-xl hover:-translate-y-1 transition-all group flex flex-col h-full"
                         >
                             <div className="flex items-center gap-5 mb-6">
                                 <div className="w-16 h-16 bg-[#BEF264]/10 dark:bg-[#BEF264]/5 rounded-2xl flex items-center justify-center text-[#BEF264] group-hover:scale-110 transition-transform overflow-hidden relative">
@@ -273,7 +273,7 @@ export function RoommateDiscovery() {
 
                             <button 
                                 onClick={() => handleStartChat(profile.id, profile.full_name)}
-                                className="mt-auto w-full bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs py-4 rounded-2xl flex items-center justify-center gap-3 hover:shadow-lg transition-all"
+                                className="mt-auto w-full bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs py-3 rounded-2xl flex items-center justify-center gap-3 hover:shadow-lg transition-all"
                             >
                                 <MessageCircle size={18} />
                                 Chat with {profile.full_name.split(' ')[0]}

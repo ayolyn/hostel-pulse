@@ -161,9 +161,9 @@ function JoinPageContent() {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500 rounded-full blur-[120px]" />
             </div>
 
-            <div className="w-full max-w-lg mt-12 bg-[#1E293B]/50 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/5 relative z-10 shadow-2xl">
+            <div className="w-full max-w-lg mt-12 bg-[#1E293B]/50 backdrop-blur-2xl p-6 rounded-3xl border border-white/5 relative z-10 shadow-2xl">
                 <div className="text-center mb-10">
-                    <h1 className="text-4xl font-black text-white mb-2 tracking-tight uppercase">
+                    <h1 className="text-2xl sm:text-3xl font-black text-white mb-2 tracking-tight uppercase">
                         {mode === 'signup' && 'Create Account'}
                         {mode === 'signin' && 'Welcome Back'}
                         {mode === 'forgot-password' && 'Reset Password'}
@@ -211,7 +211,7 @@ function JoinPageContent() {
                     type="button"
                     onClick={handleGoogleSignIn}
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-4 bg-white text-black font-black py-5 rounded-[1.5rem] mb-6 hover:bg-gray-100 transition-all active:scale-95 shadow-xl tracking-wide disabled:opacity-60"
+                    className="w-full flex items-center justify-center gap-4 bg-white text-black font-black py-3 rounded-[1.5rem] mb-6 hover:bg-gray-100 transition-all active:scale-95 shadow-xl tracking-wide disabled:opacity-60"
                 >
                     <svg className="w-6 h-6" viewBox="0 0 24 24">
                         <path fill="#EA4335" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -239,7 +239,7 @@ function JoinPageContent() {
                             value={email}
                             onChange={e => setEmail(e.target.value)}
                             placeholder="Email address"
-                            className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-14 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                            className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-14 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                         />
                     </div>
                     {mode !== 'forgot-password' && (
@@ -251,7 +251,7 @@ function JoinPageContent() {
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
                                 placeholder="Password"
-                                className="w-full bg-white/5 border border-white/10 rounded-full py-5 pl-14 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
+                                className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-14 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] focus:bg-white/10 transition-all font-medium placeholder-gray-500"
                             />
                         </div>
                     )}
@@ -275,7 +275,7 @@ function JoinPageContent() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-5 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-60 mt-2 text-sm"
+                        className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-60 mt-2 text-sm"
                     >
                         {loading ? 'Processing...' : (
                             mode === 'signup' ? 'Sign Up' : 

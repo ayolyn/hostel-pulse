@@ -180,7 +180,7 @@ export function AgentSidebar({ isOpen, isRetracted, onClose, onRetractToggle, us
                             title={isRetracted ? displayName : ''}
                             className={`
                                 w-full flex items-center transition-all duration-300 rounded-2xl group relative
-                                ${isRetracted ? 'justify-center py-4' : 'justify-between px-5 py-3.5'}
+                                ${isRetracted ? 'justify-center py-3' : 'justify-between px-5 py-3.5'}
                                 ${isActive 
                                     ? 'bg-black text-[#BEF264] dark:bg-[#BEF264] dark:text-black shadow-lg shadow-[#BEF264]/10' 
                                     : 'text-neutral-500 hover:text-black dark:text-neutral-500 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
@@ -237,7 +237,7 @@ export function AgentSidebar({ isOpen, isRetracted, onClose, onRetractToggle, us
                 <button 
                     onClick={handleSignOut}
                     title={isRetracted ? 'Sign Out' : ''}
-                    className={`flex items-center text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-all group ${isRetracted ? 'justify-center py-4 w-full' : 'w-full gap-4 px-5 py-4'}`}
+                    className={`flex items-center text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-all group ${isRetracted ? 'justify-center py-3 w-full' : 'w-full gap-4 px-5 py-3'}`}
                 >
                     <LogOut className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
                     {!isRetracted && <span className="text-xs font-black uppercase tracking-widest">Sign Out</span>}

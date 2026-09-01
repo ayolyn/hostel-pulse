@@ -156,13 +156,13 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                 <div className="w-32 h-32 bg-white/5 rounded-3xl flex items-center justify-center mb-8 border border-white/5">
                     <Building2 className="w-16 h-16 text-white/10" />
                 </div>
-                <h2 className="text-3xl font-black text-white uppercase tracking-tighter mb-2">No Listings Found</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tighter mb-2">No Listings Found</h2>
                 <p className="text-gray-500 max-w-sm mx-auto mb-10 font-medium font-bold uppercase tracking-widest text-[10px]">
                     Your Zone is currently empty. Start listing properties to earn your Trust Rank.
                 </p>
                 <button 
                     onClick={onAddClick}
-                    className="flex items-center gap-3 bg-[#BEF264] text-black font-black px-10 py-5 rounded-2xl uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#BEF264]/20"
+                    className="flex items-center gap-3 bg-[#BEF264] text-black font-black px-10 py-3 rounded-2xl uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#BEF264]/20"
                 >
                     <Plus className="w-5 h-5" />
                     List Your First Property

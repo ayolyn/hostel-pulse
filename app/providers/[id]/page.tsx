@@ -145,11 +145,11 @@ export default async function ProviderProfilePage({ params }: { params: { id: st
         <div className="min-h-screen bg-gray-50/50">
             <PublicHeader />
 
-            <main className="pt-32 px-6 max-w-6xl mx-auto pb-24 space-y-8 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-12">
+            <main className="pt-32 px-6 max-w-6xl mx-auto pb-24 space-y-8 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-6">
 
                 {/* Left Column - Profile Card */}
                 <div className="lg:col-span-1">
-                    <div className="bg-white rounded-[2.5rem] border border-gray-100 p-8 text-center shadow-2xl shadow-gray-200/50 relative overflow-hidden sticky top-24">
+                    <div className="bg-white rounded-[2.5rem] border border-gray-100 p-5 text-center shadow-2xl shadow-gray-200/50 relative overflow-hidden sticky top-24">
                         <div className="absolute top-0 left-0 right-0 h-32 bg-gray-900 rounded-t-[2.5rem]" />
 
                         <div className="relative z-10">
@@ -180,7 +180,7 @@ export default async function ProviderProfilePage({ params }: { params: { id: st
 
                             <div className="grid grid-cols-2 gap-4 pb-8 border-b border-gray-100 mb-8">
                                 <div className="space-y-1">
-                                    <p className="text-3xl font-black text-gray-900">{listings.length}</p>
+                                    <p className="text-xl sm:text-2xl font-black text-gray-900">{listings.length}</p>
                                     <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-1">Total Listings</p>
                                 </div>
                                 <div className="space-y-1">
@@ -198,7 +198,7 @@ export default async function ProviderProfilePage({ params }: { params: { id: st
                                 href={provider.whatsapp_number ? `https://wa.me/${provider.whatsapp_number.replace(/[^0-9]/g, '')}` : provider.phone ? `tel:${provider.phone}` : '#'}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-full bg-white border border-gray-200 text-gray-900 px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2 mt-3"
+                                className="w-full bg-white border border-gray-200 text-gray-900 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2 mt-3"
                             >
                                 <Phone className="w-4 h-4" /> {provider.whatsapp_number ? 'WhatsApp' : 'Call Provider'}
                             </a>
@@ -230,7 +230,7 @@ export default async function ProviderProfilePage({ params }: { params: { id: st
                         </div>
 
                         {listings.length === 0 ? (
-                            <div className="bg-white border border-gray-100 rounded-[2rem] p-10 text-center shadow-sm">
+                            <div className="bg-white border border-gray-100 rounded-[2rem] p-6 text-center shadow-sm">
                                 <MapPin className="w-12 h-12 text-gray-200 mx-auto mb-4" />
                                 <h4 className="text-lg font-black text-gray-900 uppercase tracking-tight">No active listings</h4>
                                 <p className="text-gray-500 mt-2">This provider currently has no active properties assigned to them.</p>

@@ -305,7 +305,7 @@ function StudentDashboardContent() {
                                             router.push(`?tab=messages&userId=${selectedInspectionDetails.agent_id}`);
                                             setSelectedInspectionDetails(null);
                                         }}
-                                        className="flex-1 bg-emerald-600 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/10"
+                                        className="flex-1 bg-emerald-600 text-white font-black py-3 rounded-2xl uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/10"
                                     >
                                         Message Landlord
                                     </button>
@@ -328,7 +328,7 @@ function StudentDashboardContent() {
                         >
                             <Calendar className="w-6 h-6 text-[#BEF264]" />
                             <div>
-                                <p className="text-3xl font-black text-gray-900 dark:text-white">
+                                <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">
                                     {inspections.filter(i => i.status === 'Pending').length}
                                 </p>
                                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">Pending Inspections</p>
@@ -338,7 +338,7 @@ function StudentDashboardContent() {
                         <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-2xl flex flex-col gap-4">
                             <Wallet className="w-6 h-6 text-[#BEF264]" />
                             <div>
-                                <p className="text-3xl font-black text-gray-900 dark:text-white text-emerald-500">
+                                <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white text-emerald-500">
                                     ₦{Number(accountData?.wallet_balance || 0).toLocaleString()}
                                 </p>
                                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">Available Balance</p>
@@ -427,7 +427,7 @@ function StudentDashboardContent() {
                                 </div>
                                 <Link 
                                     href="/area-guide"
-                                    className="shrink-0 bg-[#BEF264] text-black px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/20 hover:scale-105 active:scale-95"
+                                    className="shrink-0 bg-[#BEF264] text-black px-4 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/20 hover:scale-105 active:scale-95"
                                 >
                                     Explore Areas
                                 </Link>

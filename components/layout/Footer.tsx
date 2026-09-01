@@ -6,7 +6,7 @@ import { Facebook, Twitter, Instagram, Linkedin, ArrowRight } from "lucide-react
 export default function Footer() {
     return (
         <footer className="bg-black text-gray-400 py-8 md:py-24 px-6 border-t border-white/5">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-16">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
 
                 {/* Brand Section */}
                 <div className="space-y-6">
@@ -35,7 +35,7 @@ export default function Footer() {
                     <p className="text-xs font-medium leading-relaxed">
                         Join 500+ agents in Ogbomoso earning ₦100k+ monthly. List houses, manage inspections, get paid safely.
                     </p>
-                    <Link href="/agent" className="block w-full bg-[#BEF264] text-black text-center py-3 md:py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-xl shadow-[#BEF264]/10">
+                    <Link href="/agent" className="block w-full bg-[#BEF264] text-black text-center py-3 md:py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-xl shadow-[#BEF264]/10">
                         Become a Verified Agent
                     </Link>
                 </div>

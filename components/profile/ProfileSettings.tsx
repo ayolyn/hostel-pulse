@@ -95,17 +95,17 @@ export function ProfileSettings() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center p-8">
+            <div className="flex items-center justify-center p-5">
                 <Loader2 className="w-6 h-6 animate-spin text-neutral-500" />
             </div>
         );
     }
 
     return (
-        <div className="bg-white dark:bg-neutral-900 rounded-3xl p-6 md:p-8 border border-neutral-200 dark:border-white/10 shadow-sm">
+        <div className="bg-white dark:bg-neutral-900 rounded-3xl p-6 md:p-5 border border-neutral-200 dark:border-white/10 shadow-sm">
             <h2 className="text-xl font-bold text-black dark:text-white mb-6">Edit Profile</h2>
             
-            <div className="flex flex-col gap-8 max-w-md">
+            <div className="flex flex-col gap-5 max-w-md">
                 {/* Avatar Section */}
                 <div>
                     <label className="block text-sm font-bold text-neutral-700 dark:text-neutral-300 mb-3">

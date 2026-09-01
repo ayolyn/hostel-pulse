@@ -372,7 +372,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                     <h4 className="font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-6 font-bold">Authenticated Documents</h4>
                     <div className="space-y-3">
                         {userRole === 'student' ? (
-                            <div className="flex justify-between items-center py-4 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors px-4 -mx-4 rounded-xl">
+                            <div className="flex justify-between items-center py-3 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors px-4 -mx-4 rounded-xl">
                                 <span className="text-sm font-black text-gray-700 dark:text-neutral-300 uppercase tracking-tight">University ID (LAUTECH)</span>
                                 {formData.student_id_url || account?.is_approved || account?.is_verified ? (
                                     <div className="flex items-center gap-2">
@@ -391,7 +391,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                                 const url = formData[key as keyof typeof formData] as string;
                                 const isMandatory = key !== 'cac_document_url';
                                 return (
-                                    <div key={key} className="flex justify-between items-center py-4 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors px-4 -mx-4 rounded-xl">
+                                    <div key={key} className="flex justify-between items-center py-3 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors px-4 -mx-4 rounded-xl">
                                         <span className="text-sm font-black text-gray-700 dark:text-neutral-300 uppercase tracking-tight">{label}</span>
                                         {url || account?.is_approved || account?.is_verified ? (
                                             <div className="flex items-center gap-2">
@@ -435,7 +435,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                         </p>
                     </div>
                     {!termsAcceptedAt && (
-                        <button type="button" onClick={() => setIsTermsModalOpen(true)} className="px-8 py-4 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/10">
+                        <button type="button" onClick={() => setIsTermsModalOpen(true)} className="px-4 py-3 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/10">
                             Accept Terms
                         </button>
                     )}
@@ -591,10 +591,10 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
                                     {isLocked && (
                                         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#BEF264]/10 backdrop-blur-sm">
-                                            <div className="w-14 h-14 bg-[#BEF264] rounded-full flex items-center justify-center mb-2 shadow-lg shadow-[#BEF264]/30">
+                                            <div className="w-14 h-14 ${account?.is_approved ? 'bg-[#BEF264] shadow-[#BEF264]/30' : 'bg-amber-500 shadow-amber-500/30'} rounded-full flex items-center justify-center mb-2 shadow-lg">
                                                 <CheckCircle2 className="w-7 h-7 text-black" />
                                             </div>
-                                            <p className="text-xs font-black uppercase tracking-widest text-[#BEF264] drop-shadow-md">Verified Document</p>
+                                            <p className={`text-[10px] font-black uppercase tracking-widest drop-shadow-md ${account?.is_approved ? 'text-[#BEF264]' : 'text-amber-400'}`}>{account?.is_approved ? 'Verified Document' : 'Pending Review'}</p>
                                             <p className="text-[9px] font-bold text-gray-400 dark:text-neutral-500 mt-1 uppercase">{doc.label}</p>
                                         </div>
                                     )}
@@ -640,7 +640,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                         <button 
                             type="button"
                             onClick={() => setIsTermsModalOpen(true)}
-                            className="px-10 py-5 bg-[#BEF264] text-black rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#BEF264]/20 flex items-center gap-3"
+                            className="px-10 py-3 bg-[#BEF264] text-black rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#BEF264]/20 flex items-center gap-3"
                         >
                             <Scale className="w-4 h-4" />
                             Review & Accept Terms
@@ -654,7 +654,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                 <button 
                     disabled={loading || (!termsAcceptedAt && !(account?.is_approved || account?.is_verified))} 
                     type="submit" 
-                    className="w-full sm:w-auto px-12 py-5 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black rounded-3xl font-black uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:hover:scale-100 flex items-center justify-center gap-4 group shadow-xl shadow-black/10"
+                    className="w-full sm:w-auto px-4 py-3 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black rounded-3xl font-black uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:hover:scale-100 flex items-center justify-center gap-4 group shadow-xl shadow-black/10"
                 >
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : '🚀 Update Official Profile'}
                     {!loading && <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
@@ -673,7 +673,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
         <div className="space-y-10">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Profile HQ</h2>
+                    <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Profile HQ</h2>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Manage your identity & compliance</p>
                 </div>
             </div>
@@ -683,7 +683,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                     <button 
                         key={tab}
                         onClick={() => setActiveSubTab(tab)}
-                        className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === tab ? 'bg-white dark:bg-black text-gray-900 dark:text-[#BEF264] shadow-sm' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
+                        className={`px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === tab ? 'bg-white dark:bg-black text-gray-900 dark:text-[#BEF264] shadow-sm' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
                     >
                         {tab}
                     </button>

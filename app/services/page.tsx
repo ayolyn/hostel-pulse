@@ -7,7 +7,7 @@ import { Suspense } from 'react';
 
 export default function ServicesPage() {
     return (
-        <Suspense fallback={<div className="p-8 text-center text-gray-500">Loading Campus Gigs...</div>}>
+        <Suspense fallback={<div className="p-5 text-center text-gray-500">Loading Campus Gigs...</div>}>
             <StudentDashboardShell>
                 <div className="mb-8">
                     <h1 className="text-2xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Campus Gigs</h1>

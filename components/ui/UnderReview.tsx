@@ -27,7 +27,7 @@ export function UnderReview() {
                     <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">Pending Verification</span>
                 </div>
 
-                <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight uppercase italic">
+                <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight uppercase italic">
                     HQ Verification Gate
                 </h1>
 
@@ -59,7 +59,7 @@ export function UnderReview() {
 
                 <Link
                     href="/"
-                    className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-neutral-400 hover:text-white transition-all bg-black px-8 py-4 rounded-full"
+                    className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-neutral-400 hover:text-white transition-all bg-black px-4 py-3 rounded-full"
                 >
                     Exit to Home
                     <ChevronRight className="w-4 h-4" />

@@ -54,7 +54,7 @@ export function ReviewModal({ sellerId, itemId, buyerName, onClose, onSuccess }:
                 <X className="w-5 h-5" />
             </button>
 
-            <div className="p-10 text-center">
+            <div className="p-6 text-center">
                 {!submitted ? (
                     <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="space-y-2">
@@ -88,14 +88,14 @@ export function ReviewModal({ sellerId, itemId, buyerName, onClose, onSuccess }:
                         <button 
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-[#BEF264]/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                            className="w-full bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black py-3 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-[#BEF264]/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                         >
                             <Send className="w-4 h-4" />
                             Submit Review
                         </button>
                     </form>
                 ) : (
-                    <div className="py-12 animate-in zoom-in-95 duration-500">
+                    <div className="py-6 animate-in zoom-in-95 duration-500">
                         <div className="w-20 h-20 bg-[#BEF264]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                             <CheckCircle className="w-10 h-10 text-[#BEF264]" />
                         </div>

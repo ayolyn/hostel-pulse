@@ -233,7 +233,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-10 border border-gray-100 dark:border-white/5">
                     <Calendar className="w-16 h-16 text-gray-200 dark:text-white/5" />
                 </div>
-                <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Queue is Clear</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Queue is Clear</h2>
                 <p className="text-gray-500 max-w-sm mx-auto font-black uppercase tracking-widest text-[10px]">
                     No leads or move-ins currently pending. New requests from Under-G will appear here!
                 </p>
@@ -307,13 +307,13 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                                     <>
                                         <button 
                                             onClick={() => handleAction(item.id, 'Confirmed')}
-                                            className="w-full bg-[#BEF264] text-black font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] shadow-xl shadow-[#BEF264]/10 transition-all hover:scale-[1.02] active:scale-95"
+                                            className="w-full bg-[#BEF264] text-black font-black py-3 rounded-2xl uppercase tracking-widest text-[10px] shadow-xl shadow-[#BEF264]/10 transition-all hover:scale-[1.02] active:scale-95"
                                         >
                                             Accept Request
                                         </button>
                                         <button 
                                             onClick={() => handleAction(item.id, 'Cancelled')}
-                                            className="w-full bg-red-50 dark:bg-white/5 text-red-500 font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] hover:bg-red-100 dark:hover:bg-red-500/10 transition-all"
+                                            className="w-full bg-red-50 dark:bg-white/5 text-red-500 font-black py-3 rounded-2xl uppercase tracking-widest text-[10px] hover:bg-red-100 dark:hover:bg-red-500/10 transition-all"
                                         >
                                             Cancel Request
                                         </button>
@@ -324,21 +324,21 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                                     <>
                                         <button 
                                             onClick={() => router.push(`?tab=messages&userId=${item.requester_id}`)}
-                                            className="w-full bg-emerald-600 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/10"
+                                            className="w-full bg-emerald-600 text-white font-black py-3 rounded-2xl uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/10"
                                         >
                                             <MessageCircle className="w-4 h-4" /> Message Student
                                         </button>
                                         {item.escrow_status?.toUpperCase() === 'HELD' || item.escrow_status?.toUpperCase() === 'PENDING' ? (
                                             <button 
                                                 onClick={() => handleAction(item.id, 'Completed')}
-                                                className="w-full bg-gray-100 dark:bg-white/5 text-emerald-600 dark:text-[#BEF264] font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] hover:bg-gray-200 dark:hover:bg-[#BEF264]/10 transition-all"
+                                                className="w-full bg-gray-100 dark:bg-white/5 text-emerald-600 dark:text-[#BEF264] font-black py-3 rounded-2xl uppercase tracking-widest text-[10px] hover:bg-gray-200 dark:hover:bg-[#BEF264]/10 transition-all"
                                             >
                                                 Mark as Completed
                                             </button>
                                         ) : (
                                             <button 
                                                 disabled
-                                                className="w-full bg-gray-100 dark:bg-white/5 text-gray-400 font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] opacity-50 cursor-not-allowed"
+                                                className="w-full bg-gray-100 dark:bg-white/5 text-gray-400 font-black py-3 rounded-2xl uppercase tracking-widest text-[10px] opacity-50 cursor-not-allowed"
                                             >
                                                 Awaiting Payment
                                             </button>
@@ -360,7 +360,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                                                     }
                                                 }
                                             }}
-                                            className="w-full bg-red-50 dark:bg-white/5 text-red-500 font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] hover:bg-red-100 dark:hover:bg-red-500/10 transition-all mt-2"
+                                            className="w-full bg-red-50 dark:bg-white/5 text-red-500 font-black py-3 rounded-2xl uppercase tracking-widest text-[10px] hover:bg-red-100 dark:hover:bg-red-500/10 transition-all mt-2"
                                         >
                                             Report Issue
                                         </button>
@@ -422,7 +422,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                                     router.push(`?tab=messages&userId=${selectedInspectionDetails.requester_id}`);
                                     setSelectedInspectionDetails(null);
                                 }}
-                                className="flex-1 bg-emerald-600 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/10"
+                                className="flex-1 bg-emerald-600 text-white font-black py-3 rounded-2xl uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/10"
                             >
                                 Message Student
                             </button>
@@ -457,7 +457,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                                 </div>
                                 <button 
                                     onClick={() => setSelectedTx(tx)}
-                                    className="px-10 py-5 bg-[#BEF264] text-black font-black rounded-2xl uppercase tracking-widest text-xs shadow-2xl shadow-[#BEF264]/20 flex items-center gap-3 hover:scale-105 transition-all"
+                                    className="px-10 py-3 bg-[#BEF264] text-black font-black rounded-2xl uppercase tracking-widest text-xs shadow-2xl shadow-[#BEF264]/20 flex items-center gap-3 hover:scale-105 transition-all"
                                 >
                                     <QrCode className="w-5 h-5" />
                                     Generate Move-in QR

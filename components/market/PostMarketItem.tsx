@@ -134,7 +134,7 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                         <p className="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed mb-6">
                             You have reached the maximum number of active listings. Please mark an item as sold before posting a new one.
                         </p>
-                        <button onClick={onClose} className="bg-black dark:bg-white text-white dark:text-black w-full py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-[1.02] transition-all shadow-xl">
+                        <button onClick={onClose} className="bg-black dark:bg-white text-white dark:text-black w-full py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-[1.02] transition-all shadow-xl">
                             Close
                         </button>
                     </div>
@@ -172,7 +172,7 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                                     type="text" 
                                     required
                                     placeholder="e.g. Haier Thermocool Fridge"
-                                    className="w-full px-5 py-4 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
+                                    className="w-full px-5 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
                                     value={formData.title}
                                     onChange={(e) => setFormData({...formData, title: e.target.value})}
                                 />
@@ -185,7 +185,7 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                                         type="number" 
                                         required
                                         placeholder="0.00"
-                                        className="w-full px-5 py-4 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
+                                        className="w-full px-5 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
                                         value={formData.price}
                                         onChange={(e) => setFormData({...formData, price: e.target.value})}
                                     />
@@ -196,7 +196,7 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                                         type="number" 
                                         min="1"
                                         required
-                                        className="w-full px-5 py-4 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
+                                        className="w-full px-5 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
                                         value={formData.quantity}
                                         onChange={(e) => setFormData({...formData, quantity: parseInt(e.target.value) || 1})}
                                     />
@@ -204,7 +204,7 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                                 <div>
                                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 block ml-1">Condition</label>
                                     <select 
-                                        className="w-full px-5 py-4 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm appearance-none"
+                                        className="w-full px-5 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm appearance-none"
                                         value={formData.condition}
                                         onChange={(e) => setFormData({...formData, condition: e.target.value})}
                                     >
@@ -218,7 +218,7 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                             <div>
                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 block ml-1">Pickup Location</label>
                                 <select 
-                                    className="w-full px-5 py-4 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm appearance-none"
+                                    className="w-full px-5 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm appearance-none"
                                     value={formData.location}
                                     onChange={(e) => setFormData({...formData, location: e.target.value})}
                                 >
@@ -268,14 +268,14 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                             <button 
                                 type="button"
                                 onClick={() => setStep(1)}
-                                className="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                                className="flex-1 py-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black dark:hover:text-white transition-colors"
                             >
                                 Back
                             </button>
                             <button 
                                 type="submit"
                                 disabled={loading}
-                                className="flex-[2] bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50"
+                                className="flex-[2] bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50"
                             >
                                 {loading ? 'Posting...' : 'Post Item for Sale'}
                             </button>

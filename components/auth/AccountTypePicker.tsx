@@ -21,8 +21,8 @@ const AccountTypePicker: React.FC<AccountTypePickerProps> = ({ onSelect, initial
     const currentRole = roles.find(r => r.id === selectedRole);
 
     return (
-        <div className="max-w-2xl w-full mx-auto p-10 bg-[#121212] rounded-[3rem] shadow-2xl border border-white/5">
-            <h2 className="text-4xl font-black text-white mb-3 tracking-tight">Pick your lane</h2>
+        <div className="max-w-2xl w-full mx-auto p-6 bg-[#121212] rounded-3xl shadow-2xl border border-white/5">
+            <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 tracking-tight">Pick your lane</h2>
             <p className="text-gray-400 mb-10 font-medium">Your HOSTELPULSE experience is tailored to your mission.</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -45,7 +45,7 @@ const AccountTypePicker: React.FC<AccountTypePickerProps> = ({ onSelect, initial
 
             <button
                 onClick={() => onSelect(selectedRole)}
-                className="w-full mt-10 bg-[#BEF264] text-black font-black py-5 rounded-[1.5rem] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-[#BEF264]/10 text-lg uppercase tracking-wider"
+                className="w-full mt-10 bg-[#BEF264] text-black font-black py-3 rounded-[1.5rem] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-[#BEF264]/10 text-lg uppercase tracking-wider"
             >
                 Start as {currentRole?.title}
             </button>

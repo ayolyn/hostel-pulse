@@ -25,7 +25,7 @@ export function QRGenerator({ transactionId, itemTitle, onClose }: QRGeneratorPr
       <motion.div 
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="bg-white dark:bg-neutral-950 p-10 rounded-[40px] shadow-2xl max-w-sm w-full border border-gray-100 dark:border-white/5 relative z-10 text-center"
+        className="bg-white dark:bg-neutral-950 p-6 rounded-[40px] shadow-2xl max-w-sm w-full border border-gray-100 dark:border-white/5 relative z-10 text-center"
       >
         <button 
           onClick={onClose}

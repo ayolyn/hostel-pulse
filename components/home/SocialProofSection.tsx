@@ -47,11 +47,11 @@ export function SocialProofSection() {
                         className="relative w-48 h-48 rounded-full bg-gradient-to-br from-[#BEF264] to-emerald-500 flex items-center justify-center mb-6 shadow-2xl shadow-[#BEF264]/20"
                     >
                         <div className="text-center">
-                            <div className="text-6xl font-black text-black">94%</div>
+                            <div className="text-3xl sm:text-4xl font-black text-black">94%</div>
                             <div className="text-sm font-bold text-black/80">Recommend</div>
                         </div>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-neutral-900 dark:text-white text-center">
+                    <h2 className="text-2xl sm:text-3xl md:text-3xl sm:text-2xl sm:text-3xl font-black text-neutral-900 dark:text-white text-center">
                         Trusted by <span className="text-[#BEF264]">LAUTECH</span> Students
                     </h2>
                 </motion.div>

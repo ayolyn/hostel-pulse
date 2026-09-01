@@ -262,7 +262,7 @@ export function CampusMarket() {
                 <p className="text-gray-500 font-medium mb-8 max-w-sm">Upload your Student ID in the Profile section to unlock the Campus Market.</p>
                 <button 
                     onClick={() => router.push('/dashboard/student?tab=profile')}
-                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs px-8 py-4 rounded-2xl hover:scale-105 transition-all shadow-xl"
+                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs px-4 py-3 rounded-2xl hover:scale-105 transition-all shadow-xl"
                 >
                     Go to Profile →
                 </button>
@@ -285,7 +285,7 @@ export function CampusMarket() {
                         <div className="p-2.5 bg-[#BEF264]/10 rounded-xl">
                             <ShoppingCart className="w-6 h-6 text-[#BEF264]" />
                         </div>
-                        <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Campus Market</h2>
+                        <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Campus Market</h2>
                     </div>
                     <p className="text-gray-500 font-medium text-sm ml-1">Buy and sell student essentials securely with HOSTELPULSE Escrow.</p>
                 </div>
@@ -299,7 +299,7 @@ export function CampusMarket() {
                             placeholder="Search market..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-white/5 pl-11 pr-6 py-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264]/20 focus:border-[#BEF264] transition-all w-full md:w-64 font-medium text-sm"
+                            className="bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-white/5 pl-11 pr-6 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264]/20 focus:border-[#BEF264] transition-all w-full md:w-64 font-medium text-sm"
                         />
                     </div>
 
@@ -313,7 +313,7 @@ export function CampusMarket() {
                             }
                             setShowPostModal(true);
                         }}
-                        className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-[#BEF264]/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+                        className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-4 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-[#BEF264]/10 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
                     >
                         <Plus className="w-4 h-4" />
                         Sell Something
@@ -517,7 +517,7 @@ export function CampusMarket() {
                         setItemToDelete(null);
                         setDeleteConfirmationText("");
                     }} />
-                    <div className="bg-white dark:bg-neutral-900 rounded-[2rem] w-full max-w-sm p-8 relative z-10 shadow-2xl border border-red-500/20 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200">
+                    <div className="bg-white dark:bg-neutral-900 rounded-[2rem] w-full max-w-sm p-5 relative z-10 shadow-2xl border border-red-500/20 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200">
                         <h3 className="text-xl font-black text-red-500 uppercase tracking-tight mb-2">Delete Listing</h3>
                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
                             This action cannot be undone. This will permanently remove this item from the Campus Market.

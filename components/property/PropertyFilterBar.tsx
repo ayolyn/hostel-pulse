@@ -75,7 +75,7 @@ export function PropertyFilterBar() {
     return (
         <div className={cn(
             "w-full z-40 transition-all duration-300",
-            isScrolled ? "fixed top-24 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-xl border-b border-neutral-200 dark:border-white/10 shadow-lg py-4" : "relative py-6"
+            isScrolled ? "fixed top-24 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-xl border-b border-neutral-200 dark:border-white/10 shadow-lg py-3" : "relative py-6"
         )}>
             <div className="max-w-7xl mx-auto px-6">
                 <form onSubmit={handleSearchSubmit} className="flex flex-nowrap items-center gap-3 overflow-x-auto w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-2">
@@ -216,7 +216,7 @@ export function PropertyFilterBar() {
                     </div>
 
                     {/* Search Button */}
-                    <button type="submit" className="bg-black dark:bg-[#BEF264] text-white dark:text-black px-8 py-3.5 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl shadow-[#BEF264]/10">
+                    <button type="submit" className="bg-black dark:bg-[#BEF264] text-white dark:text-black px-4 py-3.5 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl shadow-[#BEF264]/10">
                         Search
                     </button>
                     

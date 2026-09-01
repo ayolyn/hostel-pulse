@@ -30,7 +30,7 @@ export function ProviderChatButton({ providerId }: { providerId: string }) {
         <button
             onClick={handleChat}
             disabled={loading}
-            className="w-full bg-black text-[#BEF264] px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-wait"
+            className="w-full bg-black text-[#BEF264] px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-wait"
         >
             {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

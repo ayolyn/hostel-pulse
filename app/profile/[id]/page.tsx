@@ -143,8 +143,8 @@ export default function SellerProfilePage() {
                 </button>
 
                 {/* Profile Header */}
-                <div className="bg-white dark:bg-neutral-900 rounded-[3rem] p-10 border border-neutral-100 dark:border-white/5 flex flex-col md:flex-row gap-10 items-center shadow-sm">
-                    <div className="w-32 h-32 bg-gradient-to-tr from-[#BEF264] to-[#a6d456] rounded-[2rem] flex items-center justify-center text-4xl font-black text-black shadow-xl shadow-[#BEF264]/20 relative overflow-hidden group">
+                <div className="bg-white dark:bg-neutral-900 rounded-3xl p-6 border border-neutral-100 dark:border-white/5 flex flex-col md:flex-row gap-6 items-center shadow-sm">
+                    <div className="w-32 h-32 bg-gradient-to-tr from-[#BEF264] to-[#a6d456] rounded-[2rem] flex items-center justify-center text-2xl sm:text-3xl font-black text-black shadow-xl shadow-[#BEF264]/20 relative overflow-hidden group">
                         {seller.avatar_url ? (
                             <Image src={seller.avatar_url} alt={seller.full_name} fill className="object-cover" />
                         ) : (
@@ -154,16 +154,16 @@ export default function SellerProfilePage() {
                     
                     <div className="flex-1 text-center md:text-left space-y-4">
                         <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-                            <h1 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{seller.full_name}</h1>
+                            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{seller.full_name}</h1>
                             <SellerTrustBadge level={seller.trust_level} />
                         </div>
                         <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">
                             {seller.department} • {seller.level}L Student
                         </p>
                         
-                        <div className="flex flex-wrap justify-center md:justify-start gap-8 pt-2">
+                        <div className="flex flex-wrap justify-center md:justify-start gap-5 pt-2">
                             <div className="space-y-1">
-                                <p className="text-3xl font-black text-gray-900 dark:text-white leading-none">
+                                <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white leading-none">
                                     {verifiedSales}
                                 </p>
                                 <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest">
@@ -172,7 +172,7 @@ export default function SellerProfilePage() {
                             </div>
                             <div className="space-y-1">
                                 <div className="flex items-center gap-2">
-                                    <p className="text-3xl font-black text-gray-900 dark:text-white leading-none">{seller.avg_rating}</p>
+                                    <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white leading-none">{seller.avg_rating}</p>
                                     <Star className="w-6 h-6 fill-[#BEF264] text-[#BEF264]" />
                                 </div>
                                 <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest">Avg. Rating</p>
@@ -180,12 +180,12 @@ export default function SellerProfilePage() {
                         </div>
                     </div>
 
-                    <button className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-10 py-5 rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-2xl hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-3">
+                    <button className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-10 py-3 rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-2xl hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-3">
                         <MessageCircle size={20} /> CHAT WITH SELLER
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Active Listings */}
                     <div className="lg:col-span-2 space-y-8">
                         <div className="flex items-center gap-3">
@@ -196,7 +196,7 @@ export default function SellerProfilePage() {
                         </div>
 
                         {items.length === 0 ? (
-                            <div className="bg-gray-50 dark:bg-white/5 rounded-[2.5rem] p-12 text-center border-2 border-dashed border-gray-100 dark:border-white/5">
+                            <div className="bg-gray-50 dark:bg-white/5 rounded-[2.5rem] p-6 text-center border-2 border-dashed border-gray-100 dark:border-white/5">
                                 <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">No active items listed</p>
                             </div>
                         ) : (
@@ -244,7 +244,7 @@ export default function SellerProfilePage() {
 
                         <div className="space-y-4">
                             {reviews.length === 0 ? (
-                                <div className="bg-gray-50 dark:bg-white/5 rounded-[2.5rem] p-12 text-center">
+                                <div className="bg-gray-50 dark:bg-white/5 rounded-[2.5rem] p-6 text-center">
                                     <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">No reviews yet</p>
                                 </div>
                             ) : (

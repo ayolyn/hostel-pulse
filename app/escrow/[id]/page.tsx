@@ -23,9 +23,9 @@ export default async function EscrowTrackerPage({ params }: { params: { id: stri
         return (
             <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
                 <Lock className="w-16 h-16 text-gray-200 mb-6" />
-                <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tighter mb-2">Transaction Not Found</h1>
+                <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tighter mb-2">Transaction Not Found</h1>
                 <p className="text-gray-500 mb-8 max-w-sm">This escrow transaction does not exist or you don't have permission to view it.</p>
-                <Link href="/dashboard/student" className="bg-black text-[#BEF264] px-8 py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all shadow-lg">
+                <Link href="/dashboard/student" className="bg-black text-[#BEF264] px-4 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all shadow-lg">
                     Back to Dashboard
                 </Link>
             </div>
@@ -53,18 +53,18 @@ export default async function EscrowTrackerPage({ params }: { params: { id: stri
                         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 font-bold uppercase tracking-widest text-xs rounded-full mb-4">
                             <ShieldCheck className="w-4 h-4" /> HostelPulse Secure Escrow
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-black text-gray-900 uppercase tracking-tighter">
+                        <h1 className="text-xl sm:text-2xl md:text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-tighter">
                             Transaction Tracker
                         </h1>
                         <p className="text-gray-500 font-medium text-sm mt-1">ID: {trx.id.split('-')[0].toUpperCase()}</p>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Left Col - Tracker & QR */}
                     <div className="space-y-8">
                         {/* Status Card */}
-                        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl shadow-gray-200/50">
+                        <div className="bg-white rounded-3xl p-5 border border-gray-100 shadow-xl shadow-gray-200/50">
                             {trx.status === 'Locked' ? (
                                 <div className="text-center mb-8">
                                     <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -111,7 +111,7 @@ export default async function EscrowTrackerPage({ params }: { params: { id: stri
 
                         {/* Release QR Code Box */}
                         {trx.status === 'Locked' && trx.qr_release_code && (
-                            <div className="bg-gray-900 text-white rounded-[2rem] p-8 text-center shadow-2xl relative overflow-hidden group">
+                            <div className="bg-gray-900 text-white rounded-[2rem] p-5 text-center shadow-2xl relative overflow-hidden group">
                                 <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 to-transparent" />
                                 <div className="relative z-10">
                                     <QrCode className="w-12 h-12 text-[#BEF264] mx-auto mb-4" />

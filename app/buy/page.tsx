@@ -87,7 +87,7 @@ function BuyContent() {
     return (
         <>
             <div className="mb-12">
-                <h1 className="text-4xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Properties for Sale</h1>
+                <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Properties for Sale</h1>
                 <p className="text-gray-500 font-medium">
                     {loading ? 'Refreshing listings...' : `${properties.length} listing${properties.length !== 1 ? 's' : ''} available in Ogbomoso`}
                 </p>
@@ -111,7 +111,7 @@ function BuyContent() {
                     <PropertyMap properties={properties} />
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pb-20 mt-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-20 mt-12">
                     {properties.map(p => (
                         <Link key={p.id} href={`/property/${p.id}`} className="block group">
                             <PropertyCard

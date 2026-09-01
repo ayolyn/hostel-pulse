@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500 rounded-full blur-[120px]" />
             </div>
 
-            <div className="w-full max-w-md bg-[#1E293B]/60 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/5 relative z-10 shadow-2xl">
+            <div className="w-full max-w-md bg-[#1E293B]/60 backdrop-blur-2xl p-6 rounded-3xl border border-white/5 relative z-10 shadow-2xl">
                 {success ? (
                     <div className="text-center">
                         <div className="w-20 h-20 bg-[#BEF264]/20 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
@@ -88,7 +88,7 @@ export default function ResetPasswordPage() {
                             <div className="w-16 h-16 bg-[#BEF264]/20 rounded-[1.5rem] flex items-center justify-center mx-auto mb-4">
                                 <Lock className="w-8 h-8 text-[#BEF264]" />
                             </div>
-                            <h1 className="text-3xl font-black tracking-tight uppercase">Set New Password</h1>
+                            <h1 className="text-xl sm:text-2xl font-black tracking-tight uppercase">Set New Password</h1>
                             <p className="text-gray-400 text-sm mt-2 font-medium">
                                 {ready ? 'Choose a strong password for your account.' : 'Loading secure session...'}
                             </p>
@@ -111,7 +111,7 @@ export default function ResetPasswordPage() {
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
                                     placeholder="New password"
-                                    className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-12 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] transition-all font-medium placeholder-gray-500 disabled:opacity-40"
+                                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] transition-all font-medium placeholder-gray-500 disabled:opacity-40"
                                 />
                             </div>
                             <div className="relative">
@@ -123,13 +123,13 @@ export default function ResetPasswordPage() {
                                     value={confirm}
                                     onChange={e => setConfirm(e.target.value)}
                                     placeholder="Confirm new password"
-                                    className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-12 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] transition-all font-medium placeholder-gray-500 disabled:opacity-40"
+                                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-6 text-white text-sm focus:outline-none focus:border-[#BEF264] transition-all font-medium placeholder-gray-500 disabled:opacity-40"
                                 />
                             </div>
                             <button
                                 type="submit"
                                 disabled={loading || !ready}
-                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-4 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 text-sm mt-2"
+                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-full hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 text-sm mt-2"
                             >
                                 {loading ? 'Updating...' : 'Update Password'}
                             </button>

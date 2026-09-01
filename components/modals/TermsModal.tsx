@@ -27,7 +27,7 @@ export function TermsModal({ isOpen, onClose, onAccept, userType }: TermsModalPr
             <div className="w-full max-w-2xl bg-white dark:bg-neutral-950 rounded-[2.5rem] border border-neutral-100 dark:border-white/10 shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
                 
                 {/* Header */}
-                <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/5">
+                <div className="p-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/5">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-[#BEF264] rounded-2xl flex items-center justify-center shadow-lg shadow-[#BEF264]/20">
                             <Scale className="text-black w-6 h-6" />
@@ -45,7 +45,7 @@ export function TermsModal({ isOpen, onClose, onAccept, userType }: TermsModalPr
                 {/* Content */}
                 <div 
                     onScroll={handleScroll}
-                    className="flex-1 overflow-y-auto p-8 space-y-8 no-scrollbar"
+                    className="flex-1 overflow-y-auto p-5 space-y-8 no-scrollbar"
                 >
                     {/* TL;DR Section */}
                     <div className="bg-[#BEF264]/10 border border-[#BEF264]/20 rounded-3xl p-6 space-y-4">
@@ -115,10 +115,10 @@ export function TermsModal({ isOpen, onClose, onAccept, userType }: TermsModalPr
                 </div>
 
                 {/* Footer / Accept Action */}
-                <div className="p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5">
+                <div className="p-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5">
                     <div className="flex flex-col gap-4">
                         {!hasReadToBottom && (
-                            <div className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#BEF264] bg-black dark:bg-white/5 py-4 rounded-2xl">
+                            <div className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#BEF264] bg-black dark:bg-white/5 py-3 rounded-2xl">
                                 <FileText className="w-4 h-4" />
                                 Please scroll to the bottom to accept
                             </div>
@@ -127,7 +127,7 @@ export function TermsModal({ isOpen, onClose, onAccept, userType }: TermsModalPr
                             disabled={!hasReadToBottom}
                             onClick={onAccept}
                             className={`
-                                w-full py-5 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-sm transition-all shadow-xl
+                                w-full py-3 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-sm transition-all shadow-xl
                                 ${hasReadToBottom 
                                     ? 'bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black hover:scale-[1.02] active:scale-95' 
                                     : 'bg-gray-200 dark:bg-white/5 text-gray-400 cursor-not-allowed opacity-50'

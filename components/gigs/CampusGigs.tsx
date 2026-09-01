@@ -138,7 +138,7 @@ export function CampusGigs() {
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 p-8">
+            <div className="flex-1 p-5">
                 {loading ? (
                     <div className="flex justify-center items-center h-full">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#BEF264]"></div>
@@ -183,7 +183,7 @@ export function CampusGigs() {
 
                                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                                     {openGigs.length === 0 ? (
-                                        <div className="col-span-full py-12 text-center text-gray-400">
+                                        <div className="col-span-full py-6 text-center text-gray-400">
                                             <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-20" />
                                             <p className="font-medium">No open gigs found.</p>
                                         </div>
@@ -278,7 +278,7 @@ export function CampusGigs() {
                                             <button 
                                                 type="submit"
                                                 disabled={isPosting}
-                                                className="bg-[#BEF264] hover:bg-[#d9ff96] text-black px-8 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-transform active:scale-95 disabled:opacity-50"
+                                                className="bg-[#BEF264] hover:bg-[#d9ff96] text-black px-4 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-transform active:scale-95 disabled:opacity-50"
                                             >
                                                 {isPosting ? 'Escrowing...' : 'Post & Escrow'}
                                             </button>
@@ -297,7 +297,7 @@ export function CampusGigs() {
                                     
                                     <div className="space-y-4">
                                         {myGigs.length === 0 ? (
-                                            <div className="py-12 text-center text-gray-400 bg-gray-50 dark:bg-neutral-950/50 rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                                            <div className="py-6 text-center text-gray-400 bg-gray-50 dark:bg-neutral-950/50 rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                                                 <Activity className="w-12 h-12 mx-auto mb-3 opacity-20" />
                                                 <p className="font-medium">No gigs posted or claimed yet.</p>
                                                 <button onClick={() => setActiveTab('post')} className="mt-4 text-[#BEF264] font-bold text-sm hover:underline">Post your first gig</button>

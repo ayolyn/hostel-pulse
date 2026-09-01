@@ -78,13 +78,13 @@ export default function SearchIntelligenceClient({ data }: Props) {
 
     const displayData = data || MOCK_DATA;
 
-    if (!isMounted) return <div className="p-8 text-center animate-pulse">Loading Intelligence Dashboard...</div>;
+    if (!isMounted) return <div className="p-5 text-center animate-pulse">Loading Intelligence Dashboard...</div>;
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
             {/* Header */}
             <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-4">
+                <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-4">
                     <Link href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                         <ArrowLeft className="w-5 h-5 text-gray-600" />
                     </Link>
@@ -104,7 +104,7 @@ export default function SearchIntelligenceClient({ data }: Props) {
                         </div>
                         <div>
                             <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Total Searches</p>
-                            <h3 className="text-3xl font-black text-gray-900">{displayData.totalSearches.toLocaleString()}</h3>
+                            <h3 className="text-xl sm:text-2xl font-black text-gray-900">{displayData.totalSearches.toLocaleString()}</h3>
                         </div>
                     </motion.div>
 
@@ -220,27 +220,27 @@ export default function SearchIntelligenceClient({ data }: Props) {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-gray-50 border-b border-gray-100">
-                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-400">Date/Time</th>
-                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-400">Search Term</th>
-                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-400">Category</th>
-                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-gray-400">Budget Range</th>
+                                    <th className="px-6 py-3 text-xs font-black uppercase tracking-widest text-gray-400">Date/Time</th>
+                                    <th className="px-6 py-3 text-xs font-black uppercase tracking-widest text-gray-400">Search Term</th>
+                                    <th className="px-6 py-3 text-xs font-black uppercase tracking-widest text-gray-400">Category</th>
+                                    <th className="px-6 py-3 text-xs font-black uppercase tracking-widest text-gray-400">Budget Range</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {displayData.recentSearches.map((log) => (
                                     <tr key={log.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+                                        <td className="px-6 py-3 text-sm font-medium text-gray-500 whitespace-nowrap">
                                             {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-3">
                                             <span className="text-sm font-bold text-gray-900 bg-gray-100 px-3 py-1 rounded-full">
                                                 {log.search_term || '—'}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm font-medium text-gray-600">
+                                        <td className="px-6 py-3 text-sm font-medium text-gray-600">
                                             {log.category || 'Any'}
                                         </td>
-                                        <td className="px-6 py-4 text-sm font-bold text-gray-900">
+                                        <td className="px-6 py-3 text-sm font-bold text-gray-900">
                                             {log.max_budget 
                                                 ? `₦${(log.min_budget || 0).toLocaleString()} - ₦${log.max_budget.toLocaleString()}`
                                                 : '—'}
