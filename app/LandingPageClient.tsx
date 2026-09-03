@@ -35,10 +35,8 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
             
             <main className="pb-20">
                 {/* 1. Hero Section with Animation */}
-                <section className="relative pt-32 pb-20 px-6 overflow-hidden flex flex-col items-center justify-center min-h-[85vh] bg-[url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"
-                style={{ backgroundAttachment: "fixed" }}>
-                    <div className="absolute inset-0 bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-sm z-0 pointer-events-none" />
-                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#BEF264]/20 blur-[120px] rounded-full z-0 pointer-events-none" />
+                <section className="relative pt-32 pb-20 px-6 overflow-hidden flex flex-col items-center justify-center min-h-[85vh]">
+                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#BEF264]/10 blur-[120px] rounded-full pointer-events-none" />
                     
                     <motion.div 
                         initial={{ opacity: 0, y: 20 }}
@@ -46,12 +44,12 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                         transition={{ duration: 0.8 }}
                         className="text-center z-10 max-w-4xl mx-auto w-full"
                     >
-                        <h1 className="text-[2.5rem] leading-[1.1] sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-4">
+                        <h1 className="text-4xl leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-4">
                             Your Campus Life. <br className="hidden md:block" />
                             <span className="text-emerald-400">Handled.</span>
                         </h1>
                         
-                        <AnimatedHeroText />
+                        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 font-medium max-w-2xl mx-auto mt-6">The only app you need to survive LAUTECH. Find verified hostels, book campus gigs, and never get scammed again.</p>
 
                         {/* Interactive Tabbed Search */}
                         <div className="max-w-2xl mx-auto w-full mt-20 md:mt-24">
