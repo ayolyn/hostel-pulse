@@ -17,7 +17,7 @@ const navLinks = [
     { name: 'Rent', href: '/rent' },
     { name: 'Providers', href: '/providers' },
     { name: 'Blog', href: '/blog' },
-    { name: 'Area Guides', href: '/area-guide' },
+    { name: 'Area Guides', href: 'https://lautech.xyz/' },
 ];
 
 /**
@@ -69,7 +69,7 @@ export function PublicHeader() {
                         return (
                             <div key={link.name} className="relative group/nav">
                                 <Link
-                                    href={link.href}
+                                    href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
                                     className={cn(
                                         "text-sm font-bold uppercase tracking-widest transition-all relative py-8",
                                         "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-[#BEF264]"

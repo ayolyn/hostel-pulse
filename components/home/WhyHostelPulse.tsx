@@ -7,7 +7,7 @@ export function WhyHostelPulse() {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <section className="py-20 bg-[#0a0a0a] text-white overflow-hidden">
+    <section className="py-20 bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-900 dark:text-white overflow-hidden">
       <div className="max-w-6xl mx-auto px-6 lg:px-4">
         
         {/* Section Header */}
@@ -15,7 +15,7 @@ export function WhyHostelPulse() {
           <h2 className="text-2xl sm:text-3xl md:text-3xl sm:text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">
             Never Get Scammed on <span className="text-green-400">Rent Again.</span>
           </h2>
-          <p className="text-gray-400 text-lg max-w-2xl">
+          <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl">
             No fake agents. No unnecessary inspection fees. Zero risk until you hold the keys.
           </p>
         </div>
@@ -25,7 +25,7 @@ export function WhyHostelPulse() {
           
           {/* Main Card: Escrow Protection (Spans 2 columns on Desktop) */}
           <div 
-            className="row-span-2 md:col-span-2 relative p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden group flex flex-col justify-end"
+            className="row-span-2 md:col-span-2 relative p-5 rounded-3xl bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-md overflow-hidden group flex flex-col justify-end"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
@@ -41,14 +41,14 @@ export function WhyHostelPulse() {
                     <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mt-6 mb-4">
                         {isHovered ? <Unlock className="w-8 h-8 text-green-400" /> : <Lock className="w-8 h-8 text-green-400" />}
                     </div>
-                    <div className="text-xl font-bold text-white mb-1 tracking-tight">₦150,000</div>
-                    <div className="text-[10px] text-gray-400 mb-6 font-medium uppercase tracking-wider">
+                    <div className="text-xl font-bold text-gray-900 dark:text-white mb-1 tracking-tight">₦150,000</div>
+                    <div className="text-[10px] text-gray-600 dark:text-gray-400 mb-6 font-medium uppercase tracking-wider">
                         {isHovered ? "Ready to Release" : "Secured in Escrow"}
                     </div>
                     
                     {/* Mock UI Rows */}
-                    <div className="w-40 h-10 bg-white/5 rounded-xl border border-white/10 mb-3" />
-                    <div className="w-40 h-10 bg-white/5 rounded-xl border border-white/10" />
+                    <div className="w-40 h-10 bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 mb-3" />
+                    <div className="w-40 h-10 bg-white/5 rounded-xl border border-gray-200 dark:border-white/10" />
                     
                     {/* Bottom fade */}
                     <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-neutral-950 to-transparent" />
@@ -70,22 +70,22 @@ export function WhyHostelPulse() {
                 <ShieldCheck className="w-6 h-6 text-green-400" />
               </div>
               <h3 className="text-2xl font-bold mb-2">100% Escrow Protection</h3>
-              <p className="text-gray-400 max-w-md">
+              <p className="text-gray-600 dark:text-gray-400 max-w-md">
                 Your money stays locked securely in our system until you inspect the room in person and collect your keys.
               </p>
             </div>
           </div>
 
           {/* Card 2: Video Walkthroughs */}
-          <div className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md relative overflow-hidden flex flex-col justify-end group">
+          <div className="p-5 rounded-3xl bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-md relative overflow-hidden flex flex-col justify-end group">
             {/* Mockup Video Element Background */}
             <div className="absolute -top-6 -right-8 w-48 h-48 bg-gradient-to-br from-green-400/10 to-transparent rounded-2xl border border-white/5 flex items-center justify-center transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
-               <PlayCircle className="w-12 h-12 text-white/10 group-hover:text-green-400/50 transition-colors duration-300" />
+               <PlayCircle className="w-12 h-12 text-gray-900 dark:text-white/10 group-hover:text-green-400/50 transition-colors duration-300" />
             </div>
             
             <div className="relative z-10">
               <h3 className="text-xl font-bold mb-2">Raw Video Walkthroughs</h3>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
                 No filtered pictures. Watch unedited video walkthroughs of the exact room, bathroom, and light situation.
               </p>
             </div>
@@ -94,20 +94,20 @@ export function WhyHostelPulse() {
           {/* Card 3: Direct to Verified Agents */}
           <div className="p-5 rounded-3xl bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 backdrop-blur-md flex flex-col justify-end">
             <h3 className="text-xl font-bold mb-2">Find in Minutes</h3>
-            <p className="text-gray-400 text-sm mb-4">
+            <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
               Skip endless middle-men taking ?2,000 just to show you an already occupied room.
             </p>
             <div className="flex gap-2 flex-wrap">
-              <span className="px-3 py-1 bg-white/10 rounded-full text-xs text-white">Under-G</span>
-              <span className="px-3 py-1 bg-white/10 rounded-full text-xs text-white">Adenike</span>
-              <span className="px-3 py-1 bg-white/10 rounded-full text-xs text-white">Stadium Gate</span>
+              <span className="px-3 py-1 bg-white/10 rounded-full text-xs text-gray-900 dark:text-white">Under-G</span>
+              <span className="px-3 py-1 bg-white/10 rounded-full text-xs text-gray-900 dark:text-white">Adenike</span>
+              <span className="px-3 py-1 bg-white/10 rounded-full text-xs text-gray-900 dark:text-white">Stadium Gate</span>
             </div>
           </div>
 
         </div>
 
         {/* Social Proof Review Section */}
-        <div className="mt-8 p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md flex flex-col md:flex-row items-center gap-5">
+        <div className="mt-8 p-5 rounded-3xl bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-md flex flex-col md:flex-row items-center gap-5">
           
           {/* Avatar Stack & Rating */}
           <div className="flex-shrink-0 flex flex-col items-center md:items-start">
@@ -120,11 +120,11 @@ export function WhyHostelPulse() {
             <div className="flex text-yellow-400 mb-1">
               {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
             </div>
-            <p className="text-sm text-gray-400 font-medium">Trusted by LAUTECH students</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">Trusted by LAUTECH students</p>
           </div>
 
           {/* Featured Review */}
-          <div className="flex-grow md:pl-8 border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0">
+          <div className="flex-grow md:pl-8 border-t md:border-t-0 md:border-l border-gray-200 dark:border-white/10 pt-6 md:pt-0">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-green-400/20 text-green-400 flex items-center justify-center font-bold">BA</div>
               <div>

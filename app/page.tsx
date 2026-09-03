@@ -7,9 +7,19 @@ import { PublicHeader } from '@/components/layout/PublicHeader';
 import { WhyHostelPulse } from '@/components/home/WhyHostelPulse';
 import { FAQSection } from '@/components/home/FAQSection';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function LandingPage() {
     const [activeTab, setActiveTab] = useState<'rent' | 'service' | 'market'>('rent');
+
+    const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const handleSearch = () => {
+        if (activeTab === "rent") router.push(`/rent?q=${searchQuery}`);
+        else if (activeTab === "service") router.push(`/services?q=${searchQuery}`);
+        else router.push(`/market?q=${searchQuery}`);
+    };
 
     const searchPlaceholders = {
         rent: "Search Under-G, Adenike, Stadium Gate...",
@@ -18,7 +28,7 @@ export default function LandingPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-[#BEF264]/30 selection:text-[#BEF264]">
+        <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white selection:bg-[#BEF264]/30 selection:text-[#BEF264]">
             <PublicHeader />
             
             <main className="pb-20">
@@ -33,12 +43,9 @@ export default function LandingPage() {
                         transition={{ duration: 0.8 }}
                         className="text-center z-10 max-w-4xl mx-auto"
                     >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-widest text-gray-300 mb-8 backdrop-blur-md">
-                            <Sparkles className="w-4 h-4 text-[#BEF264]" />
-                            <span>LAUTECH'S SUPER APP</span>
-                        </div>
+                        
 
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[1.1]">
+                        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[1.1]">
                             Your Entire Campus Life. <br className="hidden md:block" />
                             <span className="text-[#BEF264]">Handled.</span>
                         </h1>
@@ -49,7 +56,7 @@ export default function LandingPage() {
                         {/* Interactive Tabbed Search */}
                         <div className="max-w-2xl mx-auto w-full">
                             {/* Tabs */}
-                            <div className="flex p-1 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl mb-4 w-max mx-auto">
+                            <div className="flex overflow-x-auto p-1 bg-gray-100 dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl mb-4 w-max max-w-full mx-auto hide-scrollbar">
                                 {[
                                     { id: 'rent', label: 'Rent a Room', icon: Home },
                                     { id: 'service', label: 'Book a Service', icon: Zap },
@@ -59,7 +66,7 @@ export default function LandingPage() {
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id as any)}
                                         className={`relative flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${
-                                            activeTab === tab.id ? 'text-black' : 'text-gray-400 hover:text-white'
+                                            activeTab === tab.id ? "text-black" : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                                         }`}
                                     >
                                         {activeTab === tab.id && (
@@ -78,17 +85,20 @@ export default function LandingPage() {
                             {/* Search Bar */}
                             <motion.div 
                                 layout
-                                className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-2 flex items-center shadow-2xl shadow-black/50"
+                                className="relative bg-gray-50 dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-3xl p-2 flex items-center shadow-xl shadow-gray-200/50 dark:shadow-black/50"
                             >
                                 <div className="pl-4 pr-2 text-gray-400">
                                     <Search className="w-6 h-6" />
                                 </div>
                                 <input 
-                                    type="text" 
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleSearch()} 
                                     placeholder={searchPlaceholders[activeTab]}
-                                    className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-gray-500 py-4 text-lg"
+                                    className="flex-1 bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-500 py-3 sm:py-4 text-base sm:text-lg w-full min-w-0"
                                 />
-                                <button className="bg-[#BEF264] text-black px-8 py-4 rounded-2xl font-black flex items-center gap-2 hover:bg-[#a5d953] transition-colors">
+                                <button onClick={handleSearch} className="bg-[#BEF264] text-black px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-black flex items-center gap-2 hover:bg-[#a5d953] transition-colors shrink-0">
                                     GO <ChevronRight className="w-5 h-5" />
                                 </button>
                             </motion.div>
@@ -131,12 +141,12 @@ export default function LandingPage() {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: idx * 0.1 }}
-                                    className="group bg-white/5 border border-white/10 rounded-[2rem] p-8 hover:border-[#BEF264]/50 hover:bg-white/[0.07] transition-all duration-300 h-full flex flex-col"
+                                    className="group bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-[2rem] p-8 shadow-sm dark:shadow-none hover:border-[#BEF264]/50 hover:bg-white/[0.07] transition-all duration-300 h-full flex flex-col"
                                 >
                                     <div className={`w-14 h-14 rounded-2xl ${card.bg} flex items-center justify-center mb-6`}>
                                         <card.icon className={`w-7 h-7 ${card.color}`} />
                                     </div>
-                                    <h3 className="text-2xl font-black text-white mb-2">{card.title}</h3>
+                                    <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{card.title}</h3>
                                     <p className="text-gray-400 font-medium leading-relaxed flex-1">{card.desc}</p>
                                     
                                     <div className="mt-8 flex items-center gap-2 text-[#BEF264] font-bold text-sm uppercase tracking-widest group-hover:translate-x-2 transition-transform">
@@ -156,7 +166,7 @@ export default function LandingPage() {
                 {/* 4. Micro-Gig Section (Survive Sapa) */}
                 <section className="px-6 max-w-6xl mx-auto mb-32">
                     <div className="mb-12">
-                        <h2 className="text-4xl md:text-5xl font-black mb-4">Survive Sapa. Tap a Button.</h2>
+                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">Survive Sapa. Tap a Button.</h2>
                         <p className="text-gray-400 text-lg max-w-2xl">Get your everyday student needs sorted without leaving your room. Fast, reliable, and run by fellow students.</p>
                     </div>
 
@@ -164,7 +174,7 @@ export default function LandingPage() {
                         {/* Service Card 1 */}
                         <motion.div 
                             whileHover={{ y: -5 }}
-                            className="bg-[#111] border border-white/10 rounded-[2rem] p-6 relative overflow-hidden group"
+                            className="bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 shadow-sm dark:shadow-none rounded-[2rem] p-6 relative overflow-hidden group"
                         >
                             <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                                 <Flame className="w-32 h-32 text-orange-500" />
@@ -172,7 +182,7 @@ export default function LandingPage() {
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 text-xs font-bold mb-6">
                                 <Zap className="w-3.5 h-3.5" /> Fast Delivery
                             </div>
-                            <h3 className="text-2xl font-black mb-2 relative z-10">12.5kg Gas Refill</h3>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 relative z-10">12.5kg Gas Refill</h3>
                             <p className="text-gray-400 mb-8 relative z-10">Don't carry heavy cylinders around. We'll pick up, refill, and drop o!.</p>
                             
                             <div className="flex items-end justify-between relative z-10">
@@ -189,7 +199,7 @@ export default function LandingPage() {
                         {/* Service Card 2 */}
                         <motion.div 
                             whileHover={{ y: -5 }}
-                            className="bg-[#111] border border-white/10 rounded-[2rem] p-6 relative overflow-hidden group"
+                            className="bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 shadow-sm dark:shadow-none rounded-[2rem] p-6 relative overflow-hidden group"
                         >
                             <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                                 <Shirt className="w-32 h-32 text-blue-500" />
@@ -197,7 +207,7 @@ export default function LandingPage() {
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold mb-6">
                                 <Navigation className="w-3.5 h-3.5" /> Agent Pickup
                             </div>
-                            <h3 className="text-2xl font-black mb-2 relative z-10">Wash & Fold Laundry</h3>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 relative z-10">Wash & Fold Laundry</h3>
                             <p className="text-gray-400 mb-8 relative z-10">Fresh, ironed clothes delivered to your doorstep within 48 hours.</p>
                             
                             <div className="flex items-end justify-between relative z-10">
@@ -214,7 +224,7 @@ export default function LandingPage() {
                         {/* Service Card 3 */}
                         <motion.div 
                             whileHover={{ y: -5 }}
-                            className="bg-[#111] border border-white/10 rounded-[2rem] p-6 relative overflow-hidden group"
+                            className="bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 shadow-sm dark:shadow-none rounded-[2rem] p-6 relative overflow-hidden group"
                         >
                             <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                                 <Droplet className="w-32 h-32 text-cyan-500" />
@@ -222,7 +232,7 @@ export default function LandingPage() {
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold mb-6">
                                 <CheckCircle2 className="w-3.5 h-3.5" /> Purified
                             </div>
-                            <h3 className="text-2xl font-black mb-2 relative z-10">Clean Water Delivery</h3>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 relative z-10">Clean Water Delivery</h3>
                             <p className="text-gray-400 mb-8 relative z-10">Dispenser water delivered straight to your room in Under-G.</p>
                             
                             <div className="flex items-end justify-between relative z-10">
@@ -245,7 +255,7 @@ export default function LandingPage() {
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#BEF264]/10 blur-[100px] rounded-full pointer-events-none" />
 
                         <div className="flex-1 relative z-10">
-                            <h2 className="text-4xl md:text-5xl font-black mb-6">Turn Ogbomoso <br/>Into Your Office.</h2>
+                            <h2 className="text-3xl md:text-5xl font-black text-white mb-6">Turn Ogbomoso <br className="hidden sm:block"/>Into Your Office.</h2>
                             <p className="text-gray-400 text-lg mb-10 leading-relaxed">
                                 Claim campus errands, run deliveries, or list verified properties to earn daily payouts straight to your wallet. Work on your own schedule.
                             </p>
