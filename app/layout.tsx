@@ -31,11 +31,7 @@ export const metadata: Metadata = {
         locale: 'en_NG',
         type: 'website',
     },
-    icons: {
-        icon: '/favicon.ico',
-        shortcut: '/logo-icon.png',
-        apple: '/logo-icon.png',
-    },
+    icons: { icon: '/favicon.ico', shortcut: '/favicon.ico', apple: '/favicon.ico' },
 };
 
 import QueryProvider from "@/components/providers/QueryProvider";

@@ -1,4 +1,5 @@
-"use client";
+const fs = require('fs');
+const content = `"use client";
 
 import React from "react";
 import { motion } from "framer-motion";
@@ -103,3 +104,5 @@ export function WhyHostelPulse() {
     </section>
   );
 }
+`;
+fs.writeFileSync('components/home/WhyHostelPulse.tsx', content, 'utf-8');

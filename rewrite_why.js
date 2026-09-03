@@ -1,4 +1,6 @@
-"use client";
+const fs = require('fs');
+
+const whyContent = `"use client";
 
 import React from "react";
 import { motion } from "framer-motion";
@@ -85,7 +87,7 @@ export function WhyHostelPulse() {
           <div className="flex -space-x-3">
             {[1, 2, 3].map((i) => (
               <div key={i} className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white dark:border-[#0a0a0a] overflow-hidden">
-                <Image src={"https://i.pravatar.cc/100?img=" + (i + 10)} alt="Student" width={40} height={40} />
+                <Image src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Student" width={40} height={40} />
               </div>
             ))}
           </div>
@@ -103,3 +105,7 @@ export function WhyHostelPulse() {
     </section>
   );
 }
+`;
+
+fs.writeFileSync('components/home/WhyHostelPulse.tsx', whyContent, 'utf-8');
+console.log('Rewrote WhyHostelPulse.tsx with Hormozi copywriting');

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Zap, Search, ChevronRight, MapPin, ShieldCheck, Edit3 } from 'lucide-react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { WhyHostelPulse } from '@/components/home/WhyHostelPulse';
+import { FeaturedListings } from '@/components/home/FeaturedListings';
 import { FAQSection } from '@/components/home/FAQSection';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -64,8 +65,10 @@ export default function LandingPage() {
             
             <main className="pb-20">
                 {/* 1. Hero Section with Animation */}
-                <section className="relative pt-32 pb-20 px-6 overflow-hidden flex flex-col items-center justify-center min-h-[85vh]">
-                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#BEF264]/10 blur-[120px] rounded-full pointer-events-none" />
+                <section className="relative pt-32 pb-20 px-6 overflow-hidden flex flex-col items-center justify-center min-h-[85vh] bg-[url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"
+                style={{ backgroundAttachment: "fixed" }}>
+                    <div className="absolute inset-0 bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-sm z-0 pointer-events-none" />
+                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#BEF264]/20 blur-[120px] rounded-full z-0 pointer-events-none" />
                     
                     <motion.div 
                         initial={{ opacity: 0, y: 20 }}
@@ -171,6 +174,8 @@ export default function LandingPage() {
                         </Link>
                     </div>
                 </section>
+
+                <FeaturedListings />
 
                 {/* 3. Housing Bento Grid */}
                 <div className="mb-32">
