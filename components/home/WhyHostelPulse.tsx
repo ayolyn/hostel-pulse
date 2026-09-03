@@ -12,7 +12,7 @@ export function WhyHostelPulse() {
         
         {/* Aggressive Direct-Response Header */}
         <div className="max-w-3xl mb-16">
-          <h2 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 leading-[1.1] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 leading-[1.1] tracking-tight">
             Stop paying agents for <br className="hidden md:block"/>hostels you haven't seen.
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 font-medium leading-relaxed">

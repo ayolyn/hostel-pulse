@@ -76,7 +76,7 @@ export default function LandingPage() {
                         transition={{ duration: 0.8 }}
                         className="text-center z-10 max-w-4xl mx-auto w-full"
                     >
-                        <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-4 leading-[1.1]">
+                        <h1 className="text-[2.5rem] leading-[1.1] sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-4">
                             Your Campus Life. <br className="hidden md:block" />
                             <span className="text-[#BEF264]">Handled.</span>
                         </h1>
@@ -84,7 +84,7 @@ export default function LandingPage() {
                         <AnimatedHeroText />
 
                         {/* Interactive Tabbed Search */}
-                        <div className="max-w-2xl mx-auto w-full mt-12">
+                        <div className="max-w-2xl mx-auto w-full mt-20 md:mt-24">
                             <div className="flex overflow-x-auto p-1 bg-gray-100 dark:bg-white/5 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl mb-4 w-max max-w-full mx-auto hide-scrollbar">
                                 {[
                                     { id: 'rent', label: 'Rent a Room', icon: Home },
@@ -190,7 +190,7 @@ export default function LandingPage() {
                                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
                                     <Zap className="w-4 h-4" /> The Gig Network
                                 </div>
-                                <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6">Get anything done in minutes.</h2>
+                                <h2 className="text-[1.75rem] leading-tight sm:text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6">Get anything done in minutes.</h2>
                                 <p className="text-gray-600 dark:text-gray-400 text-lg mb-8 leading-relaxed">
                                     Need gas? Too tired to do laundry? Post a gig and a verified student runner will handle it for you. Or, become a runner yourself and get paid directly to your wallet.
                                 </p>
