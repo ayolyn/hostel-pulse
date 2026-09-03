@@ -10,7 +10,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://hostelpulse.com.ng"),
+    metadataBase: new URL("https://hostelpulse.app"),
     title: {
         template: '%s | HostelPulse',
         default: 'HostelPulse | Premium Student Housing in Ogbomoso',
@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     openGraph: {
         title: 'HostelPulse — Premium Student Housing',
         description: 'Find your perfect student home securely.',
-        url: 'https://hostelpulse.com.ng',
+        url: 'https://hostelpulse.app',
         siteName: 'HostelPulse',
         images: [
             {
-                url: 'https://hostelpulse.com.ng/og.png',
+                url: 'https://hostelpulse.app/og.png',
                 width: 1200,
                 height: 630,
             },
@@ -52,7 +52,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "name": "HostelPulse",
-  "image": "https://hostelpulse.com.ng/og.png",
+  "image": "https://hostelpulse.app/og.png",
   "description": "Premium Student Housing and Campus Services in Ogbomoso.",
   "address": {
     "@type": "PostalAddress",
@@ -60,7 +60,7 @@ const jsonLd = {
     "addressRegion": "Oyo State",
     "addressCountry": "NG"
   },
-  "url": "https://hostelpulse.com.ng"
+  "url": "https://hostelpulse.app"
 };
 
 export default function RootLayout({
