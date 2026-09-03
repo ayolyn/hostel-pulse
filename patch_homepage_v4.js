@@ -1,4 +1,6 @@
-'use client';
+const fs = require('fs');
+
+const pageContent = `\'use client\';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -229,7 +231,7 @@ export default function LandingPage() {
                                             <div>
                                                 <h4 className="font-bold text-gray-900 dark:text-white mb-1">{gig.title}</h4>
                                                 <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                    <MapPin className="w-3 h-3" /> {gig.location} ï¿½ {gig.time}
+                                                    <MapPin className="w-3 h-3" /> {gig.location} • {gig.time}
                                                 </div>
                                             </div>
                                             <div className="text-right">
@@ -246,7 +248,7 @@ export default function LandingPage() {
                 <FAQSection />
             </main>
             
-            <style jsx global>{`
+            <style jsx global>{\`
                 @keyframes scroll {
                     0% { transform: translateY(0); }
                     100% { transform: translateY(-50%); }
@@ -257,8 +259,15 @@ export default function LandingPage() {
                 .animate-scroll:hover {
                     animation-play-state: paused;
                 }
-            `}</style>
+            \`}</style>
         </div>
     );
 }
 
+const Edit3 = ({ className }: { className?: string }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+);
+`;
+
+fs.writeFileSync('app/page.tsx', pageContent, 'utf-8');
+console.log('Successfully wrote new app/page.tsx');

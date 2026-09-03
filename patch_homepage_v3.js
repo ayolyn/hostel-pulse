@@ -1,8 +1,10 @@
-'use client';
+const fs = require('fs');
+
+const pageContent = `'use client';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Zap, Search, ChevronRight, MapPin, ShieldCheck, Edit3 } from 'lucide-react';
+import { Home, Zap, Search, CheckCircle2, ChevronRight, TrendingUp, Sparkles, MapPin, ShieldCheck, Clock } from 'lucide-react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { WhyHostelPulse } from '@/components/home/WhyHostelPulse';
 import { FAQSection } from '@/components/home/FAQSection';
@@ -49,8 +51,8 @@ export default function LandingPage() {
     const [searchQuery, setSearchQuery] = useState("");
 
     const handleSearch = () => {
-        if (activeTab === "rent") router.push('/rent?q=' + searchQuery);
-        else router.push('/services?q=' + searchQuery);
+        if (activeTab === "rent") router.push(`/rent?q=${searchQuery}`);
+        else router.push(`/services?q=${searchQuery}`); // Or /gigs if that's the route
     };
 
     const searchPlaceholders = {
@@ -90,7 +92,9 @@ export default function LandingPage() {
                                     <button
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id as any)}
-                                        className={"relative flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 " + (activeTab === tab.id ? "text-black" : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white")}
+                                        className={\`relative flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 \${
+                                            activeTab === tab.id ? "text-black" : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                                        }\`}
                                     >
                                         {activeTab === tab.id && (
                                             <motion.div
@@ -139,7 +143,7 @@ export default function LandingPage() {
                                 className="group bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-[2rem] p-8 hover:border-emerald-400/50 hover:bg-emerald-50 dark:hover:bg-white/[0.07] transition-all duration-300 h-full flex flex-col shadow-sm dark:shadow-none"
                             >
                                 <div className="w-14 h-14 rounded-2xl bg-emerald-400/10 flex items-center justify-center mb-6">
-                                    <Home className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
+                                    <Home className="w-7 h-7 text-emerald-500 dark:text-emerald-400" />
                                 </div>
                                 <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Secure Housing</h3>
                                 <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed flex-1">100% Escrow protected hostel hunting. Zero risk of agent scams.</p>
@@ -159,7 +163,7 @@ export default function LandingPage() {
                                 className="group bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-[2rem] p-8 hover:border-blue-400/50 hover:bg-blue-50 dark:hover:bg-white/[0.07] transition-all duration-300 h-full flex flex-col shadow-sm dark:shadow-none"
                             >
                                 <div className="w-14 h-14 rounded-2xl bg-blue-400/10 flex items-center justify-center mb-6">
-                                    <Zap className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+                                    <Zap className="w-7 h-7 text-blue-500 dark:text-blue-400" />
                                 </div>
                                 <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Campus Gigs</h3>
                                 <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed flex-1">Hire verified runners for gas, water, laundry, and everyday campus errands.</p>
@@ -182,7 +186,7 @@ export default function LandingPage() {
                     <div className="bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-[3rem] p-8 md:p-16 overflow-hidden relative shadow-sm dark:shadow-none">
                         <div className="flex flex-col lg:flex-row items-center gap-12">
                             <div className="flex-1">
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
                                     <Zap className="w-4 h-4" /> The Gig Network
                                 </div>
                                 <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6">Get anything done in minutes.</h2>
@@ -204,7 +208,7 @@ export default function LandingPage() {
                                     ))}
                                 </ul>
                                 <div className="flex flex-col sm:flex-row gap-4">
-                                    <Link href="/services" className="bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black px-8 py-4 rounded-2xl font-bold text-center transition-colors">
+                                    <Link href="/services" className="bg-gray-900 dark:bg-white text-white dark:text-black px-8 py-4 rounded-2xl font-bold text-center hover:opacity-90 transition-opacity">
                                         Post a Gig
                                     </Link>
                                     <Link href="/register/agent" className="bg-white dark:bg-white/10 border border-gray-200 dark:border-transparent hover:bg-gray-50 dark:hover:bg-white/20 text-gray-900 dark:text-white px-8 py-4 rounded-2xl font-bold text-center transition-colors">
@@ -215,9 +219,9 @@ export default function LandingPage() {
 
                             {/* Animated Gig Feed */}
                             <div className="flex-1 w-full max-w-md mx-auto relative h-[400px]">
-                                <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-transparent to-gray-50 dark:from-[#111] dark:via-transparent dark:to-[#111] z-10 pointer-events-none" />
+                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 dark:via-black/50 to-gray-50 dark:to-[#111] z-10 pointer-events-none" />
                                 
-                                <div className="absolute w-full space-y-4 animate-scroll pt-20">
+                                <div className="absolute w-full space-y-4 animate-scroll">
                                     {[
                                         { title: "12.5kg Gas Refill", location: "Under-G", price: "?1,500", time: "Just now" },
                                         { title: "Laundry Pickup", location: "Adenike", price: "?2,000", time: "2m ago" },
@@ -229,7 +233,7 @@ export default function LandingPage() {
                                             <div>
                                                 <h4 className="font-bold text-gray-900 dark:text-white mb-1">{gig.title}</h4>
                                                 <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                    <MapPin className="w-3 h-3" /> {gig.location} ï¿½ {gig.time}
+                                                    <MapPin className="w-3 h-3" /> {gig.location} • {gig.time}
                                                 </div>
                                             </div>
                                             <div className="text-right">
@@ -262,3 +266,10 @@ export default function LandingPage() {
     );
 }
 
+const Edit3 = ({ className }: { className?: string }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+);
+`;
+
+fs.writeFileSync('app/page.tsx', pageContent, 'utf-8');
+console.log('Successfully wrote new app/page.tsx');
