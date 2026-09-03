@@ -10,6 +10,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+    metadataBase: new URL("https://hostelpulse.com.ng"),
     title: {
         template: '%s | HostelPulse',
         default: 'HostelPulse | Premium Student Housing in Ogbomoso',
@@ -50,6 +51,22 @@ import { GlobalAlertsListener } from "@/components/providers/GlobalAlertsListene
 
 import Script from "next/script";
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "HostelPulse",
+  "image": "https://hostelpulse.com.ng/og.png",
+  "description": "Premium Student Housing and Campus Services in Ogbomoso.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Ogbomoso",
+    "addressRegion": "Oyo State",
+    "addressCountry": "NG"
+  },
+  "url": "https://hostelpulse.com.ng"
+};
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -75,7 +92,11 @@ export default function RootLayout({
                     `}
                 </Script>
             </head>
-            <body className={`${jakarta.variable} font-sans min-h-screen bg-white dark:bg-black transition-colors duration-300`}>
+                  <body className={`${jakarta.variable} font-sans bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 antialiased min-h-screen flex flex-col`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
                 <Toaster position="top-right" />
                 <QueryProvider>
                     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

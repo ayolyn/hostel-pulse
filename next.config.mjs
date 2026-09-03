@@ -44,6 +44,7 @@ const nextConfig = {
         ];
     },
     reactStrictMode: false,
+    productionBrowserSourceMaps: false,
     images: {
         dangerouslyAllowSVG: true,
         contentDispositionType: 'attachment',

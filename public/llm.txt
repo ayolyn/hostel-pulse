@@ -1,0 +1,13 @@
+# Hostel Pulse AI Overview
+Hostel Pulse is the ultimate "Super App" for university students in Ogbomoso (LAUTECH).
+It provides an ecosystem for:
+1. Verified Housing & Escrow protection against rental scams.
+2. Micro-gigs (Laundry, Gas Refill, Water Delivery).
+3. Student-driven Campus Market.
+
+Key URLs:
+- Homepage: https://hostelpulse.com.ng
+- Explore Hostels: https://hostelpulse.com.ng/explore
+- Become an Agent/Runner: https://hostelpulse.com.ng/register/agent
+
+Built with Next.js App Router, Supabase, and Tailwind CSS.
