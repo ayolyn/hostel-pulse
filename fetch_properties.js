@@ -1,4 +1,5 @@
-"use client";
+const fs = require('fs');
+const content = `"use client";
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -7,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
+// Fallback mock data in case the DB is empty
 const fallbackHostels = [
   {
     id: "mock1",
@@ -59,6 +61,7 @@ export function FeaturedListings() {
         if (error || !data || data.length === 0) {
           setHostels(fallbackHostels);
         } else {
+          // If less than 3, pad with mock data just for visual density
           let finalData = [...data];
           if (finalData.length < 3) {
             finalData = [...finalData, ...fallbackHostels.slice(0, 3 - finalData.length)];
@@ -126,7 +129,7 @@ export function FeaturedListings() {
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                {(hostel.is_verified || String(hostel.id).startsWith('mock')) && (
+                {(hostel.is_verified || hostel.id.toString().startsWith('mock')) && (
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-gray-900 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
                     <ShieldCheck className="w-4 h-4 text-emerald-500" /> Verified
                   </div>
@@ -155,7 +158,7 @@ export function FeaturedListings() {
                   </div>
                 </div>
 
-                <Link href={String(hostel.id).startsWith('mock') ? '/rent' : ('/rent/' + hostel.id)} className="block w-full py-3 text-center bg-gray-100 dark:bg-white/5 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
+                <Link href={hostel.id.toString().startsWith('mock') ? '/rent' : `/rent/${hostel.id}`} className="block w-full py-3 text-center bg-gray-100 dark:bg-white/5 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
                   View Details
                 </Link>
               </div>
@@ -166,3 +169,7 @@ export function FeaturedListings() {
     </section>
   );
 }
+`;
+
+fs.writeFileSync('components/home/FeaturedListings.tsx', content, 'utf8');
+console.log('Rewrote FeaturedListings to fetch from Supabase!');
