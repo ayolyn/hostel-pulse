@@ -40,9 +40,14 @@ export function WhyHostelPulse() {
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Escrow Vault</span>
                 <span className="px-2 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded-full">LOCKED</span>
               </div>
-              <div className="text-3xl font-black text-gray-900 dark:text-white mb-1">?150,000</div>
+              <div className="text-3xl font-black text-gray-900 dark:text-white mb-1">₦150,000</div>
               <div className="text-sm text-gray-500 mb-4">Awaiting your approval...</div>
-              <div className="w-full h-12 bg-gray-100 dark:bg-white/5 rounded-xl animate-pulse"></div>
+              <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-center py-3 rounded-xl font-bold text-sm cursor-pointer transition-colors shadow-md">
+                Release Funds
+              </button>
+              <div className="mt-3 text-center text-xs text-gray-500 dark:text-gray-400 hover:text-red-500 underline cursor-pointer transition-colors">
+                Report an Issue
+              </div>
             </div>
 
             {/* Background Decoration */}
@@ -61,6 +66,9 @@ export function WhyHostelPulse() {
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                   Stop wasting transport fare on fake pictures. Every listing requires an unedited raw video walkthrough. What you see is literally what you get.
                 </p>
+                <div className="mt-6 flex items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-bold cursor-pointer group-hover:translate-x-1 transition-transform">
+                  <PlaySquare className="w-4 h-4" /> Watch Sample Video
+                </div>
               </div>
             </div>
 
@@ -74,6 +82,11 @@ export function WhyHostelPulse() {
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                   Agent didn't show up? Room looks different? Tap one button and your money bounces right back to your wallet. No arguments.
                 </p>
+                <div className="mt-6">
+                  <button className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                    View Refund Policy
+                  </button>
+                </div>
               </div>
             </div>
 

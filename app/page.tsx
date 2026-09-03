@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Zap, Search, ChevronRight, MapPin, ShieldCheck, Edit3 } from 'lucide-react';
+import { Home, Zap, Search, ChevronRight, MapPin, ShieldCheck, Edit3, UserPlus } from 'lucide-react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { WhyHostelPulse } from '@/components/home/WhyHostelPulse';
 import { FeaturedListings } from '@/components/home/FeaturedListings';
@@ -212,8 +212,8 @@ export default function LandingPage() {
                                     <Link href="/services" className="bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black px-8 py-4 rounded-2xl font-bold text-center transition-colors">
                                         Post a Gig
                                     </Link>
-                                    <Link href="/register/agent" className="bg-white dark:bg-white/10 border border-gray-200 dark:border-transparent hover:bg-gray-50 dark:hover:bg-white/20 text-gray-900 dark:text-white px-8 py-4 rounded-2xl font-bold text-center transition-colors">
-                                        Become a Runner
+                                    <Link href="/register/agent" className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-2xl font-bold text-center transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30">
+                                        <UserPlus className="w-5 h-5" /> Become a Runner
                                     </Link>
                                 </div>
                             </div>
@@ -224,11 +224,11 @@ export default function LandingPage() {
                                 
                                 <div className="absolute w-full space-y-4 animate-scroll pt-20">
                                     {[
-                                        { title: "12.5kg Gas Refill", location: "Under-G", price: "?1,500", time: "Just now" },
-                                        { title: "Laundry Pickup", location: "Adenike", price: "?2,000", time: "2m ago" },
-                                        { title: "Print & Deliver Assignment", location: "Stadium Gate", price: "?500", time: "5m ago" },
-                                        { title: "Dispenser Water", location: "General", price: "?800", time: "12m ago" },
-                                        { title: "12.5kg Gas Refill", location: "Under-G", price: "?1,500", time: "Just now" },
+                                        { title: "12.5kg Gas Refill", location: "Under-G", price: "₦1,500", time: "Just now" },
+                                        { title: "Laundry Pickup", location: "Adenike", price: "₦2,000", time: "2m ago" },
+                                        { title: "Print & Deliver Assignment", location: "Stadium Gate", price: "₦500", time: "5m ago" },
+                                        { title: "Dispenser Water", location: "General", price: "₦800", time: "12m ago" },
+                                        { title: "12.5kg Gas Refill", location: "Under-G", price: "₦1,500", time: "Just now" },
                                     ].map((gig, i) => (
                                         <div key={i} className="bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-white/5 p-4 rounded-2xl shadow-sm flex justify-between items-center transform transition-transform hover:scale-[1.02] cursor-pointer">
                                             <div>
