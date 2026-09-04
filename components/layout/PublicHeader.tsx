@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { HostelPulseLogo } from '@/components/ui/HostelPulseLogo';
 
@@ -142,10 +142,10 @@ export function PublicHeader() {
                                         href={link.href}
                                         onClick={() => setMobileMenuOpen(false)}
                                         target={link.href.startsWith('http') ? "_blank" : undefined}
-                                        className="py-4 text-xl font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-white/5 flex items-center justify-between group"
+                                        className="px-5 py-4 mb-3 bg-gray-100/50 dark:bg-[#111] hover:bg-gray-200 dark:hover:bg-[#1a1a1a] rounded-2xl text-[1.1rem] font-bold text-gray-900 dark:text-white flex items-center justify-between transition-colors border border-transparent dark:border-white/5"
                                     >
                                         {link.name}
-                                        <span className="text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity">?</span>
+                                        <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-600" />
                                     </Link>
                                 ))}
                             </div>

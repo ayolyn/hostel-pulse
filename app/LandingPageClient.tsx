@@ -37,16 +37,16 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                         className="text-center z-10 max-w-3xl mx-auto w-full flex flex-col items-center"
                     >
                         <h1 className="text-[2.75rem] leading-[1.05] sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 text-gray-900 dark:text-white uppercase">
-                            Book Your <br />
+                            Your Campus <br />
                             <span className="text-emerald-500 relative inline-block">
-                                Safe Home.
+                                Ecosystem.
                                 {/* Underline decoration */}
                                 <div className="absolute -bottom-2 left-0 right-0 h-2 bg-emerald-500/30 rounded-full" />
                             </span>
                         </h1>
                         
                         <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 font-medium max-w-lg mx-auto mb-10 leading-relaxed">
-                            Ogbomoso's only verified housing network. Anti-scam escrow protection for Under-G, Adenike, and General students.
+                            Ogbomoso's first all-in-one student network. Rent verified hostels, book campus gigs, buy & sell items, and find roommates safely.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-16">

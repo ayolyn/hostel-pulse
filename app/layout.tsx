@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-const jakarta = Plus_Jakarta_Sans({
+const outfit = Outfit({
     subsets: ["latin"],
-    variable: "--font-jakarta",
+    variable: "--font-outfit",
     display: "swap",
 });
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://hostelpulse.app"),
-    title: {
-        template: '%s | HostelPulse',
         default: 'HostelPulse | Premium Student Housing in Ogbomoso',
     },
     description: "The most secure platform to find, inspect, and safely pay for verified student housing and apartments around LAUTECH, Ogbomoso.",
@@ -31,7 +28,7 @@ export const metadata: Metadata = {
         locale: 'en_NG',
         type: 'website',
     },
-    icons: { icon: '/logo-icon.png', shortcut: '/logo-icon.png', apple: '/logo-icon.png' },
+    icons: { icon: '/logo-icon.png?v=2', shortcut: '/logo-icon.png?v=2', apple: '/logo-icon.png?v=2' },
 };
 
 import QueryProvider from "@/components/providers/QueryProvider";
@@ -88,7 +85,7 @@ export default function RootLayout({
                     `}
                 </Script>
             </head>
-                  <body className={`${jakarta.variable} font-sans bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 antialiased min-h-screen flex flex-col`}>
+                  <body className={`${outfit.variable} font-sans bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 antialiased min-h-screen flex flex-col`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
