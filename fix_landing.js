@@ -1,4 +1,6 @@
-"use client";
+const fs = require('fs');
+
+const content = `"use client";
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -135,3 +137,7 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
         </div>
     );
 }
+`;
+
+fs.writeFileSync('app/LandingPageClient.tsx', content, 'utf8');
+console.log('Rewrote LandingPageClient hero and search');

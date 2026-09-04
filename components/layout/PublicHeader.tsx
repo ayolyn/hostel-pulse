@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
+import { HostelPulseLogo } from '@/components/ui/HostelPulseLogo';
 
 const navLinks = [
     { name: 'Buy', href: '/buy' },
@@ -37,12 +38,7 @@ export function PublicHeader() {
                     
                     {/* Sleek Logo */}
                     <Link href="/" className="flex items-center gap-2 group">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                            <span className="text-emerald-500 font-black text-xl leading-none">H</span>
-                        </div>
-                        <span className="font-bold text-lg tracking-tight text-gray-900 dark:text-white">
-                            HostelPulse
-                        </span>
+                        <HostelPulseLogo size={28} />
                     </Link>
 
                     {/* Desktop Navigation Links */}
@@ -129,12 +125,7 @@ export function PublicHeader() {
                         >
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                                        <span className="text-emerald-500 font-black text-xl leading-none">H</span>
-                                    </div>
-                                    <span className="font-bold text-lg tracking-tight text-gray-900 dark:text-white">
-                                        HostelPulse
-                                    </span>
+                                    <HostelPulseLogo size={28} />
                                 </div>
                                 <button 
                                     onClick={() => setMobileMenuOpen(false)}
