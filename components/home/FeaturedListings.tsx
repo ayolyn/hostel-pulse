@@ -16,7 +16,7 @@ const fallbackHostels = [
     main_image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop",
     bedrooms: 1,
     bathrooms: 1,
-    is_verified: true,
+    verification_status: "Verified",
   },
   {
     id: "mock2",
@@ -26,7 +26,7 @@ const fallbackHostels = [
     main_image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=800&auto=format&fit=crop",
     bedrooms: 1,
     bathrooms: 1,
-    is_verified: true,
+    verification_status: "Verified",
   },
   {
     id: "mock3",
@@ -36,7 +36,7 @@ const fallbackHostels = [
     main_image: "https://images.unsplash.com/photo-1502672260266-1c1e52504437?q=80&w=800&auto=format&fit=crop",
     bedrooms: 2,
     bathrooms: 2,
-    is_verified: true,
+    verification_status: "Verified",
   }
 ];
 
@@ -50,7 +50,7 @@ export function FeaturedListings() {
       try {
         const { data, error } = await supabase
           .from('properties')
-          .select('id, title, location, price, main_image, bedrooms, bathrooms, is_verified')
+          .select('id, title, location, price, main_image, bedrooms, bathrooms, verification_status')
           .eq('listing_type', 'rent')
           .in('status', ['active', 'under_inspection'])
           .order('created_at', { ascending: false })
@@ -126,7 +126,7 @@ export function FeaturedListings() {
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                {(hostel.is_verified || String(hostel.id).startsWith('mock')) && (
+                {(hostel.verification_status === "Verified" || String(hostel.id).startsWith('mock')) && (
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-gray-900 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
                     <ShieldCheck className="w-4 h-4 text-emerald-500" /> Verified
                   </div>
