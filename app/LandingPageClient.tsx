@@ -46,7 +46,7 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                     >
                         <h1 className="text-4xl leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-4">
                             Your Campus Life. <br className="hidden md:block" />
-                            <span className="text-emerald-400">Handled.</span>
+                            <span className="text-emerald-500">Handled.</span>
                         </h1>
                         
                         <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 font-medium max-w-2xl mx-auto mt-6">The only app you need to survive LAUTECH. Find verified hostels, book campus gigs, and never get scammed again.</p>
@@ -110,12 +110,12 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                                 className="group bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-[2rem] p-8 hover:border-emerald-400/50 hover:bg-emerald-50 dark:hover:bg-white/[0.07] transition-all duration-300 h-full flex flex-col shadow-sm dark:shadow-none"
                             >
                                 <div className="w-14 h-14 rounded-2xl bg-emerald-400/10 flex items-center justify-center mb-6">
-                                    <Home className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
+                                    <Home className="w-7 h-7 text-emerald-600 dark:text-emerald-500" />
                                 </div>
                                 <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Secure Housing</h3>
                                 <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed flex-1">100% Escrow protected hostel hunting. Zero risk of agent scams.</p>
                                 
-                                <div className="mt-8 flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm uppercase tracking-widest group-hover:translate-x-2 transition-transform">
+                                <div className="mt-8 flex items-center gap-2 text-emerald-600 dark:text-emerald-500 font-bold text-sm uppercase tracking-widest group-hover:translate-x-2 transition-transform">
                                     Find a Room <ChevronRight className="w-4 h-4" />
                                 </div>
                             </motion.div>
@@ -170,7 +170,7 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                                     ].map((feature, i) => (
                                         <li key={i} className="flex items-center gap-3 text-gray-900 dark:text-gray-300 font-medium">
                                             <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                                                <feature.icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                                <feature.icon className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
                                             </div>
                                             {feature.text}
                                         </li>

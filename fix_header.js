@@ -1,4 +1,6 @@
-"use client";
+const fs = require('fs');
+
+const content = `"use client";
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -191,3 +193,7 @@ export function PublicHeader() {
         </>
     );
 }
+`;
+
+fs.writeFileSync('components/layout/PublicHeader.tsx', content, 'utf8');
+console.log('Rewrote PublicHeader for sleek mobile design');
