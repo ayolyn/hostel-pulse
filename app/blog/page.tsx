@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import React from 'react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { BookOpen, ArrowRight } from 'lucide-react';
