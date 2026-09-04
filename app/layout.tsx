@@ -10,6 +10,9 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+    metadataBase: new URL("https://hostelpulse.app"),
+    title: {
+        template: '%s | HostelPulse',
         default: 'HostelPulse | Premium Student Housing in Ogbomoso',
     },
     description: "The most secure platform to find, inspect, and safely pay for verified student housing and apartments around LAUTECH, Ogbomoso.",
