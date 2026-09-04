@@ -97,14 +97,26 @@ export function FeaturedListings() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
-            <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white mb-2">
-              Trending <span className="text-emerald-500">Hostels</span>
-            </h2>
-            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
+            <motion.h2 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-2 tracking-tight"
+            >
+              Trending <span className="text-[#BEF264]">Hostels</span>
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="text-base md:text-lg text-gray-600 dark:text-gray-400 font-medium"
+            >
               The most sought-after verified properties around campus this week.
-            </p>
+            </motion.p>
           </div>
-          <Link href="/rent" className="flex items-center gap-2 text-gray-900 dark:text-white font-bold hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">
+          <Link href="/rent" className="flex items-center gap-2 text-gray-900 dark:text-white font-bold hover:text-[#BEF264] dark:hover:text-[#d9f99d] transition-colors">
             View all properties <ChevronRight className="w-5 h-5" />
           </Link>
         </div>
@@ -117,7 +129,7 @@ export function FeaturedListings() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group bg-white dark:bg-[#0a0a0a] rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10 hover:shadow-2xl hover:border-emerald-500/30 transition-all duration-300 flex flex-col"
+              className="group bg-white dark:bg-[#0a0a0a] rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10 hover:shadow-2xl hover:border-[#BEF264]/40 transition-all duration-300 flex flex-col"
             >
               <div className="relative h-56 overflow-hidden shrink-0">
                 <Image
@@ -128,7 +140,7 @@ export function FeaturedListings() {
                 />
                 {(hostel.verification_status === "Verified" || String(hostel.id).startsWith('mock')) && (
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-gray-900 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-1 shadow-sm">
-                    <ShieldCheck className="w-4 h-4 text-emerald-500" /> Verified
+                    <ShieldCheck className="w-4 h-4 text-[#BEF264]" /> Verified
                   </div>
                 )}
                 <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur text-white px-4 py-2 rounded-xl text-lg font-black">
@@ -155,7 +167,7 @@ export function FeaturedListings() {
                   </div>
                 </div>
 
-                <Link href={String(hostel.id).startsWith('mock') ? '/rent' : ('/rent/' + hostel.id)} className="block w-full py-3 text-center bg-gray-100 dark:bg-white/5 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 text-gray-900 dark:text-white rounded-xl font-bold transition-colors">
+                <Link href={String(hostel.id).startsWith('mock') ? '/rent' : ('/rent/' + hostel.id)} className="block w-full py-3 text-center bg-gray-100 dark:bg-white/5 hover:bg-[#BEF264] hover:text-black dark:hover:bg-[#BEF264] text-gray-900 dark:text-white dark:hover:text-black rounded-xl font-bold transition-colors">
                   View Details
                 </Link>
               </div>

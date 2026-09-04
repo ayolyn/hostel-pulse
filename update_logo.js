@@ -1,4 +1,6 @@
-'use client';
+const fs = require('fs');
+
+const content = `'use client';
 
 import React from 'react';
 import { Space_Grotesk } from 'next/font/google';
@@ -34,7 +36,7 @@ export const HostelPulseLogo: React.FC<LogoProps> = ({
                     className={
                         variant === 'dark' || variant === 'icon' ? "text-[#BEF264]" : 
                         variant === 'light' ? "text-neutral-900" : 
-                        "text-[#BEF264] dark:text-[#BEF264] light:text-neutral-900" 
+                        "text-[#BEF264] dark:text-[#BEF264]" 
                     }
                     strokeWidth="8" 
                     strokeLinecap="round" 
@@ -46,7 +48,7 @@ export const HostelPulseLogo: React.FC<LogoProps> = ({
                     className={
                         variant === 'dark' || variant === 'icon' ? "text-[#BEF264]" : 
                         variant === 'light' ? "text-neutral-900" : 
-                        "text-[#BEF264] dark:text-[#BEF264] light:text-neutral-900" 
+                        "text-[#BEF264] dark:text-[#BEF264]" 
                     }
                     strokeWidth="8" 
                     strokeLinecap="round" 
@@ -59,7 +61,7 @@ export const HostelPulseLogo: React.FC<LogoProps> = ({
                     className={
                         variant === 'dark' || variant === 'icon' ? "text-[#BEF264]" : 
                         variant === 'light' ? "text-neutral-900" : 
-                        "text-[#BEF264] dark:text-[#BEF264] light:text-neutral-900" 
+                        "text-[#BEF264] dark:text-[#BEF264]" 
                     }
                     strokeWidth="8" 
                     strokeLinecap="round" 
@@ -78,9 +80,9 @@ export const HostelPulseLogo: React.FC<LogoProps> = ({
                     </span>
                     <span className={
                         variant === 'dark' ? "text-[#BEF264]" : 
-                        variant === 'light' ? "text-green-700" : 
-                        "text-[#BEF264] dark:text-[#BEF264]"
-                    } style={{ marginLeft: '1px' }}>
+                        variant === 'light' ? "text-green-600" : 
+                        "text-green-600 dark:text-[#BEF264]"
+                    } style={{ marginLeft: '0.5px' }}>
                         Pulse
                     </span>
                 </div>
@@ -88,3 +90,7 @@ export const HostelPulseLogo: React.FC<LogoProps> = ({
         </div>
     );
 };
+`;
+
+fs.writeFileSync('components/ui/HostelPulseLogo.tsx', content, 'utf8');
+console.log('Updated logo with Space Grotesk and matched colors');

@@ -21,29 +21,39 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white selection:bg-emerald-500/30 selection:text-emerald-500">
+        <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white selection:bg-[#BEF264]/30 selection:text-[#BEF264]">
             <PublicHeader />
             
             <main className="pb-20 pt-24">
                 {/* Formal Sleek Hero Section */}
                 <section className="relative pt-12 pb-16 px-6 overflow-hidden flex flex-col items-center min-h-[90vh]">
                     {/* Background glow */}
-                    <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+                    <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#BEF264]/10 blur-[100px] rounded-full pointer-events-none" />
                     
                     <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="text-center z-10 max-w-3xl mx-auto w-full flex flex-col items-center"
+                        transition={{ duration: 0.8, staggerChildren: 0.2 }}
+                        className="text-center z-10 max-w-4xl mx-auto w-full flex flex-col items-center"
                     >
-                        <h1 className="text-[2.75rem] leading-[1.05] sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 text-gray-900 dark:text-white uppercase">
+                        <motion.h1 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.1 }}
+                            className="text-[3rem] leading-[1.05] sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 text-gray-900 dark:text-white uppercase"
+                        >
                             Your Campus <br />
-                            <span className="text-emerald-500 relative inline-block">
+                            <span className="text-[#BEF264] relative inline-block mt-2">
                                 Ecosystem.
                                 {/* Underline decoration */}
-                                <div className="absolute -bottom-2 left-0 right-0 h-2 bg-emerald-500/30 rounded-full" />
+                                <motion.div 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: '100%' }}
+                                    transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                                    className="absolute -bottom-3 left-0 right-0 h-3 bg-[#BEF264]/30 rounded-full" 
+                                />
                             </span>
-                        </h1>
+                        </motion.h1>
                         
                         <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 font-medium max-w-lg mx-auto mb-10 leading-relaxed">
                             Ogbomoso's first all-in-one student network. Rent verified hostels, book campus gigs, buy & sell items, and find roommates safely.
@@ -52,7 +62,7 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-16">
                             <Link 
                                 href="/rent"
-                                className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-black px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                                className="w-full sm:w-auto bg-[#BEF264] hover:bg-[#d9f99d] text-black px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase transition-all shadow-lg shadow-[#BEF264]/20 flex items-center justify-center gap-2"
                             >
                                 Explore Hostels <ChevronRight className="w-4 h-4" />
                             </Link>
@@ -67,16 +77,20 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                         {/* Graphic & Search Integration */}
                         <div className="relative w-full max-w-2xl mx-auto mt-4">
                             {/* The "Virtual Hub" Graphic */}
-                            <div className="relative mx-auto w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-emerald-500/20 to-transparent rounded-3xl border border-emerald-500/20 flex flex-col items-center justify-center shadow-2xl overflow-hidden mb-12">
+                            <motion.div 
+                                animate={{ y: [0, -15, 0], rotate: [0, 2, 0] }}
+                                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                                className="relative mx-auto w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-[#BEF264]/20 to-transparent rounded-3xl border border-[#BEF264]/20 flex flex-col items-center justify-center shadow-2xl overflow-hidden mb-12"
+                            >
                                 <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-                                <div className="relative z-10 w-24 h-24 bg-emerald-500 rounded-3xl flex items-center justify-center shadow-xl mb-4">
+                                <div className="relative z-10 w-24 h-24 bg-[#BEF264] rounded-3xl flex items-center justify-center shadow-xl mb-4">
                                     <Home className="w-12 h-12 text-black" />
                                 </div>
                                 <div className="relative z-10 bg-black/60 backdrop-blur-md px-6 py-2 rounded-full border border-white/10 flex items-center gap-2">
-                                    <CheckCircle className="w-4 h-4 text-emerald-500" />
+                                    <CheckCircle className="w-4 h-4 text-[#BEF264]" />
                                     <span className="text-white font-bold tracking-widest uppercase text-sm">Virtual Hub</span>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Sleek Search Bar */}
                             <div className="absolute -bottom-6 left-0 right-0 max-w-xl mx-auto bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-2xl p-2 shadow-2xl flex flex-col md:flex-row gap-2 transform translate-y-1/2">
