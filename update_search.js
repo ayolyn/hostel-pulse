@@ -1,80 +1,10 @@
-"use client";
+const fs = require('fs');
+let file = fs.readFileSync('app/LandingPageClient.tsx', 'utf8');
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Zap, Search, ChevronRight, MapPin, ShieldCheck, Edit3, UserPlus, PhoneCall, CheckCircle } from 'lucide-react';
-import { PublicHeader } from '@/components/layout/PublicHeader';
-import { WhyHostelPulse } from '@/components/home/WhyHostelPulse';
-import { FeaturedListings } from '@/components/home/FeaturedListings';
-import { FAQSection } from '@/components/home/FAQSection';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+// Find the section that contains the graphic and search integration
+const searchRegex = /\{\/\* Graphic & Search Integration \*\/\}[\s\S]*?<\/div>\s*<\/motion\.div>\s*<\/section>/;
 
-export default function LandingPageClient({ latestProperties }: { latestProperties: any[] }) {
-    const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'rent' | 'gig'>('rent');
-    const [searchQuery, setSearchQuery] = useState("");
-
-    const handleSearch = () => {
-        if (activeTab === "rent") router.push('/rent?q=' + searchQuery);
-        else router.push('/services?q=' + searchQuery);
-    };
-
-    return (
-        <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white selection:bg-[#BEF264]/30 selection:text-[#BEF264]">
-            <PublicHeader />
-            
-            <main className="pb-20 pt-24">
-                {/* Formal Sleek Hero Section */}
-                <section className="relative pt-12 pb-16 px-6 overflow-hidden flex flex-col items-center min-h-[90vh]">
-                    {/* Background glow */}
-                    <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#BEF264]/10 blur-[100px] rounded-full pointer-events-none" />
-                    
-                    <motion.div 
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, staggerChildren: 0.2 }}
-                        className="text-center z-10 max-w-4xl mx-auto w-full flex flex-col items-center"
-                    >
-                        <motion.h1 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
-                            className="text-[3rem] leading-[1.05] sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 text-gray-900 dark:text-white uppercase"
-                        >
-                            Your Campus <br />
-                            <span className="text-[#BEF264] relative inline-block mt-2">
-                                Ecosystem.
-                                {/* Underline decoration */}
-                                <motion.div 
-                                    initial={{ width: 0 }}
-                                    animate={{ width: '100%' }}
-                                    transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                                    className="absolute -bottom-3 left-0 right-0 h-3 bg-[#BEF264]/30 rounded-full" 
-                                />
-                            </span>
-                        </motion.h1>
-                        
-                        <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 font-medium max-w-lg mx-auto mb-10 leading-relaxed">
-                            Ogbomoso's first all-in-one student network. Rent verified hostels, book campus gigs, buy & sell items, and find roommates safely.
-                        </p>
-
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-16">
-                            <Link 
-                                href="/rent"
-                                className="w-full sm:w-auto bg-[#BEF264] hover:bg-[#d9f99d] text-black px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase transition-all shadow-lg shadow-[#BEF264]/20 flex items-center justify-center gap-2"
-                            >
-                                Explore Hostels <ChevronRight className="w-4 h-4" />
-                            </Link>
-                            <Link 
-                                href="/how-it-works"
-                                className="w-full sm:w-auto bg-transparent border-2 border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 text-gray-900 dark:text-white px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase transition-all flex items-center justify-center"
-                            >
-                                How It Works
-                            </Link>
-                        </div>
-
-                        {/* Graphic & Search Integration */}
+const newSearchComponent = `{/* Graphic & Search Integration */}
                         <div className="w-full max-w-3xl mx-auto mt-10 z-20">
                             {/* The "Virtual Hub" Graphic - Moved up and made smaller on mobile so search fits */}
                             <motion.div 
@@ -120,7 +50,7 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                                             className="w-full bg-transparent text-gray-900 dark:text-white placeholder-gray-400 font-bold text-lg focus:outline-none"
-                                            placeholder={activeTab === 'rent' ? "Monthly/Yearly ï¿½ Search Under-G..." : "What gig do you need?"}
+                                            placeholder={activeTab === 'rent' ? "Monthly/Yearly — Search Under-G..." : "What gig do you need?"}
                                         />
                                     </div>
                                     <button
@@ -137,18 +67,9 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                             </div>
                         </div>
                     </motion.div>
-                </section>
+                </section>`;
 
-                <div className="mt-20">
-                    <WhyHostelPulse />
-                </div>
-                
-                <div className="mt-10">
-                    <FeaturedListings />
-                </div>
-                
-                <FAQSection />
-            </main>
-        </div>
-    );
-}
+file = file.replace(searchRegex, newSearchComponent);
+
+fs.writeFileSync('app/LandingPageClient.tsx', file, 'utf8');
+console.log('Successfully updated the Search Bar design');
