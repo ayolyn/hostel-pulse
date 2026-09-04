@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         locale: 'en_NG',
         type: 'website',
     },
-    icons: { icon: '/logo-icon.png?v=2', shortcut: '/logo-icon.png?v=2', apple: '/logo-icon.png?v=2' },
+    // removed next.js icons metadata in favor of standard link tags
 };
 
 import QueryProvider from "@/components/providers/QueryProvider";
@@ -68,6 +68,9 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
+                <link rel="icon" type="image/png" href="/favicon.png" />
+                <link rel="shortcut icon" href="/favicon.png" />
+                <link rel="apple-touch-icon" href="/favicon.png" />
                 <Script 
                     src="https://checkout.flutterwave.com/v3.js" 
                     strategy="beforeInteractive"
