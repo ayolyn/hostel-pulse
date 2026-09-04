@@ -71,9 +71,9 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
-                <link rel="icon" type="image/png" href="/favicon.png" />
-                <link rel="shortcut icon" href="/favicon.png" />
-                <link rel="apple-touch-icon" href="/favicon.png" />
+                <link rel="icon" type="image/png" href="/favicon.svg" />
+                <link rel="shortcut icon" href="/favicon.svg" />
+                <link rel="apple-touch-icon" href="/favicon.svg" />
                 <Script 
                     src="https://checkout.flutterwave.com/v3.js" 
                     strategy="beforeInteractive"
