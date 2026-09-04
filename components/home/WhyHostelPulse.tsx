@@ -12,10 +12,10 @@ export function WhyHostelPulse() {
         
         {/* Aggressive Direct-Response Header */}
         <div className="max-w-3xl mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 leading-[1.1] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 leading-tight tracking-tight">
             Stop paying agents for <br className="hidden md:block"/>hostels you haven't seen.
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
+          <p className="text-base md:text-xl text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
             We eliminated the risk of renting in Ogbomoso. If the room doesn't match the video, or the agent doesn't show up, you get <span className="text-emerald-500 font-black">100% of your money back</span>. Instantly. No stories.
           </p>
         </div>
@@ -28,8 +28,8 @@ export function WhyHostelPulse() {
               <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-6">
                 <ShieldCheck className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h3 className="text-3xl font-black text-gray-900 dark:text-white mb-4">Hold the Cash.</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8">
+              <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-2">Hold the Cash.</h3>
+              <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
                 Your rent stays locked in our secure escrow vault. The agent doesn't smell a single kobo until you physically inspect the room and hold the keys in your hand. 
               </p>
             </div>
@@ -62,8 +62,8 @@ export function WhyHostelPulse() {
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-5">
                   <PlaySquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-3">No Catfishing.</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <h3 className="text-lg md:text-xl font-black text-gray-900 dark:text-white mb-2">No Catfishing.</h3>
+                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
                   Stop wasting transport fare on fake pictures. Every listing requires an unedited raw video walkthrough. What you see is literally what you get.
                 </p>
                 <div className="mt-6 flex items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-bold cursor-pointer group-hover:translate-x-1 transition-transform">
@@ -78,8 +78,8 @@ export function WhyHostelPulse() {
                 <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center mb-5">
                   <Wallet className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 </div>
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-3">Zero Risk Refunds.</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <h3 className="text-lg md:text-xl font-black text-gray-900 dark:text-white mb-2">Zero Risk Refunds.</h3>
+                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
                   Agent didn't show up? Room looks different? Tap one button and your money bounces right back to your wallet. No arguments.
                 </p>
                 <div className="mt-6">

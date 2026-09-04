@@ -44,12 +44,14 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                         transition={{ duration: 0.8 }}
                         className="text-center z-10 max-w-4xl mx-auto w-full"
                     >
-                        <h1 className="text-4xl leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-4">
+                        <h1 className="text-3xl leading-[1.2] sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4 text-gray-900 dark:text-white">
                             Your Campus Life. <br className="hidden md:block" />
                             <span className="text-emerald-500">Handled.</span>
                         </h1>
                         
-                        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 font-medium max-w-2xl mx-auto mt-6">The only app you need to survive LAUTECH. Find verified hostels, book campus gigs, and never get scammed again.</p>
+                        <p className="text-base md:text-xl text-gray-600 dark:text-gray-400 font-medium max-w-2xl mx-auto mt-4">
+                            The only app you need to survive LAUTECH. Find verified hostels, book campus gigs, and never get scammed again.
+                        </p>
 
                         {/* Interactive Tabbed Search */}
                         <div className="max-w-2xl mx-auto w-full mt-20 md:mt-24">

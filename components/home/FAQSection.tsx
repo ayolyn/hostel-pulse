@@ -40,10 +40,10 @@ export function FAQSection() {
         
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-3xl sm:text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">
+          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">
             Common <span className="text-green-400">Questions</span>
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
+          <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
             Everything you need to know about renting safely on Hostel Pulse.
           </p>
         </div>
