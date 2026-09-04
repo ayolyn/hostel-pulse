@@ -1,4 +1,6 @@
-import React from 'react';
+const fs = require('fs');
+
+const content = `import React from 'react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 
 export default function HowItWorks() {
@@ -55,3 +57,5 @@ export default function HowItWorks() {
     </div>
   );
 }
+`;
+fs.writeFileSync('app/how-it-works/page.tsx', content, 'utf8');

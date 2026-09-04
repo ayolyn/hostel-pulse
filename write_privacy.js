@@ -1,4 +1,6 @@
-import React from 'react';
+const fs = require('fs');
+
+const content = `import React from 'react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 
 export default function PrivacyPolicy() {
@@ -30,3 +32,5 @@ export default function PrivacyPolicy() {
     </div>
   );
 }
+`;
+fs.writeFileSync('app/privacy/page.tsx', content, 'utf8');

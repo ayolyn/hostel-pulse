@@ -1,4 +1,6 @@
-import React from 'react';
+const fs = require('fs');
+
+const content = `import React from 'react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { MapPin, Mail, Phone } from 'lucide-react';
 
@@ -74,3 +76,5 @@ export default function Contact() {
     </div>
   );
 }
+`;
+fs.writeFileSync('app/contact/page.tsx', content, 'utf8');

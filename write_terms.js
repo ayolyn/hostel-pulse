@@ -1,4 +1,6 @@
-import React from 'react';
+const fs = require('fs');
+
+const content = `import React from 'react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 
 export default function TermsOfService() {
@@ -30,3 +32,5 @@ export default function TermsOfService() {
     </div>
   );
 }
+`;
+fs.writeFileSync('app/terms/page.tsx', content, 'utf8');

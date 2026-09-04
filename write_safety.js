@@ -1,4 +1,6 @@
-import React from 'react';
+const fs = require('fs');
+
+const content = `import React from 'react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { ShieldCheck, Lock, CheckCircle2, AlertTriangle } from 'lucide-react';
 
@@ -56,3 +58,5 @@ export default function Safety() {
     </div>
   );
 }
+`;
+fs.writeFileSync('app/safety/page.tsx', content, 'utf8');
