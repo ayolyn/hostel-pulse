@@ -1,5 +1,4 @@
 'use client';
-export const runtime = 'edge';
 
 import { StudentDashboardShell } from '@/components/layout/StudentDashboardShell';
 import { Suspense, useState } from 'react';
