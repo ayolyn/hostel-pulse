@@ -5,7 +5,7 @@ import { Facebook, Twitter, Instagram, Linkedin, ArrowRight } from "lucide-react
 
 export default function Footer() {
     return (
-        <footer className="bg-black text-gray-400 py-8 md:py-24 px-6 border-t border-white/5">
+        <footer className="bg-black text-gray-400 pt-16 pb-8 px-6 border-t border-white/5">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
 
                 {/* Brand Section */}
@@ -17,10 +17,10 @@ export default function Footer() {
                         The trust layer for Ogbomoso real estate. Secure escrow, verified listings, and physical inspections.
                     </p>
                     <div className="flex gap-4">
-                        <Link href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center hover:bg-[#BEF264]/10 hover:text-[#BEF264] transition-all border border-white/5">
+                        <Link href="https://twitter.com/hostelpulse" target="_blank" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center hover:bg-[#BEF264]/10 hover:text-[#BEF264] transition-all border border-white/5">
                             <Twitter className="w-5 h-5" />
                         </Link>
-                        <Link href="#" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center hover:bg-[#BEF264]/10 hover:text-[#BEF264] transition-all border border-white/5">
+                        <Link href="https://instagram.com/hostelpulse" target="_blank" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center hover:bg-[#BEF264]/10 hover:text-[#BEF264] transition-all border border-white/5">
                             <Instagram className="w-5 h-5" />
                         </Link>
                     </div>
@@ -67,13 +67,13 @@ export default function Footer() {
 
             </div>
 
-            <div className="max-w-7xl mx-auto mt-12 md:mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="max-w-7xl mx-auto mt-12 md:mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-gray-500">
                     &copy; {new Date().getFullYear()} HOSTELPULSE. Built for LAUTECH & Beyond.
                 </p>
                 <div className="flex gap-5 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                    <Link href="#" className="hover:text-white transition-all">Privacy</Link>
-                    <Link href="#" className="hover:text-white transition-all">Terms</Link>
+                    <Link href="/privacy" className="hover:text-white transition-all">Privacy</Link>
+                    <Link href="/terms" className="hover:text-white transition-all">Terms</Link>
                 </div>
             </div>
         </footer>
