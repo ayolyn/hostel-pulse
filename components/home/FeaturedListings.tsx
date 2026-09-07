@@ -13,7 +13,7 @@ const fallbackHostels = [
     title: "Premium Self-Con with Pop & Wardrobe",
     location: "Under-G, Ogbomoso",
     price: 180000,
-    main_image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop",
+    images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop"],
     bedrooms: 1,
     bathrooms: 1,
     verification_status: "Verified",
@@ -23,7 +23,7 @@ const fallbackHostels = [
     title: "Standard Room in a Gated Compound",
     location: "Adenike Area, Ogbomoso",
     price: 120000,
-    main_image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=800&auto=format&fit=crop",
+    images: ["https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=800&auto=format&fit=crop"],
     bedrooms: 1,
     bathrooms: 1,
     verification_status: "Verified",
@@ -33,7 +33,7 @@ const fallbackHostels = [
     title: "Luxury 2-Bedroom Flat",
     location: "Stadium Gate, Ogbomoso",
     price: 350000,
-    main_image: "https://images.unsplash.com/photo-1502672260266-1c1e52504437?q=80&w=800&auto=format&fit=crop",
+    images: ["https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=800&auto=format&fit=crop"],
     bedrooms: 2,
     bathrooms: 2,
     verification_status: "Verified",
@@ -50,7 +50,7 @@ export function FeaturedListings() {
       try {
         const { data, error } = await supabase
           .from('properties')
-          .select('id, title, location, price, main_image, bedrooms, bathrooms, verification_status')
+          .select('id, title, location, price, images, bedrooms, bathrooms, verification_status')
           .eq('listing_type', 'rent')
           .in('status', ['active', 'under_inspection'])
           .order('created_at', { ascending: false })
@@ -133,7 +133,7 @@ export function FeaturedListings() {
             >
               <div className="relative h-56 overflow-hidden shrink-0">
                 <Image
-                  src={hostel.main_image || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800"}
+                  src={(hostel.images && hostel.images[0]) || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800"}
                   alt={hostel.title || "Hostel Room"}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -144,7 +144,7 @@ export function FeaturedListings() {
                   </div>
                 )}
                 <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur text-white px-4 py-2 rounded-xl text-lg font-black">
-                  \u20A6{Number(hostel.price).toLocaleString()}<span className="text-sm font-normal text-gray-300">/yr</span>
+                  ?{Number(hostel.price).toLocaleString()}<span className="text-sm font-normal text-gray-300">/yr</span>
                 </div>
               </div>
               
