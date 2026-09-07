@@ -1,17 +1,10 @@
 const fs = require('fs');
-let file = fs.readFileSync('app/layout.tsx', 'utf8');
+let file = fs.readFileSync('app/LandingPageClient.tsx', 'utf8');
 
 file = file.replace(
-    `export const metadata: Metadata = {
-        default: 'HostelPulse | Premium Student Housing in Ogbomoso',
-    },`,
-    `export const metadata: Metadata = {
-    metadataBase: new URL("https://hostelpulse.app"),
-    title: {
-        template: '%s | HostelPulse',
-        default: 'HostelPulse | Premium Student Housing in Ogbomoso',
-    },`
+    "const [activeTab, setActiveTab] = useState<'rent' | 'gig' | 'market' | 'roommate'>('rent');| 'gig'>('rent');",
+    "const [activeTab, setActiveTab] = useState<'rent' | 'gig' | 'market' | 'roommate'>('rent');"
 );
 
-fs.writeFileSync('app/layout.tsx', file, 'utf8');
-console.log('Fixed metadata syntax error');
+fs.writeFileSync('app/LandingPageClient.tsx', file, 'utf8');
+console.log('Fixed syntax error');

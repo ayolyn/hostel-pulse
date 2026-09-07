@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Zap, Search, ChevronRight, MapPin, ShieldCheck, Edit3, UserPlus, PhoneCall, CheckCircle } from 'lucide-react';
+import { Home, Zap, Search, ChevronRight, MapPin, ShieldCheck, Edit3, UserPlus, PhoneCall, CheckCircle, Store, Users } from 'lucide-react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { WhyHostelPulse } from '@/components/home/WhyHostelPulse';
 import { FeaturedListings } from '@/components/home/FeaturedListings';
@@ -12,12 +12,14 @@ import { useRouter } from 'next/navigation';
 
 export default function LandingPageClient({ latestProperties }: { latestProperties: any[] }) {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'rent' | 'gig'>('rent');
+    const [activeTab, setActiveTab] = useState<'rent' | 'gig' | 'market' | 'roommate'>('rent');
     const [searchQuery, setSearchQuery] = useState("");
 
     const handleSearch = () => {
         if (activeTab === "rent") router.push('/rent?q=' + searchQuery);
-        else router.push('/services?q=' + searchQuery);
+        else if (activeTab === "gig") router.push('/services?q=' + searchQuery);
+        else if (activeTab === "market") router.push('/market?q=' + searchQuery);
+        else if (activeTab === "roommate") router.push('/roommates?q=' + searchQuery);
     };
 
     return (
@@ -95,18 +97,30 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                             {/* Redesigned Search Component */}
                             <div className="w-full max-w-xl mx-auto px-4 md:px-0">
                                 {/* External Tabs */}
-                                <div className="flex items-end gap-2 ml-4">
+                                <div className="flex items-end gap-1.5 ml-4 overflow-x-auto no-scrollbar pr-4">
                                     <button
                                         onClick={() => setActiveTab('rent')}
-                                        className={"flex items-center gap-2 px-6 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'rent' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
+                                        className={"flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'rent' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
                                     >
                                         <Home className="w-4 h-4" /> Rent
                                     </button>
                                     <button
                                         onClick={() => setActiveTab('gig')}
-                                        className={"flex items-center gap-2 px-6 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'gig' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
+                                        className={"flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'gig' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
                                     >
                                         <Zap className="w-4 h-4" /> Gig
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('market')}
+                                        className={"flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'market' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
+                                    >
+                                        <Store className="w-4 h-4" /> Market
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('roommate')}
+                                        className={"flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'roommate' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
+                                    >
+                                        <Users className="w-4 h-4" /> Roommate
                                     </button>
                                 </div>
 
@@ -119,8 +133,13 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                            className="w-full bg-transparent text-gray-900 dark:text-white placeholder-gray-400 font-bold text-lg focus:outline-none"
-                                            placeholder={activeTab === 'rent' ? "Monthly/Yearly � Search Under-G..." : "What gig do you need?"}
+                                            className="w-full bg-transparent text-gray-900 dark:text-white placeholder-gray-400 font-bold text-lg md:text-xl focus:outline-none"
+                                            placeholder={
+                                                activeTab === 'rent' ? "Monthly/Yearly � Search Under-G..." : 
+                                                activeTab === 'gig' ? "Search for laundry, design, etc..." :
+                                                activeTab === 'market' ? "Search phones, laptops, books..." :
+                                                "Find your ideal roommate..."
+                                            }
                                         />
                                     </div>
                                     <button
@@ -132,7 +151,11 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                                 </div>
                                 
                                 <div className="mt-4 text-center md:text-left md:ml-4 text-sm font-medium text-gray-500 dark:text-gray-400">
-                                    Popular: {activeTab === 'rent' ? <span className="text-gray-900 dark:text-white font-bold">Under-G Self-con, Stadium Shops</span> : <span className="text-gray-900 dark:text-white font-bold">Laundry, Web Design</span>}
+                                    Popular: 
+                                    {activeTab === 'rent' && <span className="text-gray-900 dark:text-white font-bold ml-1">Under-G Self-con, Stadium Shops</span>}
+                                    {activeTab === 'gig' && <span className="text-gray-900 dark:text-white font-bold ml-1">Laundry, Web Design</span>}
+                                    {activeTab === 'market' && <span className="text-gray-900 dark:text-white font-bold ml-1">iPhone 13, Generators</span>}
+                                    {activeTab === 'roommate' && <span className="text-gray-900 dark:text-white font-bold ml-1">Adenike Area, Male Only</span>}
                                 </div>
                             </div>
                         </div>
