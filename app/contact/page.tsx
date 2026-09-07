@@ -34,7 +34,7 @@ export default function Contact() {
                 <Mail className="w-6 h-6 text-emerald-500 mr-4 flex-shrink-0" />
                 <div>
                   <h3 className="font-medium text-gray-900 dark:text-white">Email Us</h3>
-                  <p className="text-gray-500 dark:text-gray-400">support@hostelpulse.app</p>
+                  <p className="text-gray-500 dark:text-gray-400">info@hostelpulse.app</p>
                 </div>
               </div>
               
@@ -42,7 +42,7 @@ export default function Contact() {
                 <Phone className="w-6 h-6 text-emerald-500 mr-4 flex-shrink-0" />
                 <div>
                   <h3 className="font-medium text-gray-900 dark:text-white">Call/WhatsApp</h3>
-                  <p className="text-gray-500 dark:text-gray-400">+234 (0) 900 000 0000</p>
+                  <p className="text-gray-500 dark:text-gray-400">+2348101488169</p>
                 </div>
               </div>
             </div>
