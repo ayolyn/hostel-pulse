@@ -1,7 +1,8 @@
 'use client';
 export const runtime = 'edge';
 
-import { StudentDashboardShell } from '@/components/layout/StudentDashboardShell';
+import { PublicHeader } from '@/components/layout/PublicHeader';
+import Footer from '@/components/layout/Footer';
 import { RoommateDiscovery } from '@/components/roommates/RoommateDiscovery';
 import { PostRoommateRequest } from '@/components/roommates/PostRoommateRequest';
 import { Users, Plus, X } from 'lucide-react';
@@ -27,7 +28,9 @@ export default function RoommatesPage() {
 
     return (
         <Suspense fallback={<div className="p-5 text-center text-gray-500">Loading Roommates...</div>}>
-            <StudentDashboardShell>
+            <div className="flex flex-col min-h-screen bg-gray-50/50 dark:bg-black">
+            <PublicHeader />
+            <main className="pt-32 px-6 max-w-7xl mx-auto w-full flex-grow pb-20">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
                 <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] mb-1">Community match</p>
@@ -65,7 +68,9 @@ export default function RoommatesPage() {
             ) : (
                 <RoommateDiscovery />
             )}
-        </StudentDashboardShell>
+                    </main>
+            <Footer />
+        </div>
         </Suspense>
     );
 }
