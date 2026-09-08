@@ -50,17 +50,41 @@ import Script from "next/script";
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": "HostelPulse",
-  "image": "https://hostelpulse.app/og.png",
-  "description": "Premium Student Housing and Campus Services in Ogbomoso.",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Ogbomoso",
-    "addressRegion": "Oyo State",
-    "addressCountry": "NG"
-  },
-  "url": "https://hostelpulse.app"
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://hostelpulse.app/#website",
+      "url": "https://hostelpulse.app/",
+      "name": "HostelPulse",
+      "description": "A web platform and marketplace for student housing, roommate matching, and campus commerce."
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://hostelpulse.app/#organization",
+      "legalName": "HostelPulse Technologies Ltd",
+      "name": "HostelPulse",
+      "url": "https://hostelpulse.app/",
+      "logo": "https://hostelpulse.app/logo-icon.png", 
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "info@hostelpulse.app",
+        "telephone": "+2348101488169",
+        "contactType": "customer support"
+      },
+      "sameAs": [
+        "https://twitter.com/hostelpulse",
+        "https://instagram.com/hostelpulse"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "HostelPulse",
+      "operatingSystem": "Web browser",
+      "applicationCategory": "LifestyleApplication",
+      "url": "https://hostelpulse.app/",
+      "description": "Digital platform helping students find accommodation, match with roommates, and engage in campus commerce."
+    }
+  ]
 };
 
 export default function RootLayout({
