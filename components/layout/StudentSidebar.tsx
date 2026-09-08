@@ -39,7 +39,7 @@ interface StudentSidebarProps {
     onRetractToggle?: () => void;
 }
 
-import { Settings } from 'lucide-react';
+import { Settings, User } from 'lucide-react';
 
 const mainNavItems = [
     { name: 'Dashboard', icon: Home, path: '/dashboard/student' },
@@ -55,7 +55,7 @@ const bottomNavItems = [
     { name: 'Wallet', icon: Wallet, path: '/dashboard/student?tab=wallet' },
     { name: 'Saved', icon: Heart, path: '/dashboard/student?tab=saved' },
     { name: 'Support', icon: HelpCircle, path: '/dashboard/student?tab=support' },
-    { name: 'Settings', icon: Settings, path: '/dashboard/student?tab=profile' },
+    { name: 'Profile', icon: User, path: '/dashboard/student?tab=profile' },
 ];
 
 export function StudentSidebar({ isOpen, isRetracted, onClose, onRetractToggle }: StudentSidebarProps) {
