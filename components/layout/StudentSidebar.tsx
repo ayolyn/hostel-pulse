@@ -39,7 +39,7 @@ interface StudentSidebarProps {
     onRetractToggle?: () => void;
 }
 
-import { Settings, User } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 const mainNavItems = [
     { name: 'Dashboard', icon: Home, path: '/dashboard/student' },
