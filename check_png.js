@@ -1,6 +1,13 @@
 const fs = require('fs');
-const buffer = Buffer.alloc(8);
-const fd = fs.openSync('public/logo-icon.png', 'r');
-fs.readSync(fd, buffer, 0, 8, 0);
-fs.closeSync(fd);
-console.log(buffer.toString('hex'));
+
+function getPngDimensions(filePath) {
+    const buffer = fs.readFileSync(filePath);
+    if (buffer.toString('ascii', 1, 4) !== 'PNG') {
+        throw new Error('Not a valid PNG file');
+    }
+    const width = buffer.readUInt32BE(16);
+    const height = buffer.readUInt32BE(20);
+    console.log(`Width: ${width}, Height: ${height}`);
+}
+
+getPngDimensions('public/logo-icon.png');

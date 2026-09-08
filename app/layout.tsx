@@ -1,3 +1,4 @@
+import { GlobalSupportWidget } from "@/components/messages/GlobalSupportWidget";
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
@@ -130,6 +131,7 @@ export default function RootLayout({
                                     <main>
                                         {children}
                                     </main>
+                                    <GlobalSupportWidget />
                                     <ConditionalFooter />
                                 </SavedProvider>
                             </PortalProvider>

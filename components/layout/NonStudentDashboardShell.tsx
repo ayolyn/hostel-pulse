@@ -7,7 +7,6 @@ import { Menu } from 'lucide-react';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
-import { GlobalSupportWidget } from '../messages/GlobalSupportWidget';
 
 export function NonStudentDashboardShell({ children }: { children: React.ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -31,8 +30,6 @@ export function NonStudentDashboardShell({ children }: { children: React.ReactNo
                         onClick={() => setSidebarOpen(false)} 
                     />
                 )}
-
-                <GlobalSupportWidget />
 
             {/* Main Content Area */}
             <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${isRetracted ? 'lg:pl-24' : 'lg:pl-72'}`}>

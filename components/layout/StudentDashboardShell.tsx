@@ -7,7 +7,6 @@ import { usePortal } from '@/components/auth/PortalGuard';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
-import { GlobalSupportWidget } from '../messages/GlobalSupportWidget';
 
 export function StudentDashboardShell({
     children
@@ -62,8 +61,6 @@ export function StudentDashboardShell({
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
-            
-            <GlobalSupportWidget />
         </div>
     );
 }

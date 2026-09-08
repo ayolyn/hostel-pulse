@@ -7,7 +7,6 @@ import { Menu } from 'lucide-react';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
-import { GlobalSupportWidget } from '../messages/GlobalSupportWidget';
 
 export function LandlordDashboardShell({
     children,
@@ -64,8 +63,6 @@ export function LandlordDashboardShell({
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
-            
-            <GlobalSupportWidget />
         </div>
     );
 }

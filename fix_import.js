@@ -1,10 +1,9 @@
 const fs = require('fs');
-let file = fs.readFileSync('components/layout/PublicHeader.tsx', 'utf8');
-
-file = file.replace(
-    `import { Menu, X } from 'lucide-react';`,
-    `import { Menu, X, ChevronRight } from 'lucide-react';`
-);
-
-fs.writeFileSync('components/layout/PublicHeader.tsx', file, 'utf8');
-console.log('Added ChevronRight');
+let file = fs.readFileSync('app/layout.tsx', 'utf8');
+if (!file.includes('import { GlobalSupportWidget }')) {
+    file = file.replace(
+        /import \{ Toaster \} from 'react-hot-toast';\n/,
+        "import { Toaster } from 'react-hot-toast';\nimport { GlobalSupportWidget } from \"@/components/messages/GlobalSupportWidget\";\n"
+    );
+    fs.writeFileSync('app/layout.tsx', file, 'utf8');
+}
