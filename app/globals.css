@@ -157,4 +157,8 @@
         70%  { transform: scale(1); }
         100% { transform: scale(1); }
     }
-}
+}@font-face {
+  font-family: 'NairaFallback';
+  src: local('Arial'), local('Helvetica'), local('sans-serif');
+  unicode-range: U+20A6;
+}

@@ -58,7 +58,7 @@ const config: Config = {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				sans: ['var(--font-outfit)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+				sans: ['NairaFallback', 'var(--font-outfit)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
 			}
 		}
 	},

@@ -260,8 +260,8 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                         priceLabel={property.price_label}
                         listingType={property.listing_type}
                         landlordId={property.agent_id || property.landlord_id}
-                        landlord={property.landlord}
-                        agent={property.agent}
+                        landlord={Array.isArray(property.landlord) ? property.landlord[0] : property.landlord}
+                        agent={Array.isArray(property.agent) ? property.agent[0] : property.agent}
                     />
                 </div>
             </main>
