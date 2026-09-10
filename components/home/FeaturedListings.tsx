@@ -52,7 +52,7 @@ export function FeaturedListings() {
           .from('properties')
           .select('id, title, location, price, images, bedrooms, bathrooms, verification_status')
           .eq('listing_type', 'rent')
-          .in('status', ['active', 'under_inspection'])
+          
           .order('created_at', { ascending: false })
           .limit(3);
 
@@ -167,7 +167,7 @@ export function FeaturedListings() {
                   </div>
                 </div>
 
-                <Link href={String(hostel.id).startsWith('mock') ? '/rent' : ('/rent/' + hostel.id)} className="block w-full py-3 text-center bg-gray-100 dark:bg-white/5 hover:bg-[#BEF264] hover:text-black dark:hover:bg-[#BEF264] text-gray-900 dark:text-white dark:hover:text-black rounded-xl font-bold transition-colors">
+                <Link href={String(hostel.id).startsWith('mock') ? '/rent' : ('/property/' + hostel.id)} className="block w-full py-3 text-center bg-gray-100 dark:bg-white/5 hover:bg-[#BEF264] hover:text-black dark:hover:bg-[#BEF264] text-gray-900 dark:text-white dark:hover:text-black rounded-xl font-bold transition-colors">
                   View Details
                 </Link>
               </div>
