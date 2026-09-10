@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/providers/AuthProvider';
 import Link from 'next/link';
 import InspectionModal from '@/components/ui/InspectionModal';
-import { Heart, MessageCircle, Phone, ExternalLink, PencilLine, Building2 } from 'lucide-react';
+import { Heart, MessageCircle, Phone, ExternalLink, PencilLine, Building2, Share2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
 import { useFlutterwave } from '@/hooks/useFlutterwave';
@@ -116,6 +116,19 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
         }
         setSavingStatus(false);
         router.refresh();
+    };
+
+    
+    const handleShare = async () => {
+        try {
+            await navigator.share({
+                title: propertyName,
+                text: 'Check out this property on HostelPulse',
+                url: window.location.href,
+            });
+        } catch (err) {
+            console.log('Error sharing', err);
+        }
     };
 
     const sendMessage = async () => {
@@ -308,6 +321,13 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                     >
                         <Heart className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`} />
                     </button>
+                    <button
+                        onClick={handleShare}
+                        className="w-14 items-center justify-center flex border-2 border-gray-100 rounded-2xl transition-all bg-white text-gray-400 hover:border-gray-300 hover:text-gray-900"
+                    >
+                        <Share2 className="w-5 h-5" />
+                    </button>
+
                 </div>
 
                 {isOwner && (

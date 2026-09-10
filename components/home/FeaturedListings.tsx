@@ -144,7 +144,7 @@ export function FeaturedListings() {
                   </div>
                 )}
                 <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur text-white px-4 py-2 rounded-xl text-lg font-black">
-                  ?{Number(hostel.price).toLocaleString()}<span className="text-sm font-normal text-gray-300">/yr</span>
+                  {"\u20A6"}{Number(hostel.price).toLocaleString()}<span className="text-sm font-normal text-gray-300">/yr</span>
                 </div>
               </div>
               

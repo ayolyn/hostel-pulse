@@ -17,8 +17,12 @@ export const metadata: Metadata = {
         default: 'HostelPulse | Premium Student Housing in Ogbomoso',
     },
     description: "The most secure platform to find, inspect, and safely pay for verified student housing and apartments around LAUTECH, Ogbomoso.",
+    icons: {
+        icon: '/favicon.svg',
+        apple: '/favicon.svg'
+    },
     openGraph: {
-        title: 'HostelPulse — Premium Student Housing',
+        title: 'HostelPulse � Premium Student Housing',
         description: 'Find your perfect student home securely.',
         url: 'https://hostelpulse.app',
         siteName: 'HostelPulse',
@@ -32,7 +36,11 @@ export const metadata: Metadata = {
         locale: 'en_NG',
         type: 'website',
     },
-    
+    twitter: {
+        card: 'summary_large_image',
+        title: 'HostelPulse',
+        description: 'Premium Student Housing & Roommate Matching',
+    }
 };
 
 import QueryProvider from "@/components/providers/QueryProvider";

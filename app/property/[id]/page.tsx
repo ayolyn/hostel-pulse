@@ -78,10 +78,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                 <Link href="/rent" className="p-2 rounded-full hover:bg-gray-100">
                     <ArrowLeft className="w-5 h-5 text-gray-700" />
                 </Link>
-                <div className="flex gap-2">
-                    <button className="p-2 rounded-full hover:bg-gray-100"><Share2 className="w-5 h-5 text-gray-700" /></button>
-                    <button className="p-2 rounded-full hover:bg-gray-100"><Heart className="w-5 h-5 text-gray-700" /></button>
-                </div>
+                
             </div>
 
             <main className="max-w-7xl mx-auto md:p-6 md:pt-28" id="top">
@@ -89,7 +86,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                     {/* Desktop Gallery */}
                     <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-4 h-[500px] rounded-3xl overflow-hidden">
                         <div className="col-span-2 row-span-2 relative cursor-pointer hover:opacity-95 transition-opacity bg-black">
-                            {property.video_url ? (
+                            {(property.video_url && property.video_url.trim().length > 5 && property.video_url !== "null") ? (
                                 <video src={property.video_url} autoPlay muted loop playsInline controls className="w-full h-full object-cover" />
                             ) : (
                                 <Image src={images[0]} alt="Main" fill className="object-cover" priority />
@@ -114,7 +111,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
 
                     {/* Mobile Slider Placeholder */}
                     <div className="md:hidden relative h-[350px] w-full bg-gray-100">
-                        {property.video_url ? (
+                        {(property.video_url && property.video_url.trim().length > 5 && property.video_url !== "null") ? (
                             <video src={property.video_url} autoPlay muted loop playsInline controls className="w-full h-full object-cover" />
                         ) : (
                             <Image src={images[0]} alt="Main" fill className="object-cover" priority />
@@ -125,14 +122,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                     </div>
 
                     {/* Desktop Actions */}
-                    <div className="hidden md:flex absolute top-4 right-4 gap-3">
-                        <button className="bg-white p-2.5 rounded-full shadow-md text-gray-700 hover:text-gray-900 transition-colors hover:scale-105 active:scale-95">
-                            <Share2 className="w-5 h-5" />
-                        </button>
-                        <button className="bg-white p-2.5 rounded-full shadow-md text-gray-700 hover:text-red-500 transition-colors hover:scale-105 active:scale-95">
-                            <Heart className="w-5 h-5" />
-                        </button>
-                    </div>
+                    
                 </section>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-6 md:px-0">
