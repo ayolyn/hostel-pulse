@@ -13,7 +13,7 @@ interface PropertyProps {
     title: string;
     location: string;
     price: string;
-    rating: number;
+    rating?: number;
     verified?: boolean;
     priceLabel?: string;
     id?: string;
@@ -24,7 +24,7 @@ export default function PropertyCard({
     title,
     location,
     price,
-    rating,
+    rating = 0,
     verified = false,
     priceLabel = "Yearly Rent",
     id
