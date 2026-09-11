@@ -200,14 +200,14 @@ function StudentDashboardContent() {
 
             // Upload image
             const { error: uploadError } = await supabase.storage
-                .from('market-images') 
+                .from('avatars') 
                 .upload(filePath, file);
 
             if (uploadError) throw uploadError;
 
             // Get public URL
             const { data: { publicUrl } } = supabase.storage
-                .from('market-images')
+                .from('avatars')
                 .getPublicUrl(filePath);
 
             // Update student_accounts
@@ -246,7 +246,7 @@ function StudentDashboardContent() {
                 onClose={() => setSelectedInspectionToPay(null)}
                 inspectionId={selectedInspectionToPay?.id || ''}
                 propertyName={selectedInspectionToPay?.title || ''}
-                inspectionFee={2000}
+                inspectionFee={selectedInspectionToPay?.inspection_fee ?? 2000}
                 walletBalance={Number(accountData?.wallet_balance || 0)}
                 user={currentUser}
                 onSuccess={() => {
@@ -400,7 +400,7 @@ function StudentDashboardContent() {
                                                 title={p.title}
                                                 location={p.location}
                                                 price={`₦${Number(p.price).toLocaleString()}`}
-                                                rating={4.8}
+                                                
                                                 image={p.images?.[0] ?? 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5'}
                                                 verified={true}
                                                 priceLabel="Yearly Rent"
@@ -475,7 +475,7 @@ function StudentDashboardContent() {
                                     console.error("Scanner Error:", err);
                                 } finally {
                                     setShowScanner(false);
-                                    window.location.reload(); 
+                                    setRefreshCount(r => r + 1); 
                                 }
                             }}
                             onClose={() => setShowScanner(false)}
@@ -490,7 +490,7 @@ function StudentDashboardContent() {
                             buyerId={reviewItem.buyerId}
                             onComplete={() => {
                                 setReviewItem(null);
-                                window.location.reload();
+                                setRefreshCount(r => r + 1);
                             }}
                             onClose={() => setReviewItem(null)}
                         />

@@ -41,7 +41,7 @@ function SearchContent() {
             let query = supabase
                 .from('properties')
                 .select('*')
-                .eq('status', 'active');
+                .eq('is_active', true);
 
             // Apply filters
             if (q) {

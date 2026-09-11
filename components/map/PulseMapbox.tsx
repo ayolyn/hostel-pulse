@@ -128,7 +128,7 @@ export default function PulseMapbox({
             const { data: propsData } = await supabase
                 .from('properties')
                 .select('*')
-                .eq('status', 'active');
+                .eq('is_active', true);
             if (propsData) setLiveProperties(propsData);
 
             const { data: roomiesData } = await supabase

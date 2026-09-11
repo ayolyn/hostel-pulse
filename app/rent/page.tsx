@@ -61,14 +61,14 @@ function RentContent() {
                 .from('properties')
                 .select('*')
                 .eq('listing_type', 'rent')
-                .in('status', ['active', 'under_inspection']);
+                .eq('is_active', true);
 
             // Apply filters
             if (q) {
                 const normalizedQ = q.trim().replace(/[\s-]+/g, '%');
                 query = query.or(`title.ilike.%${normalizedQ}%,location.ilike.%${normalizedQ}%,description.ilike.%${normalizedQ}%`);
             }
-            if (type && type !== 'All Types') query = query.ilike('title', `%${type}%`);
+            if (type && type !== 'All Types') query = query.ilike('category', `%${type}%`);
             if (category) query = query.eq('category', category);
             if (minPrice) query = query.gte('price', Number(minPrice));
             if (maxPrice) query = query.lte('price', Number(maxPrice));
@@ -140,7 +140,7 @@ export default function RentPage() {
                 <Suspense fallback={<div>Loading...</div>}>
                     <RentContent />
                 </Suspense>
-            </main>
+            <Footer />\n        </main>
             
         </div>
     );

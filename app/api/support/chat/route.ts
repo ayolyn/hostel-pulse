@@ -2,19 +2,31 @@ export const runtime = 'edge';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
+import { createClient as createServerClient } from '@/lib/supabase/server';
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function POST(req: Request) {
     try {
+        const authClient = await createServerClient();
+        const { data: { user } } = await authClient.auth.getUser();
+
+        if (!user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const { messages } = await req.json();
 
         if (!messages || !Array.isArray(messages)) {
             return NextResponse.json({ error: "Missing messages array" }, { status: 400 });
         }
 
-        const formattedMessages = messages.map((msg: any) => ({
+        // Limit to last 20 messages to prevent huge context windows
+        const recentMessages = messages.slice(-20);
+
+        const formattedMessages = recentMessages.map((msg: any) => ({
             role: msg.sender_role === 'user' ? 'user' : 'assistant',
             content: msg.content
         }));

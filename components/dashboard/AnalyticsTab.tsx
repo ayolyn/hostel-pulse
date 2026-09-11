@@ -26,7 +26,7 @@ export default function AnalyticsTab({ userId }: { userId: string }) {
                 const { data: properties, error: propErr } = await supabase
                     .from('properties')
                     .select('id')
-                    .eq('landlord_id', userId);
+                    .or(`landlord_id.eq.${userId},agent_id.eq.${userId},owner_id.eq.${userId}`);
                 
                 if (propErr) throw propErr;
 

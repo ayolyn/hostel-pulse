@@ -48,6 +48,7 @@ const mainNavItems = [
     { name: 'Roommates', icon: Users, path: '/roommates' },
     { name: 'Campus Market', icon: ShoppingBag, path: '/market' },
     { name: 'Campus Gigs', icon: Wrench, path: '/services' },
+    { name: 'Inspections', icon: Calendar, path: '/dashboard/student?tab=inspections' },
     { name: 'Messages', icon: MessageCircle, path: '/messages', badge: 'unread' },
 ];
 

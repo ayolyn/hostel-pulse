@@ -40,13 +40,18 @@ function AuthPageContent() {
 
     const handleGoogleSignIn = async () => {
         setLoading(true);
-        const supabase = createClient();
-        await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
-            },
-        });
+        try {
+            const supabase = createClient();
+            await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback`,
+                },
+            });
+        } catch (error) {
+            console.error(error);
+            setLoading(false);
+        }
     };
 
     const handleForgotPassword = async () => {

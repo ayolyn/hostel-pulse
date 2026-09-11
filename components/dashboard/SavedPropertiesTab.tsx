@@ -75,7 +75,7 @@ export function SavedPropertiesTab() {
                                     title={p.title}
                                     location={p.location}
                                     price={`₦${Number(p.price).toLocaleString()}`}
-                                    rating={4.8}
+                                    
                                     image={p.images?.[0] || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=200'}
                                 />
                             </Link>

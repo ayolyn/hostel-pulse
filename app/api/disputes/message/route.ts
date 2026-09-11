@@ -6,6 +6,15 @@ import { createClient as createAdminClient } from '@supabase/supabase-js';
 export async function POST(req: Request) {
     try {
         const { escrowId, message } = await req.json();
+
+        if (!escrowId) return NextResponse.json({ error: 'escrowId is required' }, { status: 400 });
+        if (!message || typeof message !== 'string' || message.trim().length === 0) {
+            return NextResponse.json({ error: 'message is required and cannot be empty' }, { status: 400 });
+        }
+        if (message.length > 5000) {
+            return NextResponse.json({ error: 'message is too long (max 5000 characters)' }, { status: 400 });
+        }
+
         const supabase = await createClient();
 
         const supabaseAdmin = createAdminClient(

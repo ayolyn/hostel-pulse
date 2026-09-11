@@ -81,14 +81,16 @@ export async function POST(req: Request) {
 
         // 7. Fire System Notifications
         // Notify Seller
-        const { error: sellerNotifError } = await supabaseAdmin.from('notifications').insert({
-            user_id: tx.payee_id,
-            title: 'Order Cancelled & Refunded',
-            message: 'The buyer cancelled the transaction. Your item has been restocked and the funds were refunded.',
-            type: 'system',
-            is_read: false
-        });
-        if (sellerNotifError) console.error('Notification Error:', sellerNotifError);
+        if (tx.payee_id) {
+            const { error: sellerNotifError } = await supabaseAdmin.from('notifications').insert({
+                user_id: tx.payee_id,
+                title: 'Order Cancelled & Refunded',
+                message: 'The buyer cancelled the transaction. Your item has been restocked and the funds were refunded.',
+                type: 'system',
+                is_read: false
+            });
+            if (sellerNotifError) console.error('Notification Error:', sellerNotifError);
+        }
 
         // Notify Buyer
         const { error: buyerNotifError } = await supabaseAdmin.from('notifications').insert({

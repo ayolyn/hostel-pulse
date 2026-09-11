@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
         const supabase = createClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!,
             { auth: { persistSession: false } }
         );
 
@@ -66,13 +66,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (status === "SUCCESS") {
-            // Update transaction status
-            await supabase
-                .from("wallet_transactions")
-                .update({ status: "SUCCESS" })
-                .eq("reference", reference);
-
-            // Increment wallet balance
+            // Increment wallet balance first
             // Assuming wallet_balance is in profiles or users table (we used profiles in this codebase)
             const { data: profile, error: profileError } = await supabase
                 .from("profiles")
@@ -80,15 +74,30 @@ export async function POST(req: NextRequest) {
                 .eq("id", transaction.user_id)
                 .single();
 
-            if (!profileError && profile) {
-                const currentBalance = Number(profile.wallet_balance || 0);
-                const newBalance = currentBalance + Number(transaction.amount);
-
-                await supabase
-                    .from("profiles")
-                    .update({ wallet_balance: newBalance })
-                    .eq("id", transaction.user_id);
+            if (profileError || !profile) {
+                console.error("Failed to fetch profile for wallet credit:", profileError);
+                return NextResponse.json({ error: "Profile fetch failed" }, { status: 500 });
             }
+
+            const currentBalance = Number(profile.wallet_balance || 0);
+            const newBalance = currentBalance + Number(transaction.amount);
+
+            // Update balance and transaction status atomically via multiple requests, if balance fails transaction status isn't updated. Ideally an RPC.
+            const { error: updateError } = await supabase
+                .from("profiles")
+                .update({ wallet_balance: newBalance })
+                .eq("id", transaction.user_id);
+
+            if (updateError) {
+                console.error("Failed to update wallet balance:", updateError);
+                return NextResponse.json({ error: "Wallet update failed" }, { status: 500 });
+            }
+
+            // Update transaction status
+            await supabase
+                .from("wallet_transactions")
+                .update({ status: "SUCCESS" })
+                .eq("reference", reference);
         } else if (status === "FAIL" || status === "FAILED") {
             await supabase
                 .from("wallet_transactions")

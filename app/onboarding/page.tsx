@@ -60,24 +60,29 @@ export default function OnboardingPage() {
 
     useEffect(() => {
         const checkUser = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                router.push('/join');
-                return;
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    router.push('/join');
+                    return;
+                }
+
+                setUserId(user.id);
+                setUserEmail(user.email ?? '');
+
+                // Check if already onboarded
+                const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', user.id).maybeSingle();
+                if (roleData?.role) {
+                    router.push('/dashboard');
+                    return;
+                }
+
+                setFullName(user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? '');
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
             }
-
-            setUserId(user.id);
-            setUserEmail(user.email ?? '');
-
-            // Check if already onboarded
-            const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', user.id).single();
-            if (roleData?.role) {
-                router.push('/dashboard');
-                return;
-            }
-
-            setFullName(user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? '');
-            setLoading(false);
         };
         checkUser();
     }, [router, supabase]);

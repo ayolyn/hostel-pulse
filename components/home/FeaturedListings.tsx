@@ -53,7 +53,8 @@ export function FeaturedListings() {
           .select('id, title, location, price, images, bedrooms, bathrooms, verification_status')
           .eq('listing_type', 'rent')
           
-          .order('created_at', { ascending: false })
+          .eq('is_active', true)
+                .order('created_at', { ascending: false })
           .limit(3);
 
         if (error || !data || data.length === 0) {

@@ -273,7 +273,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                                 trackPropertyEvent(propertyId, 'lead');
                                 const waNumber = agent?.whatsapp_number || landlord?.whatsapp_number;
                                 if (waNumber) {
-                                    const cleanNum = waNumber.replace(/\D/g, '');
+                                    const cleanNum = waNumber?.replace(/\D/g, '');
                                     const message = encodeURIComponent(`Hi, I saw your listing for "${propertyName}" on HostelPulse. Is it still available? ${window.location.href}`);
                                     window.open(`https://wa.me/${cleanNum}?text=${message}`, '_blank');
                                 } else {
@@ -289,7 +289,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                                 trackPropertyEvent(propertyId, 'lead');
                                 const phoneNum = agent?.phone || landlord?.whatsapp_number || landlord?.phone_number;
                                 if (phoneNum) {
-                                    window.location.href = `tel:${phoneNum.replace(/\D/g, '')}`;
+                                    window.location.href = `tel:${phoneNum?.replace(/\D/g, '')}`;
                                 } else {
                                     toast.error('Contact phone number missing');
                                 }
@@ -332,7 +332,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
 
                 {isOwner && (
                     <button
-                        onClick={() => router.push(`/dashboard?tab=listing-studio&edit=${propertyId}`)}
+                        onClick={() => router.push(`/dashboard/landlord?tab=listings&edit=${propertyId}`)}
                         className="w-full border-2 border-[#BEF264] text-gray-900 font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#BEF264]/10 transition-transform active:scale-95 shadow-sm mb-3 flex items-center justify-center gap-2"
                     >
                         <PencilLine className="w-5 h-5" /> Edit My Listing

@@ -86,7 +86,7 @@ export default function SellerProfilePage() {
                 .from('market_listings')
                 .select('*')
                 .eq('seller_id', sellerId)
-                .eq('status', 'active');
+                .eq('is_active', true);
             
             if (listings) setItems(listings);
 

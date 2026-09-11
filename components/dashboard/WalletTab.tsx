@@ -186,7 +186,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                 availableBalance={availableBalance} 
                 escrowBalance={pendingEscrow} 
                 totalVolume={totalEarnings} 
-                role={typeof window !== 'undefined' && window.location.pathname.includes('student') ? 'buyer' : 'seller'}
+                role="seller"
                 onWithdraw={() => setShowWithdrawModal(true)}
                 onFund={() => setShowFundModal(true)}
             />

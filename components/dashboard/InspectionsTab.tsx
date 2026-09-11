@@ -170,7 +170,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
         if (newStatus === 'Cancelled' && item?.status === 'Confirmed') {
             const { error: refundError } = await supabase.rpc('increment_wallet_balance', {
                 payee_id_param: item.requester_id,
-                amount_param: 2000
+                amount_param: item.inspection_fee ?? 2000
             });
             if (refundError) {
                 toast.error('Failed to process refund. Cancellation aborted.');
@@ -214,7 +214,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
         if (!inspection.requester) return;
         const msg = encodeURIComponent(`Hello ${inspection.requester.full_name}, I am the agent for ${inspection.properties?.title}. I have accepted your inspection request for ${new Date(inspection.scheduled_at).toLocaleString()}!`);
         const phone = inspection.requester.whatsapp_number || inspection.requester.phone;
-        window.open(`https://wa.me/${phone.replace(/\D/g, '')}?text=${msg}`, '_blank');
+        window.open(`https://wa.me/${phone?.replace(/\D/g, '')}?text=${msg}`, '_blank');
     };
 
     if (loading) {

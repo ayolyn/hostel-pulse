@@ -66,7 +66,7 @@ function AgentDashboardContent() {
     useEffect(() => {
         async function loadData() {
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
+            if (!user) { router.push('/join'); return; }
 
             const [
                 { data: profile },
@@ -114,8 +114,9 @@ function AgentDashboardContent() {
         loadData();
     }, [supabase]);
 
+    const today = new Date().toDateString();
     const earnedToday = inspections
-        .filter(i => i.status === 'Completed')
+        .filter(i => i.status === 'Completed' && new Date(i.scheduled_at).toDateString() === today)
         .reduce((sum, i) => sum + (i.inspection_fee ?? 2000), 0);
 
     const renderOverview = () => (
@@ -194,7 +195,7 @@ function AgentDashboardContent() {
                 <div className="mb-10">
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#BEF264] mb-2">Agent HQ / {activeTab}</p>
                     <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
-                        {activeTab === 'overview' ? `Welcome, ${account?.full_name?.split(' ')[0]}` : activeTab}
+                        {activeTab === 'overview' ? (loading ? 'Welcome...' : `Welcome, ${account?.full_name?.split(' ')[0] || 'Agent'}`) : activeTab}
                     </h1>
                 </div>
 

@@ -35,19 +35,20 @@ export async function POST(req: Request) {
         }
 
         // 3. Update the transaction status to 'completed'
-        const { error: updateError } = await supabase
+        // 4. Update the transaction status to 'completed' using admin client to bypass RLS
+        const supabaseAdmin = createAdminClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
+        const { error: updateError } = await supabaseAdmin
             .from('escrow_transactions')
             .update({ status: 'completed' })
             .eq('id', tx.id);
 
         if (updateError) throw updateError;
 
-        // 4. Increment the payee's wallet balance using Service Role (Bypass RLS)
-        const supabaseAdmin = createAdminClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY!
-        );
-
+        // 5. Increment the payee's wallet balance
         const { error: fundError } = await supabaseAdmin.rpc('increment_wallet_balance', {
             payee_id_param: tx.payee_id,
             amount_param: tx.amount
@@ -66,10 +67,13 @@ export async function POST(req: Request) {
 
         // Also update the market listing status to sold
         if (tx.listing_id) {
-            await supabase
+            const { error: listingError } = await supabaseAdmin
                 .from('market_listings')
                 .update({ status: 'sold' })
                 .eq('id', tx.listing_id);
+            if (listingError) {
+                console.error('Failed to update listing status to sold:', listingError);
+            }
         }
 
         return NextResponse.json({ success: true });

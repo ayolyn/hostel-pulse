@@ -1,5 +1,6 @@
 export const runtime = 'edge';
 import { NextResponse } from 'next/server';
+import { createClient as createServerClient } from '@/lib/supabase/server';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseAdmin = createClient(
@@ -9,11 +10,15 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: Request) {
     try {
-        const { action, listing_id, user_id } = await request.json();
+        const { action, listing_id } = await request.json();
 
-        if (!user_id) {
+        const authClient = await createServerClient();
+        const { data: { user } } = await authClient.auth.getUser();
+
+        if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+        const user_id = user.id;
 
         // Query the user's wallet table
         const { data: walletData, error: walletError } = await supabaseAdmin

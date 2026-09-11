@@ -12,8 +12,11 @@ export async function GET(request: NextRequest) {
     // Basic Security: Require an Authorization header matching an expected CRON_SECRET or ADMIN_TOKEN
     const authHeader = request.headers.get('Authorization');
     
-    // Fallback secret for demo/development if environment var is not set
-    const expectedSecret = process.env.N8N_WEBHOOK_SECRET || 'HOSTELPULSE_secure_key_123';
+    const expectedSecret = process.env.N8N_WEBHOOK_SECRET;
+
+    if (!expectedSecret) {
+        return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
 
     if (authHeader !== `Bearer ${expectedSecret}`) {
         return NextResponse.json({ error: 'Unauthorized Access' }, { status: 401 });

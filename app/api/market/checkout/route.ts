@@ -8,6 +8,10 @@ import { sendNotificationEmail } from '@/lib/email/resend';
 export async function POST(req: Request) {
     try {
         const { listing_id, method = 'WALLET' } = await req.json();
+
+        if (!listing_id) {
+            return NextResponse.json({ error: 'listing_id is required' }, { status: 400 });
+        }
         const supabase = await createClient();
 
         const supabaseAdmin = createAdminClient(

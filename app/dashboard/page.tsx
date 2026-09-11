@@ -25,7 +25,7 @@ export default async function DashboardRoot() {
         redirect('/join');
     }
 
-    const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', user.id).single();
+    const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', user.id).maybeSingle();
 
     if (roleData?.role === 'super_admin') {
         redirect('/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c');

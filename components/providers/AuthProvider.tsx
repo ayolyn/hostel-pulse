@@ -20,7 +20,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const supabase = createClient();
+    const supabase = React.useMemo(() => createClient(), []);
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
     const [session, setSession] = useState<Session | null>(null);

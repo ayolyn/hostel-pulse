@@ -9,7 +9,12 @@ export async function GET(req: Request) {
         // Verify authorization if you are calling this via a cron service like Vercel Cron.
         // For security, you can check an authorization header matching a cron secret.
         const authHeader = req.headers.get('authorization');
-        if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        if (!process.env.CRON_SECRET) {
+            console.error("CRON_SECRET is not configured");
+            return new NextResponse('Server configuration error', { status: 500 });
+        }
+        
+        if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
             return new NextResponse('Unauthorized', { status: 401 });
         }
 

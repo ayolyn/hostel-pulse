@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
             const adminEmailMsg = `🚨 HOSTELPULSE Transaction Alert\n\nNew Escrow Payment:\nAmount: ₦${amount.toLocaleString()}\nStudent: ${customer.name} (${customer.email})\nProperty ID: ${meta.property_id}\nTx Ref: ${tx_ref}\n\nStatus: HELD`;
             
             await supabase.from('messages_queue').insert({
-                email: 'juliusayolyn148@gmail.com',
+                email: process.env.ADMIN_ALERT_EMAIL || 'info@hostelpulse.app',
                 message_body: adminEmailMsg,
                 status: 'pending'
             });

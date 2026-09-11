@@ -61,7 +61,7 @@ function BuyContent() {
                 .from('properties')
                 .select('*')
                 .eq('listing_type', 'buy')
-                .in('status', ['active', 'under_inspection']);
+                .eq('is_active', true);
 
             // Apply filters
             if (q) {

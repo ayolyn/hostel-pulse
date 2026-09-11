@@ -340,7 +340,10 @@ export async function processCustomOffer(offerId: string, amount: number, seller
                     return { error: 'Offer has expired' };
                 }
             }
-        } catch (e) {}
+        } catch (e) {
+            console.error('Error parsing offer payload:', e);
+            return { error: 'Failed to parse offer data' };
+        }
     }
 
     // 1. Fetch Buyer's wallet balance
