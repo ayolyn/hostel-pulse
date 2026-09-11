@@ -63,7 +63,7 @@ function StudentDashboardContent() {
     const [pendingTransactions, setPendingTransactions] = useState<any[]>([]);
     const [accountData, setAccountData] = useState<any>(null);
     const [currentUser, setCurrentUser] = useState<any>(null);
-    const [selectedInspectionToPay, setSelectedInspectionToPay] = useState<{ id: string; title: string } | null>(null);
+    const [selectedInspectionToPay, setSelectedInspectionToPay] = useState<{ id: string; title: string; inspection_fee?: number } | null>(null);
     const [selectedInspectionDetails, setSelectedInspectionDetails] = useState<any>(null);
     const [activeTab, setActiveTab] = useState('Overview');
     const [refreshCount, setRefreshCount] = useState(0);
