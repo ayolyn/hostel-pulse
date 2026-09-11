@@ -63,10 +63,10 @@ export function CampusMarket() {
             if (user) {
                 const { data: profile } = await supabase
                     .from('profiles')
-                    .select('student_id_url')
+                    .select('is_verified')
                     .eq('id', user.id)
                     .single();
-                setIsVerified(profile?.student_id_url !== null);
+                setIsVerified(profile?.is_verified === true);
             }
         }
         loadUser();
@@ -259,7 +259,7 @@ export function CampusMarket() {
             <div className="flex flex-col items-center justify-center p-20 bg-gray-50 dark:bg-neutral-900 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-white/10 text-center">
                 <Lock size={48} className="text-gray-300 dark:text-gray-600 mb-6 mx-auto" />
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Market Locked</h2>
-                <p className="text-gray-500 font-medium mb-8 max-w-sm">Upload your Student ID in the Profile section to unlock the Campus Market.</p>
+                <p className="text-gray-500 font-medium mb-8 max-w-sm">Your LAUTECH Student ID must be verified to access Campus Market. Upload your ID in the Profile section — our AI verifies it instantly.</p>
                 <button 
                     onClick={() => router.push('/dashboard/student?tab=profile')}
                     className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs px-4 py-3 rounded-2xl hover:scale-105 transition-all shadow-xl"

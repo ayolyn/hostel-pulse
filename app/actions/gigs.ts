@@ -26,14 +26,17 @@ export async function postGig(payload: {
         const { data: { user } } = await authClient.auth.getUser();
         if (!user) return { error: "Not authenticated" };
 
-        // 2. Fetch current wallet balance
+        // 2. Fetch profile (wallet balance + verification status)
         const { data: profile, error: profileError } = await adminClient
             .from("profiles")
-            .select("wallet_balance, contact_email")
+            .select("wallet_balance, contact_email, is_verified")
             .eq("id", user.id)
             .single();
 
-        if (profileError || !profile) return { error: "Failed to fetch wallet balance" };
+        if (profileError || !profile) return { error: "Failed to fetch profile" };
+
+        // 3. Block unverified users
+        if (!profile.is_verified) return { error: "Your student ID must be verified before you can post a gig. Go to your Profile tab to upload your LAUTECH ID card." };
 
         const currentBalance = Number(profile.wallet_balance || 0);
 
@@ -97,6 +100,14 @@ export async function claimGig(gigId: string) {
 
         const { data: { user } } = await authClient.auth.getUser();
         if (!user) return { error: "Not authenticated" };
+
+        // Check verification status before anything else
+        const { data: claimerProfile } = await adminClient
+            .from("profiles")
+            .select("is_verified")
+            .eq("id", user.id)
+            .single();
+        if (!claimerProfile?.is_verified) return { error: "Your student ID must be verified before you can claim a gig. Go to your Profile tab to upload your LAUTECH ID card." };
 
         const { data: gig } = await adminClient
             .from("student_services")
