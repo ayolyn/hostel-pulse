@@ -273,7 +273,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                                 trackPropertyEvent(propertyId, 'lead');
                                 const waNumber = agent?.whatsapp_number || landlord?.whatsapp_number;
                                 if (waNumber) {
-                                    const cleanNum = waNumber?.replace(/\D/g, '');
+                                    const cleanNum = waNumber?.replace(/\D/g, '').replace(/^0/, '234');
                                     const message = encodeURIComponent(`Hi, I saw your listing for "${propertyName}" on HostelPulse. Is it still available? ${window.location.href}`);
                                     window.open(`https://wa.me/${cleanNum}?text=${message}`, '_blank');
                                 } else {

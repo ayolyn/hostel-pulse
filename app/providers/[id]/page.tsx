@@ -195,7 +195,7 @@ export default async function ProviderProfilePage({ params }: { params: { id: st
                             <ProviderChatButton providerId={provider.id} />
                             
                             <a
-                                href={provider.whatsapp_number ? `https://wa.me/${provider.whatsapp_number.replace(/[^0-9]/g, '')}` : provider.phone ? `tel:${provider.phone}` : '#'}
+                                href={provider.whatsapp_number ? `https://wa.me/${provider.whatsapp_number.replace(/[^0-9]/g, '').replace(/^0/, '234')}` : provider.phone ? `tel:${provider.phone}` : '#'}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-full bg-white border border-gray-200 text-gray-900 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2 mt-3"

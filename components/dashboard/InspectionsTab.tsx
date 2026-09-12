@@ -200,7 +200,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                     );
                 }
                 if (item?.status === 'Confirmed') {
-                    toast.success('Inspection Cancelled & ₦2,000 Refunded to Student.');
+                    toast.success(`Inspection Cancelled & ₦${Number(item?.inspection_fee || 2000).toLocaleString()} Refunded to Student.`);
                 } else {
                     toast.success('Inspection Cancelled.');
                 }
@@ -214,7 +214,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
         if (!inspection.requester) return;
         const msg = encodeURIComponent(`Hello ${inspection.requester.full_name}, I am the agent for ${inspection.properties?.title}. I have accepted your inspection request for ${new Date(inspection.scheduled_at).toLocaleString()}!`);
         const phone = inspection.requester.whatsapp_number || inspection.requester.phone;
-        window.open(`https://wa.me/${phone?.replace(/\D/g, '')}?text=${msg}`, '_blank');
+        window.open(`https://wa.me/${phone?.replace(/\D/g, '').replace(/^0/, '234')}?text=${msg}`, '_blank');
     };
 
     if (loading) {
@@ -406,7 +406,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                             <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
                                 <div className="text-gray-500 uppercase tracking-widest text-[10px] font-black mb-1">Status & Fee</div>
                                 <div className="font-bold flex items-center justify-between text-gray-900 dark:text-white">
-                                    <span>₦2,000</span>
+                                    <span>₦{Number(selectedInspectionDetails.inspection_fee || 2000).toLocaleString()}</span>
                                     <span className="px-2 py-1 bg-gray-200 dark:bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-900 dark:text-white">
                                         {selectedInspectionDetails.status}
                                     </span>

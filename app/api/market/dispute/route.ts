@@ -87,7 +87,7 @@ export async function POST(req: Request) {
                     admin.user_id,
                     'Dispute Raised',
                     'A buyer has flagged this transaction for review.',
-                    `/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c/disputes/${transaction_id}`,
+                    `${process.env.NEXT_PUBLIC_ADMIN_PATH || '/admin'}/disputes/${transaction_id}`,
                     'dispute_opened'
                 );
             }

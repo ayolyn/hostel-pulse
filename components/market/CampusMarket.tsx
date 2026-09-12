@@ -445,18 +445,19 @@ export function CampusMarket() {
                                         </div>
                                         
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                            <Link 
-                                                href={`/messages/${item.seller_id}?room_id=${item.id}&item_id=${item.id}&item_title=${encodeURIComponent(item.title)}&item_price=${item.price}`}
+                                            <button
+                                                onClick={() => !isOwner && startItemChat(item)}
+                                                disabled={isOwner}
                                                 className={`py-3 rounded-xl font-black uppercase tracking-widest text-[8px] transition-all flex items-center justify-center gap-1 border
                                                     ${isOwner 
-                                                        ? 'bg-gray-50 dark:bg-white/5 text-gray-300 border-neutral-100 dark:border-white/5 pointer-events-none' 
-                                                        : 'bg-white dark:bg-neutral-900 text-black dark:text-white border-neutral-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'
+                                                        ? 'bg-gray-50 dark:bg-white/5 text-gray-300 border-neutral-100 dark:border-white/5 cursor-not-allowed' 
+                                                        : 'bg-white dark:bg-neutral-900 text-black dark:text-white border-neutral-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer'
                                                     }
                                                 `}
                                             >
                                                 <MessageCircle size={12} />
                                                 Contact
-                                            </Link>
+                                            </button>
                                             
                                             {isOwner ? null : (
                                                 <button 

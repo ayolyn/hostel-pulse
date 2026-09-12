@@ -180,7 +180,9 @@ export default function SellerProfilePage() {
                         </div>
                     </div>
 
-                    <button className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-10 py-3 rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-2xl hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-3">
+                    <button
+                        onClick={() => router.push(`/messages/${sellerId}`)}
+                        className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-10 py-3 rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-2xl hover:scale-[1.05] active:scale-95 transition-all flex items-center gap-3">
                         <MessageCircle size={20} /> CHAT WITH SELLER
                     </button>
                 </div>

@@ -254,7 +254,7 @@ export default function ProviderDirectoryPage() {
                                         </span>
                                     </button>
                                     <a
-                                        href={provider.whatsapp_number ? `https://wa.me/${provider.whatsapp_number.replace(/[^0-9]/g, '')}` : provider.phone ? `tel:${provider.phone}` : '#'}
+                                        href={provider.whatsapp_number ? `https://wa.me/${provider.whatsapp_number.replace(/[^0-9]/g, '').replace(/^0/, '234')}` : provider.phone ? `tel:${provider.phone}` : '#'}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="bg-[#BEF264]/10 text-black p-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-[#BEF264] transition-all"
