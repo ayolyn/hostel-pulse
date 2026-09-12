@@ -23,7 +23,6 @@ type Property = {
 };
 
 function SearchContent() {
-    const supabase = createClient();
     const searchParams = useSearchParams();
     
     const [properties, setProperties] = useState<Property[]>([]);
@@ -34,10 +33,13 @@ function SearchContent() {
     const minPrice = searchParams.get('minPrice') || '';
     const maxPrice = searchParams.get('maxPrice') || '';
     const bedrooms = searchParams.get('bedrooms') || '';
+    const zone = searchParams.get('zone') || '';
+    const amenity = searchParams.get('amenity') || '';
 
     useEffect(() => {
         async function load() {
             setLoading(true);
+            const supabase = createClient();
             let query = supabase
                 .from('properties')
                 .select('*')
@@ -52,6 +54,10 @@ function SearchContent() {
             if (minPrice) query = query.gte('price', Number(minPrice));
             if (maxPrice) query = query.lte('price', Number(maxPrice));
             if (bedrooms) query = query.eq('bedrooms', Number(bedrooms));
+            // Zone filter: match against location column using ilike
+            if (zone && zone !== 'All Zones') query = query.ilike('location', `%${zone}%`);
+            // Amenity filter: match against amenities jsonb or text array
+            if (amenity && amenity !== 'Any') query = query.ilike('description', `%${amenity}%`);
 
             const { data } = await query.order('created_at', { ascending: false });
 
@@ -59,7 +65,8 @@ function SearchContent() {
             setLoading(false);
         }
         load();
-    }, [supabase, q, category, minPrice, maxPrice, bedrooms]);
+    }, [q, category, minPrice, maxPrice, bedrooms, zone, amenity]);
+
 
     const getPriceLabel = (p: Property) => {
         if (p.listing_type === 'sale') return 'Sale Price';
@@ -97,10 +104,10 @@ function SearchContent() {
                                 title={p.title}
                                 location={p.location}
                                 price={`₦${Number(p.price).toLocaleString()}`}
-                                rating={4.8}
                                 image={p.images?.[0] ?? 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600'}
                                 verified={p.verification_status === 'Verified' || p.verification_status === 'Live View'}
                                 priceLabel={getPriceLabel(p)}
+                                id={p.id}
                             />
                         </Link>
                     ))}

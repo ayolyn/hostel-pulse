@@ -60,11 +60,8 @@ export function FeaturedListings() {
         if (error || !data || data.length === 0) {
           setHostels(fallbackHostels);
         } else {
-          let finalData = [...data];
-          if (finalData.length < 3) {
-            finalData = [...finalData, ...fallbackHostels.slice(0, 3 - finalData.length)];
-          }
-          setHostels(finalData);
+          // Only real DB listings — no padding with fake/stock data
+          setHostels(data);
         }
       } catch (err) {
         setHostels(fallbackHostels);
