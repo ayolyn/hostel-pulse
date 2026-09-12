@@ -2,7 +2,7 @@
 export const runtime = 'edge';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { NonStudentDashboardShell } from '@/components/layout/NonStudentDashboardShell';
 import { 
@@ -28,7 +28,7 @@ function DashboardOverview() {
     useEffect(() => {
         async function loadData() {
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
+            if (!user) { router.push('/auth?mode=signin'); return; }
             setFullName(user.user_metadata?.full_name?.split(' ')[0] ?? 'User');
 
             const [{ data: insp }, { data: escrow }] = await Promise.all([
@@ -184,7 +184,7 @@ function RequestsTab() {
     const load = async () => {
         setLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) { setLoading(false); return; }
         setCurrentUser(user);
 
         const [inspRes, profileRes, escrowRes] = await Promise.all([
@@ -299,7 +299,7 @@ function SavedTab() {
     useEffect(() => {
         async function load() {
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
+            if (!user) { setLoading(false); return; }
             const { data } = await supabase
                 .from('saved_properties')
                 .select('id, created_at, properties(id, title, location, price, images)')

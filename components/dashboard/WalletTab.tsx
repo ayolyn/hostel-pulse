@@ -102,7 +102,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                 const escrowData = escrowRes.data || [];
                 const formattedEscrow = escrowData.map((t: any) => ({
                     id: t.id,
-                    amount: (t.type === 'INSPECTION_FEE' || t.inspection_fee > 0) ? (t.amount || t.inspection_fee) : t.amount,
+                    amount: Number((t.type === 'INSPECTION_FEE' || t.inspection_fee > 0) ? (t.amount || t.inspection_fee) : t.amount) || 0,
                     agency_fee: t.agency_fee || 0,
                     inspection_fee: t.inspection_fee || 0,
                     status: t.status,
@@ -154,14 +154,14 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
 
     const pendingEscrow = transactions
         .filter(t => t.status === 'Held' || t.status === 'pending')
-        .reduce((sum, t) => sum + (t.amount + t.agency_fee), 0);
+        .reduce((sum, t) => sum + (Number(t.amount) + Number(t.agency_fee || 0)), 0);
 
     const totalEarnings = transactions
         .filter(t => {
             const status = t.status?.toUpperCase();
             return status === 'RELEASED' || status === 'COMPLETED';
         })
-        .reduce((sum, t) => sum + (t.amount + t.agency_fee), 0);
+        .reduce((sum, t) => sum + (Number(t.amount) + Number(t.agency_fee || 0)), 0);
 
     const availableBalance = localBalance;
 

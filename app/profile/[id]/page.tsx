@@ -148,7 +148,7 @@ export default function SellerProfilePage() {
                         {seller.avatar_url ? (
                             <Image src={seller.avatar_url} alt={seller.full_name} fill className="object-cover" />
                         ) : (
-                            seller.full_name[0]
+                            seller.full_name?.[0] ?? '?'
                         )}
                     </div>
                     

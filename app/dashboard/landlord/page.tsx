@@ -60,7 +60,7 @@ type EscrowTx = {
 
 const statusBadge: Record<string, string> = {
     Verified: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-    Live_View: 'bg-blue-50 text-blue-700 border border-blue-200',
+    'Live View': 'bg-blue-50 text-blue-700 border border-blue-200',
     Pending: 'bg-amber-50 text-amber-700 border border-amber-200',
     Rejected: 'bg-red-50 text-red-700 border border-red-200',
 };
@@ -105,7 +105,7 @@ function DashboardContent() {
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) {
-                setLoading(false);
+                router.push('/auth?mode=signin');
                 return;
             }
             setUserId(user.id);

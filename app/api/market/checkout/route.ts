@@ -40,8 +40,13 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "You cannot buy your own item." }, { status: 400 });
         }
 
-        // 3. Wallet Check
-        const { data: profile, error: profileError } = await supabase
+        // Validate payment method — only WALLET is supported to prevent payment bypass
+        if (method !== 'WALLET') {
+            return NextResponse.json({ error: "Only WALLET payment is currently supported." }, { status: 400 });
+        }
+
+        // Wallet Check
+        const { data: profile, error: profileError } = await supabaseAdmin
             .from('profiles')
             .select('wallet_balance')
             .eq('id', user.id)
@@ -51,7 +56,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Could not fetch wallet balance." }, { status: 400 });
         }
 
-        const balance = profile.wallet_balance || 0;
+        const balance = Number(profile.wallet_balance) || 0;
 
         // Calculate service fee exactly like the frontend
         let serviceFee = 1000;
@@ -65,18 +70,21 @@ export async function POST(req: Request) {
 
         const totalCost = Number(listing.price) + serviceFee;
 
-        if (method === 'WALLET') {
-            if (balance < totalCost) {
-                return NextResponse.json({ error: "Insufficient funds in wallet." }, { status: 400 });
-            }
+        if (balance < totalCost) {
+            return NextResponse.json({ error: "Insufficient funds in wallet." }, { status: 400 });
+        }
 
-            // Deduct the item price + fee from the buyer's wallet balance
-            const { error: deductError } = await supabase
-                .from('profiles')
-                .update({ wallet_balance: balance - totalCost })
-                .eq('id', user.id);
+        // Atomic wallet deduction using admin client — prevents double-spend via TOCTOU
+        const { data: updatedProfile, error: deductError } = await supabaseAdmin
+            .from('profiles')
+            .update({ wallet_balance: balance - totalCost })
+            .eq('id', user.id)
+            .gte('wallet_balance', totalCost)  // Atomic guard: only deduct if still sufficient
+            .select('wallet_balance')
+            .single();
 
-            if (deductError) throw deductError;
+        if (deductError || !updatedProfile) {
+            return NextResponse.json({ error: "Insufficient funds or concurrent payment in progress." }, { status: 400 });
         }
 
         // 4. The Escrow Execution

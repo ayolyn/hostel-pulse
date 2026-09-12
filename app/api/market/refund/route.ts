@@ -39,13 +39,20 @@ export async function POST(req: Request) {
             process.env.SUPABASE_SERVICE_ROLE_KEY!
         );
 
-        // 4. Update the transaction status to 'refunded'
-        const { error: updateError } = await supabaseAdmin
+        // 4. Atomically update status to 'refunded' — prevents double-refund race condition
+        // The .eq('status', 'pending') ensures only one concurrent request can succeed
+        const { data: updatedTx, error: updateError } = await supabaseAdmin
             .from('escrow_transactions')
             .update({ status: 'refunded' })
-            .eq('id', tx.id);
+            .eq('id', tx.id)
+            .eq('status', 'pending')
+            .select()
+            .single();
 
-        if (updateError) throw updateError;
+        if (updateError || !updatedTx) {
+            return NextResponse.json({ error: "Transaction is no longer pending or already refunded." }, { status: 400 });
+        }
+
 
         // 5. Refund the buyer's wallet (increment_wallet_balance RPC)
         const { error: refundError } = await supabaseAdmin.rpc('increment_wallet_balance', {

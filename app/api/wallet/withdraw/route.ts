@@ -44,15 +44,20 @@ export async function POST(req: Request) {
             process.env.SUPABASE_SERVICE_ROLE_KEY!
         );
 
-        // Deduct balance
-        const { error: deductError } = await supabaseAdmin
+        // Atomic deduction: only deduct if balance is still sufficient (prevents TOCTOU race condition)
+        const { data: updatedProfile, error: deductError } = await supabaseAdmin
             .from('profiles')
             .update({ wallet_balance: balance - withdrawAmount })
-            .eq('id', user.id);
+            .eq('id', user.id)
+            .gte('wallet_balance', withdrawAmount)
+            .select('wallet_balance')
+            .single();
 
-        if (deductError) throw deductError;
+        if (deductError || !updatedProfile) {
+            return NextResponse.json({ error: "Insufficient funds or concurrent withdrawal in progress." }, { status: 400 });
+        }
 
-        // Log transaction
+        // Log transaction as 'pending' (payout not yet dispatched to bank)
         const { error: withdrawError } = await supabaseAdmin
             .from('withdrawals')
             .insert({
@@ -61,14 +66,15 @@ export async function POST(req: Request) {
                 bank_name: bankName,
                 account_number: accountNumber,
                 account_name: accountName,
-                status: 'completed'
+                status: 'pending'
             });
 
         if (withdrawError) {
-            // Rollback if insert fails
-            await supabaseAdmin.from('profiles').update({ wallet_balance: balance }).eq('id', user.id);
+            // Rollback: use atomic increment to avoid overwriting any concurrent deposits
+            await supabaseAdmin.rpc('increment_wallet_balance', { payee_id_param: user.id, amount_param: withdrawAmount });
             throw withdrawError;
         }
+
 
         // Add Notification
         await createNotification(

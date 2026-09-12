@@ -276,7 +276,7 @@ export function RoommateDiscovery() {
                                 className="mt-auto w-full bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black font-black uppercase tracking-widest text-xs py-3 rounded-2xl flex items-center justify-center gap-3 hover:shadow-lg transition-all"
                             >
                                 <MessageCircle size={18} />
-                                Chat with {profile.full_name.split(' ')[0]}
+                                Chat with {profile.full_name?.split(' ')[0] ?? 'User'}
                             </button>
                         </div>
                     ))}

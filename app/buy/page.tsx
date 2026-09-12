@@ -68,7 +68,7 @@ function BuyContent() {
                 const normalizedQ = q.trim().replace(/[\s-]+/g, '%');
                 query = query.or(`title.ilike.%${normalizedQ}%,location.ilike.%${normalizedQ}%,description.ilike.%${normalizedQ}%`);
             }
-            if (type && type !== 'All Types') query = query.ilike('title', `%${type}%`);
+            if (type && type !== 'All Types') query = query.eq('category', type);
             if (category) query = query.eq('category', category);
             if (minPrice) query = query.gte('price', Number(minPrice));
             if (maxPrice) query = query.lte('price', Number(maxPrice));
