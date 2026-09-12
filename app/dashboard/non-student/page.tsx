@@ -20,6 +20,7 @@ import PayInspectionModal from '@/components/dashboard/PayInspectionModal';
 // ===================== DASHBOARD TAB =====================
 function DashboardOverview() {
     const supabase = createClient();
+    const router = useRouter();
     const [fullName, setFullName] = useState('');
     const [inspections, setInspections] = useState<any[]>([]);
     const [escrowStats, setEscrowStats] = useState({ total: 0, held: 0, released: 0 });

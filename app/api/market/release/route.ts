@@ -34,7 +34,13 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Transaction is not pending." }, { status: 400 });
         }
 
-        // 3. Atomically update status to 'completed' — prevents double-release race condition
+        // 3. Initialize Admin Client to bypass RLS for critical financial updates
+        const supabaseAdmin = createAdminClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
+        // 4. Atomically update status to 'completed' — prevents double-release race condition
         // The .eq('status', 'pending') ensures only one concurrent request can succeed
         const { data: updatedTx, error: updateError } = await supabaseAdmin
             .from('escrow_transactions')
