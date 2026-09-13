@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 export const runtime = 'edge';
 
 import { useEffect, useState, Suspense } from 'react';
@@ -121,8 +121,8 @@ function BuyContent() {
                                 price={`₦${Number(p.price).toLocaleString()}`}
                                 rating={4.8}
                                 image={p.images?.[0] ?? 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=600'}
-                                verified={p.verification_status === 'Verified' || p.verification_status === 'Live View'}
-                                priceLabel="Sale Price"
+                                verificationStatus={p.verification_status}
+                                
                             />
                         </Link>
                     ))}

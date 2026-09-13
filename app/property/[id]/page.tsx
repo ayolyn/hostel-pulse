@@ -60,14 +60,11 @@ export default async function PropertyPage({ params }: { params: { id: string } 
         .map((f: string) => ({
             icon: iconMap[f] || CheckCircle,
             label: f
-        })) || [
-            { icon: Zap, label: "Stable Electricity" },
-            { icon: Shield, label: "Uniformed Security" },
-            { icon: Wifi, label: "Fast WiFi Area" },
-            { icon: Wind, label: "Cross Ventilation" }
-        ];
+        })) || [];
 
-    const hasVideo = property.video_url && property.video_url.trim().length > 5 && property.video_url !== "null";
+    const hasVideo = Boolean(property.video_url && typeof property.video_url === 'string' && property.video_url.trim().length > 5 && property.video_url !== 'null' && property.video_url !== 'undefined');
+    const validImages = Array.isArray(property.images) ? property.images.filter((img: string) => typeof img === 'string' && img.trim().length > 5 && img !== 'null' && img !== 'undefined' && !img.includes('placeholder')) : [];
+    const displayImages = validImages.length > 0 ? validImages : [];
 
     return (
         <div className="min-h-screen bg-white pb-24 md:pb-0 relative">
@@ -102,16 +99,16 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                             )}
                         </div>
                         <div className="relative cursor-pointer hover:opacity-95 transition-opacity">
-                            <Image src={images[0]} alt="Main" fill className="object-cover" priority />
+                            <Image src={(displayImages[0] || '/placeholder.jpg')} alt="Main" fill className="object-cover" priority />
                         </div>
                         <div className="relative cursor-pointer hover:opacity-95 transition-opacity rounded-tr-3xl">
-                            <Image src={images[1] || images[0]} alt="Interior" fill className="object-cover" />
+                            <Image src={displayImages[1] || (displayImages[0] || '/placeholder.jpg')} alt="Interior" fill className="object-cover" />
                         </div>
                         <div className="relative cursor-pointer hover:opacity-95 transition-opacity">
-                            <Image src={images[2] || images[0]} alt="Room" fill className="object-cover" />
+                            <Image src={displayImages[2] || (displayImages[0] || '/placeholder.jpg')} alt="Room" fill className="object-cover" />
                         </div>
                         <div className="relative cursor-pointer hover:opacity-95 transition-opacity rounded-br-3xl flex items-center justify-center bg-gray-100">
-                            <Image src={images[images.length > 3 ? 3 : 0]} alt="More" fill className="object-cover opacity-60" />
+                            <Image src={displayImages[displayImages.length > 3 ? 3 : 0]} alt="More" fill className="object-cover opacity-60" />
                             <div className="relative z-10 font-bold text-gray-900 bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm">
                                 View all photos
                             </div>
@@ -134,7 +131,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                             </div>
                         )}
                         <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm border border-white/10">
-                            1 Video, {images.length} Photos
+                            {hasVideo ? '1 Video, ' : ''}{displayImages.length} Photos
                         </div>
                     </div>
                 </section>
@@ -180,66 +177,115 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                         <div className="w-full h-[1px] bg-gray-100" />
 
                         {/* Verification Status Block */}
-                        <div className="bg-neutral-50 rounded-3xl p-6 border border-neutral-100">
+                        <div className="bg-neutral-50 rounded-3xl p-6 border border-neutral-100 mb-8">
                             <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-4">Verification Status</h3>
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                                    property.verification_status === 'Physically Inspected' ? 'bg-emerald-100 text-emerald-600' :
-                                    property.verification_status === 'Pending Review' ? 'bg-amber-100 text-amber-600' :
-                                    property.verification_status === 'Details Checked' ? 'bg-blue-100 text-blue-600' :
-                                    'bg-gray-200 text-gray-500'
-                                }`}>
-                                    <Shield className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <p className="font-black text-gray-900 uppercase tracking-tight text-lg">{property.verification_status || 'Unverified'}</p>
-                                    <p className="text-xs text-gray-500 font-medium mt-1">
-                                        Last checked: {property.verified_at ? new Date(property.verified_at).toLocaleDateString() : 'Never'}
-                                    </p>
-                                </div>
-                            </div>
                             
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div className="flex items-center gap-2">
-                                    {property.address_confirmed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Info className="w-4 h-4 text-gray-300" />}
-                                    <span className={`text-sm ${property.address_confirmed ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'}`}>Address Confirmed</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {property.price_confirmed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Info className="w-4 h-4 text-gray-300" />}
-                                    <span className={`text-sm ${property.price_confirmed ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'}`}>Price Confirmed</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {property.agent_confirmed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Info className="w-4 h-4 text-gray-300" />}
-                                    <span className={`text-sm ${property.agent_confirmed ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'}`}>Agent Confirmed</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {property.availability_confirmed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Info className="w-4 h-4 text-gray-300" />}
-                                    <span className={`text-sm ${property.availability_confirmed ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'}`}>Availability Confirmed</span>
-                                </div>
-                            </div>
-                        </div>
+                            {(() => {
+                                const status = property.verification_status;
+                                let color = 'text-gray-900';
+                                let label = 'UNVERIFIED';
+                                let desc = 'This property has not been verified by HostelPulse.';
+                                let date = '';
+                                let shieldColor = 'text-gray-500';
+                                let shieldBg = 'bg-gray-200';
 
+                                if (status === 'Physically Inspected') {
+                                    color = 'text-emerald-700';
+                                    shieldBg = 'bg-emerald-100';
+                                    shieldColor = 'text-emerald-600';
+                                    label = 'PHYSICALLY INSPECTED';
+                                    desc = 'HostelPulse physically inspected this property.';
+                                    date = property.verified_at ? 'Last inspected: ' + new Date(property.verified_at).toLocaleDateString() : '';
+                                } else if (status === 'Details Checked') {
+                                    color = 'text-blue-700';
+                                    shieldBg = 'bg-blue-100';
+                                    shieldColor = 'text-blue-600';
+                                    label = 'DETAILS CHECKED';
+                                    desc = 'Listing details were checked by HostelPulse.';
+                                    date = property.verified_at ? 'Last checked: ' + new Date(property.verified_at).toLocaleDateString() : '';
+                                } else if (status === 'Pending Review' || status === 'Pending') {
+                                    color = 'text-amber-700';
+                                    shieldBg = 'bg-amber-100';
+                                    shieldColor = 'text-amber-600';
+                                    label = 'PENDING REVIEW';
+                                    desc = 'This listing is waiting for HostelPulse review.';
+                                    date = '';
+                                } else if (status === 'Requires Update') {
+                                    color = 'text-orange-700';
+                                    shieldBg = 'bg-orange-100';
+                                    shieldColor = 'text-orange-600';
+                                    label = 'REQUIRES UPDATE';
+                                    desc = 'Some listing information needs to be reconfirmed.';
+                                    date = '';
+                                }
+
+                                return (
+                                    <>
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${shieldBg} ${shieldColor}`}>
+                                                <Shield className="w-6 h-6" />
+                                            </div>
+                                            <div>
+                                                <p className={`font-black uppercase tracking-tight text-lg ${color}`}>{label}</p>
+                                                <p className="text-xs text-gray-500 font-medium mt-1">{desc}</p>
+                                                {date && <p className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-widest">{date}</p>}
+                                            </div>
+                                        </div>
+                                    </>
+                                );
+                            })()}
+                            
+                            {(property.address_confirmed || property.price_confirmed || property.agent_confirmed || property.availability_confirmed) && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-100">
+                                    {property.address_confirmed && (
+                                        <div className="flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4 text-emerald-500" />
+                                            <span className="text-sm text-gray-900 font-bold">Address Confirmed</span>
+                                        </div>
+                                    )}
+                                    {property.price_confirmed && (
+                                        <div className="flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4 text-emerald-500" />
+                                            <span className="text-sm text-gray-900 font-bold">Price Confirmed</span>
+                                        </div>
+                                    )}
+                                    {property.agent_confirmed && (
+                                        <div className="flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4 text-emerald-500" />
+                                            <span className="text-sm text-gray-900 font-bold">Agent Confirmed</span>
+                                        </div>
+                                    )}
+                                    {property.availability_confirmed && (
+                                        <div className="flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4 text-emerald-500" />
+                                            <span className="text-sm text-gray-900 font-bold">Availability Confirmed</span>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                        
                         {/* Local Intelligence */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8">
                             <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-500 mb-2 flex items-center justify-center text-sm">💧</div>
                                 <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Water Source</p>
-                                <span className="text-[10px] font-bold mt-2 uppercase">{property.water_source || 'Unavailable'}</span>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.water_source || 'Not provided'}</span>
                             </div>
                             <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-yellow-100 text-yellow-500 mb-2 flex items-center justify-center text-sm"><Zap className="w-4 h-4" /></div>
                                 <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Electricity</p>
-                                <span className="text-[10px] font-bold mt-2 uppercase">{property.electricity_type || 'Unavailable'}</span>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.electricity_type || 'Not provided'}</span>
                             </div>
                             <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-500 mb-2 flex items-center justify-center text-sm">🚶</div>
                                 <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">{property.category === 'Land' ? 'Landmark' : 'Gate Distance'}</p>
-                                <span className="text-[10px] font-bold mt-2 uppercase">{property.distance_to_lautech || property.gate_distance || 'Not specified'}</span>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.distance_to_lautech || property.gate_distance || 'Not provided'}</span>
                             </div>
                             <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-500 mb-2 flex items-center justify-center text-sm">🏠</div>
                                 <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Available From</p>
-                                <span className="text-[10px] font-bold mt-2 uppercase">{property.available_from ? new Date(property.available_from).toLocaleDateString() : 'Now'}</span>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.available_from ? new Date(property.available_from).toLocaleDateString() : 'Not provided'}</span>
                             </div>
                         </div>
 

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -150,6 +150,11 @@ export default function PropertyClientActions({
                             <span className="text-gray-600 font-medium">Annual Rent</span>
                             <span className="font-bold text-gray-900">₦{Number(annualRent || 0).toLocaleString()}</span>
                         </div>
+                        {!(Number(agentFee) > 0 || Number(agreementFee) > 0 || Number(cautionFee) > 0 || Number(inspectionFee) > 0 || Number(serviceCharge) > 0 || Number(otherFees) > 0) && (
+                            <div className="text-sm text-gray-500 italic mt-2">
+                                No additional mandatory fees listed.
+                            </div>
+                        )}
                         {Number(agentFee) > 0 && (
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-600 font-medium">Agent Fee</span>
@@ -210,7 +215,7 @@ export default function PropertyClientActions({
                                 {agent?.full_name || landlord?.business_name || 'HostelPulse Agent'}
                             </h4>
                             {agent?.rank && (
-                                <p className="text-[9px] font-black uppercase tracking-widest text-[#BEF264]">{agent.rank} Agent</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-[#BEF264]">{agent.rank === 'Broker' ? 'Agent' : agent.rank || 'Agent'}</p>
                             )}
                         </div>
                         <Link href={`/agent/${landlordId}`} className="p-2 text-gray-400 hover:text-black transition-colors">

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 import { HostelPulseLogo } from "@/components/ui/HostelPulseLogo";
 import { Facebook, Twitter, Instagram, Linkedin, ArrowRight } from "lucide-react";
@@ -59,7 +59,7 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm font-bold">
                             <li><Link href="/how-it-works" className="hover:text-[#BEF264] transition-all">How it Works</Link></li>
                             <li><Link href="/safety" className="hover:text-[#BEF264] transition-all">Safety Center</Link></li>
-                            <li><Link href="/admin" className="hover:text-[#BEF264] transition-all">HQ Admin</Link></li>
+                            
                             <li><Link href="/contact" className="hover:text-[#BEF264] transition-all">Contact Us</Link></li>
                         </ul>
                     </div>
@@ -69,7 +69,7 @@ export default function Footer() {
 
             <div className="max-w-7xl mx-auto mt-12 md:mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-gray-500">
-                    &copy; {new Date().getFullYear()} HOSTELPULSE. Built for LAUTECH & Beyond.
+                    &copy; {new Date().getFullYear()} HOSTELPULSE. Built for Student Life in Ogbomoso.
                 </p>
                 <div className="flex gap-5 text-[10px] font-black uppercase tracking-widest text-gray-500">
                     <Link href="/privacy" className="hover:text-white transition-all">Privacy</Link>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 export const runtime = 'edge';
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -11,6 +11,7 @@ import { resolveEscrowDispute } from '@/app/actions/escrow';
 import { getAdminServices } from '@/app/actions/services';
 import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts';
 import { AdminChatWindow } from './AdminChatWindow';
+import { PropertiesTab } from './PropertiesTab';
 import { ServicesManager } from '@/components/admin/ServicesManager';
 import {
     CheckCircle,
@@ -222,6 +223,7 @@ const AdminHqPortal = () => {
 
                  <div className="p-5 max-w-7xl mx-auto w-full">
 
+                {activeTab === 'properties' && <PropertiesTab />}
                 {activeTab === 'verifications' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center justify-between px-4">

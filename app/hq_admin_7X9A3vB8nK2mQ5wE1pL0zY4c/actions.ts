@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { sendNotificationEmail } from '@/lib/email/resend';
 import { getEmailTemplate } from '@/app/actions/emailTemplates';
@@ -397,10 +397,10 @@ export async function getAnalyticsData() {
     
     // 3. Conversion Funnel
     const funnel = [
-        { step: 'Total Searches', count: 12500 },
-        { step: 'Property Views', count: 8400 },
-        { step: 'Inspection Requests', count: 3200 },
-        { step: 'Successful Escrows', count: 850 },
+        { step: 'Total Searches', count: 0 },
+        { step: 'Property Views', count: 0 },
+        { step: 'Inspection Requests', count: 0 },
+        { step: 'Successful Escrows', count: 0 },
     ];
     
     // 4. User Engagement DAU

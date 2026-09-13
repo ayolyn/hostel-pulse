@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 export const runtime = 'edge';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -393,8 +393,8 @@ function StudentDashboardContent() {
                                                 price={`₦${Number(p.price).toLocaleString()}`}
                                                 
                                                 image={p.images?.[0] ?? 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5'}
-                                                verified={true}
-                                                priceLabel="Yearly Rent"
+                                                verificationStatus="Verified"
+                                                
                                             />
                                         </Link>
                                     );

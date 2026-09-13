@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -273,8 +273,9 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             gate_distance: form.gate_distance,
 
             images: imagesToUse,
-            status: 'active',
-            verification_status: 'Verified',
+            status: 'pending',
+              verification_status: 'Pending Review',
+              is_active: false,
             view_count: 0,
         };
 
@@ -522,194 +523,10 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 {/* Area Size */}
                 <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Area Size (SQM)</label>
-                    <div className="relative">
-                        <input type="number" min="1" value={form.area_size} onChange={e => setForm({ ...form, area_size: e.target.value })}
-                            placeholder="e.g. 50"
-                            className="w-full p-4 pr-16 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 dark:text-neutral-500">SQM</span>
-                    </div>
-                </div>
-
-                {/* Property Toggles */}
-                {category !== 'Land' ? (
-                    <div className="md:col-span-2 flex flex-wrap gap-6 pt-2">
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={form.is_furnished} onChange={e => setForm({ ...form, is_furnished: e.target.checked })}
-                                className="w-5 h-5 rounded border-2 border-gray-300 dark:border-white/10 text-[#BEF264] focus:ring-[#BEF264] transition-all bg-transparent" />
-                            <span className="text-[11px] font-black uppercase tracking-widest text-gray-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors">Furnished</span>
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={form.is_serviced} onChange={e => setForm({ ...form, is_serviced: e.target.checked })}
-                                className="w-5 h-5 rounded border-2 border-gray-300 dark:border-white/10 text-[#BEF264] focus:ring-[#BEF264] transition-all bg-transparent" />
-                            <span className="text-[11px] font-black uppercase tracking-widest text-gray-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors">Serviced</span>
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={form.is_newly_built} onChange={e => setForm({ ...form, is_newly_built: e.target.checked })}
-                                className="w-5 h-5 rounded border-2 border-gray-300 dark:border-white/10 text-[#BEF264] focus:ring-[#BEF264] transition-all bg-transparent" />
-                            <span className="text-[11px] font-black uppercase tracking-widest text-gray-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors">Newly Built</span>
-                        </label>
-                    </div>
-                ) : (
-                    <div className="md:col-span-2 flex flex-wrap gap-6 pt-2">
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" checked={form.features.includes('Fenced')} onChange={e => toggleFeature('Fenced')}
-                                className="w-5 h-5 rounded border-2 border-gray-300 dark:border-white/10 text-[#BEF264] focus:ring-[#BEF264] transition-all bg-transparent" />
-                            <span className="text-[11px] font-black uppercase tracking-widest text-gray-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white transition-colors">Fenced</span>
-                        </label>
-                    </div>
-                )}
-
-
-                {/* Description */}
-                <div className="space-y-2 md:col-span-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Description</label>
-                    <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-                        placeholder={`Describe the property in detail — condition, unique features, nearby landmarks...`}
-                        rows={3}
-                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-medium text-gray-900 dark:text-white transition-all resize-none" />
+                    <input type="number" min="1" value={form.area_size} onChange={e => setForm({ ...form, area_size: e.target.value })}
+                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                 </div>
             </div>
-
-            {/* Image Upload */}
-            <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Property Photos</label>
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    onChange={e => e.target.files && handleImageUpload(e.target.files)}
-                />
-                <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-5 text-center cursor-pointer hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group"
-                >
-                    {uploadingImages ? (
-                        <Loader2 className="w-8 h-8 text-[#BEF264] animate-spin mx-auto" />
-                    ) : (
-                        <>
-                            <UploadCloud className="w-8 h-8 text-gray-300 dark:text-neutral-600 group-hover:text-[#BEF264] mx-auto mb-2 transition-colors" />
-                            <p className="text-sm font-black text-gray-400 dark:text-neutral-500 uppercase tracking-widest">Click to upload photos</p>
-                            <p className="text-xs text-gray-400 dark:text-neutral-600 mt-1">JPG, PNG, WEBP — multiple allowed</p>
-                        </>
-                    )}
-                </div>
-
-                {/* Image previews */}
-                {uploadedImageUrls.length > 0 && (
-                    <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
-                        {uploadedImageUrls.map((url, i) => (
-                            <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 group">
-                                <img src={url} alt={`upload-${i}`} className="w-full h-full object-cover" />
-                                <button
-                                    onClick={() => removeImage(url)}
-                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                                >
-                                    <X className="w-3 h-3" />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {uploadedImageUrls.length === 0 && (
-                    <p className="text-[10px] text-gray-400 dark:text-neutral-600 font-bold uppercase tracking-widest text-center">
-                        <ImageIcon className="w-3 h-3 inline mr-1" />
-                        No photos yet — a default image will be used
-                    </p>
-                )}
-            </div>
-
-            {/* Features & Documents */}
-            <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">
-                    {category === 'Land' ? 'Documents Available' : 'Key Features & Amenities'}
-                </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {[
-                        { id: 'Constant Power', label: 'Constant Power', icon: Zap, excludeCategories: ['Land'] },
-                        { id: 'Running Water', label: 'Running Water', icon: RefreshCcw, excludeCategories: ['Land'] },
-                        { id: '24/7 Security', label: '24/7 Security', icon: ShieldCheck, excludeCategories: ['Land'] },
-                        { id: 'High Speed Wifi', label: 'Wifi', icon: Building2, excludeCategories: ['Land'] },
-                        { id: 'Boys Quater', label: 'Boys Quater', icon: Home, excludeCategories: ['Hostel', 'Shop', 'Land', 'Hotel'] },
-                        { id: 'Swimming Pool', label: 'Swimming Pool', icon: Zap, excludeCategories: ['Shop', 'Land', 'Hostel'] },
-                        { id: 'Elevator', label: 'Elevator', icon: Building2, excludeCategories: ['Hostel', 'Land'] },
-                        { id: 'CCTV Cameras', label: 'CCTV Cameras', icon: ShieldCheck, excludeCategories: ['Land'] },
-                        { id: 'Parking Space', label: 'Parking Space', icon: Home, excludeCategories: ['Land'] },
-                        { id: 'Gym', label: 'Gym', icon: Zap, excludeCategories: ['Shop', 'Land', 'Hostel'] },
-                        { id: 'Supermarket Nearby', label: 'Supermarket Nearby', icon: Store, excludeCategories: ['Land'] },
-                        { id: 'All Room Ensuit', label: 'All Room Ensuit', icon: Home, excludeCategories: ['Shop', 'Land'], excludeSubCats: ['Single Room', 'Hostel Pod'] },
-                        // Land Documents
-                        { id: 'Survey Plan', label: 'Survey Plan', icon: ShieldCheck, includeCategories: ['Land'] },
-                        { id: 'Deed of Assignment', label: 'Deed of Assgn.', icon: ShieldCheck, includeCategories: ['Land'] },
-                        { id: 'C of O', label: 'C of O', icon: ShieldCheck, includeCategories: ['Land', 'House', 'Hotel'] },
-                        { id: 'Gazette', label: 'Gazette', icon: ShieldCheck, includeCategories: ['Land'] },
-                    ]
-                        .filter(feat => {
-                            if (feat.includeCategories && !feat.includeCategories.includes(category)) return false;
-                            if (feat.excludeCategories && feat.excludeCategories.includes(category)) return false;
-                            if (feat.excludeSubCats && feat.excludeSubCats.includes(subCat)) return false;
-                            return true;
-                        })
-                        .map((feat) => {
-                            const isSelected = form.features.includes(feat.id);
-                            return (
-                                <button key={feat.id} onClick={() => toggleFeature(feat.id)}
-                                    className={`p-4 border-2 rounded-2xl flex items-center gap-3 transition-all ${isSelected ? 'border-[#BEF264] bg-[#BEF264]/10' : 'border-gray-100 dark:border-white/5 hover:border-[#BEF264]/50'}`}>
-                                    <feat.icon className={`w-4 h-4 ${isSelected ? 'text-black dark:text-[#BEF264]' : 'text-gray-400 dark:text-neutral-600'}`} />
-                                    <span className={`text-[10px] font-black uppercase tracking-tight ${isSelected ? 'text-black dark:text-white' : 'text-gray-600 dark:text-neutral-500'}`}>{feat.label}</span>
-                                </button>
-                            );
-                        })}
-                </div>
-            </div>
-
-
-            {/* Video & Virtual Tour URLs */}
-            {category !== 'Land' && (
-                <div className="space-y-4">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Media Links & Video</label>
-                    <div className="space-y-3">
-                        <div className="p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 relative">
-                            <input type="file" accept="video/mp4,video/quicktime" onChange={(e) => { if(e.target.files?.[0]) handleVideoUpload(e.target.files[0]) }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                            <div className="flex flex-col items-center justify-center text-center space-y-2 pointer-events-none">
-                                {uploadingVideo ? (
-                                    <div className="flex items-center gap-2 text-[#BEF264]">
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                        <span className="text-[10px] font-black uppercase tracking-widest">Uploading...</span>
-                                    </div>
-                                ) : form.video_url ? (
-                                    <div className="text-emerald-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4" /> Video Uploaded
-                                    </div>
-                                ) : (
-                                    <>
-                                        <Camera className="w-6 h-6 text-gray-400" />
-                                        <div className="text-[10px] font-black uppercase tracking-widest text-gray-500">
-                                            Upload Raw Video Walkthrough (Max 25MB)
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                        <input type="text" value={form.youtube_video_url} onChange={e => setForm({ ...form, youtube_video_url: e.target.value })}
-                            placeholder="Link to your YouTube video"
-                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-medium text-gray-900 dark:text-white transition-all" />
-                        
-                        <input type="text" value={form.instagram_video_url} onChange={e => setForm({ ...form, instagram_video_url: e.target.value })}
-                            placeholder="Link to your Instagram video"
-                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-medium text-gray-900 dark:text-white transition-all" />
-
-                        <div className="relative">
-                            <input type="text" value={form.virtual_tour_url} onChange={e => setForm({ ...form, virtual_tour_url: e.target.value })}
-                                placeholder="Link to a 3D rendering / Virtual Tour"
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-medium text-gray-900 dark:text-white transition-all" />
-                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-widest bg-red-500 text-white px-2 py-1 rounded-full pointer-events-none">New!</span>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Local Intelligence / Land Details */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

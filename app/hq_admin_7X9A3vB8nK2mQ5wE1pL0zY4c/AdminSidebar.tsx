@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -32,6 +32,7 @@ export default function AdminSidebar() {
 
     const navItems = [
         { id: 'analytics', label: 'Analytics Engine', color: 'green', icon: LineChart },
+        { id: 'properties', label: 'Property Review', color: 'green', icon: LayoutDashboard },
         { id: 'verifications', label: 'Account Queue', color: 'green', icon: ShieldCheck },
         { id: 'users', label: 'User Management', color: 'blue', icon: Users },
         { id: 'escrow', label: 'Escrow Control', color: 'orange', icon: Wallet },
