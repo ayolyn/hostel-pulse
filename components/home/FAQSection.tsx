@@ -7,23 +7,19 @@ import { Plus, Minus } from "lucide-react";
 const faqs = [
   {
     question: "How do I know the house is real?",
-    answer: "Every listing on Hostel Pulse goes through a strict verification process. Agents must upload an unedited video walkthrough, and our team verifies the physical location before a listing goes live."
+    answer: "Every listing on HostelPulse goes through a verification process. Agents must upload an unedited video walkthrough, and our team verifies the physical location before a listing goes live."
   },
   {
-    question: "What if the agent doesn't show up?",
-    answer: "Because your funds are held in escrow, if an agent fails to show up for an inspection or key handover, your money is completely safe and instantly refundable to your wallet."
+    question: "Do I have to pay to use HostelPulse?",
+    answer: "Browsing listings, watching videos, and contacting agents or landlords on HostelPulse is completely free for students."
   },
   {
-    question: "Can I pay in installments?",
-    answer: "Currently, we support full payments to secure your hostel. However, we are partnering with campus micro-finance to introduce split payments in the near future."
-  },
-  {
-    question: "Is my money safe?",
-    answer: "100%. We use bank-grade encryption and a strict escrow system. Your payment is held securely and only released to the landlord or agent once you have physically verified the room and collected the keys."
-  },
-  {
-    question: "What areas do you cover?",
+    question: "What areas in Ogbomoso do you cover?",
     answer: "We currently cover major student hotspots around LAUTECH, including Under-G, Adenike, General, Stadium Gate, and Aroje."
+  },
+  {
+    question: "Are there other services besides hostels?",
+    answer: "Yes! While housing is our main focus, you can also use HostelPulse to find roommates, hire students for gigs (like laundry or design), and buy or sell items on campus."
   }
 ];
 

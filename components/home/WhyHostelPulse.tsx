@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ShieldCheck, PlaySquare, Wallet, Star } from "lucide-react";
+import { ShieldCheck, PlaySquare, Wallet, Star, MapPin } from "lucide-react";
 import Image from "next/image";
 
 export function WhyHostelPulse() {
@@ -10,105 +10,61 @@ export function WhyHostelPulse() {
     <section className="py-24 bg-white dark:bg-[#0a0a0a] overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         
-        {/* Aggressive Direct-Response Header */}
+        {/* Problem Header */}
         <div className="max-w-3xl mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 leading-tight tracking-tight">
-            Stop paying agents for <br className="hidden md:block"/>hostels you haven't seen.
+            Stop paying for <br className="hidden md:block"/>hostels you haven't seen.
           </h2>
           <p className="text-base md:text-xl text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
-            We eliminated the risk of renting in Ogbomoso. If the room doesn't match the video, or the agent doesn't show up, you get <span className="text-emerald-500 font-black">100% of your money back</span>. Instantly. No stories.
+            Finding accommodation shouldn't mean paying inspection fees, entering random streets, or trusting pictures that don't match the room. HostelPulse helps you discover real student accommodation around Ogbomoso before you make the trip.
           </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* Main Escrow Card */}
-          <div className="lg:col-span-2 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-[2rem] p-8 md:p-12 relative overflow-hidden flex flex-col justify-between">
-            <div className="relative z-10 max-w-md">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-6">
-                <ShieldCheck className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-2">Hold the Cash.</h3>
-              <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                Your rent stays locked in our secure escrow vault. The agent doesn't smell a single kobo until you physically inspect the room and hold the keys in your hand. 
-              </p>
-            </div>
-            
-            {/* Visual Mockup inside Card */}
-            <div className="relative z-10 bg-white dark:bg-[#050505] border border-gray-200 dark:border-white/10 rounded-2xl p-4 shadow-xl max-w-sm mt-auto self-end md:-mr-4 md:-mb-4 transform rotate-2">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Escrow Vault</span>
-                <span className="px-2 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded-full">LOCKED</span>
-              </div>
-              <div className="text-3xl font-black text-gray-900 dark:text-white mb-1">₦150,000</div>
-              <div className="text-sm text-gray-500 mb-4">Awaiting your approval...</div>
-              <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-center py-3 rounded-xl font-bold text-sm cursor-pointer transition-colors shadow-md">
-                Release Funds
-              </button>
-              <div className="mt-3 text-center text-xs text-gray-500 dark:text-gray-400 hover:text-red-500 underline cursor-pointer transition-colors">
-                Report an Issue
-              </div>
-            </div>
-
-            {/* Background Decoration */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 blur-[100px] rounded-full pointer-events-none" />
-          </div>
-
-          <div className="flex flex-col gap-6">
-            
-            {/* Raw Videos Card */}
-            <div className="flex-1 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-[2rem] p-8 flex flex-col justify-center relative overflow-hidden group">
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-5">
-                  <PlaySquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 className="text-lg md:text-xl font-black text-gray-900 dark:text-white mb-2">No Catfishing.</h3>
-                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Stop wasting transport fare on fake pictures. Every listing requires an unedited raw video walkthrough. What you see is literally what you get.
-                </p>
-                <div className="mt-6 flex items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-bold cursor-pointer group-hover:translate-x-1 transition-transform">
-                  <PlaySquare className="w-4 h-4" /> Watch Sample Video
-                </div>
-              </div>
-            </div>
-
-            {/* Refund Card */}
-            <div className="flex-1 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-[2rem] p-8 flex flex-col justify-center relative overflow-hidden">
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center mb-5">
-                  <Wallet className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-                </div>
-                <h3 className="text-lg md:text-xl font-black text-gray-900 dark:text-white mb-2">Zero Risk Refunds.</h3>
-                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Agent didn't show up? Room looks different? Tap one button and your money bounces right back to your wallet. No arguments.
-                </p>
-                <div className="mt-6">
-                  <button className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-                    View Refund Policy
-                  </button>
-                </div>
-              </div>
-            </div>
-
+          <div className="mt-8">
+            <a href="/rent" className="bg-black dark:bg-[#BEF264] text-white dark:text-black px-6 py-3 rounded-full font-bold uppercase tracking-widest text-sm inline-block shadow-lg hover:scale-105 transition-transform">
+              Explore Hostels
+            </a>
           </div>
         </div>
 
-        {/* Testimonial Snippet */}
-        <div className="mt-12 flex items-center gap-4 bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/10 p-6 rounded-3xl w-max max-w-full">
-          <div className="flex -space-x-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white dark:border-[#0a0a0a] overflow-hidden">
-                <Image src={"https://i.pravatar.cc/100?img=" + (i + 10)} alt="Student" width={40} height={40} />
-              </div>
-            ))}
-          </div>
-          <div>
-            <div className="flex items-center gap-1 mb-1">
-              {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="w-4 h-4 fill-emerald-500 text-emerald-500" />)}
-            </div>
-            <p className="text-sm font-medium text-gray-900 dark:text-gray-300">
-              Trusted by <span className="font-bold">5,000+</span> LAUTECH students.
+        {/* Core Product Benefit Section */}
+        <div className="bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-[2rem] p-8 md:p-12 mb-8">
+          <div className="mb-10 max-w-2xl">
+            <h3 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">See the room before you waste the trip.</h3>
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400">
+              Every listing gives you the information you need to decide whether it's worth visiting. Real videos. Real locations. Real prices.
             </p>
+          </div>
+
+          {/* Supported Listing Info Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-white dark:bg-[#050505] p-6 rounded-2xl border border-gray-100 dark:border-white/5 flex flex-col items-center text-center">
+              <PlaySquare className="w-8 h-8 text-[#BEF264] mb-3" />
+              <span className="font-bold text-gray-900 dark:text-white text-sm">Raw Walkthrough</span>
+            </div>
+            <div className="bg-white dark:bg-[#050505] p-6 rounded-2xl border border-gray-100 dark:border-white/5 flex flex-col items-center text-center">
+              <MapPin className="w-8 h-8 text-[#BEF264] mb-3" />
+              <span className="font-bold text-gray-900 dark:text-white text-sm">Location</span>
+            </div>
+            <div className="bg-white dark:bg-[#050505] p-6 rounded-2xl border border-gray-100 dark:border-white/5 flex flex-col items-center text-center">
+              <Wallet className="w-8 h-8 text-[#BEF264] mb-3" />
+              <span className="font-bold text-gray-900 dark:text-white text-sm">Price</span>
+            </div>
+            <div className="bg-white dark:bg-[#050505] p-6 rounded-2xl border border-gray-100 dark:border-white/5 flex flex-col items-center text-center">
+              <Star className="w-8 h-8 text-[#BEF264] mb-3" />
+              <span className="font-bold text-gray-900 dark:text-white text-sm">Student Reviews</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/10 rounded-[2rem] p-8">
+            <ShieldCheck className="w-10 h-10 text-emerald-500 mb-4" />
+            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">Verified before you visit.</h3>
+            <p className="text-gray-600 dark:text-gray-400">See what you're actually going to visit before spending your time and transport money. We check listings so you don't have to blindly trust.</p>
+          </div>
+          <div className="bg-blue-50 dark:bg-blue-500/5 border border-blue-200 dark:border-blue-500/10 rounded-[2rem] p-8">
+            <PlaySquare className="w-10 h-10 text-blue-500 mb-4" />
+            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">No edited photos.</h3>
+            <p className="text-gray-600 dark:text-gray-400">We require agents to upload raw, unedited video walkthroughs of the hostel rooms. What you see on your screen is what you'll see in person.</p>
           </div>
         </div>
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Zap, Search, ChevronRight, MapPin, ShieldCheck, Edit3, UserPlus, PhoneCall, CheckCircle, Store, Users } from 'lucide-react';
+import { Home, Zap, Search, ChevronRight, MapPin, ShieldCheck, Edit3, UserPlus, PhoneCall, CheckCircle, Store, Users, PlaySquare } from 'lucide-react';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { WhyHostelPulse } from '@/components/home/WhyHostelPulse';
 import { FeaturedListings } from '@/components/home/FeaturedListings';
@@ -27,10 +27,10 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
             <PublicHeader />
             
             <main className="pb-20 pt-24">
-                {/* Formal Sleek Hero Section */}
-                <section className="relative pt-12 pb-16 px-6 overflow-hidden flex flex-col items-center min-h-[90vh]">
+                {/* Hero Section */}
+                <section className="relative pt-20 pb-16 px-6 overflow-hidden flex flex-col items-center min-h-[90vh]">
                     {/* Background glow */}
-                    <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#BEF264]/10 blur-[100px] rounded-full pointer-events-none" />
+                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] sm:w-[600px] h-[300px] bg-[#BEF264]/10 blur-[100px] rounded-full pointer-events-none" />
                     
                     <motion.div 
                         initial={{ opacity: 0, y: 30 }}
@@ -42,135 +42,162 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.1 }}
-                            className="text-[3rem] leading-[1.05] sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 text-gray-900 dark:text-white uppercase"
+                            className="text-[2.5rem] leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-6 text-gray-900 dark:text-white"
                         >
-                            Your Campus <br />
+                            Find Your Next Hostel in Ogbomoso — <br className="hidden md:block" />
                             <span className="text-[#BEF264] relative inline-block mt-2">
-                                Ecosystem.
-                                {/* Underline decoration */}
-                                <motion.div 
-                                    initial={{ width: 0 }}
-                                    animate={{ width: '100%' }}
-                                    transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                                    className="absolute -bottom-3 left-0 right-0 h-3 bg-[#BEF264]/30 rounded-full" 
-                                />
+                                Without the Agent Stress.
                             </span>
                         </motion.h1>
                         
-                        <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 font-medium max-w-lg mx-auto mb-10 leading-relaxed">
-                            Ogbomoso's first all-in-one student network. Rent verified hostels, book campus gigs, buy & sell items, and find roommates safely.
+                        <p className="text-base md:text-xl text-gray-600 dark:text-gray-400 font-medium max-w-2xl mx-auto mb-10 leading-relaxed">
+                            See real rooms, compare prices, find roommates, and connect with trusted listings around LAUTECH.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-16">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-6">
                             <Link 
                                 href="/rent"
                                 className="w-full sm:w-auto bg-[#BEF264] hover:bg-[#d9f99d] text-black px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase transition-all shadow-lg shadow-[#BEF264]/20 flex items-center justify-center gap-2"
                             >
-                                Explore Hostels <ChevronRight className="w-4 h-4" />
+                                Find a Hostel <ChevronRight className="w-4 h-4" />
                             </Link>
                             <Link 
-                                href="/how-it-works"
+                                href="/dashboard"
                                 className="w-full sm:w-auto bg-transparent border-2 border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 text-gray-900 dark:text-white px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase transition-all flex items-center justify-center"
                             >
-                                How It Works
+                                List a Property
                             </Link>
                         </div>
+                        <p className="text-sm text-gray-500 font-medium mb-16">Built for students in Ogbomoso. Starting with housing.</p>
 
-                        {/* Graphic & Search Integration */}
-                        <div className="w-full max-w-3xl mx-auto mt-10 z-20">
-                            {/* The "Virtual Hub" Graphic - Moved up and made smaller on mobile so search fits */}
-                            <motion.div 
-                                animate={{ y: [0, -10, 0], rotate: [0, 1, 0] }}
-                                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                                className="relative mx-auto w-48 h-48 md:w-64 md:h-64 bg-gradient-to-br from-[#BEF264]/20 to-transparent rounded-[2rem] border border-[#BEF264]/20 flex flex-col items-center justify-center shadow-2xl overflow-hidden mb-12"
-                            >
-                                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-                                <div className="relative z-10 w-16 h-16 md:w-20 md:h-20 bg-[#BEF264] rounded-2xl flex items-center justify-center shadow-xl mb-3">
-                                    <Home className="w-8 h-8 md:w-10 md:h-10 text-black" />
-                                </div>
-                                <div className="relative z-10 bg-black/60 backdrop-blur-md px-5 py-1.5 rounded-full border border-white/10 flex items-center gap-2">
-                                    <CheckCircle className="w-3.5 h-3.5 text-[#BEF264]" />
-                                    <span className="text-white font-bold tracking-widest uppercase text-xs md:text-sm">Virtual Hub</span>
-                                </div>
-                            </motion.div>
-
+                        {/* Search Integration */}
+                        <div className="w-full max-w-2xl mx-auto mt-4 z-20">
                             {/* Redesigned Search Component */}
-                            <div className="w-full max-w-xl mx-auto px-4 md:px-0">
-                                {/* External Tabs */}
-                                <div className="flex items-end gap-1.5 ml-4 overflow-x-auto no-scrollbar pr-4">
-                                    <button
-                                        onClick={() => setActiveTab('rent')}
-                                        className={"flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'rent' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
-                                    >
-                                        <Home className="w-4 h-4" /> Rent
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab('gig')}
-                                        className={"flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'gig' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
-                                    >
-                                        <Zap className="w-4 h-4" /> Gig
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab('market')}
-                                        className={"flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'market' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
-                                    >
-                                        <Store className="w-4 h-4" /> Market
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab('roommate')}
-                                        className={"flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-t-2xl font-black text-sm transition-all " + (activeTab === 'roommate' ? "bg-white dark:bg-[#111] text-gray-900 dark:text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 hover:bg-gray-300 dark:hover:bg-white/20")}
-                                    >
-                                        <Users className="w-4 h-4" /> Roommate
-                                    </button>
-                                </div>
-
+                            <div className="w-full mx-auto px-4 md:px-0">
                                 {/* Main Search Card */}
-                                <div className="bg-white dark:bg-[#111] rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 dark:border-white/5 relative z-10">
-                                    <div className="flex items-center gap-3 border-b border-gray-100 dark:border-white/5 pb-4 mb-4">
-                                        <MapPin className="w-6 h-6 text-gray-400 shrink-0" />
-                                        <input
-                                            type="text"
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                            className="w-full bg-transparent text-gray-900 dark:text-white placeholder-gray-400 font-bold text-lg md:text-xl focus:outline-none"
-                                            placeholder={
-                                                activeTab === 'rent' ? "Monthly/Yearly � Search Under-G..." : 
-                                                activeTab === 'gig' ? "Search for laundry, design, etc..." :
-                                                activeTab === 'market' ? "Search phones, laptops, books..." :
-                                                "Find your ideal roommate..."
-                                            }
-                                        />
+                                <div className="bg-white dark:bg-[#111] rounded-[2rem] p-6 shadow-2xl border border-gray-100 dark:border-white/5 relative z-10 text-left">
+                                    <div className="mb-4">
+                                        <h3 className="text-lg font-black text-gray-900 dark:text-white">Where do you want to live?</h3>
+                                        <p className="text-sm text-gray-500">Search Under-G, Stadium, Adenike...</p>
                                     </div>
-                                    <button
-                                        onClick={handleSearch}
-                                        className="w-full bg-black dark:bg-[#BEF264] hover:bg-gray-900 dark:hover:bg-[#d9f99d] text-white dark:text-black font-black text-lg py-5 rounded-2xl uppercase tracking-widest flex items-center justify-center transition-all"
-                                    >
-                                        Search <ChevronRight className="w-5 h-5 ml-2" />
-                                    </button>
-                                </div>
-                                
-                                <div className="mt-4 text-center md:text-left md:ml-4 text-sm font-medium text-gray-500 dark:text-gray-400">
-                                    Popular: 
-                                    {activeTab === 'rent' && <span className="text-gray-900 dark:text-white font-bold ml-1">Under-G Self-con, Stadium Shops</span>}
-                                    {activeTab === 'gig' && <span className="text-gray-900 dark:text-white font-bold ml-1">Laundry, Web Design</span>}
-                                    {activeTab === 'market' && <span className="text-gray-900 dark:text-white font-bold ml-1">iPhone 13, Generators</span>}
-                                    {activeTab === 'roommate' && <span className="text-gray-900 dark:text-white font-bold ml-1">Adenike Area, Male Only</span>}
+                                    <div className="flex flex-col md:flex-row items-center gap-3">
+                                        <div className="flex-1 w-full flex items-center gap-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl px-4 py-4">
+                                            <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
+                                            <input
+                                                type="text"
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                                className="w-full bg-transparent text-gray-900 dark:text-white placeholder-gray-400 font-bold text-base focus:outline-none"
+                                                placeholder="Area or landmark..."
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={handleSearch}
+                                            className="w-full md:w-auto bg-black dark:bg-[#BEF264] hover:bg-gray-900 dark:hover:bg-[#d9f99d] text-white dark:text-black font-black px-8 py-4 rounded-2xl transition-all"
+                                        >
+                                            Search
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Trust Strip */}
+                        <div className="mt-16 flex flex-wrap items-center justify-center gap-6 text-sm md:text-base font-bold text-gray-500 dark:text-gray-400">
+                            <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#BEF264]" /> Real listings</span>
+                            <span className="hidden sm:inline">•</span>
+                            <span className="flex items-center gap-2"><PlaySquare className="w-4 h-4 text-[#BEF264]" /> Raw walkthroughs</span>
+                            <span className="hidden sm:inline">•</span>
+                            <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#BEF264]" /> Ogbomoso-focused</span>
                         </div>
                     </motion.div>
                 </section>
 
-                <div className="mt-20">
-                    <WhyHostelPulse />
-                </div>
-                
                 <div className="mt-10">
                     <FeaturedListings />
                 </div>
-                
+
+                <div className="mt-20">
+                    <WhyHostelPulse />
+                </div>
+
+                {/* More than a hostel listing section */}
+                <section className="py-24 bg-white dark:bg-[#0a0a0a]">
+                    <div className="max-w-7xl mx-auto px-6 text-center">
+                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6">More than a hostel listing.</h2>
+                        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-16">
+                            HostelPulse is becoming the place students use to find what they need around campus. <br/> <span className="font-bold text-[#BEF264] dark:text-[#BEF264] bg-black px-2 py-1 rounded mt-4 inline-block">But housing is where we start.</span>
+                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="bg-gray-50 dark:bg-[#111] p-8 rounded-3xl border border-gray-100 dark:border-white/5 flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
+                                <div className="w-16 h-16 bg-[#BEF264]/20 rounded-full flex items-center justify-center mb-4">
+                                    <Home className="w-8 h-8 text-black dark:text-[#BEF264]" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Find a place</h3>
+                                <p className="text-gray-500 text-sm">Verified accommodation</p>
+                            </div>
+                            <div className="bg-gray-50 dark:bg-[#111] p-8 rounded-3xl border border-gray-100 dark:border-white/5 flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
+                                <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
+                                    <Users className="w-8 h-8 text-blue-500" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Find people</h3>
+                                <p className="text-gray-500 text-sm">Roommates</p>
+                            </div>
+                            <div className="bg-gray-50 dark:bg-[#111] p-8 rounded-3xl border border-gray-100 dark:border-white/5 flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
+                                <div className="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mb-4">
+                                    <Zap className="w-8 h-8 text-purple-500" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Find opportunities</h3>
+                                <p className="text-gray-500 text-sm">Campus gigs</p>
+                            </div>
+                            <div className="bg-gray-50 dark:bg-[#111] p-8 rounded-3xl border border-gray-100 dark:border-white/5 flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
+                                <div className="w-16 h-16 bg-orange-500/10 rounded-full flex items-center justify-center mb-4">
+                                    <Store className="w-8 h-8 text-orange-500" />
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Buy & sell</h3>
+                                <p className="text-gray-500 text-sm">Student marketplace</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Ecosystem Section - Ogbomoso First */}
+                <section className="py-20 bg-gray-900 text-white dark:bg-[#111]">
+                    <div className="max-w-4xl mx-auto px-6 text-center">
+                        <h2 className="text-3xl md:text-5xl font-black mb-6">One platform. One city. Built around student life.</h2>
+                        <p className="text-lg md:text-xl text-gray-400 font-medium">
+                            Start with a place to live. Then find the people, opportunities, and things you need around you.
+                        </p>
+                    </div>
+                </section>
+
                 <FAQSection />
+
+                {/* Final CTA */}
+                <section className="py-24 bg-white dark:bg-[#0a0a0a]">
+                    <div className="max-w-4xl mx-auto px-6 text-center border-t border-gray-200 dark:border-white/10 pt-24">
+                        <h2 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">Looking for a place in Ogbomoso?</h2>
+                        <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 font-medium">
+                            Don't start with an agent. Start with HostelPulse.
+                        </p>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <Link 
+                                href="/rent"
+                                className="w-full sm:w-auto bg-[#BEF264] hover:bg-[#d9f99d] text-black px-10 py-5 rounded-full font-black text-sm tracking-widest uppercase transition-all shadow-lg"
+                            >
+                                Explore Hostels
+                            </Link>
+                            <Link 
+                                href="/dashboard"
+                                className="w-full sm:w-auto bg-transparent border-2 border-gray-200 dark:border-white/10 hover:border-gray-300 text-gray-900 dark:text-white px-10 py-5 rounded-full font-black text-sm tracking-widest uppercase transition-all"
+                            >
+                                List a Property
+                            </Link>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     );
