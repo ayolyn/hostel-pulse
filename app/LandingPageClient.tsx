@@ -26,172 +26,164 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
         <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white selection:bg-[#BEF264]/30 selection:text-[#BEF264]">
             <PublicHeader />
             
-            <main className="pb-20 pt-24">
+            <main className="pb-12 pt-24">
                 {/* Hero Section */}
-                <section className="relative pt-20 pb-16 px-6 overflow-hidden flex flex-col items-center min-h-[90vh]">
-                    {/* Background glow */}
-                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] sm:w-[600px] h-[300px] bg-[#BEF264]/10 blur-[100px] rounded-full pointer-events-none" />
-                    
-                    <motion.div 
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, staggerChildren: 0.2 }}
-                        className="text-center z-10 max-w-4xl mx-auto w-full flex flex-col items-center"
-                    >
-                        <motion.h1 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
-                            className="text-[2.5rem] leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-6 text-gray-900 dark:text-white"
-                        >
+                <section className="relative pt-12 pb-12 px-6 flex flex-col items-center">
+                    <div className="text-center z-10 max-w-4xl mx-auto w-full flex flex-col items-center">
+                        <h1 className="text-[2.5rem] leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4 text-gray-900 dark:text-white">
                             Find Your Next Hostel in Ogbomoso — <br className="hidden md:block" />
-                            <span className="text-[#BEF264] relative inline-block mt-2">
+                            <span className="text-[#BEF264] relative inline-block">
                                 Without the Agent Stress.
                             </span>
-                        </motion.h1>
+                        </h1>
                         
-                        <p className="text-base md:text-xl text-gray-600 dark:text-gray-400 font-medium max-w-2xl mx-auto mb-10 leading-relaxed">
+                        <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 font-medium max-w-2xl mx-auto mb-8 leading-relaxed">
                             See real rooms, compare prices, find roommates, and connect with trusted listings around LAUTECH.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-6">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-4">
                             <Link 
                                 href="/rent"
-                                className="w-full sm:w-auto bg-[#BEF264] hover:bg-[#d9f99d] text-black px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase transition-all shadow-lg shadow-[#BEF264]/20 flex items-center justify-center gap-2"
+                                className="w-full sm:w-auto bg-[#BEF264] hover:bg-[#d9f99d] text-black px-8 py-3.5 rounded-xl font-bold text-sm uppercase transition-all flex items-center justify-center gap-2"
                             >
                                 Find a Hostel <ChevronRight className="w-4 h-4" />
                             </Link>
                             <Link 
                                 href="/dashboard"
-                                className="w-full sm:w-auto bg-transparent border-2 border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 text-gray-900 dark:text-white px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase transition-all flex items-center justify-center"
+                                className="w-full sm:w-auto bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 text-gray-900 dark:text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase transition-all flex items-center justify-center"
                             >
                                 List a Property
                             </Link>
                         </div>
-                        <p className="text-sm text-gray-500 font-medium mb-16">Built for students in Ogbomoso. Starting with housing.</p>
+                        <p className="text-xs text-gray-500 font-medium mb-12">Built for students in Ogbomoso. Starting with housing.</p>
 
                         {/* Search Integration */}
-                        <div className="w-full max-w-2xl mx-auto mt-4 z-20">
-                            {/* Redesigned Search Component */}
-                            <div className="w-full mx-auto px-4 md:px-0">
-                                {/* Main Search Card */}
-                                <div className="bg-white dark:bg-[#111] rounded-[2rem] p-6 shadow-2xl border border-gray-100 dark:border-white/5 relative z-10 text-left">
-                                    <div className="mb-4">
-                                        <h3 className="text-lg font-black text-gray-900 dark:text-white">Where do you want to live?</h3>
-                                        <p className="text-sm text-gray-500">Search Under-G, Stadium, Adenike...</p>
+                        <div className="w-full max-w-3xl mx-auto z-20">
+                            <div className="bg-white dark:bg-[#0a0a0a] rounded-2xl p-6 md:p-8 border border-gray-200 dark:border-white/10 text-left">
+                                <div className="mb-6">
+                                    <h3 className="text-sm font-black text-gray-500 tracking-widest uppercase mb-1">Where do you want to live?</h3>
+                                </div>
+                                <div className="flex flex-col md:flex-row items-stretch gap-3">
+                                    <div className="flex-1 w-full flex items-center gap-3 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3.5 focus-within:border-gray-400 dark:focus-within:border-[#BEF264]/50 transition-colors">
+                                        <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
+                                        <input
+                                            type="text"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                            className="w-full bg-transparent text-gray-900 dark:text-white placeholder-gray-400 font-semibold focus:outline-none"
+                                            placeholder="Search an area or landmark... e.g., Under-G"
+                                        />
                                     </div>
-                                    <div className="flex flex-col md:flex-row items-center gap-3">
-                                        <div className="flex-1 w-full flex items-center gap-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl px-4 py-4">
-                                            <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
-                                            <input
-                                                type="text"
-                                                value={searchQuery}
-                                                onChange={(e) => setSearchQuery(e.target.value)}
-                                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                                className="w-full bg-transparent text-gray-900 dark:text-white placeholder-gray-400 font-bold text-base focus:outline-none"
-                                                placeholder="Area or landmark..."
-                                            />
-                                        </div>
-                                        <button
-                                            onClick={handleSearch}
-                                            className="w-full md:w-auto bg-black dark:bg-[#BEF264] hover:bg-gray-900 dark:hover:bg-[#d9f99d] text-white dark:text-black font-black px-8 py-4 rounded-2xl transition-all"
-                                        >
-                                            Search
-                                        </button>
-                                    </div>
+                                    <button
+                                        onClick={handleSearch}
+                                        className="w-full md:w-auto bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black font-bold px-8 py-3.5 rounded-xl transition-all whitespace-nowrap"
+                                    >
+                                        Search
+                                    </button>
+                                </div>
+
+                                {/* Trust Strip Embedded in Search */}
+                                <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex flex-wrap items-center justify-start gap-6 text-xs md:text-sm font-semibold text-gray-500 dark:text-gray-400">
+                                    <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-gray-900 dark:text-white" /> Real Listings</span>
+                                    <span className="hidden sm:inline text-gray-300 dark:text-gray-700">•</span>
+                                    <span className="flex items-center gap-1.5"><PlaySquare className="w-4 h-4 text-gray-900 dark:text-white" /> Raw Walkthroughs</span>
+                                    <span className="hidden sm:inline text-gray-300 dark:text-gray-700">•</span>
+                                    <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-gray-900 dark:text-white" /> Ogbomoso-focused</span>
                                 </div>
                             </div>
                         </div>
-
-                        {/* Trust Strip */}
-                        <div className="mt-16 flex flex-wrap items-center justify-center gap-6 text-sm md:text-base font-bold text-gray-500 dark:text-gray-400">
-                            <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-[#BEF264]" /> Real listings</span>
-                            <span className="hidden sm:inline">•</span>
-                            <span className="flex items-center gap-2"><PlaySquare className="w-4 h-4 text-[#BEF264]" /> Raw walkthroughs</span>
-                            <span className="hidden sm:inline">•</span>
-                            <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#BEF264]" /> Ogbomoso-focused</span>
-                        </div>
-                    </motion.div>
+                    </div>
                 </section>
 
-                <div className="mt-10">
+                <div className="mt-8 mb-16">
                     <FeaturedListings />
                 </div>
 
-                <div className="mt-20">
+                <div className="mt-8 mb-16">
                     <WhyHostelPulse />
                 </div>
 
                 {/* More than a hostel listing section */}
-                <section className="py-24 bg-white dark:bg-[#0a0a0a]">
-                    <div className="max-w-7xl mx-auto px-6 text-center">
-                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-6">More than a hostel listing.</h2>
-                        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-16">
-                            HostelPulse is becoming the place students use to find what they need around campus. <br/> <span className="font-bold text-[#BEF264] dark:text-[#BEF264] bg-black px-2 py-1 rounded mt-4 inline-block">But housing is where we start.</span>
-                        </p>
+                <section className="py-16 bg-white dark:bg-[#0a0a0a]">
+                    <div className="max-w-7xl mx-auto px-6">
+                        <div className="mb-12">
+                            <h2 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white mb-3">More than a hostel listing.</h2>
+                            <p className="text-base text-gray-600 dark:text-gray-400 max-w-xl">
+                                HostelPulse is becoming the place students use to find what they need around campus. <span className="font-bold text-gray-900 dark:text-white">But housing is where we start.</span>
+                            </p>
+                        </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div className="bg-gray-50 dark:bg-[#111] p-8 rounded-3xl border border-gray-100 dark:border-white/5 flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
-                                <div className="w-16 h-16 bg-[#BEF264]/20 rounded-full flex items-center justify-center mb-4">
-                                    <Home className="w-8 h-8 text-black dark:text-[#BEF264]" />
+                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {/* Housing Wedge (Dominant) */}
+                            <div className="md:col-span-3 lg:col-span-2 bg-[#BEF264] p-8 rounded-2xl flex flex-col justify-between min-h-[240px]">
+                                <div className="w-12 h-12 bg-black/10 rounded-xl flex items-center justify-center mb-4">
+                                    <Home className="w-6 h-6 text-black" />
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Find a place</h3>
-                                <p className="text-gray-500 text-sm">Verified accommodation</p>
+                                <div>
+                                    <h3 className="text-2xl font-black text-black mb-1">Find a place</h3>
+                                    <p className="text-black/70 font-medium">Verified student accommodation</p>
+                                </div>
                             </div>
-                            <div className="bg-gray-50 dark:bg-[#111] p-8 rounded-3xl border border-gray-100 dark:border-white/5 flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
-                                <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
-                                    <Users className="w-8 h-8 text-blue-500" />
+                            
+                            {/* Secondary Categories */}
+                            <div className="bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 p-6 rounded-2xl flex flex-col justify-between min-h-[200px]">
+                                <Users className="w-6 h-6 text-gray-900 dark:text-white mb-4" />
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">Find people</h3>
+                                    <p className="text-gray-500 text-sm">Roommates</p>
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Find people</h3>
-                                <p className="text-gray-500 text-sm">Roommates</p>
                             </div>
-                            <div className="bg-gray-50 dark:bg-[#111] p-8 rounded-3xl border border-gray-100 dark:border-white/5 flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
-                                <div className="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mb-4">
-                                    <Zap className="w-8 h-8 text-purple-500" />
+                            <div className="bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 p-6 rounded-2xl flex flex-col justify-between min-h-[200px]">
+                                <Zap className="w-6 h-6 text-gray-900 dark:text-white mb-4" />
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">Find opportunities</h3>
+                                    <p className="text-gray-500 text-sm">Campus gigs</p>
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Find opportunities</h3>
-                                <p className="text-gray-500 text-sm">Campus gigs</p>
                             </div>
-                            <div className="bg-gray-50 dark:bg-[#111] p-8 rounded-3xl border border-gray-100 dark:border-white/5 flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
-                                <div className="w-16 h-16 bg-orange-500/10 rounded-full flex items-center justify-center mb-4">
-                                    <Store className="w-8 h-8 text-orange-500" />
+                            <div className="lg:hidden bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-white/10 p-6 rounded-2xl flex flex-col justify-between min-h-[200px]">
+                                <Store className="w-6 h-6 text-gray-900 dark:text-white mb-4" />
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">Buy & sell</h3>
+                                    <p className="text-gray-500 text-sm">Student marketplace</p>
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Buy & sell</h3>
-                                <p className="text-gray-500 text-sm">Student marketplace</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 {/* Ecosystem Section - Ogbomoso First */}
-                <section className="py-20 bg-gray-900 text-white dark:bg-[#111]">
+                <section className="py-16 border-t border-gray-200 dark:border-white/10">
                     <div className="max-w-4xl mx-auto px-6 text-center">
-                        <h2 className="text-3xl md:text-5xl font-black mb-6">One platform. One city. Built around student life.</h2>
-                        <p className="text-lg md:text-xl text-gray-400 font-medium">
-                            Start with a place to live. Then find the people, opportunities, and things you need around you.
+                        <h2 className="text-2xl md:text-4xl font-black mb-4 text-gray-900 dark:text-white tracking-tight">One platform. One city.</h2>
+                        <p className="text-base text-gray-600 dark:text-gray-400 font-medium">
+                            Built around student life in Ogbomoso.<br/>
+                            <span className="text-gray-400 dark:text-gray-500 mt-2 inline-block">Find a place. Find people. Find opportunities. Buy & sell.</span>
                         </p>
                     </div>
                 </section>
 
-                <FAQSection />
+                <div className="mt-8 mb-16">
+                    <FAQSection />
+                </div>
 
                 {/* Final CTA */}
-                <section className="py-24 bg-white dark:bg-[#0a0a0a]">
-                    <div className="max-w-4xl mx-auto px-6 text-center border-t border-gray-200 dark:border-white/10 pt-24">
-                        <h2 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">Looking for a place in Ogbomoso?</h2>
-                        <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 font-medium">
+                <section className="py-16">
+                    <div className="max-w-4xl mx-auto px-6 text-center border-t border-gray-200 dark:border-white/10 pt-16">
+                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Looking for a place in Ogbomoso?</h2>
+                        <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 font-medium">
                             Don't start with an agent. Start with HostelPulse.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link 
                                 href="/rent"
-                                className="w-full sm:w-auto bg-[#BEF264] hover:bg-[#d9f99d] text-black px-10 py-5 rounded-full font-black text-sm tracking-widest uppercase transition-all shadow-lg"
+                                className="w-full sm:w-auto bg-[#BEF264] hover:bg-[#d9f99d] text-black px-8 py-3.5 rounded-xl font-bold text-sm uppercase transition-all"
                             >
                                 Explore Hostels
                             </Link>
                             <Link 
                                 href="/dashboard"
-                                className="w-full sm:w-auto bg-transparent border-2 border-gray-200 dark:border-white/10 hover:border-gray-300 text-gray-900 dark:text-white px-10 py-5 rounded-full font-black text-sm tracking-widest uppercase transition-all"
+                                className="w-full sm:w-auto bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 text-gray-900 dark:text-white px-8 py-3.5 rounded-xl font-bold text-sm uppercase transition-all"
                             >
                                 List a Property
                             </Link>
