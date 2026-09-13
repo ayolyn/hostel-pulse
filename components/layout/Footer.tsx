@@ -14,7 +14,7 @@ export default function Footer() {
                         <HostelPulseLogo variant="dark" size={36} />
                     </div>
                     <p className="text-sm leading-relaxed max-w-xs font-medium">
-                        The trust layer for Ogbomoso real estate. Secure escrow, verified listings, and physical inspections.
+                        Real listings. Real rooms. Built for Ogbomoso students.
                     </p>
                     <div className="flex gap-4">
                         <Link href="https://twitter.com/hostelpulse" target="_blank" className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center hover:bg-[#BEF264]/10 hover:text-[#BEF264] transition-all border border-white/5">

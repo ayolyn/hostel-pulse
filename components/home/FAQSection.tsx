@@ -40,7 +40,7 @@ export function FAQSection() {
             Common <span className="text-green-400">Questions</span>
           </h2>
           <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
-            Everything you need to know about renting safely on Hostel Pulse.
+            Questions students ask before choosing a hostel.
           </p>
         </div>
 
