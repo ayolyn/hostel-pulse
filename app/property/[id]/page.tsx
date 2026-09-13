@@ -2,7 +2,7 @@ export const runtime = 'edge';
 import { createClient } from '@/lib/supabase/server';
 import {
     Wifi, Shield, Zap, Wind, MapPin,
-    Bed, Bath, CheckCircle, Share2, Heart, ArrowLeft, Building2, Home, Car
+    Bed, Bath, CheckCircle, Share2, Heart, ArrowLeft, Building2, Home, Car, Search, Video, Info
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -67,6 +67,8 @@ export default async function PropertyPage({ params }: { params: { id: string } 
             { icon: Wind, label: "Cross Ventilation" }
         ];
 
+    const hasVideo = property.video_url && property.video_url.trim().length > 5 && property.video_url !== "null";
+
     return (
         <div className="min-h-screen bg-white pb-24 md:pb-0 relative">
             <div className="hidden md:block">
@@ -78,31 +80,38 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                 <Link href="/rent" className="p-2 rounded-full hover:bg-gray-100">
                     <ArrowLeft className="w-5 h-5 text-gray-700" />
                 </Link>
-                
             </div>
 
             <main className="max-w-7xl mx-auto md:p-6 md:pt-28" id="top">
                 <section className="mb-8 relative group">
                     {/* Desktop Gallery */}
                     <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-4 h-[500px] rounded-3xl overflow-hidden">
-                        <div className="col-span-2 row-span-2 relative cursor-pointer hover:opacity-95 transition-opacity bg-black">
-                            {(property.video_url && property.video_url.trim().length > 5 && property.video_url !== "null") ? (
+                        <div className="col-span-2 row-span-2 relative cursor-pointer hover:opacity-95 transition-opacity bg-black flex flex-col items-center justify-center">
+                            {hasVideo ? (
                                 <video src={property.video_url} autoPlay muted loop playsInline controls className="w-full h-full object-cover" />
                             ) : (
-                                <Image src={images[0]} alt="Main" fill className="object-cover" priority />
+                                <div className="text-center p-6 flex flex-col items-center">
+                                    <Video className="w-12 h-12 text-white/20 mb-4" />
+                                    <p className="text-white/50 font-black uppercase tracking-widest text-xs">Raw walkthrough not available yet</p>
+                                </div>
+                            )}
+                            {hasVideo && property.verified_walkthrough && (
+                                <div className="absolute top-4 left-4 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-emerald-500/20">
+                                    <CheckCircle className="w-3 h-3" /> HostelPulse Verified Video
+                                </div>
                             )}
                         </div>
                         <div className="relative cursor-pointer hover:opacity-95 transition-opacity">
-                            <Image src={images[1] || images[0]} alt="Interior" fill className="object-cover" />
+                            <Image src={images[0]} alt="Main" fill className="object-cover" priority />
                         </div>
                         <div className="relative cursor-pointer hover:opacity-95 transition-opacity rounded-tr-3xl">
-                            <Image src={images[2] || images[0]} alt="Detail" fill className="object-cover" />
+                            <Image src={images[1] || images[0]} alt="Interior" fill className="object-cover" />
                         </div>
                         <div className="relative cursor-pointer hover:opacity-95 transition-opacity">
-                            <Image src={images[3] || images[0]} alt="Room" fill className="object-cover" />
+                            <Image src={images[2] || images[0]} alt="Room" fill className="object-cover" />
                         </div>
                         <div className="relative cursor-pointer hover:opacity-95 transition-opacity rounded-br-3xl flex items-center justify-center bg-gray-100">
-                            <Image src={images[0]} alt="More" fill className="object-cover opacity-60" />
+                            <Image src={images[images.length > 3 ? 3 : 0]} alt="More" fill className="object-cover opacity-60" />
                             <div className="relative z-10 font-bold text-gray-900 bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm">
                                 View all photos
                             </div>
@@ -110,46 +119,41 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                     </div>
 
                     {/* Mobile Slider Placeholder */}
-                    <div className="md:hidden relative h-[350px] w-full bg-gray-100">
-                        {(property.video_url && property.video_url.trim().length > 5 && property.video_url !== "null") ? (
+                    <div className="md:hidden relative h-[350px] w-full bg-black flex items-center justify-center">
+                        {hasVideo ? (
                             <video src={property.video_url} autoPlay muted loop playsInline controls className="w-full h-full object-cover" />
                         ) : (
-                            <Image src={images[0]} alt="Main" fill className="object-cover" priority />
+                            <div className="text-center p-6 flex flex-col items-center">
+                                <Video className="w-12 h-12 text-white/20 mb-4" />
+                                <p className="text-white/50 font-black uppercase tracking-widest text-xs">Raw walkthrough not available yet</p>
+                            </div>
                         )}
-                        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm">
-                            1/{images.length}
+                        {hasVideo && property.verified_walkthrough && (
+                            <div className="absolute top-4 left-4 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-emerald-500/20">
+                                <CheckCircle className="w-3 h-3" /> Verified Video
+                            </div>
+                        )}
+                        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm border border-white/10">
+                            1 Video, {images.length} Photos
                         </div>
                     </div>
-
-                    {/* Desktop Actions */}
-                    
                 </section>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-6 md:px-0">
                     <div className="lg:col-span-2 space-y-8">
                         <div>
                             <div className="flex flex-wrap gap-2 mb-4">
-                                {(property.verification_status === 'Verified' || property.verification_status === 'Live View') && (
-                                    <Badge className="bg-emerald-100 text-emerald-800 border-none flex items-center gap-1">
-                                        <CheckCircle className="w-3 h-3" /> Physically Inspected
-                                    </Badge>
-                                )}
                                 {property.category !== 'Land' && property.bedrooms > 0 && (
-                                    <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold flex items-center gap-1">
+                                    <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-1">
                                         <Bed className="w-3 h-3" /> {property.bedrooms} Bedrooms
                                     </span>
                                 )}
                                 {property.category !== 'Land' && property.bathrooms > 0 && (
-                                    <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold flex items-center gap-1">
+                                    <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-1">
                                         <Bath className="w-3 h-3" /> {property.bathrooms} Baths
                                     </span>
                                 )}
-                                {property.category === 'Land' && property.area_size && (
-                                    <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold flex items-center gap-1">
-                                        <MapPin className="w-3 h-3" /> {property.area_size} SQM
-                                    </span>
-                                )}
-                                <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-semibold flex items-center gap-1">
+                                <span className="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-1">
                                     <Home className="w-3 h-3" /> {property.category}
                                 </span>
                                 <Badge className={`
@@ -159,62 +163,83 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                                 `}>
                                     For {property.listing_type === 'sale' || property.listing_type === 'buy' ? 'Sale' : property.listing_type === 'shortlet' ? 'Shortlet' : 'Rent'}
                                 </Badge>
+                                {!property.is_active && (
+                                    <Badge className="bg-red-100 text-red-800 border-none uppercase text-[10px] font-black">
+                                        Unavailable
+                                    </Badge>
+                                )}
                             </div>
 
-                            <h1 className="text-xl sm:text-2xl md:text-2xl sm:text-3xl font-bold text-gray-900 mb-2 uppercase tracking-tighter leading-none">{property.title}</h1>
-                            <div className="flex items-center text-gray-500 font-medium">
-                                <MapPin className="w-4 h-4 mr-1 text-gray-400" />
+                            <h1 className="text-xl sm:text-2xl md:text-2xl sm:text-3xl font-black text-gray-900 mb-2 uppercase tracking-tighter leading-none">{property.title}</h1>
+                            <div className="flex items-center text-gray-500 font-bold text-sm">
+                                <MapPin className="w-4 h-4 mr-1 text-[#BEF264]" />
                                 {property.location}
                             </div>
                         </div>
 
                         <div className="w-full h-[1px] bg-gray-100" />
 
+                        {/* Verification Status Block */}
+                        <div className="bg-neutral-50 rounded-3xl p-6 border border-neutral-100">
+                            <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-4">Verification Status</h3>
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                                    property.verification_status === 'Physically Inspected' ? 'bg-emerald-100 text-emerald-600' :
+                                    property.verification_status === 'Pending Review' ? 'bg-amber-100 text-amber-600' :
+                                    property.verification_status === 'Details Checked' ? 'bg-blue-100 text-blue-600' :
+                                    'bg-gray-200 text-gray-500'
+                                }`}>
+                                    <Shield className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <p className="font-black text-gray-900 uppercase tracking-tight text-lg">{property.verification_status || 'Unverified'}</p>
+                                    <p className="text-xs text-gray-500 font-medium mt-1">
+                                        Last checked: {property.verified_at ? new Date(property.verified_at).toLocaleDateString() : 'Never'}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div className="flex items-center gap-2">
+                                    {property.address_confirmed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Info className="w-4 h-4 text-gray-300" />}
+                                    <span className={`text-sm ${property.address_confirmed ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'}`}>Address Confirmed</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {property.price_confirmed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Info className="w-4 h-4 text-gray-300" />}
+                                    <span className={`text-sm ${property.price_confirmed ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'}`}>Price Confirmed</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {property.agent_confirmed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Info className="w-4 h-4 text-gray-300" />}
+                                    <span className={`text-sm ${property.agent_confirmed ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'}`}>Agent Confirmed</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {property.availability_confirmed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Info className="w-4 h-4 text-gray-300" />}
+                                    <span className={`text-sm ${property.availability_confirmed ? 'text-gray-900 font-bold' : 'text-gray-400 font-medium'}`}>Availability Confirmed</span>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Local Intelligence */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8">
-                            {property.category === 'Land' ? (
-                                <>
-                                    <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
-                                        <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-500 mb-2 flex items-center justify-center text-sm">📜</div>
-                                        <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Documentation</p>
-                                        <span className="text-[10px] font-bold mt-2 uppercase text-center line-clamp-2">
-                                            {property.features?.filter((f: string) => ['C of O', 'Survey Plan', 'Deed of Assignment', 'Gazette'].includes(f)).join(', ') || 'Pending'}
-                                        </span>
-                                    </div>
-                                    <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
-                                        <div className="w-8 h-8 rounded-full bg-green-100 text-green-500 mb-2 flex items-center justify-center text-sm">🏔️</div>
-                                        <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Land Type</p>
-                                        <span className="text-[10px] font-bold mt-2 uppercase">{property.water_source || 'Dry Land'}</span>
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
-                                        <Zap className="w-5 h-5 text-yellow-500 mb-2" />
-                                        <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Light Score</p>
-                                        <div className="flex gap-0.5 mt-2">
-                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(s => (
-                                                <div key={s} className={`w-1.5 h-3 rounded-full ${s <= (property.light_score || 7) ? 'bg-yellow-500' : 'bg-gray-200'}`} />
-                                            ))}
-                                        </div>
-                                        <span className="text-[10px] font-bold mt-2">{property.light_score || 7}/10 Rating</span>
-                                    </div>
-                                    <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
-                                        <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-500 mb-2 flex items-center justify-center text-sm">💧</div>
-                                        <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Water</p>
-                                        <span className="text-[10px] font-bold mt-2 uppercase">{property.water_source || 'Borehole'}</span>
-                                    </div>
-                                </>
-                            )}
+                            <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-500 mb-2 flex items-center justify-center text-sm">💧</div>
+                                <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Water Source</p>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.water_source || 'Unavailable'}</span>
+                            </div>
+                            <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
+                                <div className="w-8 h-8 rounded-full bg-yellow-100 text-yellow-500 mb-2 flex items-center justify-center text-sm"><Zap className="w-4 h-4" /></div>
+                                <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Electricity</p>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.electricity_type || 'Unavailable'}</span>
+                            </div>
                             <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-500 mb-2 flex items-center justify-center text-sm">🚶</div>
                                 <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">{property.category === 'Land' ? 'Landmark' : 'Gate Distance'}</p>
-                                <span className="text-[10px] font-bold mt-2 uppercase">{property.gate_distance || (property.category === 'Land' ? 'Not specified' : '~15 mins walk')}</span>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.distance_to_lautech || property.gate_distance || 'Not specified'}</span>
                             </div>
                             <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-500 mb-2 flex items-center justify-center text-sm">🏠</div>
-                                <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Type</p>
-                                <span className="text-[10px] font-bold mt-2 uppercase">{property.category}</span>
+                                <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Available From</p>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.available_from ? new Date(property.available_from).toLocaleDateString() : 'Now'}</span>
                             </div>
                         </div>
 
@@ -246,8 +271,15 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                     <PropertyClientActions
                         propertyId={property.id}
                         propertyName={property.title}
-                        price={property.price}
-                        priceLabel={property.price_label}
+                        isActive={property.is_active !== false}
+                        annualRent={property.price}
+                        agentFee={property.agent_fee}
+                        agreementFee={property.agreement_fee}
+                        cautionFee={property.caution_fee}
+                        inspectionFee={property.inspection_fee}
+                        serviceCharge={property.service_charge}
+                        otherFees={property.other_fees}
+                        totalMoveInCost={property.total_move_in_cost}
                         listingType={property.listing_type}
                         landlordId={property.agent_id || property.landlord_id}
                         landlord={Array.isArray(property.landlord) ? property.landlord[0] : property.landlord}

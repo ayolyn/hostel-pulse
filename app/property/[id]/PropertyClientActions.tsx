@@ -5,17 +5,23 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/providers/AuthProvider';
 import Link from 'next/link';
 import InspectionModal from '@/components/ui/InspectionModal';
-import { Heart, MessageCircle, Phone, ExternalLink, PencilLine, Building2, Share2 } from 'lucide-react';
+import { Heart, MessageCircle, Phone, ExternalLink, PencilLine, Building2, Share2, AlertCircle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
-import { useFlutterwave } from '@/hooks/useFlutterwave';
 import { trackPropertyEvent } from '@/lib/analytics';
 
 interface Props {
     propertyId: string;
     propertyName: string;
-    price: number;
-    priceLabel: string;
+    isActive: boolean;
+    annualRent: number;
+    agentFee: number;
+    agreementFee: number;
+    cautionFee: number;
+    inspectionFee: number;
+    serviceCharge: number;
+    otherFees: number;
+    totalMoveInCost: number;
     listingType: string;
     landlordId: string;
     landlord?: {
@@ -33,34 +39,29 @@ interface Props {
     };
 }
 
-export default function PropertyClientActions({ propertyId, propertyName, price, priceLabel, listingType, landlordId, landlord, agent }: Props) {
+export default function PropertyClientActions({ 
+    propertyId, propertyName, isActive, annualRent, agentFee, agreementFee, 
+    cautionFee, inspectionFee, serviceCharge, otherFees, totalMoveInCost, 
+    listingType, landlordId, landlord, agent 
+}: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [savingStatus, setSavingStatus] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
     
-    // Messaging states
-    const [isMessaging, setIsMessaging] = useState(false);
-    const [messageText, setMessageText] = useState("");
-    const [sendingMsg, setSendingMsg] = useState(false);
-    const [messageSuccess, setMessageSuccess] = useState(false);
-    
     const router = useRouter();
     const { isLoggedIn } = useAuth();
     const supabase = createClient();
-    const { handlePayment } = useFlutterwave();
 
     useEffect(() => {
         const checkStatus = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
 
-            // Check if owner
             if (user.id === landlordId) {
                 setIsOwner(true);
             }
 
-            // Check if saved
             if (isLoggedIn) {
                 const { data } = await supabase
                     .from('saved_properties')
@@ -74,10 +75,8 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                 }
             }
 
-            // Track view asynchronously
             trackPropertyEvent(propertyId, 'view', user?.id);
         };
-
         checkStatus();
     }, [isLoggedIn, propertyId, landlordId, supabase]);
 
@@ -99,26 +98,16 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
         }
 
         if (isSaved) {
-            await supabase
-                .from('saved_properties')
-                .delete()
-                .eq('property_id', propertyId)
-                .eq('student_id', user.id);
+            await supabase.from('saved_properties').delete().eq('property_id', propertyId).eq('student_id', user.id);
             setIsSaved(false);
         } else {
-            await supabase
-                .from('saved_properties')
-                .insert({
-                    property_id: propertyId,
-                    student_id: user.id
-                });
+            await supabase.from('saved_properties').insert({ property_id: propertyId, student_id: user.id });
             setIsSaved(true);
         }
         setSavingStatus(false);
         router.refresh();
     };
 
-    
     const handleShare = async () => {
         try {
             await navigator.share({
@@ -128,89 +117,6 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
             });
         } catch (err) {
             console.log('Error sharing', err);
-        }
-    };
-
-    const sendMessage = async () => {
-        try {
-            if (!messageText.trim()) return;
-            setSendingMsg(true);
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                setSendingMsg(false);
-                return;
-            }
-
-            if (!landlordId) {
-                setSendingMsg(false);
-                toast.error('Recipient ID missing');
-                throw new Error('Recipient ID missing');
-            }
-
-            // Find or create a chat_room for this property
-            let conversationId: string | null = null;
-            const { data: rooms } = await supabase
-                .from('chat_rooms')
-                .select('id, participant_one_id, participant_two_id, property_id')
-                .eq('property_id', propertyId)
-                .or(`participant_one_id.eq.${user.id},participant_two_id.eq.${user.id}`);
-            
-            const existingRoom = rooms?.find((r: any) => 
-                (r.participant_one_id === user.id && r.participant_two_id === landlordId) ||
-                (r.participant_one_id === landlordId && r.participant_two_id === user.id)
-            );
-
-            if (existingRoom) {
-                // If a chat already exists, we simply use it to continue the conversation
-                conversationId = existingRoom.id;
-            } else {
-                // Create a new room
-                const { data: newRoom, error: createError } = await supabase
-                    .from('chat_rooms')
-                    .insert({
-                        participant_one_id: user.id,
-                        participant_two_id: landlordId,
-                        property_id: propertyId,
-                        category: 'HOUSING',
-                        last_message_at: new Date().toISOString()
-                    })
-                    .select('id')
-                    .single();
-                
-                if (createError) throw createError;
-                conversationId = newRoom.id;
-            }
-
-            // Send the message
-            const { error } = await supabase
-                .from('messages')
-                .insert({
-                    sender_id: user.id,
-                    receiver_id: landlordId,
-                    property_id: propertyId,
-                    ...(conversationId ? { conversation_id: conversationId, room_id: conversationId } : {}),
-                    content: messageText.trim(),
-                    is_read: false
-                });
-
-            if (error) throw error;
-
-            toast.success('Message sent! Taking you to the chat...');
-            setMessageSuccess(true);
-            setMessageText('');
-            
-            // Track lead
-            trackPropertyEvent(propertyId, 'lead', user.id);
-            
-            // Redirect to the live chat room so the conversation can continue
-            setTimeout(() => {
-                router.push(`/messages/${landlordId}?room_id=${conversationId}`);
-            }, 1500);
-
-        } catch (err: any) {
-            setSendingMsg(false);
-            toast.error(err.message || 'An unexpected error occurred while sending the message.');
-            console.error('sendMessage exception:', err);
         }
     };
 
@@ -225,21 +131,66 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
             />
 
             <div className="sticky top-24 bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50">
-                <div className="flex justify-between items-start mb-6">
-                    <div>
-                        <span className="text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">₦{Number(price).toLocaleString()}</span>
-                        <span className="text-gray-500 font-bold ml-1 text-sm uppercase">{priceLabel}</span>
+                {!isActive && (
+                    <div className="mb-4 bg-red-50 border border-red-100 p-4 rounded-xl flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                        <div>
+                            <h4 className="text-red-800 font-bold text-sm uppercase tracking-widest">Unavailable</h4>
+                            <p className="text-red-600 text-xs mt-1">This property is currently taken or unavailable.</p>
+                        </div>
                     </div>
-                </div>
-
-                <div className="space-y-4 mb-6">
-                    <div className="flex justify-between text-sm text-gray-600 border-b border-gray-100 pb-2">
-                        <span className="font-bold">Agency Fee</span>
-                        <span className="font-black text-gray-900">10%</span>
+                )}
+                
+                {/* Price Breakdown */}
+                <div className="mb-6">
+                    <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-4 border-b border-gray-100 pb-2">Fee Breakdown</h3>
+                    
+                    <div className="space-y-3 mb-4">
+                        <div className="flex justify-between text-sm">
+                            <span className="text-gray-600 font-medium">Annual Rent</span>
+                            <span className="font-bold text-gray-900">₦{Number(annualRent || 0).toLocaleString()}</span>
+                        </div>
+                        {Number(agentFee) > 0 && (
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-600 font-medium">Agent Fee</span>
+                                <span className="font-bold text-gray-900">₦{Number(agentFee).toLocaleString()}</span>
+                            </div>
+                        )}
+                        {Number(agreementFee) > 0 && (
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-600 font-medium">Agreement / Legal</span>
+                                <span className="font-bold text-gray-900">₦{Number(agreementFee).toLocaleString()}</span>
+                            </div>
+                        )}
+                        {Number(cautionFee) > 0 && (
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-600 font-medium">Caution Fee</span>
+                                <span className="font-bold text-gray-900">₦{Number(cautionFee).toLocaleString()}</span>
+                            </div>
+                        )}
+                        {Number(inspectionFee) > 0 && (
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-600 font-medium">Inspection Fee</span>
+                                <span className="font-bold text-gray-900">₦{Number(inspectionFee).toLocaleString()}</span>
+                            </div>
+                        )}
+                        {Number(serviceCharge) > 0 && (
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-600 font-medium">Service Charge</span>
+                                <span className="font-bold text-gray-900">₦{Number(serviceCharge).toLocaleString()}</span>
+                            </div>
+                        )}
+                        {Number(otherFees) > 0 && (
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-600 font-medium">Other Fees</span>
+                                <span className="font-bold text-gray-900">₦{Number(otherFees).toLocaleString()}</span>
+                            </div>
+                        )}
                     </div>
-                    <div className="flex justify-between text-sm text-gray-600 border-b border-gray-100 pb-2">
-                        <span className="font-bold">Legal Fee</span>
-                        <span className="font-black text-gray-900">5%</span>
+                    
+                    <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100 flex items-center justify-between">
+                        <span className="font-black text-[10px] uppercase tracking-widest text-gray-500">Total Move-in Cost</span>
+                        <span className="text-xl font-black text-[#BEF264] drop-shadow-sm bg-black px-3 py-1 rounded-lg">₦{Number(totalMoveInCost || annualRent).toLocaleString()}</span>
                     </div>
                 </div>
 
@@ -254,9 +205,9 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                             )}
                         </div>
                         <div className="flex-1">
-                            <p className="text-xs font-black uppercase text-gray-400 tracking-widest">Listed By</p>
+                            <p className="text-xs font-black uppercase text-gray-400 tracking-widest">Managed By</p>
                             <h4 className="font-black text-gray-900 leading-tight">
-                                {agent?.full_name || landlord?.business_name || 'Verified HostelPulse Agent'}
+                                {agent?.full_name || landlord?.business_name || 'HostelPulse Agent'}
                             </h4>
                             {agent?.rank && (
                                 <p className="text-[9px] font-black uppercase tracking-widest text-[#BEF264]">{agent.rank} Agent</p>
@@ -280,7 +231,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                                     toast.error('WhatsApp number missing');
                                 }
                             }}
-                            className="bg-[#25D366] text-white flex items-center justify-center gap-2 py-3 rounded-xl hover:opacity-90 transition-opacity font-bold text-xs shadow-lg shadow-[#25D366]/20"
+                            className="bg-[#25D366] text-white flex items-center justify-center gap-2 py-3 rounded-xl hover:opacity-90 transition-opacity font-bold text-xs shadow-sm"
                         >
                             <MessageCircle className="w-4 h-4" /> WhatsApp
                         </button>
@@ -294,7 +245,7 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                                     toast.error('Contact phone number missing');
                                 }
                             }}
-                            className="bg-blue-600 text-white flex items-center justify-center gap-2 py-3 rounded-xl hover:opacity-90 transition-opacity font-bold text-xs shadow-lg shadow-blue-600/20"
+                            className="bg-blue-600 text-white flex items-center justify-center gap-2 py-3 rounded-xl hover:opacity-90 transition-opacity font-bold text-xs shadow-sm"
                         >
                             <Phone className="w-4 h-4" /> Call Agent
                         </button>
@@ -302,17 +253,16 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                 </div>
 
                 <div className="flex gap-3 mb-3">
-                    {listingType === 'rent' && (
-                        <button
-                            onClick={() => handleProtectedAction(() => {
-                                trackPropertyEvent(propertyId, 'lead');
-                                setIsModalOpen(true);
-                            })}
-                            className="flex-1 bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 shadow-lg shadow-[#BEF264]/20"
-                        >
-                            Request Inspection
-                        </button>
-                    )}
+                    <button
+                        onClick={() => handleProtectedAction(() => {
+                            trackPropertyEvent(propertyId, 'lead');
+                            setIsModalOpen(true);
+                        })}
+                        disabled={!isActive}
+                        className={`flex-1 font-black uppercase tracking-widest py-3 rounded-2xl transition-transform active:scale-95 shadow-sm text-xs ${isActive ? 'bg-black text-[#BEF264] hover:bg-neutral-800' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                    >
+                        Request Inspection
+                    </button>
                     
                     <button
                         onClick={() => handleProtectedAction(toggleSave)}
@@ -327,85 +277,16 @@ export default function PropertyClientActions({ propertyId, propertyName, price,
                     >
                         <Share2 className="w-5 h-5" />
                     </button>
-
                 </div>
 
                 {isOwner && (
                     <button
                         onClick={() => router.push(`/dashboard/landlord?tab=listings&edit=${propertyId}`)}
-                        className="w-full border-2 border-[#BEF264] text-gray-900 font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#BEF264]/10 transition-transform active:scale-95 shadow-sm mb-3 flex items-center justify-center gap-2"
+                        className="w-full border-2 border-gray-200 text-gray-900 font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-gray-50 transition-colors shadow-sm mb-3 flex items-center justify-center gap-2 text-xs"
                     >
                         <PencilLine className="w-5 h-5" /> Edit My Listing
                     </button>
                 )}
-
-                <button
-                    onClick={() => handleProtectedAction(() => {
-                        trackPropertyEvent(propertyId, 'lead');
-                        router.push(`/book/${propertyId}`);
-                    })}
-                    className="w-full bg-black text-[#BEF264] font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-neutral-800 transition-transform active:scale-95 shadow-lg shadow-gray-200 mb-3"
-                >
-                    Request to Book
-                </button>
-
-                {isMessaging ? (
-                    <div className="mt-4 animate-in fade-in duration-300">
-                        {messageSuccess ? (
-                            <div className="flex flex-col items-center justify-center p-6 bg-[#BEF264]/10 rounded-2xl border border-[#BEF264]/30">
-                                <div className="w-10 h-10 bg-[#BEF264] rounded-full flex items-center justify-center mb-3">
-                                    <span className="text-black text-xl font-black">✓</span>
-                                </div>
-                                <p className="text-[#0D9488] font-black uppercase tracking-widest text-xs">Message Sent</p>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col gap-3">
-                                <textarea
-                                    value={messageText}
-                                    onChange={(e) => setMessageText(e.target.value)}
-                                    placeholder="Hi! I'm interested in this property..."
-                                    className="w-full p-4 border border-gray-200 rounded-2xl resize-none outline-none focus:ring-2 focus:ring-[#BEF264] text-sm"
-                                    rows={3}
-                                    onFocus={() => {
-                                        if (!messageText) {
-                                            setMessageText(`Hi ${agent?.full_name?.split(' ')[0] || 'there'}, I'm interested in "${propertyName}" on HostelPulse. Is it available for inspection?`);
-                                        }
-                                    }}
-                                />
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={() => setIsMessaging(false)}
-                                        className="flex-1 border-2 border-dashed border-gray-200 text-gray-400 font-bold uppercase tracking-widest py-3 rounded-xl hover:text-gray-900 hover:border-gray-300 transition-colors text-xs"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        onClick={() => handleProtectedAction(sendMessage)}
-                                        disabled={sendingMsg || !messageText.trim()}
-                                        className="flex-1 bg-black text-[#BEF264] font-black uppercase tracking-widest py-3 rounded-xl hover:bg-neutral-800 transition-colors disabled:opacity-50 text-xs"
-                                    >
-                                        {sendingMsg ? 'Sending...' : 'Send'}
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                ) : (
-                    <button
-                        onClick={() => handleProtectedAction(() => setIsMessaging(true))}
-                        className="w-full border-2 border-dashed border-gray-200 text-gray-500 font-black uppercase tracking-widest py-3 rounded-2xl hover:border-gray-900 hover:text-gray-900 transition-all"
-                    >
-                        {agent
-                            ? `Message ${agent.full_name?.split(' ')[0] || 'Agent'}`
-                            : landlord
-                                ? `Message ${landlord.business_name?.split(' ')[0] || 'Landlord'}`
-                                : 'Message Landlord'}
-                    </button>
-                )}
-
-                <p className="text-[10px] text-center text-gray-400 mt-4 font-bold uppercase tracking-widest">
-                    Funds are held safely in escrow
-                </p>
             </div>
         </div>
     );

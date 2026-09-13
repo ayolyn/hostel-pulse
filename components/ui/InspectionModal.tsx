@@ -2,11 +2,9 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, Clock, Loader2, CheckCircle2 } from 'lucide-react';
+import { X, Calendar, Clock, Loader2, CheckCircle2, Phone, MessageSquare } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { createNotification } from '@/lib/notifications';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { useFlutterwave } from '@/hooks/useFlutterwave';
 import toast from 'react-hot-toast';
 
 interface InspectionModalProps {
@@ -20,7 +18,6 @@ interface InspectionModalProps {
 export default function InspectionModal({ isOpen, onClose, propertyId, propertyName, agentId }: InspectionModalProps) {
     const supabase = createClient();
     const { user, role } = useAuth();
-    const { handlePayment } = useFlutterwave();
 
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -28,6 +25,10 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
 
     const [date, setDate] = useState('');
     const [time, setTime] = useState('08:00 AM');
+    const [altDate, setAltDate] = useState('');
+    const [altTime, setAltTime] = useState('');
+    const [phone, setPhone] = useState('');
+    const [whatsapp, setWhatsapp] = useState('');
     const [notes, setNotes] = useState('');
 
     const generateTimeSlots = () => {
@@ -51,7 +52,6 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
         setError('');
 
         try {
-            // Bypass payment for "Pay on Arrival"
             let scheduled_at: any = null;
             if (date) {
                 const timeObj = new Date(date);
@@ -85,17 +85,10 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
                     .gte('scheduled_at', startOfDay.toISOString())
                     .lte('scheduled_at', endOfDay.toISOString());
 
-                if (checkError) {
-                    console.error('Error checking duplicate inspections:', checkError);
-                    toast.error('Failed to verify booking availability. Please try again.');
-                    setLoading(false);
-                    return;
-                }
+                if (checkError) throw checkError;
 
                 if (existingInspections && existingInspections.length > 0) {
-                    toast.error('You already have an inspection scheduled for this property on this date.');
-                    setLoading(false);
-                    return;
+                    throw new Error('You already have an inspection scheduled for this property on this date.');
                 }
             }
 
@@ -103,19 +96,18 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
 
             let validAgentId: any = null;
             if (agentId && agentId !== 'null' && agentId !== 'undefined' && agentId.trim() !== '') {
-                // Verify if the ID belongs to an agent to prevent FK constraint violations when landlords are passed
                 try {
                     const { data: agentData, error: agentError } = await supabase.from('agent_accounts').select('id').eq('id', agentId).maybeSingle();
-                    if (agentError) {
-                        console.error('Error verifying agent:', agentError);
-                        // If RLS blocked it or other error, assume it might not be a valid agent for FK
-                    } else if (agentData) {
-                        validAgentId = agentId;
-                    }
-                } catch (e) {
-                    console.error('Unexpected error verifying agent:', e);
-                }
+                    if (agentData) validAgentId = agentId;
+                } catch (e) {}
             }
+
+            const structuredNotes = `
+Phone: ${phone}
+WhatsApp: ${whatsapp}
+Alternative Date: ${altDate} ${altTime}
+Note: ${notes}
+            `.trim();
 
             const { error: insertError } = await supabase.from('inspections').insert({
                 property_id: propertyId,
@@ -123,53 +115,25 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
                 requester_type,
                 agent_id: validAgentId,
                 scheduled_at,
-                notes: `${notes || ''} | Pay on Arrival`,
+                notes: structuredNotes,
                 status: 'Pending', 
-                inspection_fee: 2000
+                inspection_fee: 0 // Free inspection by default
             });
 
-            if (insertError) {
-                console.error('Inspection insert error:', insertError);
-                throw new Error(insertError.message || 'Failed to submit inspection');
-            }
+            if (insertError) throw insertError;
 
-            // Action B: Simultaneously insert automated system message and WhatsApp Notification
-            if (agentId && agentId !== 'null' && agentId !== 'undefined' && agentId.trim() !== '') {
+            // Notify Agent
+            if (validAgentId) {
                 await supabase.from('messages').insert({
                     sender_id: user.id,
-                    receiver_id: agentId,
+                    receiver_id: validAgentId,
                     property_id: propertyId,
-                    content: `SYSTEM: New Inspection Requested by ${user.user_metadata?.full_name || 'Student'} for ${date} at ${time}`,
+                    content: `SYSTEM: New Inspection Requested by ${user.user_metadata?.full_name || 'Student'} for ${date} at ${time}. Phone: ${phone}`,
                     is_read: false
                 });
 
-                // Trigger WhatsApp Notification for the Landlord
-                const { data: agentData } = await supabase
-                    .from('agent_accounts')
-                    .select('phone, whatsapp_number')
-                    .eq('id', agentId)
-                    .maybeSingle();
-
-                const { data: landlordData } = await supabase
-                    .from('landlord_accounts')
-                    .select('phone, whatsapp_number')
-                    .eq('id', agentId)
-                    .maybeSingle();
-
-                let landlordPhone = agentData?.whatsapp_number || agentData?.phone || landlordData?.whatsapp_number || landlordData?.phone;
-                
-                if (landlordPhone) {
-                    await supabase.from('messages_queue').insert({
-                        user_id: agentId,
-                        phone_number: landlordPhone.replace(/\D/g, ''),
-                        message_body: `🔔 NEW LEAD! ${user.user_metadata?.full_name || 'A Student'} just requested an inspection for ${date} at ${time}. Log in to HOSTELPULSE to Accept the request and receive your ₦2,000 Escrow fee!`,
-                        status: 'pending'
-                    });
-                }
-                
-                // Trigger In-App UI Notification
                 await supabase.from('notifications').insert({
-                    user_id: agentId,
+                    user_id: validAgentId,
                     title: 'New Inspection Request',
                     message: `${user.user_metadata?.full_name || 'A Student'} just requested an inspection for ${date} at ${time}.`,
                     type: 'info',
@@ -183,10 +147,10 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
                 setSuccess(false);
                 onClose();
             }, 3000);
-            setLoading(false);
+            
         } catch (err: any) {
-            toast.error(err.message || 'Failed to submit inspection');
             setError(err.message || 'Failed to submit inspection');
+        } finally {
             setLoading(false);
         }
     };
@@ -209,7 +173,7 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                            className="w-full md:w-[500px] bg-white rounded-t-3xl md:rounded-3xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto pointer-events-auto"
+                            className="w-full md:w-[600px] bg-white rounded-t-3xl md:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto pointer-events-auto"
                         >
                             <div className="flex justify-between items-center mb-6">
                                 <div>
@@ -226,30 +190,19 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
 
                         {success ? (
                             <div className="py-10 text-center space-y-4">
-                                <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto" />
+                                <CheckCircle2 className="w-16 h-16 text-[#BEF264] mx-auto" />
                                 <div>
                                     <h4 className="text-xl font-bold text-gray-900">Request Sent!</h4>
-                                    <p className="text-gray-500 mt-1">An agent will contact you shortly to confirm the exact time.</p>
+                                    <p className="text-gray-500 mt-1">Check your dashboard for updates. The agent will contact you.</p>
                                 </div>
                             </div>
                         ) : (
                             <form className="space-y-4" onSubmit={handleSubmit}>
                                 {error && (
-                                    <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl border border-red-200">
+                                    <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl border border-red-200 font-bold">
                                         {error}
                                     </div>
                                 )}
-
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Full Name</label>
-                                    <input
-                                        type="text"
-                                        value={user?.user_metadata?.full_name || ''}
-                                        disabled
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-500 cursor-not-allowed"
-                                    />
-                                    <p className="text-[10px] text-gray-400">Name is synced from your Google profile.</p>
-                                </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
@@ -267,7 +220,7 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Time Slot</label>
+                                        <label className="text-sm font-medium text-gray-700">Time Slot *</label>
                                         <div className="relative">
                                             <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                             <select
@@ -283,25 +236,87 @@ export default function InspectionModal({ isOpen, onClose, propertyId, propertyN
                                     </div>
                                 </div>
 
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-700">Alt Date (Optional)</label>
+                                        <div className="relative">
+                                            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                            <input
+                                                type="date"
+                                                min={new Date().toISOString().split('T')[0]}
+                                                value={altDate}
+                                                onChange={(e) => setAltDate(e.target.value)}
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-700">Alt Time</label>
+                                        <div className="relative">
+                                            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                            <select
+                                                value={altTime}
+                                                onChange={(e) => setAltTime(e.target.value)}
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                            >
+                                                <option value="">Any time</option>
+                                                {generateTimeSlots().map((slot) => (
+                                                    <option key={slot} value={slot}>{slot}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-700">Phone Number *</label>
+                                        <div className="relative">
+                                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                            <input
+                                                type="tel"
+                                                required
+                                                value={phone}
+                                                onChange={(e) => setPhone(e.target.value)}
+                                                placeholder="080..."
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-700">WhatsApp (Optional)</label>
+                                        <div className="relative">
+                                            <MessageSquare className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                            <input
+                                                type="tel"
+                                                value={whatsapp}
+                                                onChange={(e) => setWhatsapp(e.target.value)}
+                                                placeholder="080..."
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-gray-700">Message (Optional)</label>
                                     <textarea
-                                        rows={3}
+                                        rows={2}
                                         value={notes}
                                         onChange={(e) => setNotes(e.target.value)}
-                                        placeholder="Any specific value? e.g. I need to move in by next week."
+                                        placeholder="Any specific instructions for the agent?"
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all resize-none"
                                     />
                                 </div>
 
                                 <button
-                                    disabled={loading}
-                                    className="w-full flex items-center justify-center gap-2 bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-xl hover:bg-[#a6d456] transition-colors shadow-lg shadow-[#BEF264]/20 mt-4 disabled:opacity-50"
+                                    disabled={loading || !date || !phone}
+                                    className="w-full flex items-center justify-center gap-2 bg-black text-[#BEF264] font-black uppercase tracking-widest py-4 rounded-xl hover:bg-neutral-800 transition-colors shadow-lg mt-4 disabled:opacity-50"
                                 >
-                                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Request'}
+                                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Confirm Request'}
                                 </button>
                                 <p className="text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest">
-                                    Inspection Fee: ₦2,000 (Pay on arrival)
+                                    Your information is kept secure.
                                 </p>
                             </form>
                         )}
