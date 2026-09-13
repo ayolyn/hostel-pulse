@@ -14,8 +14,7 @@ import { QRScanner } from '@/components/market/QRScanner';
 import { ReviewRoom } from '@/components/market/ReviewRoom';
 import { useSaved } from '@/components/providers/SavedProvider';
 import PropertyCard from '@/components/ui/PropertyCard';
-import { DetailedProfileForm } from '@/components/dashboard/DetailedProfileForm';
-import { ProfileSettings } from '@/components/profile/ProfileSettings';
+import { ProfileSettingsHub } from '@/components/dashboard/ProfileSettingsHub';
 import BuyerWalletTab from '@/components/dashboard/BuyerWalletTab';
 import { SupportHub } from '@/components/messages/SupportHub';
 import { CampusMarketHub } from '@/components/dashboard/CampusMarketHub';
@@ -321,7 +320,7 @@ function StudentDashboardContent() {
             {activeTab === 'Overview' ? (
                 <>
                     {/* New Professional Buyer Hub Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button 
                             onClick={() => setActiveTab('Inspections')}
                             className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-2xl flex flex-col gap-4 text-left hover:scale-105 transition-transform active:scale-95"
@@ -335,15 +334,7 @@ function StudentDashboardContent() {
                             </div>
                         </button>
                         
-                        <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-2xl flex flex-col gap-4">
-                            <Wallet className="w-6 h-6 text-[#BEF264]" />
-                            <div>
-                                <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white text-emerald-500">
-                                    ₦{Number(accountData?.wallet_balance || 0).toLocaleString()}
-                                </p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">Available Balance</p>
-                            </div>
-                        </div>
+
 
                         <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-2xl flex flex-col gap-4 relative overflow-hidden">
                             <ShieldCheck className={`w-8 h-8 ${accountData?.is_approved ? 'text-[#BEF264]' : 'text-gray-400'}`} />
@@ -615,6 +606,13 @@ function StudentDashboardContent() {
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <SupportHub />
                 </div>
+            ) : activeTab === 'Profile' ? (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <ProfileSettingsHub 
+                        accountData={accountData} 
+                        onUpdate={() => setRefreshCount(prev => prev + 1)} 
+                    />
+                </div>
             ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 flex flex-col gap-5">
                     {/* Welcome Section */}
@@ -680,12 +678,6 @@ function StudentDashboardContent() {
                             </div>
                         </div>
                     </div>
-
-                    <DetailedProfileForm 
-                        account={accountData}
-                        userId={accountData?.id}
-                        onUpdate={() => setRefreshCount(prev => prev + 1)}
-                    />
                 </div>
             )}
         </div>

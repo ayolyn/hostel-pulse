@@ -37,10 +37,9 @@ const navItems = [
     { name: 'Overview', icon: LayoutDashboard, path: '/dashboard/agent?tab=overview' },
     { name: 'My Zone', icon: Building2, path: '/dashboard/agent?tab=zone' },
     { name: 'Inspections', icon: Calendar, path: '/dashboard/agent?tab=inspections' },
-    { name: 'Wallet', icon: Wallet, path: '/dashboard/agent?tab=wallet' },
     { name: 'Messages', icon: MessageCircle, path: '/dashboard/agent?tab=messages' },
     { name: 'Leaderboard', icon: Trophy, path: '/dashboard/agent?tab=leaderboard' },
-    { name: 'Profile', icon: User, path: '/dashboard/agent?tab=profile' },
+    { name: 'Profile & Settings', icon: User, path: '/dashboard/agent?tab=profile' },
     { name: 'Analytics', icon: BarChart3, path: '/dashboard/agent?tab=analytics' },
     { name: 'Support', icon: LifeBuoy, path: '/dashboard/agent?tab=support' },
 ];

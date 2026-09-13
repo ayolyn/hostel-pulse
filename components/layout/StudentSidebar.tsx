@@ -53,10 +53,9 @@ const mainNavItems = [
 ];
 
 const bottomNavItems = [
-    { name: 'Wallet', icon: Wallet, path: '/dashboard/student?tab=wallet' },
     { name: 'Saved', icon: Heart, path: '/dashboard/student?tab=saved' },
     { name: 'Support', icon: HelpCircle, path: '/dashboard/student?tab=support' },
-    { name: 'Profile', icon: User, path: '/dashboard/student?tab=profile' },
+    { name: 'Profile & Settings', icon: Settings, path: '/dashboard/student?tab=profile' },
 ];
 
 export function StudentSidebar({ isOpen, isRetracted, onClose, onRetractToggle }: StudentSidebarProps) {
