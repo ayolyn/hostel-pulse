@@ -118,10 +118,12 @@ export default function PropertyCard({
                 <h3 className="font-black text-base text-gray-900 group-hover:text-black transition-colors uppercase tracking-tight line-clamp-1 mb-2">{title}</h3>
 
                 <div className="space-y-1 mb-4">
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-600">
-                        {getVerificationIcon()}
-                        <span className="uppercase tracking-wide truncate">{verificationStatus || 'Unverified'}</span>
-                    </div>
+                    {(verificationStatus === 'Physically Inspected' || verificationStatus === 'Details Checked') && (
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-600">
+                            {getVerificationIcon()}
+                            <span className="uppercase tracking-wide truncate">{verificationStatus}</span>
+                        </div>
+                    )}
                     {hasWalkthrough && (
                         <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-600">
                             <Video className="w-3 h-3 text-[#BEF264]" />

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -11,7 +11,7 @@ import Link from 'next/link';
 export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any, onUpdate: () => void }) {
     const { user, signOut } = useAuth();
     const supabase = createClient();
-    const [activeSection, setActiveSection] = useState('Edit Profile');
+    const [activeSection, setActiveSection] = useState('menu');
     
     const [reviews, setReviews] = useState<any[]>([]);
     const [disputes, setDisputes] = useState<any[]>([]);
@@ -73,9 +73,23 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
 
     return (
         <div className="flex flex-col md:flex-row gap-6 lg:gap-10 max-w-6xl mx-auto pb-20">
-            {/* Settings Sidebar */}
-            <div className="w-full md:w-64 shrink-0 flex flex-col gap-2">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-4 px-2">Settings</h2>
+            
+            {/* Settings Sidebar (Hidden on mobile if a section is active) */}
+            <div className={w-full md:w-64 shrink-0 flex-col gap-2 }>
+                {/* Profile Summary */}
+                <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-6 shadow-sm mb-4 text-center">
+                    <div className="w-20 h-20 bg-gray-100 rounded-full mx-auto mb-3 overflow-hidden">
+                        {accountData?.avatar_url ? (
+                            <img src={accountData.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                            <User className="w-10 h-10 m-5 text-gray-400" />
+                        )}
+                    </div>
+                    <h3 className="font-black text-lg text-gray-900 dark:text-white uppercase truncate">{accountData?.full_name || 'Student'}</h3>
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">{accountData?.role || 'Student'}</p>
+                </div>
+                
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-4 px-2 hidden md:block">Settings</h2>
                 
                 <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-2 shadow-sm">
                     {sections.map(section => (
@@ -111,13 +125,15 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
 
             {/* Main Content Area */}
             <div className="flex-1 min-w-0">
-                {activeSection === 'Edit Profile' && (
+                {(activeSection === 'Edit Profile' || activeSection === 'menu') && (
+                    <div className={${activeSection === 'menu' ? 'hidden md:block' : 'block'}}>
                     <div className="animate-in fade-in duration-300">
                         <DetailedProfileForm 
                             account={accountData}
                             userId={user?.id || ''}
                             onUpdate={onUpdate}
                         />
+                        </div>
                     </div>
                 )}
 

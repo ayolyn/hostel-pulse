@@ -206,9 +206,9 @@ export async function agentRequestReactivation(propertyId: string) {
     const { error } = await adminClient
         .from('properties')
         .update({
-            status: 'pending',
-            verification_status: 'Requires Update',
-            is_active: false
+            status: 'active',
+            verification_status: 'Unverified',
+            is_active: true
         })
         .eq('id', propertyId);
 
@@ -219,7 +219,7 @@ export async function agentRequestReactivation(propertyId: string) {
         changed_by: user.id,
         action: 'reactivation_requested',
         field: 'status',
-        new_value: 'pending'
+        new_value: 'active'
     });
 
     return { success: true };
