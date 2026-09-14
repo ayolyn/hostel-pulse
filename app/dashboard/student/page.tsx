@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { useEffect, useState, useRef, Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Calendar, Clock, CheckCircle2, Heart, Search, MapPin, Star, Users, GraduationCap, ShoppingBag, DollarSign, ShieldCheck, Camera, Loader2, Wallet, X } from 'lucide-react';
+import { Calendar, Clock, CheckCircle2, Heart, Search, MapPin, Star, Users, GraduationCap, ShoppingBag, DollarSign, ShieldCheck, Camera, Loader2, Wallet, X, ArrowLeft } from 'lucide-react';
 import { SellerTrustBadge, getTrustLevel } from '@/components/ui/trust-badge';
 import { CampusGigs } from '@/components/gigs/CampusGigs';
 import BuyerWalletTab from '@/components/dashboard/BuyerWalletTab';
@@ -18,7 +18,7 @@ import { useSaved } from '@/components/providers/SavedProvider';
 import PropertyCard from '@/components/ui/PropertyCard';
 import { ProfileSettingsHub } from '@/components/dashboard/ProfileSettingsHub';
 import { SupportHub } from '@/components/messages/SupportHub';
-import { CampusMarketHub } from '@/components/dashboard/CampusMarketHub';
+import { CampusMarket } from '@/components/market/CampusMarket';
 import { MessageList } from '@/components/messages/MessageList';
 import PayInspectionModal from '@/components/dashboard/PayInspectionModal';
 import { SavedPropertiesTab } from '@/components/dashboard/SavedPropertiesTab';
@@ -642,19 +642,43 @@ function StudentDashboardContent() {
                     </section>
                 </div>
             ) : activeTab === 'Roommates' ? (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
+                    <div className="flex items-center gap-4">
+                        <Link href="/dashboard/student" className="p-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 rounded-full hover:scale-105 transition-transform active:scale-95">
+                            <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
+                        </Link>
+                        <h1 className="text-xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Roommates</h1>
+                    </div>
                     <RoommatesTab userId={accountData?.id} userProfile={accountData} />
                 </div>
             ) : activeTab === 'Market' ? (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <CampusMarketHub />
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
+                    <div className="flex items-center gap-4">
+                        <Link href="/dashboard/student" className="p-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 rounded-full hover:scale-105 transition-transform active:scale-95">
+                            <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
+                        </Link>
+                        <h1 className="text-xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Campus Market</h1>
+                    </div>
+                    <CampusMarket />
                 </div>
             ) : activeTab === 'Gigs' ? (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
+                    <div className="flex items-center gap-4">
+                        <Link href="/dashboard/student" className="p-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 rounded-full hover:scale-105 transition-transform active:scale-95">
+                            <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
+                        </Link>
+                        <h1 className="text-xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Campus Gigs</h1>
+                    </div>
                     <CampusGigs />
                 </div>
             ) : activeTab === 'Wallet' ? (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
+                    <div className="flex items-center gap-4">
+                        <Link href="/dashboard/student" className="p-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 rounded-full hover:scale-105 transition-transform active:scale-95">
+                            <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
+                        </Link>
+                        <h1 className="text-xl font-black uppercase tracking-tight text-gray-900 dark:text-white">My Wallet</h1>
+                    </div>
                     <BuyerWalletTab userId={accountData?.id} />
                 </div>
             ) : activeTab === 'Messages' ? (
@@ -750,6 +774,11 @@ export default function StudentDashboard() {
         </Suspense>
     );
 }
+
+
+
+
+
 
 
 

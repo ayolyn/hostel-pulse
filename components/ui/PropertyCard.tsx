@@ -79,7 +79,7 @@ export default function PropertyCard({
             ref={cardRef}
             whileHover={{ y: -5 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 min-w-[280px] w-full flex-shrink-0 cursor-pointer flex flex-col h-full"
+            className="group relative bg-white dark:bg-neutral-900 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 dark:border-white/5 min-w-[280px] w-full flex-shrink-0 cursor-pointer flex flex-col h-full"
         >
             <div className="relative h-56 w-full shrink-0 bg-gray-100">
                 <Image
@@ -115,7 +115,7 @@ export default function PropertyCard({
                     <span className="truncate">{category || 'Property'}</span>
                 </div>
 
-                <h3 className="font-black text-base text-gray-900 group-hover:text-black transition-colors uppercase tracking-tight line-clamp-1 mb-2">{title}</h3>
+                <h3 className="font-black text-base text-gray-900 dark:text-white group-hover:text-black dark:group-hover:text-white transition-colors uppercase tracking-tight line-clamp-1 mb-2">{title}</h3>
 
                 <div className="space-y-1 mb-4">
                     {(verificationStatus === 'Physically Inspected' || verificationStatus === 'Details Checked') && (
@@ -132,7 +132,7 @@ export default function PropertyCard({
                     )}
                 </div>
 
-                <div className="mt-auto pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
+                <div className="mt-auto pt-3 border-t border-gray-100 dark:border-white/5 dark:border-white/10 flex items-center justify-between">
                     <div className="flex flex-col">
                         <span className="text-[9px] font-black uppercase text-gray-400 tracking-widest">Rent</span>
                         <div className="text-lg font-black text-gray-900 dark:text-white">{price}<span className="text-[10px] text-gray-400 font-bold">/yr</span></div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -96,7 +96,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                 return;
             }
 
-            const { error } = await supabase.from('roommate_profiles').insert({
+            const { error } = await supabase.from('roommate_profiles').upsert({
                 user_id: userId,
                 budget_max: numBudget,
                 sleep_schedule: sleepSchedule,
@@ -147,7 +147,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                     <div className="space-y-4">
                         <div>
                             <label className="text-xs font-black uppercase tracking-widest text-gray-500 mb-2 flex items-center gap-2">
-                                <Wallet className="w-4 h-4" /> Maximum Budget (₦)
+                                <Wallet className="w-4 h-4" /> Maximum Budget (â‚¦)
                             </label>
                             <input 
                                 type="number" 
@@ -278,7 +278,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                     <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 flex items-center gap-1">
                                         <Wallet className="w-3 h-3" /> Budget
                                     </span>
-                                    <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">₦{Number(p.budget_max).toLocaleString()}</span>
+                                    <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">â‚¦{Number(p.budget_max).toLocaleString()}</span>
                                 </div>
                                 <div className="bg-gray-50 dark:bg-neutral-950/50 p-3 rounded-2xl flex flex-col">
                                     <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-1 flex items-center gap-1">
@@ -308,3 +308,5 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
         </div>
     );
 }
+
+

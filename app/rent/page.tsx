@@ -145,7 +145,7 @@ function RentContent() {
                             const params = new URLSearchParams(searchParams.toString());
                             params.delete('zone');
                             params.delete('q');
-                            router.push(`/rent?${params.toString()}`);
+                            router.push(`/rent₦${params.toString()}`);
                         }} className="bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
                             Try Another Area
                         </button>
