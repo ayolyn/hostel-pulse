@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 export const runtime = 'edge';
 
 import { useEffect, useState, Suspense } from 'react';
@@ -124,7 +124,7 @@ function AgentDashboardContent() {
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: 'Wallet Balance', value: loading ? '...' : `₦${Number(account?.wallet_balance ?? 0).toLocaleString()}`, icon: Wallet },
+                    
                     { label: 'Deals Closed', value: loading ? '...' : String(account?.deals_closed ?? 0), icon: Trophy },
                     { label: 'Total Tours', value: loading ? '...' : String(account?.completed_tours ?? 0), icon: Calendar },
                     { label: 'Earned Today', value: loading ? '...' : `₦${earnedToday.toLocaleString()}`, icon: Zap },

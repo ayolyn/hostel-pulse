@@ -15,7 +15,6 @@ import { ReviewRoom } from '@/components/market/ReviewRoom';
 import { useSaved } from '@/components/providers/SavedProvider';
 import PropertyCard from '@/components/ui/PropertyCard';
 import { ProfileSettingsHub } from '@/components/dashboard/ProfileSettingsHub';
-import BuyerWalletTab from '@/components/dashboard/BuyerWalletTab';
 import { SupportHub } from '@/components/messages/SupportHub';
 import { CampusMarketHub } from '@/components/dashboard/CampusMarketHub';
 import { MessageList } from '@/components/messages/MessageList';
@@ -171,8 +170,6 @@ function StudentDashboardContent() {
             setActiveTab('Roommates');
         } else if (tab === 'profile') {
             setActiveTab('Profile');
-        } else if (tab === 'wallet') {
-            setActiveTab('Wallet');
         } else if (tab === 'market') {
             setActiveTab('Market');
         } else if (tab === 'support') {
@@ -589,10 +586,6 @@ function StudentDashboardContent() {
             ) : activeTab === 'Roommates' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <RoommatesTab userId={accountData?.id} userProfile={accountData} />
-                </div>
-            ) : activeTab === 'Wallet' ? (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <BuyerWalletTab userId={accountData?.id} />
                 </div>
             ) : activeTab === 'Market' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">

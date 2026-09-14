@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, X, Send, Loader2, Bot, User, AlertTriangle } from 'lucide-react';
@@ -249,11 +249,11 @@ export function GlobalSupportWidget() {
     if (!user) return null;
 
     return (
-        <div className="fixed bottom-6 right-6 z-[9999]">
+        <div className="fixed z-[9999] right-4 md:right-6 bottom-[calc(96px+env(safe-area-inset-bottom))] md:bottom-6">
             {!isOpen && (
                 <button 
                     onClick={() => setIsOpen(true)}
-                    className="w-14 h-14 bg-black dark:bg-[#BEF264] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform border-4 border-white dark:border-neutral-900"
+                    className="w-12 h-12 md:w-14 md:h-14 bg-black dark:bg-[#BEF264] rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform border-2 md:border-4 border-white dark:border-neutral-900"
                 >
                     <MessageSquare className="w-6 h-6 text-[#BEF264] dark:text-black" />
                 </button>

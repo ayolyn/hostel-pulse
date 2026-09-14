@@ -132,21 +132,16 @@ export default function PropertyCard({
                     )}
                 </div>
 
-                <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
+                <div className="mt-auto pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
                     <div className="flex flex-col">
                         <span className="text-[9px] font-black uppercase text-gray-400 tracking-widest">Rent</span>
-                        <div className="text-sm font-bold text-gray-500 line-through decoration-gray-300">{price}/yr</div>
+                        <div className="text-lg font-black text-gray-900 dark:text-white">{price}<span className="text-[10px] text-gray-400 font-bold">/yr</span></div>
                     </div>
                     
-                    {totalMoveInCost ? (
+                    {(totalMoveInCost && totalMoveInCost !== price) && (
                         <div className="flex flex-col items-end text-right">
                             <span className="text-[9px] font-black uppercase text-[#BEF264] tracking-widest bg-black px-1.5 py-0.5 rounded">Total Move-In</span>
-                            <div className="text-lg font-black text-gray-900">{totalMoveInCost}</div>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col items-end text-right">
-                            <span className="text-[9px] font-black uppercase text-gray-400 tracking-widest bg-gray-100 px-1.5 py-0.5 rounded">Rent Only</span>
-                            <div className="text-lg font-black text-gray-900">{price}</div>
+                            <div className="text-sm font-black text-gray-900 dark:text-white">{totalMoveInCost}</div>
                         </div>
                     )}
                 </div>
