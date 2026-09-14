@@ -249,7 +249,7 @@ export function GlobalSupportWidget() {
     if (!user) return null;
 
     return (
-        <div className="fixed z-[9999] right-4 md:right-6 bottom-[calc(96px+env(safe-area-inset-bottom))] md:bottom-6">
+        <div className="fixed z-[9999] right-4 md:right-6 bottom-[calc(130px+env(safe-area-inset-bottom))] md:bottom-6">
             {!isOpen && (
                 <button 
                     onClick={() => setIsOpen(true)}
@@ -388,3 +388,4 @@ export function GlobalSupportWidget() {
         </div>
     );
 }
+

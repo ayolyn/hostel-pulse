@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Home, Search, Calendar, MessageSquare, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -9,11 +9,11 @@ import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
 
 const navItems = [
-    { name: 'Home', href: '/dashboard/student', icon: Home, matchPrefix: false, center: false },
-    { name: 'Inspect', href: '/dashboard/student?tab=inspections', icon: Calendar, matchPrefix: false, center: false },
-    { name: 'Find Hostel', href: '/rent', icon: Search, matchPrefix: true, center: true },
-    { name: 'Inbox', href: '/dashboard/student?tab=messages', icon: MessageSquare, matchPrefix: false, center: false },
-    { name: 'Profile', href: '/dashboard/student?tab=profile', icon: User, matchPrefix: false, center: false },
+    { name: 'HOME', href: '/dashboard/student', icon: Home },
+    { name: 'INSPECT', href: '/dashboard/student?tab=inspections', icon: Calendar },
+    { name: 'SEARCH', href: '/rent', icon: Search },
+    { name: 'INBOX', href: '/dashboard/student?tab=messages', icon: MessageSquare },
+    { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
 ];
 
 export function StudentDashboardShell({
@@ -24,21 +24,38 @@ export function StudentDashboardShell({
     const pathname = usePathname();
     const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const tab = searchParams?.get('tab');
+    const [mounted, setMounted] = useState(false);
 
-    const isActive = (item: any) => {
-        if (item.href.includes('?tab=')) {
-            return tab === item.href.split('?tab=')[1];
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const isActive = (name: string) => {
+        if (!mounted) return false; // Prevent hydration mismatch on initial render for complex tab logic
+        if (name === 'HOME') {
+            return pathname === '/dashboard/student' && (!tab || tab === 'home');
         }
-        if (item.matchPrefix) {
-            return pathname.startsWith(item.href);
+        if (name === 'INSPECT') {
+            return pathname.startsWith('/dashboard/student/inspections') || tab === 'inspections';
         }
-        return pathname === item.href && !tab;
+        if (name === 'SEARCH') {
+            return pathname.startsWith('/rent') || pathname.startsWith('/search') || pathname.startsWith('/property');
+        }
+        if (name === 'INBOX') {
+            return pathname.startsWith('/dashboard/student/messages') || pathname.startsWith('/messages') || tab === 'messages';
+        }
+        if (name === 'PROFILE') {
+            return pathname.startsWith('/dashboard/student/profile') || pathname.startsWith('/profile') || tab === 'profile';
+        }
+        return false;
     };
+
+    const activeIndex = navItems.findIndex(item => isActive(item.name));
 
     return (
         <div className="flex min-h-screen bg-gray-50/50 dark:bg-neutral-950 transition-colors duration-500 pb-32 md:pb-0">
             {/* Top Header */}
-            <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border-b border-neutral-200 dark:border-white/10 px-6 py-3 flex items-center justify-between">
+            <header className="fixed top-0 left-0 right-0 z-40 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border-b border-neutral-200 dark:border-white/10 px-6 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full">HP Student</span>
                     
@@ -48,7 +65,7 @@ export function StudentDashboardShell({
                             <Link 
                                 key={item.name} 
                                 href={item.href}
-                                className={`text-sm font-bold uppercase tracking-widest transition-colors ${isActive(item) ? 'text-black dark:text-[#BEF264]' : 'text-gray-400 hover:text-black dark:hover:text-white'}`}
+                                className={`text-sm font-bold uppercase tracking-widest transition-colors ${isActive(item.name) ? 'text-black dark:text-[#BEF264]' : 'text-gray-400 hover:text-black dark:hover:text-white'}`}
                             >
                                 {item.name}
                             </Link>
@@ -71,35 +88,45 @@ export function StudentDashboardShell({
             </main>
 
             {/* Floating Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-6 left-4 right-4 z-50 pointer-events-none pb-[env(safe-area-inset-bottom)]">
-                <div className="bg-neutral-950 shadow-2xl rounded-[32px] flex items-center justify-around px-2 py-2 pointer-events-auto border border-white/10 relative">
-                    {navItems.map((item) => {
+            <div className="md:hidden fixed bottom-6 left-4 right-4 z-40 pointer-events-none pb-[env(safe-area-inset-bottom)]">
+                <div className="bg-neutral-950 shadow-2xl rounded-[32px] flex items-center h-[64px] pointer-events-auto border border-white/10 relative">
+                    
+                    {/* Bump Indicator */}
+                    {activeIndex !== -1 && (
+                        <div 
+                            className="absolute top-0 left-0 h-full pointer-events-none flex justify-center"
+                            style={{ 
+                                width: `${100 / navItems.length}%`,
+                                transform: `translateX(${activeIndex * 100}%)`,
+                                transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' 
+                            }}
+                        >
+                            <svg width="76" height="32" viewBox="0 0 76 32" className="absolute -top-[31px] text-neutral-950 drop-shadow-[0_-4px_6px_rgba(190,242,100,0.15)]">
+                                <path d="M0,32 C15,32 20,0 38,0 C56,0 61,32 76,32 Z" fill="currentColor" />
+                                <path d="M0,32 C15,32 20,0 38,0 C56,0 61,32 76,32" fill="none" stroke="#BEF264" strokeWidth="1.5" className="opacity-80" />
+                            </svg>
+                        </div>
+                    )}
+
+                    {/* Nav Items */}
+                    {navItems.map((item, index) => {
                         const Icon = item.icon;
-                        const active = isActive(item);
-                        
-                        if (item.center) {
-                            return (
-                                <Link 
-                                    key={item.name}
-                                    href={item.href}
-                                    className="flex flex-col items-center justify-center -mt-8 relative group"
-                                >
-                                    <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 ${active ? 'bg-[#BEF264] shadow-[#BEF264]/20' : 'bg-neutral-800 border-2 border-neutral-900 shadow-black/50'}`}>
-                                        <Icon className={`w-6 h-6 ${active ? 'text-black stroke-2' : 'text-white stroke-[1.5]'}`} />
-                                    </div>
-                                    <span className={`text-[9px] font-black uppercase tracking-widest mt-1.5 ${active ? 'text-[#BEF264]' : 'text-gray-400'}`}>Search</span>
-                                </Link>
-                            );
-                        }
+                        const active = activeIndex === index;
                         
                         return (
                             <Link 
                                 key={item.name}
                                 href={item.href}
-                                className={`flex flex-col items-center p-2 min-w-[60px] rounded-xl transition-all ${active ? 'text-[#BEF264]' : 'text-gray-400 hover:text-gray-200'}`}
+                                className="flex-1 flex flex-col items-center justify-center relative z-10 h-full"
                             >
-                                <Icon className={`w-5 h-5 mb-1 ${active ? 'stroke-2' : 'stroke-[1.5]'}`} />
-                                <span className="text-[9px] font-bold uppercase tracking-widest">{item.name}</span>
+                                <Icon 
+                                    className={`w-6 h-6 transition-all duration-300 ease-out absolute ${active ? '-top-3 text-[#BEF264] stroke-[2.5]' : 'top-3.5 text-gray-500 stroke-[2]'}`} 
+                                />
+                                <span 
+                                    className={`text-[9px] font-black uppercase tracking-widest transition-all duration-300 absolute ${active ? 'bottom-2.5 text-[#BEF264] opacity-100 translate-y-0' : 'bottom-2 text-gray-500 opacity-80 translate-y-0'}`}
+                                >
+                                    {item.name}
+                                </span>
                             </Link>
                         );
                     })}
@@ -108,3 +135,4 @@ export function StudentDashboardShell({
         </div>
     );
 }
+
