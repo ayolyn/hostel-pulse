@@ -92,7 +92,7 @@ function StudentDashboardShellContent({
 
             {/* Mobile Bottom Navigation */}
             <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none pb-[env(safe-area-inset-bottom)]">
-                <div className="bg-neutral-950 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] rounded-t-3xl flex items-center h-[72px] pointer-events-auto border-t border-white/10 relative">
+                <div className="bg-neutral-950 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] rounded-t-3xl flex items-center h-[64px] pointer-events-auto border-t border-white/10 relative">
                     
                     {/* Bump Indicator */}
                     {activeIndex !== -1 && (
@@ -123,10 +123,10 @@ function StudentDashboardShellContent({
                                 className="flex-1 flex flex-col items-center justify-center relative z-10 h-full"
                             >
                                 <Icon 
-                                    className={`w-6 h-6 transition-all duration-300 ease-out absolute ${active ? '-top-3 text-[#BEF264] stroke-[2.5]' : 'top-3.5 text-gray-500 stroke-[2]'}`} 
+                                    className={`w-5 h-5 transition-all duration-300 ease-out absolute ${active ? 'top-3 text-[#BEF264] stroke-[2.5] scale-110' : 'top-3.5 text-gray-500 stroke-[2]'}`} 
                                 />
                                 <span 
-                                    className={`text-[9px] font-black uppercase tracking-widest transition-all duration-300 absolute ${active ? 'bottom-2.5 text-[#BEF264] opacity-100 translate-y-0' : 'bottom-2 text-gray-500 opacity-80 translate-y-0'}`}
+                                    className={`text-[9px] font-black uppercase tracking-widest transition-all duration-300 absolute ${active ? 'bottom-2 text-[#BEF264] opacity-100' : 'bottom-2 text-gray-500 opacity-80'}`}
                                 >
                                     {item.name}
                                 </span>

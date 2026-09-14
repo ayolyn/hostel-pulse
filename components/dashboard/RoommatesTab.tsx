@@ -136,7 +136,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
 
     if (loading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
                 {[1, 2, 3].map(i => <div key={i} className="h-64 bg-white/5 dark:bg-neutral-900 rounded-2xl border border-white/5" />)}
             </div>
         );
@@ -149,40 +149,40 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
     );
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-4">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
-                        <Users className="w-6 h-6 text-[#BEF264]" />
+                    <h2 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                        <Users className="w-4 h-4 text-[#BEF264]" />
                         Roommate Discovery
                     </h2>
-                    <p className="text-gray-500 text-sm mt-1">Connect with potential roommates looking for shared spaces.</p>
+                    <p className="text-gray-500 text-[11px] mt-1">Connect with potential roommates looking for shared spaces.</p>
                 </div>
             </div>
 
             {/* Profile Management Section */}
             {hasProfile && !isEditingProfile ? (
-                <div className="bg-[#BEF264]/10 border border-[#BEF264]/30 rounded-3xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                <div className="bg-[#BEF264]/10 border border-[#BEF264]/30 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
                     <div>
                         <h3 className="text-sm font-black uppercase tracking-widest text-[#0D9488] mb-1">Your Active Profile</h3>
                         <p className="text-gray-600 dark:text-gray-400 text-sm">You are visible to other students in the roommate network.</p>
                     </div>
                     <button 
                         onClick={() => setIsEditingProfile(true)}
-                        className="shrink-0 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white px-5 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:shadow-md transition-all border border-gray-200 dark:border-white/10"
+                        className="shrink-0 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white px-4 py-2 rounded-xl font-black uppercase tracking-widest text-xs hover:shadow-md transition-all border border-gray-200 dark:border-white/10"
                     >
                         Edit My Profile
                     </button>
                 </div>
             ) : !hasProfile && !isEditingProfile ? (
-                <div className="bg-gray-100 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-3xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                <div className="bg-gray-100 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
                     <div>
                         <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 dark:text-white mb-1">Join the Network</h3>
                         <p className="text-gray-600 dark:text-gray-400 text-sm">Create a profile to let others know you are looking for a roommate.</p>
                     </div>
                     <button 
                         onClick={() => setIsEditingProfile(true)}
-                        className="shrink-0 bg-[#BEF264] text-black px-5 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all"
+                        className="shrink-0 bg-[#BEF264] text-black px-4 py-2 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all"
                     >
                         Create Profile
                     </button>
@@ -191,18 +191,18 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
 
             {/* Profile Form (if editing) */}
             {isEditingProfile && (
-                <div className="max-w-2xl mx-auto bg-white dark:bg-neutral-900 p-6 sm:p-8 rounded-3xl border border-gray-100 dark:border-neutral-800 shadow-xl relative">
+                <div className="max-w-2xl mx-auto bg-white dark:bg-neutral-900 p-4 sm:p-8 rounded-2xl border border-gray-100 dark:border-neutral-800 shadow-xl relative">
                     <button 
                         onClick={() => setIsEditingProfile(false)}
                         className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white"
                     >
                         Cancel
                     </button>
-                    <div className="text-center mb-8">
-                        <div className="w-16 h-16 bg-[#BEF264]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="text-center mb-4">
+                        <div className="w-10 h-10 bg-[#BEF264]/20 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Users className="w-8 h-8 text-[#BEF264]" />
                         </div>
-                        <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">{hasProfile ? 'Edit Profile' : 'Create Profile'}</h2>
+                        <h2 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">{hasProfile ? 'Edit Profile' : 'Create Profile'}</h2>
                         <p className="text-gray-500 mt-2 text-sm">Tell us about your habits and budget to find the perfect match.</p>
                     </div>
 
@@ -217,7 +217,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                     required
                                     value={budgetMax}
                                     onChange={e => setBudgetMax(e.target.value)}
-                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none"
+                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-4 py-2 focus:ring-2 focus:ring-[#BEF264] outline-none"
                                     placeholder="e.g. 150000"
                                 />
                             </div>
@@ -230,7 +230,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                     <select 
                                         value={sleepSchedule}
                                         onChange={e => setSleepSchedule(e.target.value)}
-                                        className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none"
+                                        className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-4 py-2 focus:ring-2 focus:ring-[#BEF264] outline-none"
                                     >
                                         <option value="Early Bird">Early Bird</option>
                                         <option value="Night Owl">Night Owl</option>
@@ -244,7 +244,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                     <select 
                                         value={cleanliness}
                                         onChange={e => setCleanliness(e.target.value)}
-                                        className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none"
+                                        className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-4 py-2 focus:ring-2 focus:ring-[#BEF264] outline-none"
                                     >
                                         <option value="Very Clean">Very Clean</option>
                                         <option value="Average">Average</option>
@@ -262,7 +262,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                     required
                                     value={department}
                                     onChange={e => setDepartment(e.target.value)}
-                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none"
+                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-4 py-2 focus:ring-2 focus:ring-[#BEF264] outline-none"
                                     placeholder="e.g. Computer Science"
                                 />
                             </div>
@@ -274,7 +274,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                     value={bio}
                                     onChange={e => setBio(e.target.value)}
                                     rows={3}
-                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:ring-2 focus:ring-[#BEF264] outline-none resize-none"
+                                    className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-4 py-2 focus:ring-2 focus:ring-[#BEF264] outline-none resize-none"
                                     placeholder="What are you looking for in a roommate?"
                                 />
                             </div>
@@ -283,7 +283,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                         <button 
                             type="submit"
                             disabled={submitting}
-                            className="w-full bg-[#BEF264] text-black py-3 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-[#a6d456] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50"
+                            className="w-full bg-[#BEF264] text-black py-2 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-[#a6d456] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50"
                         >
                             {submitting ? 'Saving...' : 'Save Profile'}
                         </button>
@@ -294,7 +294,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
             {!isEditingProfile && (
                 <>
                     {/* The Map */}
-                    <div className="mb-8">
+                    <div className="mb-4">
                         <PulseMapbox snapMode={true} activeCategory="roommates" />
                     </div>
 
@@ -317,7 +317,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                     </div>
 
                     {filteredProfiles.length === 0 ? (
-                        <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-6 text-center">
+                        <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-2xl p-4 text-center">
                             <Users className="w-12 h-12 text-gray-200 dark:text-neutral-800 mx-auto mb-4" />
                             <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">No Profiles Found</h3>
                             <p className="text-gray-500 mt-2 text-sm">
@@ -325,13 +325,13 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                             </p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {filteredProfiles.map((p) => (
-                                <div key={p.user_id} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-6 rounded-2xl flex flex-col hover:border-[#BEF264]/40 transition-all shadow-sm group relative overflow-hidden">
-                                    <div className="absolute -top-6 -right-10 w-32 h-32 bg-[#BEF264] rounded-full blur-[60px] opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none" />
+                                <div key={p.user_id} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-2xl flex flex-col hover:border-[#BEF264]/40 transition-all shadow-sm group relative overflow-hidden">
+                                    <div className="absolute -top-4 -right-10 w-20 h-20 bg-[#BEF264] rounded-full blur-[60px] opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none" />
                                     
                                     <div className="flex items-start gap-4 mb-4 relative z-10">
-                                        <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-neutral-800 border-2 border-white dark:border-neutral-800 overflow-hidden shrink-0">
+                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-neutral-800 border-2 border-white dark:border-neutral-800 overflow-hidden shrink-0">
                                             {p.avatar_url ? (
                                                 <Image src={p.avatar_url} alt={p.full_name} width={64} height={64} className="object-cover w-full h-full" />
                                             ) : (
@@ -369,7 +369,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
 
                                     <button 
                                         onClick={() => handleSendMessage(p.user_id)}
-                                        className="mt-auto w-full bg-black dark:bg-white/10 text-white py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 dark:hover:bg-white/20 transition-all flex items-center justify-center gap-2 border border-transparent dark:border-white/5 relative z-10"
+                                        className="mt-auto w-full bg-black dark:bg-white/10 text-white py-2 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 dark:hover:bg-white/20 transition-all flex items-center justify-center gap-2 border border-transparent dark:border-white/5 relative z-10"
                                     >
                                         <MessageSquare className="w-4 h-4" /> Send Message
                                     </button>

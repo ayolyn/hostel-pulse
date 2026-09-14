@@ -237,8 +237,8 @@ export default function PulseMapbox({
     }, [properties, liveProperties, liveRoommates, snapMode, showLandmarks, mapLoaded, activeCategory]);
 
     return (
-        <div className="w-full min-h-[550px] h-[600px] rounded-2xl overflow-hidden relative shadow-xl border border-gray-200 dark:border-white/10">
-            <div ref={mapContainer} className="w-full h-full min-h-[500px] absolute inset-0" style={{ width: '100%', height: '100%', minHeight: '500px' }} />
+        <div className="w-full min-h-[300px] md:min-h-[300px] md:min-h-[500px] h-[350px] md:h-[600px] rounded-2xl overflow-hidden relative shadow-xl border border-gray-200 dark:border-white/10">
+            <div ref={mapContainer} className="w-full h-full min-h-[300px] md:min-h-[500px] absolute inset-0" style={{ width: '100%', height: '100%', minHeight: '300px' }} />
             <style jsx global>{`
                 .mapboxgl-popup-content {
                     padding: 0 !important;
