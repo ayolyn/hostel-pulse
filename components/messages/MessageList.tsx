@@ -266,10 +266,10 @@ export function MessageList() {
                                 window.location.href = `/messages/${user.id}`;
                             }
                         }}
-                        className="bg-[#BEF264]/10 dark:bg-[#BEF264]/5 p-6 rounded-[2rem] border-2 border-dashed border-[#BEF264]/30 hover:border-[#BEF264] transition-all flex items-center gap-6 group"
+                        className="bg-[#BEF264]/10 dark:bg-[#BEF264]/5 p-4 rounded-2xl border-2 border-dashed border-[#BEF264]/30 hover:border-[#BEF264] transition-all flex items-center gap-4 group"
                     >
-                        <div className="w-14 h-14 bg-[#BEF264] rounded-2xl flex items-center justify-center text-black shadow-lg shadow-[#BEF264]/20 group-hover:scale-110 transition-transform">
-                            <MessageSquare className="w-6 h-6" />
+                        <div className="w-12 h-12 bg-[#BEF264] rounded-xl flex shrink-0 items-center justify-center text-black shadow-lg shadow-[#BEF264]/20 group-hover:scale-105 transition-transform">
+                            <MessageSquare className="w-5 h-5" />
                         </div>
                         <div className="text-left">
                             <h3 className="font-black text-gray-900 dark:text-white uppercase tracking-tight">Personal Notes</h3>
@@ -291,13 +291,13 @@ export function MessageList() {
                         <Link 
                             key={chat.groupKey}
                             href={`/messages/${chat.id}?room_id=${chat.roomId || chat.conversationId || ''}${chat.category === 'HOUSING' ? '&category=HOUSING' : ''}`}
-                            className="bg-white dark:bg-neutral-900 p-6 rounded-[2rem] border border-gray-100 dark:border-white/5 flex items-center gap-6 hover:shadow-xl hover:border-[#BEF264]/30 transition-all group"
+                            className="bg-white dark:bg-neutral-900 p-4 rounded-2xl border border-gray-100 dark:border-white/5 flex items-center gap-4 hover:shadow-md hover:border-[#BEF264]/30 transition-all group"
                         >
-                            <div className="w-14 h-14 bg-[#BEF264]/10 dark:bg-[#BEF264]/5 rounded-full flex items-center justify-center text-[#BEF264] overflow-hidden relative shrink-0">
+                            <div className="w-12 h-12 bg-[#BEF264]/10 dark:bg-[#BEF264]/5 rounded-full flex items-center justify-center text-[#BEF264] overflow-hidden relative shrink-0">
                                 {chat.avatar ? (
                                     <NextImage src={chat.avatar} alt={chat.name} fill className="object-cover" />
                                 ) : (
-                                    <User className="w-6 h-6" />
+                                    <User className="w-5 h-5" />
                                 )}
                             </div>
                             <div className="flex-1 min-w-0">

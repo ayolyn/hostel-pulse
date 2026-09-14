@@ -318,31 +318,18 @@ function StudentDashboardContent() {
 
             {activeTab === 'Overview' ? (
                 <>
-                    {/* New Professional Buyer Hub Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <button 
-                            onClick={() => setActiveTab('Inspections')}
-                            className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-2xl flex flex-col gap-4 text-left hover:scale-105 transition-transform active:scale-95"
-                        >
-                            <Calendar className="w-6 h-6 text-[#BEF264]" />
-                            <div>
-                                <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white">
-                                    {inspections.filter(i => i.status === 'Pending').length}
-                                </p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">Pending Inspections</p>
-                            </div>
-                        </button>
+                    {/* Unified Dashboard Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                         
-
-
-                        <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-6 rounded-2xl flex flex-col gap-4 relative overflow-hidden">
-                            <ShieldCheck className={`w-8 h-8 ${accountData?.is_approved ? 'text-[#BEF264]' : 'text-gray-400'}`} />
+                        {/* 1. Verified Status */}
+                        <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-4 sm:p-5 rounded-2xl flex flex-col justify-between gap-3 relative overflow-hidden">
+                            <ShieldCheck className={`w-6 h-6 ${accountData?.is_approved ? 'text-[#BEF264]' : 'text-gray-400'}`} />
                             <div>
-                                <p className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
+                                <p className="text-sm sm:text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">
                                     {accountData?.is_approved ? 'Verified Member' : 'Unverified'}
                                 </p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">
-                                    {accountData?.is_approved ? 'Full Platform Access' : 'Upload your University ID & complete your profile to unlock access.'}
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-1">
+                                    {accountData?.is_approved ? 'Platform Access' : 'Upload ID'}
                                 </p>
                             </div>
                             {!accountData?.is_approved && (
@@ -352,53 +339,68 @@ function StudentDashboardContent() {
                                 </div>
                             )}
                         </div>
-                    </div>
 
-                    {/* Quick Access Tools */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <button 
-                            onClick={() => setActiveTab('Market')}
-                            className="bg-[#BEF264]/10 border border-[#BEF264]/20 shadow-sm p-4 rounded-2xl flex flex-col gap-3 text-left hover:bg-[#BEF264]/20 transition-all active:scale-95"
+                        {/* 2. Pending Inspections */}
+                        <Link 
+                            href="/dashboard/student?tab=inspections"
+                            className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 shadow-sm p-4 sm:p-5 rounded-2xl flex flex-col justify-between gap-3 text-left hover:scale-105 transition-transform active:scale-95"
+                        >
+                            <Calendar className="w-6 h-6 text-gray-900 dark:text-white" />
+                            <div>
+                                <p className="text-sm sm:text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">
+                                    {inspections.filter(i => i.status === 'Pending').length} Pending
+                                </p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-1">Inspections</p>
+                            </div>
+                        </Link>
+                        
+                        {/* 3. Campus Market */}
+                        <Link 
+                            href="?tab=market"
+                            className="bg-[#BEF264]/10 border border-[#BEF264]/20 shadow-sm p-4 sm:p-5 rounded-2xl flex flex-col justify-between gap-3 text-left hover:bg-[#BEF264]/20 transition-all active:scale-95"
                         >
                             <ShoppingBag className="w-6 h-6 text-[#BEF264]" />
                             <div>
-                                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">Campus Market</p>
-                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-0.5">Buy & Sell Items</p>
+                                <p className="text-sm sm:text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Market</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-1">Buy & Sell</p>
                             </div>
-                        </button>
+                        </Link>
 
-                        <button 
-                            onClick={() => setActiveTab('Roommates')}
-                            className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 shadow-sm p-4 rounded-2xl flex flex-col gap-3 text-left hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all active:scale-95"
+                        {/* 4. Roommates */}
+                        <Link 
+                            href="?tab=roommates"
+                            className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 shadow-sm p-4 sm:p-5 rounded-2xl flex flex-col justify-between gap-3 text-left hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all active:scale-95"
                         >
                             <Users className="w-6 h-6 text-blue-500" />
                             <div>
-                                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">Roommates</p>
-                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-0.5">Find a match</p>
+                                <p className="text-sm sm:text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Roommates</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-1">Find Match</p>
                             </div>
-                        </button>
+                        </Link>
                         
-                        <button 
-                            onClick={() => setActiveTab('Gigs')}
-                            className="bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/20 shadow-sm p-4 rounded-2xl flex flex-col gap-3 text-left hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all active:scale-95"
+                        {/* 5. Campus Gigs */}
+                        <Link 
+                            href="?tab=gigs"
+                            className="bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/20 shadow-sm p-4 sm:p-5 rounded-2xl flex flex-col justify-between gap-3 text-left hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all active:scale-95"
                         >
                             <Star className="w-6 h-6 text-purple-500" />
                             <div>
-                                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">Campus Gigs</p>
-                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-0.5">Micro jobs</p>
+                                <p className="text-sm sm:text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Gigs</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-1">Micro Jobs</p>
                             </div>
-                        </button>
+                        </Link>
 
-                        <button 
-                            onClick={() => setActiveTab('Wallet')}
-                            className="bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/20 shadow-sm p-4 rounded-2xl flex flex-col gap-3 text-left hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-all active:scale-95"
+                        {/* 6. Wallet */}
+                        <Link 
+                            href="?tab=wallet"
+                            className="bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/20 shadow-sm p-4 sm:p-5 rounded-2xl flex flex-col justify-between gap-3 text-left hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-all active:scale-95"
                         >
                             <Wallet className="w-6 h-6 text-orange-500" />
                             <div>
-                                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">My Wallet</p>
-                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-0.5">Manage funds</p>
+                                <p className="text-sm sm:text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Wallet</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-1">Manage Funds</p>
                             </div>
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Saved Hostels */}
@@ -643,41 +645,41 @@ function StudentDashboardContent() {
                 </div>
             ) : activeTab === 'Roommates' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
-                    <div className="flex items-center gap-4">
-                        <Link href="/dashboard/student" className="p-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 rounded-full hover:scale-105 transition-transform active:scale-95">
-                            <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
-                        </Link>
-                        <h1 className="text-xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Roommates</h1>
+                    <div className="mb-4">
+                        <button onClick={() => router.push('/dashboard/student')} className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest text-xs font-black">
+                            <ArrowLeft className="w-4 h-4" />
+                            Back
+                        </button>
                     </div>
                     <RoommatesTab userId={accountData?.id} userProfile={accountData} />
                 </div>
             ) : activeTab === 'Market' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
-                    <div className="flex items-center gap-4">
-                        <Link href="/dashboard/student" className="p-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 rounded-full hover:scale-105 transition-transform active:scale-95">
-                            <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
-                        </Link>
-                        <h1 className="text-xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Campus Market</h1>
+                    <div className="mb-4">
+                        <button onClick={() => router.push('/dashboard/student')} className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest text-xs font-black">
+                            <ArrowLeft className="w-4 h-4" />
+                            Back
+                        </button>
                     </div>
                     <CampusMarket />
                 </div>
             ) : activeTab === 'Gigs' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
-                    <div className="flex items-center gap-4">
-                        <Link href="/dashboard/student" className="p-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 rounded-full hover:scale-105 transition-transform active:scale-95">
-                            <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
-                        </Link>
-                        <h1 className="text-xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Campus Gigs</h1>
+                    <div className="mb-4">
+                        <button onClick={() => router.push('/dashboard/student')} className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest text-xs font-black">
+                            <ArrowLeft className="w-4 h-4" />
+                            Back
+                        </button>
                     </div>
                     <CampusGigs />
                 </div>
             ) : activeTab === 'Wallet' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
-                    <div className="flex items-center gap-4">
-                        <Link href="/dashboard/student" className="p-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 rounded-full hover:scale-105 transition-transform active:scale-95">
-                            <ArrowLeft className="w-5 h-5 text-gray-900 dark:text-white" />
-                        </Link>
-                        <h1 className="text-xl font-black uppercase tracking-tight text-gray-900 dark:text-white">My Wallet</h1>
+                    <div className="mb-4">
+                        <button onClick={() => router.push('/dashboard/student')} className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest text-xs font-black">
+                            <ArrowLeft className="w-4 h-4" />
+                            Back
+                        </button>
                     </div>
                     <BuyerWalletTab userId={accountData?.id} />
                 </div>

@@ -62,13 +62,14 @@ function StudentDashboardShellContent({
                     <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full">HP Student</span>
                     
                     {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center gap-6 ml-6">
+                    <nav className="hidden md:flex items-center gap-1 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md border border-neutral-200 dark:border-white/10 p-1 rounded-full ml-6">
                         {navItems.map((item) => (
                             <Link 
                                 key={item.name} 
                                 href={item.href}
-                                className={`text-sm font-bold uppercase tracking-widest transition-colors ${isActive(item.name) ? 'text-black dark:text-[#BEF264]' : 'text-gray-400 hover:text-black dark:hover:text-white'}`}
+                                className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${isActive(item.name) ? 'bg-black dark:bg-[#BEF264] text-white dark:text-black shadow-sm' : 'text-gray-500 hover:text-black dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/5'}`}
                             >
+                                <item.icon className="w-3.5 h-3.5" />
                                 {item.name}
                             </Link>
                         ))}
@@ -89,9 +90,9 @@ function StudentDashboardShellContent({
                 </div>
             </main>
 
-            {/* Floating Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-6 left-4 right-4 z-40 pointer-events-none pb-[env(safe-area-inset-bottom)]">
-                <div className="bg-neutral-950 shadow-2xl rounded-[32px] flex items-center h-[64px] pointer-events-auto border border-white/10 relative">
+            {/* Mobile Bottom Navigation */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none pb-[env(safe-area-inset-bottom)]">
+                <div className="bg-neutral-950 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] rounded-t-3xl flex items-center h-[72px] pointer-events-auto border-t border-white/10 relative">
                     
                     {/* Bump Indicator */}
                     {activeIndex !== -1 && (
@@ -145,6 +146,7 @@ export function StudentDashboardShell({ children }: { children: React.ReactNode 
         </Suspense>
     );
 }
+
 
 
 
