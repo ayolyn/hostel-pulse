@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, Smartphone } from 'lucide-react';
+import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, Smartphone, MapPin } from 'lucide-react';
 import { DetailedProfileForm } from './DetailedProfileForm';
 import { SavedPropertiesTab } from './SavedPropertiesTab';
 import Link from 'next/link';

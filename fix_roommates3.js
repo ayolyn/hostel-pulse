@@ -1,4 +1,6 @@
-"use client";
+﻿const fs = require('fs');
+
+const content = `"use client";
 
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -128,7 +130,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
     };
 
     const handleSendMessage = (targetUserId: string) => {
-        router.push(`?tab=messages&newChat=${targetUserId}`);
+        router.push(\`?tab=messages&newChat=\${targetUserId}\`);
     };
 
     if (loading) {
@@ -210,7 +212,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
                                 <div>
                                     <h4 className="font-bold text-white text-lg tracking-tight">{p.full_name}</h4>
                                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
-                                        {p.department || 'STUDENT'} {p.level ? `• ${p.level}L` : ''}
+                                        {p.department || 'STUDENT'} {p.level ? \`• \${p.level}L\` : ''}
                                     </p>
                                 </div>
                             </div>
@@ -331,3 +333,6 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
         </div>
     );
 }
+`;
+fs.writeFileSync('components/dashboard/RoommatesTab.tsx', content, 'utf8');
+console.log("Rewrote RoommatesTab perfectly based on screenshot 1");
