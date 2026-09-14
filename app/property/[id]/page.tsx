@@ -336,3 +336,5 @@ export default async function PropertyPage({ params }: { params: { id: string } 
         </div>
     );
 }
+
+

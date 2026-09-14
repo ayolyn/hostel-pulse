@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { User, LogOut, Settings } from 'lucide-react';
@@ -7,7 +7,7 @@ import { useAuth } from '@/components/providers/AuthProvider';
 import Link from 'next/link';
 
 export function UserProfileDropdown() {
-    const { user, signOut } = useAuth();
+    const { user, signOut, role } = useAuth();
     const supabase = createClient();
     const [isOpen, setIsOpen] = useState(false);
     const [profile, setProfile] = useState<{ full_name?: string; avatar_url?: string } | null>(null);
@@ -72,11 +72,11 @@ export function UserProfileDropdown() {
                           The user requested to encapsulate "Sign Out". 
                         */}
                         <Link 
-                            href="/dashboard"
+                            href={role === 'student' ? '/dashboard/student?tab=profile' : '/dashboard'}
                             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors text-neutral-700 dark:text-neutral-300 w-full text-left text-sm font-bold"
                             onClick={() => setIsOpen(false)}
                         >
-                            <Settings className="w-4 h-4" /> Dashboard
+                            <Settings className="w-4 h-4" /> {role === 'student' ? 'Profile & Settings' : 'Dashboard'}
                         </Link>
                         <button
                             onClick={() => {
@@ -93,3 +93,5 @@ export function UserProfileDropdown() {
         </div>
     );
 }
+
+

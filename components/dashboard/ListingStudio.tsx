@@ -273,9 +273,9 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             gate_distance: form.gate_distance,
 
             images: imagesToUse,
-            status: 'pending',
-              verification_status: 'Pending Review',
-              is_active: false,
+            status: 'active',
+            verification_status: 'Unverified',
+            is_active: true,
             view_count: 0,
         };
 

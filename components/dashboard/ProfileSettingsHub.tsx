@@ -125,6 +125,14 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
 
             {/* Main Content Area */}
             <div className="flex-1 min-w-0">
+                {activeSection !== 'menu' && (
+                    <button 
+                        onClick={() => setActiveSection('menu')}
+                        className="md:hidden flex items-center gap-2 text-gray-500 font-black uppercase tracking-widest text-xs mb-6 hover:text-gray-900 transition-colors"
+                    >
+                        ← Back
+                    </button>
+                )}
                 {(activeSection === 'Edit Profile' || activeSection === 'menu') && (
                     <div className={`${activeSection === 'menu' ? 'hidden md:block' : 'block'}`}>
                     <div className="animate-in fade-in duration-300">
@@ -275,3 +283,4 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         </div>
     );
 }
+

@@ -365,9 +365,9 @@ function StudentDashboardContent() {
                         </div>
 
                         {loading ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-4">
                                 {[1, 2, 3].map(i => (
-                                    <div key={i} className="bg-gray-100 dark:bg-neutral-900 animate-pulse aspect-square rounded-2xl" />
+                                    <div key={i} className="min-w-[280px] h-[250px] bg-gray-100 dark:bg-neutral-900 animate-pulse rounded-2xl shrink-0 snap-start" />
                                 ))}
                             </div>
                         ) : savedProperties.length === 0 ? (
@@ -377,22 +377,31 @@ function StudentDashboardContent() {
                                 <p className="text-gray-400 text-xs mt-1">Tap ❤️ on any hostel to save it here.</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {savedProperties.map((item) => {
+                            <div className="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-4 hide-scrollbar">
+                                {savedProperties.slice(0, 4).map((item) => {
                                     if (!item.properties) return null;
                                     const p = item.properties;
+                                    const image = (p.images && p.images.length > 0 && p.images[0] !== 'null') ? p.images[0] : '/placeholder.jpg';
                                     return (
-                                        <Link key={item.id} href={`/property/${p.id}`} className="block group">
-                                            <PropertyCard
-                                                id={p.id}
-                                                title={p.title}
-                                                location={p.location}
-                                                price={`₦${Number(p.price).toLocaleString()}`}
-                                                
-                                                image={p.images?.[0] ?? 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5'}
-                                                verificationStatus="Verified"
-                                                
-                                            />
+                                        <Link key={item.id} href={`/property/${p.id}`} className="block shrink-0 w-[85vw] sm:w-[300px] snap-start group bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all h-[300px] flex flex-col">
+                                            <div className="relative w-full h-[160px] bg-gray-100 shrink-0">
+                                                <Image src={image} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform" />
+                                                <button className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-red-500 shadow-sm z-10">
+                                                    <Heart className="w-4 h-4 fill-current" />
+                                                </button>
+                                            </div>
+                                            <div className="p-4 flex-1 flex flex-col justify-between">
+                                                <div>
+                                                    <div className="flex items-center gap-1 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 truncate">
+                                                        <MapPin className="w-3 h-3 text-[#BEF264]" /> {p.location}
+                                                    </div>
+                                                    <h3 className="font-black text-gray-900 dark:text-white uppercase tracking-tight truncate text-sm">{p.title}</h3>
+                                                </div>
+                                                <div className="mt-2">
+                                                    <span className="text-xs font-black uppercase tracking-widest text-gray-400 block mb-0.5">Rent</span>
+                                                    <span className="font-black text-gray-900 dark:text-white">₦{Number(p.price).toLocaleString()}</span><span className="text-[10px] text-gray-400 font-bold">/yr</span>
+                                                </div>
+                                            </div>
                                         </Link>
                                     );
                                 })}
@@ -684,3 +693,5 @@ export default function StudentDashboard() {
         </Suspense>
     );
 }
+
+
