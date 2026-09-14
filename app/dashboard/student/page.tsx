@@ -352,6 +352,31 @@ function StudentDashboardContent() {
                         </div>
                     </div>
 
+                    {/* Quick Access Tools */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <button 
+                            onClick={() => setActiveTab('Market')}
+                            className="bg-[#BEF264]/10 border border-[#BEF264]/20 shadow-sm p-4 rounded-2xl flex flex-col gap-3 text-left hover:bg-[#BEF264]/20 transition-all active:scale-95"
+                        >
+                            <ShoppingBag className="w-6 h-6 text-[#BEF264]" />
+                            <div>
+                                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">Campus Market</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-0.5">Buy & Sell Items</p>
+                            </div>
+                        </button>
+
+                        <button 
+                            onClick={() => setActiveTab('Roommates')}
+                            className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 shadow-sm p-4 rounded-2xl flex flex-col gap-3 text-left hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all active:scale-95"
+                        >
+                            <Users className="w-6 h-6 text-blue-500" />
+                            <div>
+                                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">Roommates</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-0.5">Find a match</p>
+                            </div>
+                        </button>
+                    </div>
+
                     {/* Saved Hostels */}
                     <section ref={savedRef}>
                         <div className="flex items-center justify-between mb-4">
@@ -693,5 +718,6 @@ export default function StudentDashboard() {
         </Suspense>
     );
 }
+
 
 

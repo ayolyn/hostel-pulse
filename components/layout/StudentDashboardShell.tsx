@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Home, Search, Calendar, MessageSquare, User } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { NotificationBell } from '../ui/NotificationBell';
@@ -16,13 +16,15 @@ const navItems = [
     { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
 ];
 
-export function StudentDashboardShell({
+import { Suspense } from 'react';
+
+function StudentDashboardShellContent({
     children
 }: {
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const searchParams = useSearchParams();
     const tab = searchParams?.get('tab');
     const [mounted, setMounted] = useState(false);
 
@@ -135,4 +137,14 @@ export function StudentDashboardShell({
         </div>
     );
 }
+
+export function StudentDashboardShell({ children }: { children: React.ReactNode }) {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-gray-50 dark:bg-neutral-950" />}>
+            <StudentDashboardShellContent>{children}</StudentDashboardShellContent>
+        </Suspense>
+    );
+}
+
+
 
