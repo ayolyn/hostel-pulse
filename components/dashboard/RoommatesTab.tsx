@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'react-hot-toast';
+import PulseMapbox from '@/components/map/PulseMapbox';
 import { Users, Moon, Sparkles, BookOpen, Wallet, Loader2, MessageSquare, MapPin } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -12,6 +13,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [hasProfile, setHasProfile] = useState(false);
+    const [myProfileData, setMyProfileData] = useState<any>(null);
     const [profiles, setProfiles] = useState<any[]>([]);
 
     // Form state
@@ -35,6 +37,7 @@ export function RoommatesTab({ userId, userProfile }: { userId: string; userProf
 
                 if (myProfile) {
                     setHasProfile(true);
+                    setMyProfileData(myProfile);
                     
                     // Fetch other profiles
                     const { data: otherProfiles, error: othersError } = await supabase

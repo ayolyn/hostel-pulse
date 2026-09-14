@@ -178,6 +178,10 @@ function StudentDashboardContent() {
             setActiveTab('Support');
         } else if (tab === 'messages') {
             setActiveTab('Messages');
+        } else if (tab === 'gigs') {
+            setActiveTab('Gigs');
+        } else if (tab === 'wallet') {
+            setActiveTab('Wallet');
         } else {
             setActiveTab('Overview');
         }
