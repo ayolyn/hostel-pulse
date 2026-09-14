@@ -1,4 +1,6 @@
-"use client";
+﻿const fs = require('fs');
+
+const content = `"use client";
 
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -80,14 +82,14 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                 className="w-full flex items-center justify-between p-4 bg-gray-50/50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors border-b border-gray-100 dark:border-white/5 last:border-0"
             >
                 <div className="flex items-center gap-3">
-                    <Icon className={`w-5 h-5 ${id === 'Get Verified' ? 'text-amber-500' : 'text-gray-500 dark:text-gray-400'}`} />
-                    <span className={`text-sm font-semibold ${id === 'Get Verified' ? 'text-amber-600 dark:text-amber-500' : 'text-gray-900 dark:text-white'}`}>
+                    <Icon className={\`w-5 h-5 \${id === 'Get Verified' ? 'text-amber-500' : 'text-gray-500 dark:text-gray-400'}\`} />
+                    <span className={\`text-sm font-semibold \${id === 'Get Verified' ? 'text-amber-600 dark:text-amber-500' : 'text-gray-900 dark:text-white'}\`}>
                         {label}
                     </span>
                 </div>
                 {isToggle ? (
-                    <div className={`w-12 h-6 rounded-full p-1 transition-colors ${theme === 'dark' ? 'bg-[#BEF264]' : 'bg-gray-300'}`}>
-                        <div className={`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform ${theme === 'dark' ? 'translate-x-6' : 'translate-x-0'}`} />
+                    <div className={\`w-12 h-6 rounded-full p-1 transition-colors \${theme === 'dark' ? 'bg-[#BEF264]' : 'bg-gray-300'}\`}>
+                        <div className={\`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform \${theme === 'dark' ? 'translate-x-6' : 'translate-x-0'}\`} />
                     </div>
                 ) : (
                     <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -230,9 +232,9 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                             </div>
                             <button 
                                 onClick={() => setIs2FAEnabled(!is2FAEnabled)}
-                                className={`w-12 h-6 rounded-full p-1 transition-colors ${is2FAEnabled ? 'bg-amber-500' : 'bg-gray-200 dark:bg-white/10'}`}
+                                className={\`w-12 h-6 rounded-full p-1 transition-colors \${is2FAEnabled ? 'bg-amber-500' : 'bg-gray-200 dark:bg-white/10'}\`}
                             >
-                                <div className={`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform ${is2FAEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                                <div className={\`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform \${is2FAEnabled ? 'translate-x-6' : 'translate-x-0'}\`} />
                             </button>
                         </div>
                     </div>
@@ -347,7 +349,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                         </button>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white">Saved Hostels</h2>
                     </div>
-                    <SavedPropertiesTab />
+                    <SavedPropertiesTab userId={user?.id || ''} />
                 </div>
             )}
         </div>
@@ -363,3 +365,7 @@ function NotificationIcon() {
         </button>
     );
 }
+`;
+
+fs.writeFileSync('components/dashboard/ProfileSettingsHub.tsx', content, 'utf8');
+console.log("Rewritten ProfileSettingsHub successfully");
