@@ -1,10 +1,36 @@
-const fs = require('fs');
-let file = fs.readFileSync('components/layout/StudentSidebar.tsx', 'utf8');
+﻿const fs = require('fs');
+let content = fs.readFileSync('components/layout/StudentDashboardShell.tsx', 'utf8');
 
-file = file.replace("{ name: 'Settings', icon: Settings, path: '/dashboard/student?tab=profile' }", "{ name: 'Profile', icon: User, path: '/dashboard/student?tab=profile' }");
-
-if (!file.includes('import { User')) {
-    file = file.replace("import { Settings } from 'lucide-react';", "import { Settings, User } from 'lucide-react';");
+// Import StudentSidebar and usePortal
+if (!content.includes('import { StudentSidebar }')) {
+    content = content.replace('import { Suspense } from \'react\';', 'import { Suspense } from \'react\';\nimport { StudentSidebar } from \'./StudentSidebar\';\nimport { usePortal } from \'@/components/auth/PortalGuard\';');
 }
 
-fs.writeFileSync('components/layout/StudentSidebar.tsx', file, 'utf8');
+// Add state to StudentDashboardShellContent
+const hookInjection = `const pathname = usePathname();`;
+const hookReplacement = `const pathname = usePathname();
+    const portalContext = usePortal();
+    // Safely destructure with fallbacks in case usePortal is used outside provider
+    const isSidebarOpen = portalContext?.isSidebarOpen || false;
+    const isRetracted = portalContext?.isRetracted || false;
+    const toggleSidebar = portalContext?.toggleSidebar || (() => {});
+    const toggleRetract = portalContext?.toggleRetract || (() => {});
+    const setSidebarOpen = portalContext?.setSidebarOpen || (() => {});`;
+content = content.replace(hookInjection, hookReplacement);
+
+// Render sidebar
+const renderInjection = `<div className="flex min-h-screen bg-gray-50/50 dark:bg-neutral-950 transition-colors duration-500 pb-32 md:pb-0">`;
+const renderReplacement = `<div className="flex min-h-screen bg-gray-50/50 dark:bg-neutral-950 transition-colors duration-500 pb-32 md:pb-0">
+            {/* Sidebar */}
+            <StudentSidebar
+                isOpen={isSidebarOpen}
+                isRetracted={isRetracted}
+                onClose={() => setSidebarOpen(false)}
+                onRetractToggle={toggleRetract}
+            />`;
+content = content.replace(renderInjection, renderReplacement);
+
+// Hook up the hamburger button
+content = content.replace('<button className="lg:hidden p-2', '<button onClick={toggleSidebar} className="lg:hidden p-2');
+
+fs.writeFileSync('components/layout/StudentDashboardShell.tsx', content, 'utf8');

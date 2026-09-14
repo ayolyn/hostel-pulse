@@ -17,6 +17,8 @@ const navItems = [
 ];
 
 import { Suspense } from 'react';
+import { StudentSidebar } from './StudentSidebar';
+import { usePortal } from '@/components/auth/PortalGuard';
 
 function StudentDashboardShellContent({
     children
@@ -24,6 +26,13 @@ function StudentDashboardShellContent({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+    const portalContext = usePortal();
+    // Safely destructure with fallbacks in case usePortal is used outside provider
+    const isSidebarOpen = portalContext?.isSidebarOpen || false;
+    const isRetracted = portalContext?.isRetracted || false;
+    const toggleSidebar = portalContext?.toggleSidebar || (() => {});
+    const toggleRetract = portalContext?.toggleRetract || (() => {});
+    const setSidebarOpen = portalContext?.setSidebarOpen || (() => {});
     const searchParams = useSearchParams();
     const tab = searchParams?.get('tab');
     const [mounted, setMounted] = useState(false);
@@ -56,10 +65,18 @@ function StudentDashboardShellContent({
 
     return (
         <div className="flex min-h-screen bg-gray-50/50 dark:bg-neutral-950 transition-colors duration-500 pb-32 md:pb-0">
+            {/* Sidebar */}
+            <StudentSidebar
+                isOpen={isSidebarOpen}
+                isRetracted={isRetracted}
+                onClose={() => setSidebarOpen(false)}
+                onRetractToggle={toggleRetract}
+            />
             {/* Top Header */}
             <header className="fixed top-4 left-4 right-4 md:left-8 md:right-8 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-6xl z-40 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border border-neutral-200 dark:border-white/10 px-4 py-2.5 md:py-3 rounded-full flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
-                    <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full">HP Student</span>
+                    <button onClick={toggleSidebar} className="lg:hidden p-2 text-gray-500 hover:text-black dark:hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu w-5 h-5"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+                    <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full hidden sm:block">HP Student</span>
                     
                     {/* Desktop Navigation */}
                     <nav className="hidden lg:flex items-center gap-2 ml-auto mr-auto absolute left-1/2 -translate-x-1/2">
@@ -91,8 +108,8 @@ function StudentDashboardShellContent({
             </main>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none pb-[env(safe-area-inset-bottom)]">
-                <div className="bg-neutral-950 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] rounded-t-3xl flex items-center h-[64px] pointer-events-auto border-t border-white/10 relative">
+            <div className="md:hidden fixed bottom-4 left-4 right-4 z-50 pointer-events-none pb-[env(safe-area-inset-bottom)]">
+                <div className="bg-neutral-950 shadow-[0_8px_30px_rgba(0,0,0,0.4)] rounded-full flex items-center h-[64px] pointer-events-auto border border-white/10 relative overflow-visible">
                     
                     {/* Bump Indicator */}
                     {activeIndex !== -1 && (
