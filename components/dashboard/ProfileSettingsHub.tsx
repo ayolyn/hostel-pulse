@@ -75,7 +75,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         <div className="flex flex-col md:flex-row gap-6 lg:gap-10 max-w-6xl mx-auto pb-20">
             
             {/* Settings Sidebar (Hidden on mobile if a section is active) */}
-            <div className={w-full md:w-64 shrink-0 flex-col gap-2 }>
+            <div className={`w-full md:w-64 shrink-0 flex-col gap-2 ${activeSection !== 'menu' ? 'hidden md:flex' : 'flex'}`}>
                 {/* Profile Summary */}
                 <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-6 shadow-sm mb-4 text-center">
                     <div className="w-20 h-20 bg-gray-100 rounded-full mx-auto mb-3 overflow-hidden">
@@ -126,7 +126,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
             {/* Main Content Area */}
             <div className="flex-1 min-w-0">
                 {(activeSection === 'Edit Profile' || activeSection === 'menu') && (
-                    <div className={${activeSection === 'menu' ? 'hidden md:block' : 'block'}}>
+                    <div className={`${activeSection === 'menu' ? 'hidden md:block' : 'block'}`}>
                     <div className="animate-in fade-in duration-300">
                         <DetailedProfileForm 
                             account={accountData}
