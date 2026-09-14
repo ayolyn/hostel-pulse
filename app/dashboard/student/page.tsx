@@ -22,7 +22,7 @@ import { CampusMarket } from '@/components/market/CampusMarket';
 import { MessageList } from '@/components/messages/MessageList';
 import PayInspectionModal from '@/components/dashboard/PayInspectionModal';
 import { SavedPropertiesTab } from '@/components/dashboard/SavedPropertiesTab';
-import { RoommatesTab } from '@/components/dashboard/RoommatesTab';
+
 import Loading from '@/app/loading';
 
 type Inspection = {
@@ -372,7 +372,7 @@ function StudentDashboardContent() {
 
                         {/* 4. Roommates */}
                         <Link 
-                            href="?tab=roommates"
+                            href="/roommates"
                             className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 shadow-sm p-4 sm:p-5 rounded-2xl flex flex-col justify-between gap-3 text-left hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all active:scale-95"
                         >
                             <Users className="w-6 h-6 text-blue-500" />
@@ -647,16 +647,7 @@ function StudentDashboardContent() {
                         )}
                     </section>
                 </div>
-            ) : activeTab === 'Roommates' ? (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
-                    <div className="mb-4">
-                        <button onClick={() => router.push('/dashboard/student')} className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest text-xs font-black">
-                            <ArrowLeft className="w-4 h-4" />
-                            Back
-                        </button>
-                    </div>
-                    <RoommatesTab userId={accountData?.id} userProfile={accountData} />
-                </div>
+            
             ) : activeTab === 'Market' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
                     <div className="mb-4">
