@@ -7,6 +7,8 @@ import { useEffect, useState, useRef, Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Calendar, Clock, CheckCircle2, Heart, Search, MapPin, Star, Users, GraduationCap, ShoppingBag, DollarSign, ShieldCheck, Camera, Loader2, Wallet, X } from 'lucide-react';
 import { SellerTrustBadge, getTrustLevel } from '@/components/ui/trust-badge';
+import { CampusGigs } from '@/components/gigs/CampusGigs';
+import BuyerWalletTab from '@/components/dashboard/BuyerWalletTab';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -375,6 +377,28 @@ function StudentDashboardContent() {
                                 <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-0.5">Find a match</p>
                             </div>
                         </button>
+                        
+                        <button 
+                            onClick={() => setActiveTab('Gigs')}
+                            className="bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/20 shadow-sm p-4 rounded-2xl flex flex-col gap-3 text-left hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-all active:scale-95"
+                        >
+                            <Star className="w-6 h-6 text-purple-500" />
+                            <div>
+                                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">Campus Gigs</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-0.5">Micro jobs</p>
+                            </div>
+                        </button>
+
+                        <button 
+                            onClick={() => setActiveTab('Wallet')}
+                            className="bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/20 shadow-sm p-4 rounded-2xl flex flex-col gap-3 text-left hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-all active:scale-95"
+                        >
+                            <Wallet className="w-6 h-6 text-orange-500" />
+                            <div>
+                                <p className="text-sm font-black text-gray-900 dark:text-white uppercase">My Wallet</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-500 mt-0.5">Manage funds</p>
+                            </div>
+                        </button>
                     </div>
 
                     {/* Saved Hostels */}
@@ -625,6 +649,14 @@ function StudentDashboardContent() {
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <CampusMarketHub />
                 </div>
+            ) : activeTab === 'Gigs' ? (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <CampusGigs />
+                </div>
+            ) : activeTab === 'Wallet' ? (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <BuyerWalletTab userId={accountData?.id} />
+                </div>
             ) : activeTab === 'Messages' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-4xl mx-auto">
                     <MessageList />
@@ -718,6 +750,9 @@ export default function StudentDashboard() {
         </Suspense>
     );
 }
+
+
+
 
 
 
