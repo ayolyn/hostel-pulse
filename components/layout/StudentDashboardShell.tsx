@@ -8,17 +8,29 @@ import { ThemeToggle } from '../ui/ThemeToggle';
 import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
 
-const navItems = [
+import { Map, Users } from 'lucide-react';
+
+const desktopNavItems = [
     { name: 'HOME', href: '/dashboard/student', icon: Home },
-    { name: 'INSPECT', href: '/dashboard/student?tab=inspections', icon: Calendar },
+    { name: 'MAP', href: '/explore', icon: Map },
+    { name: 'ROOMMATES', href: '/roommates', icon: Users },
     { name: 'SEARCH', href: '/rent', icon: Search },
+    { name: 'INSPECT', href: '/dashboard/student?tab=inspections', icon: Calendar },
+    { name: 'INBOX', href: '/dashboard/student?tab=messages', icon: MessageSquare },
+    { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
+];
+
+const mobileNavItems = [
+    { name: 'HOME', href: '/dashboard/student', icon: Home },
+    { name: 'SEARCH', href: '/rent', icon: Search },
+    { name: 'MAP', href: '/explore', icon: Map },
     { name: 'INBOX', href: '/dashboard/student?tab=messages', icon: MessageSquare },
     { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
 ];
 
 import { Suspense } from 'react';
-import { StudentSidebar } from './StudentSidebar';
-import { usePortal } from '@/components/auth/PortalGuard';
+
+
 
 function StudentDashboardShellContent({
     children
@@ -26,13 +38,7 @@ function StudentDashboardShellContent({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const portalContext = usePortal();
-    // Safely destructure with fallbacks in case usePortal is used outside provider
-    const isSidebarOpen = portalContext?.isSidebarOpen || false;
-    const isRetracted = portalContext?.isRetracted || false;
-    const toggleSidebar = portalContext?.toggleSidebar || (() => {});
-    const toggleRetract = portalContext?.toggleRetract || (() => {});
-    const setSidebarOpen = portalContext?.setSidebarOpen || (() => {});
+    
     const searchParams = useSearchParams();
     const tab = searchParams?.get('tab');
     const [mounted, setMounted] = useState(false);
@@ -49,6 +55,12 @@ function StudentDashboardShellContent({
         if (name === 'INSPECT') {
             return pathname.startsWith('/dashboard/student/inspections') || tab === 'inspections';
         }
+        if (name === 'MAP') {
+            return pathname.startsWith('/explore');
+        }
+        if (name === 'ROOMMATES') {
+            return pathname.startsWith('/roommates');
+        }
         if (name === 'SEARCH') {
             return pathname.startsWith('/rent') || pathname.startsWith('/search') || pathname.startsWith('/property');
         }
@@ -61,26 +73,20 @@ function StudentDashboardShellContent({
         return false;
     };
 
-    const activeIndex = navItems.findIndex(item => isActive(item.name));
+    const activeIndex = mobileNavItems.findIndex(item => isActive(item.name));
 
     return (
         <div className="flex min-h-screen bg-gray-50/50 dark:bg-neutral-950 transition-colors duration-500 pb-32 md:pb-0">
-            {/* Sidebar */}
-            <StudentSidebar
-                isOpen={isSidebarOpen}
-                isRetracted={isRetracted}
-                onClose={() => setSidebarOpen(false)}
-                onRetractToggle={toggleRetract}
-            />
+            
             {/* Top Header */}
             <header className="fixed top-4 left-4 right-4 md:left-8 md:right-8 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-6xl z-40 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border border-neutral-200 dark:border-white/10 px-4 py-2.5 md:py-3 rounded-full flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
-                    <button onClick={toggleSidebar} className="lg:hidden p-2 text-gray-500 hover:text-black dark:hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu w-5 h-5"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+                    
                     <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full hidden sm:block">HP Student</span>
                     
                     {/* Desktop Navigation */}
                     <nav className="hidden lg:flex items-center gap-2 ml-auto mr-auto absolute left-1/2 -translate-x-1/2">
-                        {navItems.map((item) => (
+                        {desktopNavItems.map((item) => (
                             <Link 
                                 key={item.name} 
                                 href={item.href}
@@ -116,7 +122,7 @@ function StudentDashboardShellContent({
                         <div 
                             className="absolute top-0 left-0 h-full pointer-events-none flex justify-center"
                             style={{ 
-                                width: `${100 / navItems.length}%`,
+                                width: `${100 / mobileNavItems.length}%`,
                                 transform: `translateX(${activeIndex * 100}%)`,
                                 transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' 
                             }}
@@ -129,7 +135,7 @@ function StudentDashboardShellContent({
                     )}
 
                     {/* Nav Items */}
-                    {navItems.map((item, index) => {
+                    {mobileNavItems.map((item, index) => {
                         const Icon = item.icon;
                         const active = activeIndex === index;
                         
