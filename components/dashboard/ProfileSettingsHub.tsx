@@ -69,7 +69,8 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         { id: 'Saved Hostels', icon: Heart, label: 'Saved Hostels' },
         { id: 'My Reviews', icon: Star, label: 'My Reviews' },
         { id: 'My Disputes', icon: AlertTriangle, label: 'My Disputes' },
-        { id: 'Install App', icon: Download, label: 'Install App' }
+        { id: 'Install App', icon: Download, label: 'Install App' },
+        { id: 'Explore', icon: MapPin, label: 'Explore Ogbomoso', isLink: true, href: '/explore' }
     ];
 
     return (

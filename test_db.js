@@ -1,15 +1,16 @@
-require('dotenv').config({ path: '.env.local' });
-const { createClient } = require('@supabase/supabase-js');
+﻿const { createClient } = require('@supabase/supabase-js');
+const fs = require('fs');
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const envFile = fs.readFileSync('.env.local', 'utf8');
+const supabaseUrl = envFile.match(/NEXT_PUBLIC_SUPABASE_URL=(.*)/)[1].trim();
+const supabaseKey = envFile.match(/NEXT_PUBLIC_SUPABASE_ANON_KEY=(.*)/)[1].trim();
+const supabaseServiceKey = envFile.match(/SUPABASE_SERVICE_ROLE_KEY=(.*)/)[1].trim();
 
-async function testQuery() {
-    const { data, error } = await supabase
-        .from('properties')
-        .select('id, title, listing_type, status');
-        
-    console.log(data);
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+async function test() {
+    const { data, error } = await supabase.from('roommate_profiles').select('*');
+    console.log("Profiles:", data?.length || 0);
+    console.log("Error:", error);
 }
-testQuery();
+test();
