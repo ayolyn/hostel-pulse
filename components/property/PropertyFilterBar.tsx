@@ -62,12 +62,11 @@ export function PropertyFilterBar({ mode = 'buy' }: { mode?: 'buy' | 'rent' }) {
         
         // Track the search in background without delaying navigation
         trackSearch({
-            query: newFilters.q || undefined,
+            search_term: newFilters.q || undefined,
             category: newFilters.category !== 'All Categories' ? newFilters.category : undefined,
-            minPrice: newFilters.minPrice ? Number(newFilters.minPrice) : undefined,
-            maxPrice: newFilters.maxPrice ? Number(newFilters.maxPrice) : undefined,
-            location: newFilters.zone !== 'All Zones' ? newFilters.zone : undefined,
-            resultsCount: 0 // Will be updated on the server/DB side or via page tracking
+            min_budget: newFilters.minPrice ? Number(newFilters.minPrice) : undefined,
+            max_budget: newFilters.maxPrice ? Number(newFilters.maxPrice) : undefined,
+            location: newFilters.zone !== 'All Zones' ? newFilters.zone : undefined
         });
 
         const baseUrl = mode === 'rent' ? '/rent' : '/buy';
