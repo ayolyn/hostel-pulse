@@ -27,16 +27,17 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
             setLoadingData(true);
             if (activeSection === 'My Reviews') {
                 const { data } = await supabase
-                    .from('property_reviews')
+                    .from('provider_reviews')
                     .select('*, properties(title, images)')
-                    .eq('user_id', user.id)
+                    .eq('reviewer_id', user.id)
                     .order('created_at', { ascending: false });
                 setReviews(data || []);
             } else if (activeSection === 'My Disputes') {
                 const { data } = await supabase
-                    .from('disputes')
+                    .from('escrow_transactions')
                     .select('*, properties(title, images)')
-                    .eq('user_id', user.id)
+                    .eq('buyer_id', user.id)
+                    .eq('status', 'disputed')
                     .order('created_at', { ascending: false });
                 setDisputes(data || []);
             }
