@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -42,12 +42,59 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                     .order('created_at', { ascending: false });
                 setDisputes(data || []);
             } else if (activeSection === 'My Transactions') {
-                const { data } = await supabase
+                const escrowPromise = supabase
                     .from('escrow_transactions')
-                    .select('id, amount, status, created_at, type, title, properties(title)')
-                    .eq('buyer_id', user.id)
-                    .order('created_at', { ascending: false });
-                setTransactions(data || []);
+                    .select(`
+                        id, amount, status, created_at, payer_id, payee_id, type,
+                        properties!property_id (title),
+                        market_listings!listing_id (title)
+                    `)
+                    .or(`payer_id.eq.${user.id},payee_id.eq.${user.id}`);
+
+                const withdrawPromise = supabase
+                    .from('withdrawals')
+                    .select('*')
+                    .eq('user_id', user.id);
+
+                const depositPromise = supabase
+                    .from('deposits')
+                    .select('*')
+                    .eq('user_id', user.id);
+
+                const [escrowRes, withdrawRes, depositRes] = await Promise.all([escrowPromise, withdrawPromise, depositPromise]);
+
+                const escrowFormatted = (escrowRes.data || []).map((t: any) => {
+                    const isSale = t.payee_id === user.id;
+                    return {
+                        id: t.id,
+                        amount: isSale ? Number(t.amount) : -Number(t.amount),
+                        status: t.status,
+                        created_at: t.created_at,
+                        title: isSale ? 'Sale' : (t.type === 'INSPECTION_FEE' ? 'Inspection Fee' : (t.properties?.title || t.market_listings?.title || 'Payment'))
+                    };
+                });
+
+                const withdrawFormatted = (withdrawRes.data || []).map((w: any) => ({
+                    id: w.id,
+                    amount: -Number(w.amount),
+                    status: w.status,
+                    created_at: w.created_at,
+                    title: 'Withdrawal to Bank'
+                }));
+
+                const depositFormatted = (depositRes.data || []).map((d: any) => ({
+                    id: d.id,
+                    amount: Number(d.amount),
+                    status: d.status,
+                    created_at: d.created_at,
+                    title: 'Wallet Deposit'
+                }));
+
+                const combined = [...escrowFormatted, ...withdrawFormatted, ...depositFormatted].sort((a, b) => 
+                    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                );
+
+                setTransactions(combined);
             }
             setLoadingData(false);
         }
@@ -104,19 +151,37 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-4 px-2 hidden md:block">Settings</h2>
                 
                 <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-2 shadow-sm">
-                    {sections.map(section => (
-                        <button
-                            key={section.id}
-                            onClick={() => setActiveSection(section.id)}
-                            className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all ${activeSection === section.id ? 'bg-[#BEF264]/10 text-black dark:text-[#BEF264]' : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}`}
-                        >
-                            <div className="flex items-center gap-3">
-                                <section.icon className={`w-5 h-5 ${activeSection === section.id ? 'text-[#BEF264]' : ''}`} />
-                                <span className="font-bold text-sm">{section.label}</span>
-                            </div>
-                            <ChevronRight className="w-4 h-4 opacity-50" />
-                        </button>
-                    ))}
+                    {sections.map(section => {
+                        if (section.isLink) {
+                            return (
+                                <Link
+                                    key={section.id}
+                                    href={section.href || '#'}
+                                    className="w-full flex items-center justify-between p-3 rounded-2xl transition-all text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <section.icon className="w-5 h-5" />
+                                        <span className="font-bold text-sm">{section.label}</span>
+                                    </div>
+                                    <ChevronRight className="w-4 h-4 opacity-50" />
+                                </Link>
+                            );
+                        }
+
+                        return (
+                            <button
+                                key={section.id}
+                                onClick={() => setActiveSection(section.id)}
+                                className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all ${activeSection === section.id ? 'bg-[#BEF264]/10 text-black dark:text-[#BEF264]' : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <section.icon className={`w-5 h-5 ${activeSection === section.id ? 'text-[#BEF264]' : ''}`} />
+                                    <span className="font-bold text-sm">{section.label}</span>
+                                </div>
+                                <ChevronRight className="w-4 h-4 opacity-50" />
+                            </button>
+                        );
+                    })}
                 </div>
 
                 <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-2 shadow-sm mt-4">
@@ -273,6 +338,22 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                 ))}
                             </div>
                         )}
+                    </div>
+                )}
+
+                {activeSection === 'Install App' && (
+                    <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 rounded-3xl p-10 text-center animate-in fade-in duration-300">
+                        <Download className="w-12 h-12 text-[#BEF264] mx-auto mb-4" />
+                        <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2">Install HostelPulse</h3>
+                        <p className="text-gray-500 font-medium mb-6">Get the native experience by installing our app to your home screen.</p>
+                        <button 
+                            onClick={() => {
+                                alert('To install the app on iOS: Tap Share -> Add to Home Screen. On Android: Tap menu -> Install App.');
+                            }}
+                            className="bg-[#BEF264] text-black font-black uppercase tracking-widest text-sm py-4 px-8 rounded-full shadow-lg shadow-[#BEF264]/20 hover:bg-[#a6d456] transition-transform active:scale-95"
+                        >
+                            Install Now
+                        </button>
                     </div>
                 )}
 

@@ -8,7 +8,11 @@ import { cookies } from 'next/headers';
  * Handles: Google OAuth, magic links, and password recovery.
  */
 export async function GET(request: NextRequest) {
-    const { searchParams, origin } = new URL(request.url);
+    const { searchParams } = new URL(request.url);
+    const forwardedHost = request.headers.get('x-forwarded-host');
+    const forwardedProto = request.headers.get('x-forwarded-proto') || 'https';
+    const host = forwardedHost || request.headers.get('host');
+    const origin = host ? `${forwardedHost ? forwardedProto : new URL(request.url).protocol.replace(':', '')}://${host}` : new URL(request.url).origin;
     const code = searchParams.get('code');
     const type = searchParams.get('type'); // 'recovery' for password reset emails
 

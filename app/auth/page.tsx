@@ -23,6 +23,7 @@ function AuthPageContent() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState<string | undefined>();
+    const [rememberMe, setRememberMe] = useState(false);
     
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -331,6 +332,23 @@ function AuthPageContent() {
                             </button>
                         )}
                     </div>
+
+                    {mode === 'signin' && (
+                        <div className="flex items-center justify-between px-2 pt-1 animate-in fade-in duration-500">
+                            <div className="flex items-center gap-2">
+                                <input 
+                                    type="checkbox"
+                                    id="remember-me"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                    className="w-4 h-4 rounded border-white/10 bg-white/5 text-[#BEF264] focus:ring-[#BEF264]/20"
+                                />
+                                <label htmlFor="remember-me" className="text-xs text-gray-400 font-medium cursor-pointer">
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+                    )}
 
                     {mode === 'signup' && (
                         <div className="flex items-start gap-3 px-2 pt-2 animate-in fade-in duration-1000">

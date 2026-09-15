@@ -56,58 +56,58 @@ const CustomOfferCard = ({ msg, isMine, receiverName, payingOffer, handleOfferPa
     };
 
     return (
-        <div className={`flex ${isMine ? "justify-end" : "justify-start"} my-2 w-full`}>
-            <div className={`bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-white/10 text-gray-900 dark:text-white p-3 rounded-2xl max-w-[260px] shadow-sm flex flex-col relative overflow-hidden ${isExpired ? 'opacity-70 grayscale' : ''}`}>
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#BEF264] to-[#0D9488]" />
-                <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-[#BEF264]/10 rounded-xl flex items-center justify-center text-[#BEF264]">
-                        <Tag className="w-5 h-5" />
+        <div className={`flex ${isMine ? "justify-end" : "justify-start"} my-1 w-full`}>
+            <div className={`bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-white/10 text-gray-900 dark:text-white p-1.5 rounded-xl max-w-[200px] shadow-sm flex flex-col relative overflow-hidden ${isExpired ? 'opacity-70 grayscale' : ''}`}>
+                <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#BEF264] to-[#0D9488]" />
+                <div className="flex items-center gap-1.5 mb-1.5 mt-0.5">
+                    <div className="w-5 h-5 bg-[#BEF264]/10 rounded flex items-center justify-center text-[#BEF264] shrink-0">
+                        <Tag className="w-3 h-3" />
                     </div>
-                    <div>
-                        <h4 className="text-[11px] font-black uppercase tracking-widest">{isMine ? 'You' : receiverName} sent an offer</h4>
-                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest truncate max-w-[200px]">{payload.description}</p>
+                    <div className="min-w-0">
+                        <h4 className="text-[8px] font-black uppercase tracking-widest leading-none truncate">{isMine ? 'You' : receiverName.split(' ')[0]} sent offer</h4>
+                        <p className="text-[7px] text-gray-500 font-bold uppercase tracking-widest truncate mt-0.5">{payload.description}</p>
                     </div>
                 </div>
-                <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl mb-3 flex flex-col gap-2 border border-gray-100 dark:border-white/5">
+                <div className="bg-gray-50 dark:bg-white/5 p-1.5 rounded mb-1.5 flex flex-col gap-0.5 border border-gray-100 dark:border-white/5">
                     <div className="flex justify-between items-center">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Base Price</span>
-                        <span className="text-xs font-black text-gray-600 dark:text-gray-300">₦{Number(payload.price).toLocaleString()}</span>
+                        <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">Base</span>
+                        <span className="text-[8px] font-black text-gray-600 dark:text-gray-300">₦{Number(payload.price).toLocaleString()}</span>
                     </div>
                     {payload.escrowFee !== undefined && (
                         <div className="flex justify-between items-center">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Escrow Fee</span>
-                            <span className="text-sm font-black text-gray-600 dark:text-gray-300">₦{Number(payload.escrowFee).toLocaleString()}</span>
+                            <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">Fee</span>
+                            <span className="text-[8px] font-black text-gray-600 dark:text-gray-300">₦{Number(payload.escrowFee).toLocaleString()}</span>
                         </div>
                     )}
-                    <div className="h-[1px] w-full bg-neutral-200 dark:bg-white/10 my-1" />
+                    <div className="h-[1px] w-full bg-neutral-200 dark:bg-white/10 my-0.5" />
                     <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Total Agreed</span>
-                        <span className="text-xl font-black">₦{Number(payload.totalAmount || payload.price).toLocaleString()}</span>
+                        <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">Total</span>
+                        <span className="text-[10px] font-black">₦{Number(payload.totalAmount || payload.price).toLocaleString()}</span>
                     </div>
                 </div>
                 
                 {isOfferPaid ? (
-                    <button disabled className="w-full bg-neutral-200 dark:bg-neutral-700 text-gray-500 dark:text-gray-400 font-black py-3 rounded-xl uppercase tracking-widest text-[10px] flex items-center justify-center gap-2">
-                        <CheckCheck className="w-4 h-4" />
+                    <button disabled className="w-full bg-neutral-200 dark:bg-neutral-700 text-gray-500 dark:text-gray-400 font-black py-2 rounded-lg uppercase tracking-widest text-[8px] flex items-center justify-center gap-1.5">
+                        <CheckCheck className="w-3 h-3" />
                         Offer Paid ✅
                     </button>
                 ) : isExpired ? (
-                    <button disabled className="w-full bg-red-100 dark:bg-red-900/30 text-red-500 font-black py-3 rounded-xl uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 border border-red-200 dark:border-red-900/50">
-                        <X className="w-4 h-4" />
+                    <button disabled className="w-full bg-red-100 dark:bg-red-900/30 text-red-500 font-black py-2 rounded-lg uppercase tracking-widest text-[8px] flex items-center justify-center gap-1.5 border border-red-200 dark:border-red-900/50">
+                        <X className="w-3 h-3" />
                         Offer Expired
                     </button>
                 ) : isMine ? (
-                    <div className="text-center text-[9px] font-bold text-gray-400 uppercase tracking-widest flex flex-col gap-1 items-center">
+                    <div className="text-center text-[8px] font-bold text-gray-400 uppercase tracking-widest flex flex-col gap-0.5 items-center">
                         <span>Waiting for buyer to pay</span>
-                        {timeLeft !== null && <span className="text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full mt-1 border border-amber-500/20">{formatTime(timeLeft)}</span>}
+                        {timeLeft !== null && <span className="text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded-full mt-0.5 border border-amber-500/20">{formatTime(timeLeft)}</span>}
                     </div>
                 ) : (
                     <button 
                         onClick={() => handleOfferPayment(msg.id, payloadStr)}
                         disabled={payingOffer === msg.id}
-                        className="w-full bg-[#BEF264] text-black font-black py-3 rounded-xl uppercase tracking-widest text-[10px] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                        className="w-full bg-[#BEF264] text-black font-black py-2 rounded-lg uppercase tracking-widest text-[9px] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5"
                     >
-                        {payingOffer === msg.id ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                        {payingOffer === msg.id ? <Loader2 className="w-3 h-3 animate-spin" /> : (
                             <>PAY ₦{Number(payload.totalAmount || payload.price).toLocaleString()} {timeLeft !== null && <span className="opacity-70 ml-1">({formatTime(timeLeft)})</span>}</>
                         )}
                     </button>
