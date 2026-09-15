@@ -3,10 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin } from 'lucide-react';
+import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin, X, Receipt, MessageCircle } from 'lucide-react';
 import { DetailedProfileForm } from './DetailedProfileForm';
 import { SavedPropertiesTab } from './SavedPropertiesTab';
 import Link from 'next/link';
+import { toast } from 'react-hot-toast';
+import { cancelAndRefundOrder, initiateEscrowDispute } from '@/app/actions/escrow';
+import { ReviewModal } from '@/components/reviews/ReviewModal';
 
 export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any, onUpdate: () => void }) {
     const { user, signOut } = useAuth();
@@ -17,6 +20,11 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
     const [disputes, setDisputes] = useState<any[]>([]);
     const [transactions, setTransactions] = useState<any[]>([]);
     const [loadingData, setLoadingData] = useState(false);
+    
+    const [selectedTx, setSelectedTx] = useState<any>(null);
+    const [cancellingTx, setCancellingTx] = useState<string | null>(null);
+    const [disputeModal, setDisputeModal] = useState<{ id: string | null, reason: string }>({ id: null, reason: '' });
+    const [reviewModalProvider, setReviewModalProvider] = useState<{ id: string, name: string } | null>(null);
     
     const [newPassword, setNewPassword] = useState('');
     const [passwordMsg, setPasswordMsg] = useState('');
@@ -47,7 +55,8 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                     .select(`
                         id, amount, status, created_at, payer_id, payee_id, type,
                         properties!property_id (title),
-                        market_listings!listing_id (title)
+                        market_listings!listing_id (title),
+                        profiles!payee_id (full_name)
                     `)
                     .or(`payer_id.eq.${user.id},payee_id.eq.${user.id}`);
 
@@ -70,7 +79,9 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                         amount: isSale ? Number(t.amount) : -Number(t.amount),
                         status: t.status,
                         created_at: t.created_at,
-                        title: isSale ? 'Sale' : (t.type === 'INSPECTION_FEE' ? 'Inspection Fee' : (t.properties?.title || t.market_listings?.title || 'Payment'))
+                        title: isSale ? 'Sale' : (t.type === 'INSPECTION_FEE' ? 'Inspection Fee' : (t.properties?.title || t.market_listings?.title || 'Payment')),
+                        payee_id: t.payee_id,
+                        payee_name: t.profiles?.full_name || 'Provider'
                     };
                 });
 
@@ -101,6 +112,43 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         
         fetchTabData();
     }, [activeSection, user, supabase]);
+
+    const handleCancelOrder = async (transactionId: string) => {
+        if (!window.confirm("Are you sure you want to cancel this order? Your funds will be returned to your wallet.")) {
+            return;
+        }
+
+        setCancellingTx(transactionId);
+        try {
+            const res = await cancelAndRefundOrder(transactionId);
+            if (res.error) throw new Error(res.error);
+            toast.success('Order cancelled. Funds have been refunded to the buyer!');
+            
+            // update local transactions
+            setTransactions(prev => prev.map(t => t.id === transactionId ? { ...t, status: 'refunded' } : t));
+            setSelectedTx(null);
+            onUpdate(); // refresh balance
+        } catch (err: any) {
+            toast.error(err.message);
+        } finally {
+            setCancellingTx(null);
+        }
+    };
+
+    const handleDispute = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!disputeModal.id || !disputeModal.reason.trim()) return;
+
+        try {
+            const res = await initiateEscrowDispute(disputeModal.id, disputeModal.reason);
+            if (res.error) throw new Error(res.error);
+            toast.success('Funds frozen. Admin has been notified.');
+            setTransactions(prev => prev.map(t => t.id === disputeModal.id ? { ...t, status: 'Disputed' } : t));
+            setDisputeModal({ id: null, reason: '' });
+        } catch (err: any) {
+            toast.error(err.message);
+        }
+    };
 
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -326,13 +374,17 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                         ) : (
                             <div className="grid grid-cols-1 gap-3">
                                 {transactions.map((tx: any) => (
-                                    <div key={tx.id} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex justify-between items-center">
+                                    <div 
+                                        key={tx.id} 
+                                        onClick={() => setSelectedTx(tx)}
+                                        className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex justify-between items-center cursor-pointer hover:border-[#BEF264]/40 transition-all"
+                                    >
                                         <div>
                                             <h4 className="font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight">{tx.title || tx.properties?.title || 'Payment'}</h4>
                                             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">{new Date(tx.created_at).toLocaleDateString()} • {tx.status}</p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-black text-lg text-gray-900 dark:text-white">₦{tx.amount?.toLocaleString()}</p>
+                                            <p className="font-black text-lg text-gray-900 dark:text-white">₦{Math.abs(tx.amount || 0).toLocaleString()}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -406,6 +458,156 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                     </div>
                 )}
             </div>
+
+            {/* Transaction Details Modal */}
+            {selectedTx && (
+                <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-neutral-900 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative animate-in fade-in zoom-in-95 duration-200 border border-neutral-100 dark:border-white/5">
+                        <button 
+                            onClick={() => setSelectedTx(null)}
+                            className="absolute top-4 right-4 w-10 h-10 bg-gray-50 dark:bg-neutral-800 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-neutral-700 hover:text-black dark:hover:text-white transition-colors"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                        <div className="p-4">
+                            <div className="w-12 h-12 bg-[#BEF264]/20 rounded-xl flex items-center justify-center mb-4">
+                                <Receipt className="w-5 h-5 text-[#BEF264]" />
+                            </div>
+                            <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight mb-1">Transaction Details</h3>
+                            <p className="text-gray-500 font-medium text-xs mb-4">Ref: {selectedTx.id}</p>
+                            
+                            <div className="space-y-4">
+                                <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/5">
+                                    <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Amount</span>
+                                    <span className="font-black text-xs text-gray-900 dark:text-white">₦{Math.abs(selectedTx.amount || 0).toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/5">
+                                    <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Item / Purpose</span>
+                                    <span className="font-bold text-xs text-gray-700 dark:text-gray-300">{selectedTx.title || selectedTx.properties?.title || 'Payment'}</span>
+                                </div>
+                                <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/5">
+                                    <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Date</span>
+                                    <span className="font-bold text-xs text-gray-700 dark:text-gray-300">{new Date(selectedTx.created_at).toLocaleString('en-NG')}</span>
+                                </div>
+                                <div className="flex justify-between py-3">
+                                    <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Status</span>
+                                    <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${
+                                        selectedTx.status === 'completed' || selectedTx.status === 'Released' ? 'bg-emerald-50 text-emerald-700' : 
+                                        selectedTx.status === 'pending' || selectedTx.status === 'Held' || selectedTx.status === 'Locked' ? 'bg-amber-50 text-amber-700' : 
+                                        'bg-gray-100 text-gray-500'
+                                    }`}>
+                                        {selectedTx.status}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row gap-2 mt-4 flex-wrap">
+                                {selectedTx.payee_id && selectedTx.amount < 0 && (
+                                    <Link 
+                                        href={`/dashboard/student?tab=messages&userId=${selectedTx.payee_id}`}
+                                        className="flex-1 bg-blue-500 text-white font-black py-3 rounded-xl uppercase tracking-widest text-[9px] hover:bg-blue-600 transition-all flex items-center justify-center gap-2 min-w-[140px]"
+                                    >
+                                        <MessageCircle className="w-4 h-4" /> Message Seller
+                                    </Link>
+                                )}
+                                {(selectedTx.status === 'completed' || selectedTx.status === 'Released') && selectedTx.payee_id && selectedTx.amount < 0 && (
+                                    <button 
+                                        onClick={() => {
+                                            setSelectedTx(null);
+                                            setReviewModalProvider({ id: selectedTx.payee_id!, name: selectedTx.payee_name || 'Provider' });
+                                        }}
+                                        className="flex-1 bg-[#BEF264] text-black font-black py-3 rounded-xl uppercase tracking-widest text-[9px] hover:bg-[#a6d456] transition-all flex items-center justify-center gap-2 min-w-[140px]"
+                                    >
+                                        <Star className="w-4 h-4" /> Leave Review
+                                    </button>
+                                )}
+                                {selectedTx.amount < 0 && (selectedTx.status === 'Held' || selectedTx.status === 'Locked' || selectedTx.status === 'pending' || selectedTx.status === 'Pending') && (
+                                    <>
+                                        <button 
+                                            onClick={() => {
+                                                handleCancelOrder(selectedTx.id);
+                                            }}
+                                            disabled={cancellingTx === selectedTx.id}
+                                            className="flex-1 bg-transparent border border-red-500 text-red-500 px-4 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-50 dark:hover:bg-red-900/10 transition-all flex items-center justify-center min-w-[140px] disabled:opacity-50"
+                                        >
+                                            {cancellingTx === selectedTx.id ? 'Cancelling...' : 'Cancel & Refund'}
+                                        </button>
+                                        <button 
+                                            onClick={() => {
+                                                setDisputeModal({ id: selectedTx.id, reason: '' });
+                                                setSelectedTx(null);
+                                            }}
+                                            className="flex-1 bg-red-500 text-white font-black py-3 rounded-xl uppercase tracking-widest text-[9px] hover:bg-red-600 transition-all flex items-center justify-center gap-2 min-w-[140px]"
+                                        >
+                                            Report Issue
+                                        </button>
+                                    </>
+                                )}
+                                <button 
+                                    onClick={() => setSelectedTx(null)}
+                                    className="flex-1 bg-black dark:bg-white text-white dark:text-black font-black py-3 rounded-xl uppercase tracking-widest text-[9px] hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all min-w-[140px]"
+                                >
+                                    Close Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Dispute Modal */}
+            {disputeModal.id && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-neutral-900 rounded-3xl p-6 w-full max-w-md border border-gray-100 dark:border-white/10 shadow-2xl animate-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Report Issue</h3>
+                            <button 
+                                onClick={() => setDisputeModal({ id: null, reason: '' })}
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <form onSubmit={handleDispute}>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 font-medium leading-relaxed">
+                                Freezing funds will prevent the seller from accessing them while our admin team reviews your claim. Please explain the issue (e.g. "House doesn't match pictures", "Landlord unresponsive").
+                            </p>
+                            <textarea
+                                required
+                                rows={4}
+                                value={disputeModal.reason}
+                                onChange={(e) => setDisputeModal({ ...disputeModal, reason: e.target.value })}
+                                className="w-full bg-gray-50 dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-red-500 outline-none resize-none mb-6 text-xs"
+                                placeholder="Describe the issue..."
+                            />
+                            <div className="flex gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setDisputeModal({ id: null, reason: '' })}
+                                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 dark:border-neutral-800 font-black uppercase tracking-widest text-xs hover:bg-gray-50 dark:hover:bg-neutral-800 transition-all text-gray-900 dark:text-white"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex-1 bg-red-500 text-white px-4 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-red-600 transition-all shadow-lg shadow-red-500/20"
+                                >
+                                    Freeze Funds
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Review Modal */}
+            {reviewModalProvider && (
+                <ReviewModal 
+                    providerId={reviewModalProvider.id} 
+                    providerName={reviewModalProvider.name} 
+                    onClose={() => setReviewModalProvider(null)} 
+                />
+            )}
         </div>
     );
 }
