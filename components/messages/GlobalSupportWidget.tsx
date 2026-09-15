@@ -7,6 +7,9 @@ import { useAuth } from '@/components/providers/AuthProvider';
 
 export function GlobalSupportWidget() {
     const { user } = useAuth();
+    const pathname = usePathname();
+
+    if (pathname && (pathname.includes('/messages/') || pathname.includes('/chat/'))) return null;
     const supabase = createClient();
     
     const [isOpen, setIsOpen] = useState(false);

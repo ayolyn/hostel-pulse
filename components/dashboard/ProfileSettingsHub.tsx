@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, Smartphone, MapPin } from 'lucide-react';
+import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Smartphone, MapPin } from 'lucide-react';
 import { DetailedProfileForm } from './DetailedProfileForm';
 import { SavedPropertiesTab } from './SavedPropertiesTab';
 import Link from 'next/link';
@@ -15,6 +15,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
     
     const [reviews, setReviews] = useState<any[]>([]);
     const [disputes, setDisputes] = useState<any[]>([]);
+    const [transactions, setTransactions] = useState<any[]>([]);
     const [loadingData, setLoadingData] = useState(false);
     
     const [newPassword, setNewPassword] = useState('');
@@ -41,6 +42,13 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                     .order('created_at', { ascending: false });
                 setDisputes(data || []);
             }
+            } else if (activeSection === 'My Transactions') {
+                const { data } = await supabase
+                    .from('escrow_transactions')
+                    .select('id, amount, status, created_at, type, title, properties(title)')
+                    .eq('buyer_id', user.id)
+                    .order('created_at', { ascending: false });
+                setTransactions(data || []);
             setLoadingData(false);
         }
         
@@ -69,6 +77,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         { id: 'Security', icon: Shield, label: 'Security & Login' },
         { id: 'Saved Hostels', icon: Heart, label: 'Saved Hostels' },
         { id: 'My Reviews', icon: Star, label: 'My Reviews' },
+          { id: 'My Transactions', icon: CreditCard, label: 'My Transactions' },
         { id: 'My Disputes', icon: AlertTriangle, label: 'My Disputes' },
         { id: 'Install App', icon: Download, label: 'Install App' },
         { id: 'Explore', icon: MapPin, label: 'Explore Ogbomoso', isLink: true, href: '/explore' }
@@ -226,6 +235,39 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                         <div className="mt-4 flex gap-2">
                                             {r.is_verified && <span className="text-[9px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-md flex items-center gap-1"><CheckCircle2 className="w-3 h-3"/> Verified Stay</span>}
                                             <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 bg-gray-50 dark:bg-white/5 px-2 py-1 rounded-md flex items-center gap-1">{r.moderation_status}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                
+                {activeSection === 'My Transactions' && (
+                    <div className="animate-in fade-in duration-300 space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-3">
+                                <CreditCard className="w-6 h-6 text-[#BEF264]" />
+                                My Transactions
+                            </h3>
+                        </div>
+                        {loadingData ? (
+                            <div className="flex justify-center p-10"><Loader2 className="w-8 h-8 animate-spin text-gray-400" /></div>
+                        ) : transactions.length === 0 ? (
+                            <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 rounded-3xl p-10 text-center">
+                                <p className="text-gray-500 font-medium">No transactions found.</p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 gap-3">
+                                {transactions.map((tx: any) => (
+                                    <div key={tx.id} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex justify-between items-center">
+                                        <div>
+                                            <h4 className="font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight">{tx.title || tx.properties?.title || 'Payment'}</h4>
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">{new Date(tx.created_at).toLocaleDateString()} • {tx.status}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-black text-lg text-gray-900 dark:text-white">₦{tx.amount?.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 ))}

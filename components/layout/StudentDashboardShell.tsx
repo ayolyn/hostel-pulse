@@ -5,6 +5,7 @@ import { Home, Search, Calendar, MessageSquare, User } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import { HostelPulseLogo } from '../ui/HostelPulseLogo';
 import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
 
@@ -82,7 +83,10 @@ function StudentDashboardShellContent({
             <header className="fixed top-4 left-4 right-4 md:left-8 md:right-8 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-6xl z-40 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border border-neutral-200 dark:border-white/10 px-4 py-2.5 md:py-3 rounded-full flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                     
-                    <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full hidden sm:block">HP Student</span>
+                    <div className="sm:hidden flex items-center">
+                          <HostelPulseLogo variant="icon" className="w-8 h-8" />
+                      </div>
+                      <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full hidden sm:block">HP Student</span>
                     
                     {/* Desktop Navigation */}
                     <nav className="hidden lg:flex items-center gap-2 ml-auto mr-auto absolute left-1/2 -translate-x-1/2">

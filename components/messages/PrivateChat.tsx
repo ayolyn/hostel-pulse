@@ -56,22 +56,22 @@ const CustomOfferCard = ({ msg, isMine, receiverName, payingOffer, handleOfferPa
     };
 
     return (
-        <div className="flex justify-center my-6 w-full">
-            <div className={`bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-white/10 text-gray-900 dark:text-white p-6 rounded-3xl max-w-sm w-full shadow-lg flex flex-col relative overflow-hidden ${isExpired ? 'opacity-70 grayscale' : ''}`}>
+        <div className={`flex ${isMine ? "justify-end" : "justify-start"} my-2 w-full`}>
+            <div className={`bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-white/10 text-gray-900 dark:text-white p-3 rounded-2xl max-w-[260px] shadow-sm flex flex-col relative overflow-hidden ${isExpired ? 'opacity-70 grayscale' : ''}`}>
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#BEF264] to-[#0D9488]" />
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-[#BEF264]/10 rounded-xl flex items-center justify-center text-[#BEF264]">
+                    <div className="w-8 h-8 bg-[#BEF264]/10 rounded-xl flex items-center justify-center text-[#BEF264]">
                         <Tag className="w-5 h-5" />
                     </div>
                     <div>
-                        <h4 className="text-sm font-black uppercase tracking-widest">{isMine ? 'You' : receiverName} sent an offer</h4>
+                        <h4 className="text-[11px] font-black uppercase tracking-widest">{isMine ? 'You' : receiverName} sent an offer</h4>
                         <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest truncate max-w-[200px]">{payload.description}</p>
                     </div>
                 </div>
-                <div className="bg-gray-50 dark:bg-white/5 p-4 rounded-2xl mb-4 flex flex-col gap-2 border border-gray-100 dark:border-white/5">
+                <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl mb-3 flex flex-col gap-2 border border-gray-100 dark:border-white/5">
                     <div className="flex justify-between items-center">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Base Price</span>
-                        <span className="text-sm font-black text-gray-600 dark:text-gray-300">₦{Number(payload.price).toLocaleString()}</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">Base Price</span>
+                        <span className="text-xs font-black text-gray-600 dark:text-gray-300">₦{Number(payload.price).toLocaleString()}</span>
                     </div>
                     {payload.escrowFee !== undefined && (
                         <div className="flex justify-between items-center">
@@ -842,7 +842,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                                 max-w-[70%] ${isMine ? 'items-end' : 'items-start'} flex flex-col gap-2
                             `}>
                                 <div className={`
-                                    p-6 rounded-[2rem] text-sm font-medium leading-relaxed shadow-xl relative
+                                    px-4 py-2 rounded-[1.2rem] text-[13px] font-medium leading-snug shadow-sm relative
                                     ${isMine 
                                         ? isError ? 'bg-red-500 text-white' : 'bg-[#BEF264] text-black rounded-tr-none' 
                                         : 'bg-white dark:bg-neutral-800 text-gray-800 dark:text-neutral-200 border border-neutral-200 dark:border-white/5 rounded-tl-none'
@@ -973,12 +973,12 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                     value={input} 
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Type a message..." 
-                    className="flex-1 bg-white dark:bg-neutral-800 border-none rounded-2xl px-6 py-3 text-sm font-medium focus:ring-2 focus:ring-[#BEF264] outline-none transition-all shadow-sm"
+                    className="flex-1 bg-white dark:bg-neutral-800 border-none rounded-2xl px-4 py-2.5 text-[13px] font-medium focus:ring-2 focus:ring-[#BEF264] outline-none transition-all shadow-sm"
                 />
                 <button 
                     type="submit" 
                     disabled={uploading}
-                    className="bg-[#BEF264] p-4 rounded-2xl text-black hover:scale-105 transition-all shadow-lg shadow-[#BEF264]/20 disabled:opacity-50"
+                    className="bg-[#BEF264] p-3 rounded-2xl text-black hover:scale-105 transition-all shadow-sm disabled:opacity-50"
                 >
                     {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send size={20} />}
                 </button>
