@@ -83,7 +83,36 @@ export async function submitProviderReview(payload: {
 
         // 7. Send Welcome/Thank You Email
         if (user.email) {
-            const htmlBody = "<h1>Thanks for your review!</h1>";
+            const htmlBody = `
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff; color: #111111;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="font-size: 28px; font-weight: 900; margin: 0; text-transform: uppercase; letter-spacing: -0.5px;">Thanks for your review! 🎉</h1>
+                    </div>
+                    
+                    <div style="background-color: #f9fafb; border: 1px solid #f3f4f6; border-radius: 24px; padding: 32px; margin-bottom: 32px;">
+                        <p style="font-size: 16px; line-height: 1.6; margin-top: 0; margin-bottom: 24px; font-weight: 500;">
+                            Your feedback helps build trust in our community. We really appreciate you taking the time to share your experience!
+                        </p>
+                        
+                        <div style="background-color: #ffffff; border: 1px solid #f3f4f6; border-radius: 16px; padding: 20px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                                <div style="color: #fbbf24; font-size: 20px; letter-spacing: 2px;">
+                                    ${'★'.repeat(payload.rating)}${'☆'.repeat(5 - payload.rating)}
+                                </div>
+                            </div>
+                            <p style="font-size: 15px; color: #4b5563; margin: 0; font-weight: 500; font-style: italic;">
+                                "${payload.comment || 'No written comment'}"
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; padding-top: 20px; border-top: 2px dashed #f3f4f6;">
+                        <p style="font-size: 12px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin: 0;">
+                            Hostel Pulse &copy; ${new Date().getFullYear()}
+                        </p>
+                    </div>
+                </div>
+            `;
             await sendNotificationEmail(
                 user.email,
                 'Thanks for your review! 🎉',

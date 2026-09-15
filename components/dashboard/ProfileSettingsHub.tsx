@@ -333,7 +333,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                     <div key={r.id} className="bg-white dark:bg-neutral-900 p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
-                                                <h4 className="font-black text-gray-900 dark:text-white">{r.properties?.title || 'Unknown Property'}</h4>
+                                                <h4 className="font-black text-gray-900 dark:text-white">{r.properties?.title || 'Provider Review'}</h4>
                                                 <div className="flex gap-1 mt-1">
                                                     {[...Array(5)].map((_, i) => (
                                                         <Star key={i} className={`w-3 h-3 ${i < r.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-300 dark:text-neutral-700'}`} />
@@ -344,7 +344,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                                 {new Date(r.created_at).toLocaleDateString()}
                                             </span>
                                         </div>
-                                        <p className="text-sm font-medium text-gray-600 dark:text-neutral-400 mt-3">{r.review}</p>
+                                        <p className="text-sm font-medium text-gray-600 dark:text-neutral-400 mt-3">{r.comment || '-'}</p>
                                         <div className="mt-4 flex gap-2">
                                             {r.is_verified && <span className="text-[9px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-md flex items-center gap-1"><CheckCircle2 className="w-3 h-3"/> Verified Stay</span>}
                                             <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 bg-gray-50 dark:bg-white/5 px-2 py-1 rounded-md flex items-center gap-1">{r.moderation_status}</span>
