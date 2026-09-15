@@ -511,8 +511,20 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                             <X className="w-4 h-4" />
                         </button>
                         <div className="p-4">
-                            <div className="w-12 h-12 bg-[#BEF264]/20 rounded-xl flex items-center justify-center mb-4">
-                                <Receipt className="w-5 h-5 text-[#BEF264]" />
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+                                selectedTx.type === 'Property' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-500' : 
+                                selectedTx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : 
+                                selectedTx.type === 'Deposit' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' : 
+                                selectedTx.type === 'Sale' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' :
+                                selectedTx.type === 'Market' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-500' :
+                                'bg-gray-50 dark:bg-neutral-800 text-gray-500'
+                            }`}>
+                                {selectedTx.type === 'Property' ? <Home className="w-5 h-5" /> : 
+                                 selectedTx.type === 'Withdrawal' ? <ArrowUpRight className="w-5 h-5" /> :
+                                 selectedTx.type === 'Deposit' ? <ArrowDownLeft className="w-5 h-5" /> :
+                                 selectedTx.type === 'Sale' ? <ArrowUpRight className="w-5 h-5" /> :
+                                 selectedTx.type === 'Market' ? <Package className="w-5 h-5" /> :
+                                 <Receipt className="w-5 h-5" />}
                             </div>
                             <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight mb-1">Transaction Details</h3>
                             <p className="text-gray-500 font-medium text-xs mb-4">Ref: {selectedTx.id}</p>
