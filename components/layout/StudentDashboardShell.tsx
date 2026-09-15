@@ -114,22 +114,21 @@ function StudentDashboardShellContent({
             </main>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-4 left-4 right-4 z-50 pointer-events-none pb-[env(safe-area-inset-bottom)]">
-                <div className="bg-neutral-950 shadow-[0_8px_30px_rgba(0,0,0,0.4)] rounded-full flex items-center h-[64px] pointer-events-auto border border-white/10 relative overflow-visible">
+            <div className="md:hidden fixed bottom-2 left-3 right-3 z-50 pointer-events-none pb-[env(safe-area-inset-bottom)]">
+                <div className="bg-white dark:bg-neutral-950 shadow-[0_8px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)] rounded-full flex items-center h-[64px] pointer-events-auto border border-neutral-200 dark:border-white/10 relative overflow-hidden">
                     
-                    {/* Bump Indicator */}
+                    {/* Arch Indicator inside the bar */}
                     {activeIndex !== -1 && (
                         <div 
-                            className="absolute top-0 left-0 h-full pointer-events-none flex justify-center"
+                            className="absolute top-0 left-0 h-full pointer-events-none flex justify-center items-start pt-1"
                             style={{ 
                                 width: `${100 / mobileNavItems.length}%`,
                                 transform: `translateX(${activeIndex * 100}%)`,
                                 transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' 
                             }}
                         >
-                            <svg width="76" height="32" viewBox="0 0 76 32" className="absolute -top-[31px] text-neutral-950 drop-shadow-[0_-4px_6px_rgba(190,242,100,0.15)]">
-                                <path d="M0,32 C15,32 20,0 38,0 C56,0 61,32 76,32 Z" fill="currentColor" />
-                                <path d="M0,32 C15,32 20,0 38,0 C56,0 61,32 76,32" fill="none" stroke="#BEF264" strokeWidth="1.5" className="opacity-80" />
+                            <svg width="56" height="36" viewBox="0 0 56 36" className="text-[#10b981] dark:text-[#BEF264] drop-shadow-[0_2px_4px_rgba(16,185,129,0.3)] dark:drop-shadow-[0_2px_4px_rgba(190,242,100,0.2)]">
+                                <path d="M0,36 C12,36 18,2 28,2 C38,2 44,36 56,36" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
                             </svg>
                         </div>
                     )}
@@ -146,10 +145,10 @@ function StudentDashboardShellContent({
                                 className="flex-1 flex flex-col items-center justify-center relative z-10 h-full"
                             >
                                 <Icon 
-                                    className={`w-5 h-5 transition-all duration-300 ease-out absolute ${active ? 'top-3 text-[#BEF264] stroke-[2.5] scale-110' : 'top-3.5 text-gray-500 stroke-[2]'}`} 
+                                    className={`w-5 h-5 transition-all duration-300 ease-out absolute ${active ? 'top-2.5 text-[#10b981] dark:text-[#BEF264] stroke-[2.5] scale-110' : 'top-3.5 text-gray-500 stroke-[2]'}`} 
                                 />
                                 <span 
-                                    className={`text-[9px] font-black uppercase tracking-widest transition-all duration-300 absolute ${active ? 'bottom-2 text-[#BEF264] opacity-100' : 'bottom-2 text-gray-500 opacity-80'}`}
+                                    className={`text-[9px] font-black uppercase tracking-widest transition-all duration-300 absolute ${active ? 'bottom-2 text-[#10b981] dark:text-[#BEF264] opacity-100' : 'bottom-2 text-gray-500 opacity-80'}`}
                                 >
                                     {item.name}
                                 </span>
