@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin, X, Receipt, MessageCircle } from 'lucide-react';
+import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin, X, Receipt, MessageCircle, Building2, ArrowUpRight, ArrowDownLeft, PlusCircle, Package, Home } from 'lucide-react';
 import { DetailedProfileForm } from './DetailedProfileForm';
 import { SavedPropertiesTab } from './SavedPropertiesTab';
 import Link from 'next/link';
@@ -374,20 +374,61 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                         ) : (
                             <div className="grid grid-cols-1 gap-3">
                                 {transactions.map((tx: any) => (
-                                    <div 
-                                        key={tx.id} 
-                                        onClick={() => setSelectedTx(tx)}
-                                        className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex justify-between items-center cursor-pointer hover:border-[#BEF264]/40 transition-all"
-                                    >
-                                        <div>
-                                            <h4 className="font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight">{tx.title || tx.properties?.title || 'Payment'}</h4>
-                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">{new Date(tx.created_at).toLocaleDateString()} • {tx.status}</p>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="font-black text-lg text-gray-900 dark:text-white">₦{Math.abs(tx.amount || 0).toLocaleString()}</p>
-                                        </div>
-                                    </div>
-                                ))}
+                                      <div 
+                                          key={tx.id} 
+                                          onClick={() => setSelectedTx(tx)}
+                                          className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-[#BEF264]/40 transition-all"
+                                      >
+                                          <div className="flex items-center gap-4">
+                                              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
+                                                  tx.type === 'Property' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-500' : 
+                                                  tx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : 
+                                                  tx.type === 'Deposit' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' : 
+                                                  tx.type === 'Sale' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' :
+                                                  tx.type === 'Market' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-500' :
+                                                  'bg-gray-50 dark:bg-neutral-800 text-gray-500'
+                                              }`}>
+                                                  {tx.type === 'Property' ? <Home className="w-5 h-5" /> : 
+                                                   tx.type === 'Withdrawal' ? <ArrowUpRight className="w-5 h-5" /> :
+                                                   tx.type === 'Deposit' ? <ArrowDownLeft className="w-5 h-5" /> :
+                                                   tx.type === 'Sale' ? <ArrowUpRight className="w-5 h-5" /> :
+                                                   tx.type === 'Market' ? <Package className="w-5 h-5" /> :
+                                                   <Receipt className="w-5 h-5" />}
+                                              </div>
+                                              <div>
+                                                  <h4 className="font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight line-clamp-1">{tx.title || tx.properties?.title || 'Payment'}</h4>
+                                                  <div className="flex items-center gap-2 mt-1">
+                                                      <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">{new Date(tx.created_at).toLocaleDateString()}</span>
+                                                      <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-neutral-700" />
+                                                      <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">{tx.type || 'Payment'}</span>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div className="text-right shrink-0">
+                                              <p className={`text-sm font-black tracking-tighter ${
+                                                  tx.type === 'Withdrawal' ? 'text-red-500' :
+                                                  (tx.type === 'Deposit' || tx.type === 'Sale') ? 'text-emerald-500' :
+                                                  'text-gray-900 dark:text-white'
+                                              }`}>
+                                                  {tx.type === 'Withdrawal' ? '- ' : (tx.type === 'Deposit') ? '+ ' : ''}₦{Math.abs(tx.amount || 0).toLocaleString()}
+                                              </p>
+                                              <div className="flex items-center justify-end gap-1.5 mt-1">
+                                                  <div className={`w-1.5 h-1.5 rounded-full ${
+                                                      tx.status === 'completed' || tx.status === 'Released' ? 'bg-emerald-500' : 
+                                                      tx.status === 'pending' || tx.status === 'Held' ? 'bg-amber-500' : 
+                                                      tx.status === 'Refunded' ? 'bg-blue-500' :
+                                                      'bg-gray-400'
+                                                  }`} />
+                                                  <span className={`text-[9px] font-black uppercase tracking-widest ${
+                                                      tx.status === 'completed' || tx.status === 'Released' ? 'text-emerald-500' : 
+                                                      tx.status === 'pending' || tx.status === 'Held' ? 'text-amber-500' :
+                                                      tx.status === 'Refunded' ? 'text-blue-500' :
+                                                      'text-gray-400'
+                                                  }`}>{tx.status}</span>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  ))}
                             </div>
                         )}
                     </div>

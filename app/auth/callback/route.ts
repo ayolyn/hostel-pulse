@@ -9,10 +9,11 @@ import { cookies } from 'next/headers';
  */
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
-    const forwardedHost = request.headers.get('x-forwarded-host');
-    const forwardedProto = request.headers.get('x-forwarded-proto') || 'https';
-    const host = forwardedHost || request.headers.get('host');
-    const origin = host ? `${forwardedHost ? forwardedProto : new URL(request.url).protocol.replace(':', '')}://${host}` : new URL(request.url).origin;
+    // Always redirect to the canonical production domain.
+    // The callback may run on hostel-pulse.pages.dev (Cloudflare internal) so
+    // we MUST hardcode the real domain here instead of deriving from the request.
+    const PRODUCTION_ORIGIN = process.env.NEXT_PUBLIC_SITE_URL || 'https://hostelpulse.app';
+    const origin = PRODUCTION_ORIGIN;
     const code = searchParams.get('code');
     const type = searchParams.get('type'); // 'recovery' for password reset emails
 
