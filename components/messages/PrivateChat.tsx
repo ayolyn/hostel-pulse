@@ -689,13 +689,13 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
     return (
         <div className="flex flex-col h-[calc(100vh-12rem)] bg-white dark:bg-neutral-900 rounded-[2.5rem] border border-neutral-100 dark:border-white/5 overflow-hidden shadow-xl relative">
             {/* Header */}
-            <div className="px-4 py-6 border-b border-neutral-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-neutral-800/30">
+            <div className="px-4 py-3 border-b border-neutral-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-neutral-800/30">
                 <button onClick={() => router.back()} className="p-2 -ml-2 hover:bg-white dark:hover:bg-neutral-700 rounded-xl transition-colors">
                     <ChevronLeft className="w-6 h-6" />
                 </button>
                 <div className="w-10 h-10 bg-[#BEF264]/10 dark:bg-[#BEF264]/5 rounded-full flex items-center justify-center text-[#BEF264] overflow-hidden relative shrink-0">
-                    {receiverAvatar ? (
-                        <NextImage src={receiverAvatar} alt={receiverName} fill className="object-cover" />
+                    {receiverAvatar && receiverAvatar.trim() !== '' ? (
+                        <NextImage src={receiverAvatar} alt={receiverName} fill className="object-cover" onError={() => setReceiverAvatar(null)} />
                     ) : (
                         <User className="w-5 h-5" />
                     )}
@@ -710,9 +710,9 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
 
             {/* Sticky Context Sub-Header */}
             {context && (
-                <div className="bg-[#BEF264]/10 dark:bg-[#BEF264]/5 border-b border-[#BEF264]/20 px-4 py-3 flex items-center justify-between shrink-0">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-white dark:bg-neutral-800 rounded-full overflow-hidden relative shadow-sm border border-white/10 shrink-0">
+                <div className="bg-[#BEF264]/10 dark:bg-[#BEF264]/5 border-b border-[#BEF264]/20 px-4 py-2 flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-white dark:bg-neutral-800 rounded-full overflow-hidden relative shadow-sm border border-white/10 shrink-0">
                             {context.type === 'market' ? (
                                 <NextImage src={context.data.image_url || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=200&auto=format&fit=crop'} alt={context.data.title} fill className="object-cover" />
                             ) : context.type === 'property' ? (
@@ -722,12 +722,12 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                             )}
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tight">
-                                Discussing: {context.type === 'market' || context.type === 'property' ? context.data.title : context.data.full_name.split(' ')[0]} 
+                            <p className="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-tight">
+                                Discussing: {context.type === 'market' || context.type === 'property' ? context.data.title : context.data.full_name?.split(' ')[0]} 
                                 {context.type !== 'roommate' && ` — ₦${Number(context.data.price).toLocaleString()}`}
                             </p>
                             {context.type === 'market' && context.data.status === 'sold' && (
-                                <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-0.5">Sold Out</p>
+                                <p className="text-[8px] text-red-500 font-bold uppercase tracking-widest mt-0.5">Sold Out</p>
                             )}
                         </div>
                     </div>
@@ -736,7 +736,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                             {context.data.seller_id === userId ? (
                                 <button 
                                     onClick={() => setShowOfferModal(true)}
-                                    className="bg-[#BEF264] text-black px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:scale-105 transition-all flex items-center gap-1"
+                                    className="bg-[#BEF264] text-black px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm hover:scale-105 transition-all flex items-center gap-1"
                                 >
                                     <Tag size={12} />
                                     Create Custom Offer
@@ -744,7 +744,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                             ) : (
                                 <button 
                                     onClick={() => setShowMarketCheckout(true)}
-                                    className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:scale-105 transition-all flex items-center gap-1"
+                                    className="bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-sm hover:scale-105 transition-all flex items-center gap-1"
                                 >
                                     <ShoppingCart size={12} />
                                     Buy at Original Price
@@ -944,7 +944,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
             )}
 
             {/* Input Form */}
-            <form onSubmit={sendMessage} className="p-6 border-t border-neutral-100 dark:border-white/5 flex gap-3 bg-gray-50/30 dark:bg-neutral-800/20 relative z-10">
+            <form onSubmit={sendMessage} className="px-4 py-3 border-t border-neutral-100 dark:border-white/5 flex items-center bg-gray-50/30 dark:bg-neutral-800/20 relative z-10">
                 <input 
                     type="file" 
                     ref={fileInputRef} 
@@ -952,36 +952,38 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                     accept="image/*" 
                     className="hidden" 
                 />
-                <button 
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="bg-white dark:bg-neutral-800 p-4 rounded-2xl text-gray-500 hover:text-black dark:hover:text-[#BEF264] transition-all shadow-sm border border-neutral-200 dark:border-white/5"
-                >
-                    <Camera size={20} />
-                </button>
-                {receiverRole !== 'landlord' && (
+                <div className="flex flex-1 items-center bg-white dark:bg-neutral-800 rounded-full border border-neutral-200 dark:border-white/5 px-2 py-1.5 shadow-sm">
                     <button 
                         type="button"
-                        onClick={() => setShowOfferModal(true)}
-                        className="bg-white dark:bg-neutral-800 p-4 rounded-2xl text-gray-500 hover:text-black dark:hover:text-[#BEF264] transition-all shadow-sm border border-neutral-200 dark:border-white/5"
-                        title="Create Custom Offer"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-2 text-gray-400 hover:text-black dark:hover:text-[#BEF264] transition-colors"
                     >
-                        <Tag size={20} />
+                        <Camera size={20} />
                     </button>
-                )}
-                <input 
-                    value={input} 
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Type a message..." 
-                    className="flex-1 bg-white dark:bg-neutral-800 border-none rounded-2xl px-4 py-2.5 text-[13px] font-medium focus:ring-2 focus:ring-[#BEF264] outline-none transition-all shadow-sm"
-                />
-                <button 
-                    type="submit" 
-                    disabled={uploading}
-                    className="bg-[#BEF264] p-3 rounded-2xl text-black hover:scale-105 transition-all shadow-sm disabled:opacity-50"
-                >
-                    {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send size={20} />}
-                </button>
+                    {receiverRole !== 'landlord' && (
+                        <button 
+                            type="button"
+                            onClick={() => setShowOfferModal(true)}
+                            className="p-2 text-gray-400 hover:text-black dark:hover:text-[#BEF264] transition-colors"
+                            title="Create Custom Offer"
+                        >
+                            <Tag size={20} />
+                        </button>
+                    )}
+                    <input 
+                        value={input} 
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="Type a message..." 
+                        className="flex-1 bg-transparent border-none px-2 text-[13px] font-medium focus:outline-none focus:ring-0 text-gray-900 dark:text-white"
+                    />
+                    <button 
+                        type="submit" 
+                        disabled={uploading}
+                        className="bg-[#BEF264] p-2.5 rounded-full text-black hover:scale-105 transition-all disabled:opacity-50 flex items-center justify-center shrink-0 ml-1"
+                    >
+                        {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send size={18} className="-ml-0.5" />}
+                    </button>
+                </div>
             </form>
             {/* Market Checkout Modal */}
             {showMarketCheckout && context?.type === 'market' && (

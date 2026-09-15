@@ -371,63 +371,15 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                         <p className="text-gray-500 mt-2 font-medium">When you pay for a hostel or market item, it will appear here.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 gap-2">
+                    <div className="grid grid-cols-1 gap-3">
                         {historyTransactions.map((t) => (
-                            <div key={t.id} onClick={() => setSelectedTx(t)} className="cursor-pointer bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex items-center justify-between hover:border-[#BEF264]/40 transition-all group">
-                                <div className="flex items-center gap-5">
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                                        t.type === 'Property' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-500' : 
-                                        t.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : 
-                                        t.type === 'Deposit' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' : 
-                                        t.type === 'Sale' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' : 
-                                        'bg-purple-50 dark:bg-purple-500/10 text-purple-500'
-                                    }`}>
-                                        {t.type === 'Property' ? <Building2 className="w-6 h-6" /> : 
-                                         t.type === 'Withdrawal' ? <Building className="w-6 h-6" /> :
-                                         t.type === 'Deposit' ? <PlusCircle className="w-6 h-6" /> :
-                                         t.type === 'Sale' ? <ArrowUpRight className="w-4 h-4" /> :
-                                         <Package className="w-6 h-6" />}
-                                    </div>
-                                    <div>
-                                        <h4 className="font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight text-xs line-clamp-1">{t.title}</h4>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">{new Date(t.created_at).toLocaleDateString()}</span>
-                                            <span className="w-1 h-1 rounded-full bg-gray-200 dark:bg-neutral-800" />
-                                            <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400">
-                                                {t.type === 'Withdrawal' ? `${t.bankName || 'Bank'} (*${t.accountNumber?.slice(-4) || '****'})` : t.type}
-                                            </span>
-                                        </div>
-                                    </div>
+                            <div key={t.id} onClick={() => setSelectedTx(t)} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex justify-between items-center">
+                                <div>
+                                    <h4 className="font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight">{t.title || t.type || 'Payment'}</h4>
+                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">{new Date(t.created_at).toLocaleDateString()} • {t.status}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className={`text-xs font-black tracking-tighter ${
-                                        t.amount < 0 ? 'text-red-500' : 
-                                        (t.type === 'Deposit' || t.type === 'Sale') ? 'text-emerald-500' : 
-                                        'text-gray-900 dark:text-white'
-                                    }`}>
-                                        {t.amount < 0 ? '- ' : (t.type === 'Deposit' || t.type === 'Sale') ? '+ ' : ''}₦{Math.abs(t.amount).toLocaleString()}
-                                    </p>
-                                    <div className="flex flex-col items-end gap-2 mt-1">
-                                        {t.status?.toLowerCase() === 'disputed' ? (
-                                            <Link href={`/dashboard/student/disputes/${t.id}`} className="flex items-center justify-end gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 transition-colors border border-red-500/20 cursor-pointer">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                                                <span className="text-[8px] font-black uppercase tracking-widest text-red-500">Case Room</span>
-                                            </Link>
-                                        ) : (
-                                            <div className="flex items-center justify-end gap-1.5">
-                                                <div className={`w-1.5 h-1.5 rounded-full ${
-                                                    t.status === 'completed' || t.status === 'Released' ? 'bg-emerald-500' : 
-                                                    t.status === 'pending' || t.status === 'Held' || t.status === 'Locked' ? 'bg-amber-500' : 
-                                                    'bg-gray-400'
-                                                }`} />
-                                                <span className={`text-[8px] font-black uppercase tracking-widest ${
-                                                    t.status === 'completed' || t.status === 'Released' ? 'text-emerald-500' : 
-                                                    t.status === 'pending' || t.status === 'Held' || t.status === 'Locked' ? 'text-amber-500' : 
-                                                    'text-gray-400'
-                                                }`}>{t.status}</span>
-                                            </div>
-                                        )}
-                                    </div>
+                                    <p className="font-black text-lg text-gray-900 dark:text-white">₦{t.amount?.toLocaleString()}</p>
                                 </div>
                             </div>
                         ))}
