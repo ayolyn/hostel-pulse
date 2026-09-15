@@ -1,10 +1,6 @@
-const fs = require('fs');
-let file = fs.readFileSync('app/LandingPageClient.tsx', 'utf8');
+﻿const fs = require('fs');
+let content = fs.readFileSync('components/dashboard/ProfileSettingsHub.tsx', 'utf8');
 
-file = file.replace(
-    "const [activeTab, setActiveTab] = useState<'rent' | 'gig' | 'market' | 'roommate'>('rent');| 'gig'>('rent');",
-    "const [activeTab, setActiveTab] = useState<'rent' | 'gig' | 'market' | 'roommate'>('rent');"
-);
+content = content.replace("setTransactions(data || []);\n            setLoadingData(false);", "setTransactions(data || []);\n            }\n            setLoadingData(false);");
 
-fs.writeFileSync('app/LandingPageClient.tsx', file, 'utf8');
-console.log('Fixed syntax error');
+fs.writeFileSync('components/dashboard/ProfileSettingsHub.tsx', content, 'utf8');

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, X, Send, Loader2, Bot, User, AlertTriangle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
+import { usePathname } from 'next/navigation';
 
 export function GlobalSupportWidget() {
     const { user } = useAuth();

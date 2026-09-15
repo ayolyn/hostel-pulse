@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Smartphone, MapPin } from 'lucide-react';
+import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin } from 'lucide-react';
 import { DetailedProfileForm } from './DetailedProfileForm';
 import { SavedPropertiesTab } from './SavedPropertiesTab';
 import Link from 'next/link';
@@ -41,7 +41,6 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                     .eq('status', 'disputed')
                     .order('created_at', { ascending: false });
                 setDisputes(data || []);
-            }
             } else if (activeSection === 'My Transactions') {
                 const { data } = await supabase
                     .from('escrow_transactions')
@@ -49,6 +48,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                     .eq('buyer_id', user.id)
                     .order('created_at', { ascending: false });
                 setTransactions(data || []);
+            }
             setLoadingData(false);
         }
         
