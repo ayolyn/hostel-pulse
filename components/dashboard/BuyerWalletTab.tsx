@@ -15,7 +15,6 @@ import {
     CheckCircle2, 
     XCircle, 
     X,
-    History,
     ShieldCheck,
     Receipt,
     CreditCard,
@@ -54,7 +53,6 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
     const [releasingTx, setReleasingTx] = useState<string | null>(null);
     const [cancellingTx, setCancellingTx] = useState<string | null>(null);
     const [disputeModal, setDisputeModal] = useState<{ id: string | null, reason: string }>({ id: null, reason: '' });
-    const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
     const [reviewModalProvider, setReviewModalProvider] = useState<{ id: string, name: string } | null>(null);
 
     const handleCancelOrder = async (transactionId: string) => {
@@ -223,7 +221,6 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
         .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
 
     const escrowTransactions = transactions.filter(t => ['Held', 'Locked', 'pending', 'Pending'].includes(t.status));
-    const historyTransactions = transactions.filter(t => !['Held', 'Locked', 'pending', 'Pending'].includes(t.status));
 
     if (loading) {
         return (
@@ -354,38 +351,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                 )}
             </section>
 
-            {/* Transaction Ledger */}
-            <section className="space-y-6">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-base font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
-                        <Receipt className="w-6 h-6 text-[#BEF264]" />
-                        Payment History
-                    </h2>
-                    <span className="text-[8px] font-black uppercase tracking-widest text-gray-600">{historyTransactions.length} Total</span>
-                </div>
 
-                {historyTransactions.length === 0 ? (
-                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-3xl p-20 text-center">
-                        <Wallet className="w-16 h-16 text-gray-100 dark:text-neutral-800 mx-auto mb-6" />
-                        <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">No Transactions Yet</h3>
-                        <p className="text-gray-500 mt-2 font-medium">When you pay for a hostel or market item, it will appear here.</p>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 gap-3">
-                        {historyTransactions.map((t) => (
-                            <div key={t.id} onClick={() => setSelectedTx(t)} className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex justify-between items-center">
-                                <div>
-                                    <h4 className="font-black text-sm text-gray-900 dark:text-white uppercase tracking-tight">{t.title || t.type || 'Payment'}</h4>
-                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">{new Date(t.created_at).toLocaleDateString()} • {t.status}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-black text-lg text-gray-900 dark:text-white">₦{t.amount?.toLocaleString()}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </section>
 
             {/* Dispute Modal */}
             {disputeModal.id && (
@@ -455,79 +421,6 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                         window.location.reload();
                     }}
                 />
-            )}
-            {/* Transaction Details Modal */}
-            {selectedTx && (
-                <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-neutral-900 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative animate-in fade-in zoom-in-95 duration-200 border border-neutral-100 dark:border-white/5">
-                        <button 
-                            onClick={() => setSelectedTx(null)}
-                            className="absolute top-4 right-4 w-10 h-10 bg-gray-50 dark:bg-neutral-800 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-neutral-700 hover:text-black dark:hover:text-white transition-colors"
-                        >
-                            <X className="w-4 h-4" />
-                        </button>
-                        <div className="p-4">
-                            <div className="w-12 h-12 bg-[#BEF264]/20 rounded-xl flex items-center justify-center mb-4">
-                                <Receipt className="w-5 h-5 text-[#BEF264]" />
-                            </div>
-                            <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight mb-1">Transaction Details</h3>
-                            <p className="text-gray-500 font-medium text-xs mb-4">Ref: {selectedTx.id}</p>
-                            
-                            <div className="space-y-4">
-                                <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/5">
-                                    <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Amount</span>
-                                    <span className="font-black text-xs text-gray-900 dark:text-white">₦{Math.abs(selectedTx.amount).toLocaleString()}</span>
-                                </div>
-                                <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/5">
-                                    <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Item / Purpose</span>
-                                    <span className="font-bold text-xs text-gray-700 dark:text-gray-300">{selectedTx.title}</span>
-                                </div>
-                                <div className="flex justify-between py-2 border-b border-gray-100 dark:border-white/5">
-                                    <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Date</span>
-                                    <span className="font-bold text-xs text-gray-700 dark:text-gray-300">{new Date(selectedTx.created_at).toLocaleString('en-NG')}</span>
-                                </div>
-                                <div className="flex justify-between py-3">
-                                    <span className="text-gray-500 font-bold text-[9px] uppercase tracking-widest">Status</span>
-                                    <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${
-                                        selectedTx.status === 'completed' || selectedTx.status === 'Released' ? 'bg-emerald-50 text-emerald-700' : 
-                                        selectedTx.status === 'pending' || selectedTx.status === 'Held' || selectedTx.status === 'Locked' ? 'bg-amber-50 text-amber-700' : 
-                                        'bg-gray-100 text-gray-500'
-                                    }`}>
-                                        {selectedTx.status}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row gap-2 mt-4 flex-wrap">
-                                {selectedTx.payee_id && selectedTx.amount < 0 && (
-                                    <Link 
-                                        href={`/dashboard/student?tab=messages&userId=${selectedTx.payee_id}`}
-                                        className="flex-1 bg-blue-500 text-white font-black py-3 rounded-xl uppercase tracking-widest text-[9px] hover:bg-blue-600 transition-all flex items-center justify-center gap-2"
-                                    >
-                                        <MessageCircle className="w-4 h-4" /> Message Seller
-                                    </Link>
-                                )}
-                                {(selectedTx.status === 'completed' || selectedTx.status === 'Released') && selectedTx.payee_id && selectedTx.amount < 0 && (
-                                    <button 
-                                        onClick={() => {
-                                            setSelectedTx(null);
-                                            setReviewModalProvider({ id: selectedTx.payee_id!, name: selectedTx.payee_name || 'Provider' });
-                                        }}
-                                        className="flex-1 bg-[#BEF264] text-black font-black py-3 rounded-xl uppercase tracking-widest text-[9px] hover:bg-[#a6d456] transition-all flex items-center justify-center gap-2"
-                                    >
-                                        <Star className="w-4 h-4" /> Leave Review
-                                    </button>
-                                )}
-                                <button 
-                                    onClick={() => setSelectedTx(null)}
-                                    className="flex-1 bg-black dark:bg-white text-white dark:text-black font-black py-3 rounded-xl uppercase tracking-widest text-[9px] hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all"
-                                >
-                                    Close Details
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             )}
 
             {/* Review Modal */}

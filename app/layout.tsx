@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: "The most secure platform to find, inspect, and safely pay for verified student housing and apartments around LAUTECH, Ogbomoso.",
     icons: {
         icon: '/favicon.svg',
-        apple: '/favicon.svg'
+        apple: '/logo-icon.png'
     },
     openGraph: {
         title: 'HostelPulse � Premium Student Housing',

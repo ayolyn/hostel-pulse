@@ -344,7 +344,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                 {activeSection === 'Install App' && (
                     <div className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 rounded-3xl p-10 text-center animate-in fade-in duration-300">
                         <Download className="w-12 h-12 text-[#BEF264] mx-auto mb-4" />
-                        <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2">Install HostelPulse</h3>
+                        <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2">Install HostelPulse</h3>
                         <p className="text-gray-500 font-medium mb-6">Get the native experience by installing our app to your home screen.</p>
                         <button 
                             onClick={() => {
