@@ -70,7 +70,7 @@ export function PublicHeader() {
                         {user ? (
                             <Link
                                 href={dashboardLink}
-                                className="bg-emerald-500 text-black text-sm font-bold px-5 py-2.5 rounded-full hover:bg-emerald-400 transition-all"
+                                className="bg-[#BEF264] text-black text-sm font-bold px-5 py-2.5 rounded-full hover:bg-[#d9f99d] transition-all"
                             >
                                 Dashboard
                             </Link>
@@ -84,7 +84,7 @@ export function PublicHeader() {
                                 </Link>
                                 <Link
                                     href="/auth?mode=signup"
-                                    className="bg-emerald-500 text-black text-sm font-bold px-5 py-2.5 rounded-full hover:bg-emerald-400 transition-all"
+                                    className="bg-[#BEF264] text-black text-sm font-bold px-5 py-2.5 rounded-full hover:bg-[#d9f99d] transition-all"
                                 >
                                     List Home
                                 </Link>
@@ -154,7 +154,7 @@ export function PublicHeader() {
                                 {user ? (
                                     <Link
                                         href={dashboardLink}
-                                        className="w-full py-4 bg-emerald-500 text-black text-center font-bold rounded-xl"
+                                        className="w-full py-4 bg-[#BEF264] text-black text-center font-bold rounded-xl hover:bg-[#d9f99d] transition-all"
                                     >
                                         My Dashboard
                                     </Link>
@@ -168,7 +168,7 @@ export function PublicHeader() {
                                         </Link>
                                         <Link
                                             href="/auth?mode=signup"
-                                            className="w-full py-4 bg-emerald-500 text-black text-center font-bold rounded-xl"
+                                            className="w-full py-4 bg-[#BEF264] text-black text-center font-bold rounded-xl hover:bg-[#d9f99d] transition-all"
                                         >
                                             List your home
                                         </Link>

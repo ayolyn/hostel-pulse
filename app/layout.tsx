@@ -120,11 +120,11 @@ export default function RootLayout({
                     `}
                 </Script>
             </head>
-                  <body className={`${outfit.variable} font-sans bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 antialiased min-h-screen flex flex-col`}>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+            <body className={`${outfit.variable} font-sans bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 antialiased min-h-screen flex flex-col`}>
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
                 <Toaster position="top-right" />
                 <QueryProvider>
                     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -133,7 +133,7 @@ export default function RootLayout({
                                 <SavedProvider>
                                     <AuthHashHandler />
                                     <GlobalAlertsListener />
-                                    <main>
+                                    <main className="flex-1 flex flex-col">
                                         {children}
                                     </main>
                                     <GlobalSupportWidget />

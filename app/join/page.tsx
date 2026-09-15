@@ -33,7 +33,7 @@ function JoinPageContent() {
         await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
+                redirectTo: `https://hostelpulse.app/auth/callback`,
                 queryParams: {
                     access_type: 'offline',
                     prompt: 'consent',
@@ -113,7 +113,7 @@ function JoinPageContent() {
         const supabase = createClient();
 
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
+            redirectTo: `https://hostelpulse.app/auth/callback?type=recovery`,
         });
 
         if (error) {
@@ -139,7 +139,7 @@ function JoinPageContent() {
             type: 'signup',
             email: email,
             options: {
-                emailRedirectTo: `${window.location.origin}/dashboard`
+                emailRedirectTo: `https://hostelpulse.app/dashboard`
             }
         });
 

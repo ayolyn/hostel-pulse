@@ -20,7 +20,7 @@ export function WhyHostelPulse() {
             </p>
             <Link 
                 href="/rent"
-                className="inline-flex items-center gap-2 text-gray-900 dark:text-white font-bold hover:text-[#BEF264] transition-colors"
+                className="inline-flex items-center gap-2 bg-[#BEF264] hover:bg-[#d9f99d] text-black px-6 py-3 rounded-xl font-bold text-sm uppercase transition-all"
             >
                 Explore verified hostels <ChevronRight className="w-5 h-5" />
             </Link>

@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'HostelPulse',
     short_name: 'HostelPulse',
     description: 'Premium Student Housing in Ogbomoso',
-    start_url: '/',
+    start_url: 'https://hostelpulse.app/',
     display: 'standalone',
     background_color: '#0F172A',
     theme_color: '#BEF264',
