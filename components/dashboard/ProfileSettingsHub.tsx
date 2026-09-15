@@ -35,28 +35,59 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         async function fetchTabData() {
             setLoadingData(true);
             if (activeSection === 'My Reviews') {
-                const { data } = await supabase
+                const { data: reviewsData } = await supabase
                     .from('provider_reviews')
                     .select('*, properties(title, images)')
                     .eq('reviewer_id', user.id)
                     .order('created_at', { ascending: false });
-                setReviews(data || []);
+
+                if (reviewsData && reviewsData.length > 0) {
+                    const providerIds = Array.from(new Set(reviewsData.map((r: any) => r.provider_id)));
+                    const { data: profiles } = await supabase
+                        .from('profiles')
+                        .select('id, full_name')
+                        .in('id', providerIds);
+                    
+                    const reviewsWithProfiles = reviewsData.map((r: any) => {
+                        const profile = profiles?.find(p => p.id === r.provider_id);
+                        return { ...r, provider: profile };
+                    });
+                    setReviews(reviewsWithProfiles);
+                } else {
+                    setReviews([]);
+                }
             } else if (activeSection === 'My Disputes') {
-                const { data } = await supabase
+                const { data: disputesData } = await supabase
                     .from('escrow_transactions')
-                    .select('*, properties(title, images)')
-                    .eq('buyer_id', user.id)
-                    .eq('status', 'disputed')
+                    .select('*')
+                    .eq('payer_id', user.id)
+                    .eq('status', 'Disputed')
                     .order('created_at', { ascending: false });
-                setDisputes(data || []);
+
+                if (disputesData && disputesData.length > 0) {
+                    const propertyIds = Array.from(new Set(disputesData.map((d: any) => d.property_id).filter(Boolean)));
+                    let properties: any[] = [];
+                    if (propertyIds.length > 0) {
+                        const { data } = await supabase
+                            .from('properties')
+                            .select('id, title, images')
+                            .in('id', propertyIds);
+                        properties = data || [];
+                    }
+                    
+                    const disputesWithProps = disputesData.map((d: any) => {
+                        const prop = properties.find((p: any) => p.id === d.property_id);
+                        return { ...d, properties: prop };
+                    });
+                    setDisputes(disputesWithProps);
+                } else {
+                    setDisputes([]);
+                }
             } else if (activeSection === 'My Transactions') {
                 const escrowPromise = supabase
                     .from('escrow_transactions')
                     .select(`
-                        id, amount, status, created_at, payer_id, payee_id, type,
-                        properties!property_id (title),
-                        market_listings!listing_id (title),
-                        profiles!payee_id (full_name)
+                        id, amount, status, created_at, payer_id, payee_id, type
                     `)
                     .or(`payer_id.eq.${user.id},payee_id.eq.${user.id}`);
 
@@ -72,18 +103,35 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
 
                 const [escrowRes, withdrawRes, depositRes] = await Promise.all([escrowPromise, withdrawPromise, depositPromise]);
 
-                const escrowFormatted = (escrowRes.data || []).map((t: any) => {
+                const escrowFormatted = await Promise.all((escrowRes.data || []).map(async (t: any) => {
                     const isSale = t.payee_id === user.id;
+                    
+                    let title = 'Payment';
+                    let payeeName = 'Provider';
+
+                    if (t.payee_id) {
+                        const { data: prof } = await supabase.from('profiles').select('full_name').eq('id', t.payee_id).maybeSingle();
+                        if (prof) payeeName = prof.full_name;
+                    }
+
+                    if (t.type === 'INSPECTION_FEE') {
+                        title = 'Inspection Fee';
+                    } else if (isSale) {
+                        title = 'Sale';
+                    } else {
+                        title = 'Payment';
+                    }
+
                     return {
                         id: t.id,
                         amount: isSale ? Number(t.amount) : -Number(t.amount),
                         status: t.status,
                         created_at: t.created_at,
-                        title: isSale ? 'Sale' : (t.type === 'INSPECTION_FEE' ? 'Inspection Fee' : (t.properties?.title || t.market_listings?.title || 'Payment')),
+                        title: title,
                         payee_id: t.payee_id,
-                        payee_name: t.profiles?.full_name || 'Provider'
+                        payee_name: payeeName
                     };
-                });
+                }));
 
                 const withdrawFormatted = (withdrawRes.data || []).map((w: any) => ({
                     id: w.id,
@@ -333,7 +381,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                     <div key={r.id} className="bg-white dark:bg-neutral-900 p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
-                                                <h4 className="font-black text-gray-900 dark:text-white">{r.properties?.title || 'Provider Review'}</h4>
+                                                <h4 className="font-black text-gray-900 dark:text-white">{r.provider?.full_name || r.properties?.title || 'Provider Review'}</h4>
                                                 <div className="flex gap-1 mt-1">
                                                     {[...Array(5)].map((_, i) => (
                                                         <Star key={i} className={`w-3 h-3 ${i < r.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-300 dark:text-neutral-700'}`} />
@@ -484,14 +532,14 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                                 }`}>
                                                     {d.status}
                                                 </span>
-                                                <h4 className="font-black text-gray-900 dark:text-white">{d.reason}</h4>
+                                                <h4 className="font-black text-gray-900 dark:text-white">{d.dispute_reason || 'Disputed Transaction'}</h4>
                                                 {d.properties?.title && <p className="text-xs font-bold text-gray-500 mt-1">Re: {d.properties.title}</p>}
                                             </div>
                                             <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
                                                 {new Date(d.created_at).toLocaleDateString()}
                                             </span>
                                         </div>
-                                        <p className="text-sm font-medium text-gray-600 dark:text-neutral-400 mt-3">{d.description}</p>
+                                        <p className="text-sm font-medium text-gray-600 dark:text-neutral-400 mt-3">{d.dispute_reason || '-'}</p>
                                     </div>
                                 ))}
                             </div>

@@ -46,10 +46,21 @@ export async function submitProviderReview(payload: {
             .limit(1);
 
         if (!bookingData || bookingData.length === 0) {
-            return { error: "You can only review providers you have completed a booking with." };
+            // Fallback check for campus market / custom orders
+            const { data: escrowData } = await supabase
+                .from("escrow_transactions")
+                .select("id")
+                .eq("payer_id", user.id)
+                .eq("payee_id", payload.providerId)
+                .in("status", ["completed", "Released"])
+                .limit(1);
+            
+            if (!escrowData || escrowData.length === 0) {
+                return { error: "You can only review providers you have completed a booking or transaction with." };
+            }
         }
 
-        const isVerifiedInteraction = true; // Guaranteed true since we require a booking
+        const isVerifiedInteraction = true; // Guaranteed true since we require a booking/transaction
 
         // 5. Insert Review
         const { error: insertError } = await supabase
@@ -65,6 +76,9 @@ export async function submitProviderReview(payload: {
 
         if (insertError) {
             console.error("Review Insert Error:", insertError);
+            if (insertError.code === '23505') {
+                return { error: "You have already reviewed this booking!" };
+            }
             return { error: "Failed to submit review. Please try again." };
         }
 

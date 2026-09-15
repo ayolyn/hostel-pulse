@@ -69,12 +69,19 @@ export default function PulseMapbox({
     useEffect(() => {
         if (map.current) return; // initialize map only once
         if (!mapContainer.current) return;
+        
+        if (!process.env.NEXT_PUBLIC_MAPBOX_TOKEN) {
+            console.error("Mapbox token is missing!");
+            return;
+        }
+
+        const defaultCenter: [number, number] = [4.2667, 8.1333];
 
         const newMap = new mapboxgl.Map({
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/standard', // 3D Standard Environment
-            center: center,
-            zoom: zoom,
+            center: center || defaultCenter,
+            zoom: zoom || 13.5,
             pitch: 60, // 3D Pitch
         });
 
