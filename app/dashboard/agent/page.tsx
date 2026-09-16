@@ -132,10 +132,10 @@ function AgentDashboardContent() {
                     { label: 'Total Tours', value: loading ? '...' : String(account?.completed_tours ?? 0), icon: Calendar },
                     { label: 'Earned Today', value: loading ? '...' : `₦${earnedToday.toLocaleString()}`, icon: Zap },
                 ].map(stat => (
-                    <div key={stat.label} className="bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 p-6 rounded-3xl flex flex-col gap-4 hover:bg-gray-100 dark:hover:bg-white/10 transition-all">
+                    <div key={stat.label} className="bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 p-5 rounded-3xl flex flex-col gap-4 hover:bg-gray-100 dark:hover:bg-white/10 transition-all">
                         <stat.icon className="w-6 h-6 text-[#0D9488] dark:text-[#BEF264]" />
                         <div>
-                            <p className="text-2xl font-black text-gray-900 dark:text-white">{stat.value}</p>
+                            <p className="text-lg font-black text-gray-900 dark:text-white">{stat.value}</p>
                             <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mt-1">{stat.label}</p>
                         </div>
                     </div>
@@ -195,9 +195,9 @@ function AgentDashboardContent() {
         <AgentDashboardShell userId={userId || ''}>
             <div className="space-y-12">
                 {/* Header Context */}
-                <div className="mb-10">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#BEF264] mb-2">Agent HQ / {activeTab}</p>
-                    <h1 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                <div className="mb-6">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#BEF264] mb-1">Agent HQ / {activeTab}</p>
+                    <h1 className="text-base sm:text-lg font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                         {activeTab === 'overview' ? (loading ? 'Welcome...' : `Welcome, ${account?.full_name?.split(' ')[0] || 'Agent'}`) : activeTab}
                     </h1>
                 </div>

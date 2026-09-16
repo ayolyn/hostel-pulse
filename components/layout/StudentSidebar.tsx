@@ -43,11 +43,11 @@ import { Settings } from 'lucide-react';
 
 const mainNavItems = [
     { name: 'Dashboard', icon: Home, path: '/dashboard/student' },
-    { name: 'Find Hostel', icon: Search, path: '/rent' },
+    { name: 'Find Hostel', icon: Search, path: '/dashboard/student?tab=find-hostel' },
     { name: 'Explore Map', icon: Map, path: '/explore' },
-    { name: 'Roommates', icon: Users, path: '/roommates' },
-    { name: 'Campus Market', icon: ShoppingBag, path: '/market' },
-    { name: 'Campus Gigs', icon: Wrench, path: '/services' },
+    { name: 'Roommates', icon: Users, path: '/dashboard/student?tab=roommates' },
+    { name: 'Campus Market', icon: ShoppingBag, path: '/dashboard/student?tab=market' },
+    { name: 'Campus Gigs', icon: Wrench, path: '/dashboard/student?tab=gigs' },
     { name: 'Inspections', icon: Calendar, path: '/dashboard/student?tab=inspections' },
     { name: 'Messages', icon: MessageCircle, path: '/messages', badge: 'unread' },
 ];

@@ -36,6 +36,7 @@ const mobileNavItems = [
 ];
 
 import { Suspense } from 'react';
+import { StudentSidebar } from './StudentSidebar';
 
 
 
@@ -49,6 +50,7 @@ function StudentDashboardShellContent({
     const searchParams = useSearchParams();
     const tab = searchParams?.get('tab');
     const [mounted, setMounted] = useState(false);
+    const [isRetracted, setIsRetracted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -91,44 +93,14 @@ function StudentDashboardShellContent({
     return (
         <div className="flex min-h-screen bg-gray-50/50 dark:bg-neutral-950 transition-colors duration-500 pb-32 md:pb-0">
             
-            {/* Desktop Sidebar */}
-            <aside className="hidden lg:flex flex-col w-64 fixed top-0 left-0 bottom-0 bg-white dark:bg-[#0a0a0a] border-r border-neutral-200 dark:border-white/10 z-40 p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-10 px-2">
-                    <HostelPulseLogo className="h-7" />
-                </div>
-                <div className="flex-1 overflow-y-auto pr-2 pb-4 no-scrollbar">
-                    <nav className="space-y-1">
-                        {desktopNavItems.map((item) => (
-                            <Link 
-                                key={item.name} 
-                                href={item.href}
-                                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all flex items-center gap-4 ${isActive(item.name, item.href) ? 'bg-[#10b981]/10 dark:bg-[#34d399]/10 text-[#10b981] dark:text-[#34d399] font-bold' : 'text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
-                            >
-                                <item.icon className="w-5 h-5" />
-                                {item.name}
-                            </Link>
-                        ))}
-                    </nav>
-                </div>
-                
-                <div className="pt-4 border-t border-gray-100 dark:border-white/10 mt-auto">
-                    <nav className="space-y-1">
-                        {bottomNavItems.map((item) => (
-                            <Link 
-                                key={item.name} 
-                                href={item.href}
-                                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all flex items-center gap-4 ${isActive(item.name, item.href) ? 'bg-[#10b981]/10 dark:bg-[#34d399]/10 text-[#10b981] dark:text-[#34d399] font-bold' : 'text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
-                            >
-                                <item.icon className="w-5 h-5" />
-                                {item.name}
-                            </Link>
-                        ))}
-                    </nav>
-                </div>
-            </aside>
+            <StudentSidebar 
+                isOpen={false}
+                isRetracted={isRetracted}
+                onRetractToggle={() => setIsRetracted(!isRetracted)}
+            />
 
             {/* Top Header */}
-            <header className="fixed top-0 lg:top-4 left-0 lg:left-[272px] right-0 lg:right-4 z-40 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b lg:border border-neutral-200 dark:border-white/10 px-4 lg:px-6 py-2.5 lg:rounded-full flex items-center justify-between shadow-sm">
+            <header className={`fixed top-0 lg:top-4 left-0 ${isRetracted ? 'lg:left-24' : 'lg:left-[272px]'} right-0 lg:right-4 z-40 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b lg:border border-neutral-200 dark:border-white/10 px-4 lg:px-6 py-2.5 lg:rounded-full flex items-center justify-between shadow-sm transition-all duration-500`}>
                 <div className="flex items-center gap-3 lg:hidden">
                     <HostelPulseLogo variant="icon" className="w-8 h-8" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-2 py-1 rounded-full">HP Student</span>
@@ -142,7 +114,7 @@ function StudentDashboardShellContent({
                 </div>
             </header>
 
-            <main className="pt-20 w-full min-h-screen lg:pl-[272px]">
+            <main className={`pt-20 w-full min-h-screen ${isRetracted ? 'lg:pl-24' : 'lg:pl-[272px]'} transition-all duration-500`}>
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 lg:py-8 lg:pr-4">
                     {children}
                 </div>

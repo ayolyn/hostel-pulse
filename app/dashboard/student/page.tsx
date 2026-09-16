@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 export const runtime = 'edge';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,6 +22,8 @@ import { CampusMarket } from '@/components/market/CampusMarket';
 import { MessageList } from '@/components/messages/MessageList';
 import PayInspectionModal from '@/components/dashboard/PayInspectionModal';
 import { SavedPropertiesTab } from '@/components/dashboard/SavedPropertiesTab';
+import { RentView } from '@/components/rent/RentView';
+import { RoommatesView } from '@/components/roommates/RoommatesView';
 
 import Loading from '@/app/loading';
 
@@ -170,6 +172,8 @@ function StudentDashboardContent() {
             setActiveTab('Saved');
         } else if (tab === 'roommates') {
             setActiveTab('Roommates');
+        } else if (tab === 'find-hostel') {
+            setActiveTab('FindHostel');
         } else if (tab === 'profile') {
             setActiveTab('Profile');
         } else if (tab === 'market') {
@@ -648,6 +652,10 @@ function StudentDashboardContent() {
                     </section>
                 </div>
             
+            ) : activeTab === 'Roommates' ? (
+                <RoommatesView isEmbedded={true} />
+            ) : activeTab === 'FindHostel' ? (
+                <RentView isEmbedded={true} />
             ) : activeTab === 'Market' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
                     <div className="mb-4">

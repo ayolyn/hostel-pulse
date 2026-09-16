@@ -155,34 +155,34 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
                                 </div>
 
                                 {/* Actions Grid */}
-                                <div className="grid grid-cols-4 gap-2 pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
                                     <button 
                                         onClick={() => onEditClick(property.id)}
-                                        className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                        className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
                                         title="Edit Details"
                                     >
-                                        <Edit2 className="w-4 h-4" />
+                                        <Edit2 className="w-4 h-4" /> Edit
                                     </button>
                                     <button 
                                         onClick={() => toggleStatus(property.id, property.status)}
-                                        className={`h-10 rounded-xl flex items-center justify-center transition-all ${property.status !== 'active' && property.status !== 'sold' ? 'bg-[#BEF264] text-black hover:bg-[#a6d456]' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-amber-500 hover:text-black'}`}
+                                        className={`h-10 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all ${property.status !== 'active' && property.status !== 'sold' ? 'bg-[#BEF264] text-black hover:bg-[#a6d456]' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-amber-500 hover:text-black'}`}
                                         title={property.status !== 'active' ? 'Mark as Active' : 'Mark as Pending'}
                                     >
-                                        <CheckCircle2 className="w-4 h-4" />
+                                        <CheckCircle2 className="w-4 h-4" /> {property.status !== 'active' ? 'Publish' : 'Pending'}
                                     </button>
                                     <button 
                                         onClick={() => toggleStatus(property.id, property.status, property.status === 'sold' ? 'active' : 'sold')}
-                                        className={`h-10 rounded-xl flex items-center justify-center transition-all ${property.status === 'sold' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white'}`}
+                                        className={`h-10 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all ${property.status === 'sold' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white'}`}
                                         title={property.status === 'sold' ? 'Unmark Sold' : 'Mark as Sold'}
                                     >
-                                        <Wallet className="w-4 h-4" />
+                                        <Wallet className="w-4 h-4" /> {property.status === 'sold' ? 'Unmark' : 'Mark Sold'}
                                     </button>
                                     <button 
                                         onClick={() => deleteProperty(property.id)}
-                                        className="h-10 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center text-red-600 hover:bg-red-500 hover:text-white transition-colors"
+                                        className="h-10 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-600 hover:bg-red-500 hover:text-white transition-colors"
                                         title="Delete"
                                     >
-                                        <Trash2 className="w-4 h-4" />
+                                        <Trash2 className="w-4 h-4" /> Delete
                                     </button>
                                 </div>
                             </div>

@@ -53,8 +53,8 @@ export function NonStudentDashboardShell({ children }: { children: React.ReactNo
                     </div>
                 </header>
 
-                <main className="pt-20 w-full">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+                <main className="pt-16 w-full">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-6">
                         {children}
                     </div>
                 </main>

@@ -431,12 +431,12 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                             setForm(prev => ({ ...prev, listing_type: getListingType(cat.id as Category) }));
                             setStep(2); 
                         }}
-                        className="p-5 border-[3px] border-gray-50 rounded-3xl text-center hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group relative overflow-hidden"
+                        className="p-5 border-[3px] border-gray-50 dark:border-white/10 rounded-3xl text-center hover:border-[#BEF264] dark:hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group relative overflow-hidden"
                     >
-                        <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#BEF264] group-hover:text-black transition-all">
+                        <div className="w-12 h-12 bg-gray-50 dark:bg-neutral-800 dark:text-gray-300 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#BEF264] group-hover:text-black transition-all">
                             <cat.icon className="w-6 h-6" />
                         </div>
-                        <p className="font-black text-xl uppercase tracking-tighter group-hover:scale-110 transition-transform">{cat.label}</p>
+                        <p className="font-black text-xl uppercase tracking-tighter group-hover:scale-110 transition-transform dark:text-white">{cat.label}</p>
                         <div className="mt-2 text-[8px] font-black uppercase tracking-widest text-gray-400 group-hover:text-[#BEF264]">{cat.desc}</div>
                     </button>
                 ))}

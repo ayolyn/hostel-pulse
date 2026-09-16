@@ -188,10 +188,10 @@ function DashboardContent() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                    <h1 className="text-base sm:text-lg font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                         {account?.full_name ?? 'Landlord Hub'}
                     </h1>
-                    <p className="text-gray-500 font-medium">Manage your properties and earnings in Ogbomoso.</p>
+                    <p className="text-gray-500 text-sm font-medium">Manage your properties and earnings in Ogbomoso.</p>
                 </div>
                 <button
                     onClick={() => {
@@ -206,19 +206,19 @@ function DashboardContent() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-6">
                 {[
                     { label: 'Active Listings', value: loading ? '...' : String(liveCount), icon: Building2 },
                     { label: 'Total Views', value: loading ? '...' : totalViews.toLocaleString(), icon: Eye },
                     { label: 'Total Properties', value: loading ? '...' : String(properties.length), icon: CreditCard },
                 ].map(stat => (
-                    <div key={stat.label} className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between group hover:border-[#BEF264]/30 transition-all">
+                    <div key={stat.label} className="bg-white dark:bg-neutral-900 p-5 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm flex items-center justify-between group hover:border-[#BEF264]/30 transition-all">
                         <div>
-                            <p className="text-gray-500 text-xs font-black uppercase tracking-widest mb-1">{stat.label}</p>
-                            <h3 className="text-2xl sm:text-3xl font-black text-gray-900">{stat.value}</h3>
+                            <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">{stat.label}</p>
+                            <h3 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white">{stat.value}</h3>
                         </div>
-                        <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-[#BEF264]/10 transition-colors">
-                            <stat.icon className="w-7 h-7 text-gray-400 group-hover:text-[#BEF264] transition-colors" />
+                        <div className="w-12 h-12 bg-gray-50 dark:bg-neutral-800 rounded-2xl flex items-center justify-center group-hover:bg-[#BEF264]/10 transition-colors">
+                            <stat.icon className="w-6 h-6 text-gray-400 dark:text-gray-500 group-hover:text-[#BEF264] transition-colors" />
                         </div>
                     </div>
                 ))}

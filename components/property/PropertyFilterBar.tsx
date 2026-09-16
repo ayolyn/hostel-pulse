@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -6,9 +6,10 @@ import { Search, MapPin, ChevronDown, SlidersHorizontal, X, Map as MapIcon, List
 import { cn } from '@/lib/utils';
 import { trackSearch } from '@/lib/analytics';
 
-export function PropertyFilterBar({ mode = 'buy' }: { mode?: 'buy' | 'rent' }) {
+export function PropertyFilterBar({ mode = 'buy', basePath }: { mode?: 'buy' | 'rent', basePath?: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const resolvedBasePath = basePath || (mode === 'rent' ? '/rent' : '/buy');
 
     // Local state for filter values
     const [filters, setFilters] = useState({
@@ -69,7 +70,7 @@ export function PropertyFilterBar({ mode = 'buy' }: { mode?: 'buy' | 'rent' }) {
             location: newFilters.zone !== 'All Zones' ? newFilters.zone : undefined
         });
 
-        const baseUrl = mode === 'rent' ? '/rent' : '/buy';
+        const baseUrl = resolvedBasePath;
         router.push(`${baseUrl}?${params.toString()}`, { scroll: false });
     };
 
@@ -82,7 +83,7 @@ export function PropertyFilterBar({ mode = 'buy' }: { mode?: 'buy' | 'rent' }) {
         const params = new URLSearchParams(searchParams.toString());
         if (v === 'map') params.set('view', 'map');
         else params.delete('view');
-        const baseUrl = mode === 'rent' ? '/rent' : '/buy';
+        const baseUrl = resolvedBasePath;
         router.push(`${baseUrl}?${params.toString()}`, { scroll: false });
     };
 

@@ -175,23 +175,23 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                                 </div>
 
                                 {/* Actions */}
-                                <div className="flex gap-2 pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
                                     <button 
                                         onClick={() => onEditClick(property.id)}
-                                        className="flex-1 h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                        className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
                                         title="Edit Listing"
                                     >
-                                        <Edit2 className="w-4 h-4" />
+                                        <Edit2 className="w-4 h-4" /> Edit
                                     </button>
                                     
                                     {!isTaken && !isRejected && (
                                         <button 
                                             onClick={() => handleMarkTaken(property.id)}
                                             disabled={actionLoading === property.id}
-                                            className="flex-1 h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white transition-colors disabled:opacity-50"
+                                            className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white transition-colors disabled:opacity-50"
                                             title="Mark as Sold/Rented"
                                         >
-                                            {actionLoading === property.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wallet className="w-4 h-4" />}
+                                            {actionLoading === property.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wallet className="w-4 h-4" />} Mark Taken
                                         </button>
                                     )}
 
@@ -199,7 +199,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                                         <button 
                                             onClick={() => handleReactivation(property.id)}
                                             disabled={actionLoading === property.id}
-                                            className="flex-[2] h-10 bg-amber-500 text-black rounded-xl flex items-center justify-center transition-all font-black uppercase tracking-widest text-[8px] hover:bg-amber-400 disabled:opacity-50"
+                                            className="h-10 bg-amber-500 text-black rounded-xl flex items-center justify-center gap-2 transition-all font-black uppercase tracking-widest text-[8px] hover:bg-amber-400 disabled:opacity-50"
                                             title="Request Admin Reactivation"
                                         >
                                             {actionLoading === property.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "REQUEST REACTIVE"}
@@ -208,10 +208,10 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
 
                                     <button 
                                         onClick={() => deleteProperty(property.id)}
-                                        className={`flex-1 h-10 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center text-red-600 hover:bg-red-500 hover:text-white transition-colors`}
+                                        className="h-10 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-600 hover:bg-red-500 hover:text-white transition-colors"
                                         title="Delete Listing"
                                     >
-                                        <Trash2 className="w-4 h-4" />
+                                        <Trash2 className="w-4 h-4" /> Delete
                                     </button>
                                 </div>
                             </div>
