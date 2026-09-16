@@ -1,15 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Home, Search, Calendar, MessageSquare, User } from 'lucide-react';
+import { Home, Search, Calendar, MessageSquare, User, Map, Users, ShoppingBag, Heart, HelpCircle } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { HostelPulseLogo } from '../ui/HostelPulseLogo';
 import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
-
-import { Map, Users, ShoppingBag, Heart, HelpCircle, Home, Search, Calendar, MessageSquare, User } from 'lucide-react';
 
 const desktopNavItems = [
     { name: 'Dashboard', href: '/dashboard/student', icon: Home },
