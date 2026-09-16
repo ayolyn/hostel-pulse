@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { Star, MapPin, Heart, CheckCircle, Video, Shield, Info, AlertTriangle } from "lucide-react";
@@ -70,7 +70,6 @@ export default function PropertyCard({
         if (verificationStatus === 'Physically Inspected') return <CheckCircle className="w-3 h-3 text-emerald-500" />;
         if (verificationStatus === 'Details Checked') return <CheckCircle className="w-3 h-3 text-blue-500" />;
         if (verificationStatus === 'Pending Review' || verificationStatus === 'Pending') return <Info className="w-3 h-3 text-amber-500" />;
-        if (verificationStatus === 'Requires Update') return <AlertTriangle className="w-3 h-3 text-orange-500" />;
         return <Shield className="w-3 h-3 text-gray-400" />;
     };
 

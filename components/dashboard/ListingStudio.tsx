@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -57,6 +57,10 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 setForm({
                     title: '',
                     price: '',
+                    agent_fee: '',
+                    agreement_fee: '',
+                    caution_fee: '',
+                    service_charge: '',
                     description: '',
                     location: 'Under-G Area',
                     bedrooms: '1',
@@ -66,7 +70,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     is_furnished: false,
                     is_serviced: false,
                     is_newly_built: false,
-          video_url: '',
+                    video_url: '',
                     youtube_video_url: '',
                     instagram_video_url: '',
                     virtual_tour_url: '',
@@ -96,6 +100,14 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 setForm({
                     title: data.title || '',
                     price: data.price?.toString() || '',
+                    agent_fee: data.agent_fee?.toString() || '',
+                    agreement_fee: data.agreement_fee?.toString() || '',
+                    caution_fee: data.caution_fee?.toString() || '',
+                    inspection_fee: data.inspection_fee?.toString() || '',
+                    service_charge: data.service_charge?.toString() || '',
+                    other_fee: data.other_fee?.toString() || '',
+                    other_fee_description: data.other_fee_description || '',
+                    total_move_in_cost: data.total_move_in_cost?.toString() || '',
                     description: data.description || '',
                     location: data.location || 'Under-G Area',
                     bedrooms: data.bedrooms?.toString() || '1',
@@ -105,11 +117,12 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     is_furnished: data.is_furnished || false,
                     is_serviced: data.is_serviced || false,
                     is_newly_built: data.is_newly_built || false,
-                      video_url: data.video_url || '',
+                    video_url: data.video_url || '',
                     youtube_video_url: data.youtube_video_url || '',
                     instagram_video_url: data.instagram_video_url || '',
                     virtual_tour_url: data.virtual_tour_url || '',
                     features: data.features || [],
+                    available_from: data.available_from ? data.available_from.split('T')[0] : '',
                     light_score: data.light_score || 7,
                     water_source: data.water_source || 'Borehole',
                     gate_distance: data.gate_distance || '~15 mins walk',
@@ -128,7 +141,16 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
     const [form, setForm] = useState({
         title: '',
         price: '',
+        agent_fee: '',
+        agreement_fee: '',
+        caution_fee: '',
+        inspection_fee: '',
+        service_charge: '',
+        other_fee: '',
+        other_fee_description: '',
+        total_move_in_cost: '',
         description: '',
+        available_from: '',
         location: 'Under-G Area',
         bedrooms: '1',
         bathrooms: '1',
@@ -137,7 +159,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         is_furnished: false,
         is_serviced: false,
         is_newly_built: false,
-          video_url: '',
+        video_url: '',
         youtube_video_url: '',
         instagram_video_url: '',
         virtual_tour_url: '',
@@ -256,6 +278,15 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             category: category,
             listing_type: form.listing_type || getListingType(category),
             price_label: getPriceLabel(category),
+            agent_fee: form.agent_fee ? Number(form.agent_fee.replace(/\D/g, '')) : null,
+            agreement_fee: form.agreement_fee ? Number(form.agreement_fee.replace(/\D/g, '')) : null,
+            caution_fee: form.caution_fee ? Number(form.caution_fee.replace(/\D/g, '')) : null,
+            inspection_fee: form.inspection_fee ? Number(form.inspection_fee.replace(/\D/g, '')) : null,
+            service_charge: form.service_charge ? Number(form.service_charge.replace(/\D/g, '')) : null,
+            other_fee: form.other_fee ? Number(form.other_fee.replace(/\D/g, '')) : null,
+            other_fee_description: form.other_fee_description || null,
+            total_move_in_cost: form.total_move_in_cost ? Number(form.total_move_in_cost.replace(/\D/g, '')) : null,
+            available_from: form.available_from ? new Date(form.available_from).toISOString() : null,
             bedrooms: Number(form.bedrooms) || 1,
             bathrooms: Number(form.bathrooms) || 1,
             toilets: Number(form.toilets) || 0,
@@ -264,7 +295,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             is_serviced: form.is_serviced,
             is_newly_built: form.is_newly_built,
             video_url: form.video_url,
-              youtube_video_url: form.youtube_video_url,
+            youtube_video_url: form.youtube_video_url,
             instagram_video_url: form.instagram_video_url,
             virtual_tour_url: form.virtual_tour_url,
             features: form.features.length > 0 ? form.features : (category === 'Land' ? [] : ['Constant Power', 'Running Water']),
@@ -450,12 +481,14 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
     // ─── STEP 3: Listing Details ─────────────────────────────────────────────
     if (step === 3) return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+                <button onClick={() => setStep(2)} className="p-2 sm:p-3 bg-gray-50 dark:bg-neutral-900 rounded-2xl text-gray-400 hover:text-black hover:bg-gray-100 dark:hover:bg-neutral-800 transition-all">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                </button>
                 <div>
                     <h2 className="text-2xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Listing Details</h2>
                     <p className="text-xs font-bold text-gray-400 dark:text-neutral-500 uppercase tracking-widest">Fill in accurate information</p>
                 </div>
-                <button onClick={() => setStep(2)} className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-neutral-500 hover:text-black dark:hover:text-white transition-all">← Back</button>
             </div>
 
             {error && (
@@ -476,6 +509,74 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Price (₦) * — {getPriceLabel(category)}</label>
                     <input type="text" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })}
                         placeholder="350000"
+                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                </div>
+
+                {/* Additional Fees */}
+                {category !== 'Hotel' && (
+                    <>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Agent Fee (₦)</label>
+                            <input type="text" value={form.agent_fee} onChange={e => setForm({ ...form, agent_fee: e.target.value })}
+                                placeholder="Optional"
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Agreement Fee (₦)</label>
+                            <input type="text" value={form.agreement_fee} onChange={e => setForm({ ...form, agreement_fee: e.target.value })}
+                                placeholder="Optional"
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Caution Fee (₦)</label>
+                            <input type="text" value={form.caution_fee} onChange={e => setForm({ ...form, caution_fee: e.target.value })}
+                                placeholder="Optional"
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Service Charge (₦)</label>
+                            <input type="text" value={form.service_charge} onChange={e => setForm({ ...form, service_charge: e.target.value })}
+                                placeholder="Optional"
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Inspection Fee (₦)</label>
+                            <input type="text" value={form.inspection_fee} onChange={e => setForm({ ...form, inspection_fee: e.target.value })}
+                                placeholder="Optional"
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Other Fee (₦)</label>
+                            <input type="text" value={form.other_fee} onChange={e => setForm({ ...form, other_fee: e.target.value })}
+                                placeholder="Optional"
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Other Fee Description</label>
+                            <input type="text" value={form.other_fee_description} onChange={e => setForm({ ...form, other_fee_description: e.target.value })}
+                                placeholder="e.g. Garbage Disposal (Optional)"
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Total Move-In Cost (₦)</label>
+                            <input type="text" value={form.total_move_in_cost} onChange={e => setForm({ ...form, total_move_in_cost: e.target.value })}
+                                placeholder="Optional (if different from rent)"
+                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        </div>
+                    </>
+                )}
+
+                {/* Description and Availability */}
+                <div className="space-y-2 md:col-span-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Description</label>
+                    <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
+                        placeholder={`Tell us about this ${subCat || category}...`}
+                        rows={3}
+                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-bold text-gray-900 dark:text-white transition-all resize-none" />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Available From</label>
+                    <input type="date" value={form.available_from} onChange={e => setForm({ ...form, available_from: e.target.value })}
                         className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                 </div>
 
@@ -582,6 +683,73 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 </div>
             </div>
 
+            {/* Features */}
+            {category !== 'Land' && (
+                <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Amenities & Features</label>
+                    <div className="flex flex-wrap gap-2">
+                        {['Constant Power', 'Running Water', 'Security', 'Fenced', 'Tiles', 'Wardrobe', 'Kitchen Cabinet', 'POP Ceiling', 'Balcony', 'Wifi'].map((feat) => (
+                            <button
+                                key={feat}
+                                type="button"
+                                onClick={() => toggleFeature(feat)}
+                                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${form.features.includes(feat) ? 'bg-[#BEF264] text-black shadow-sm' : 'bg-gray-50 dark:bg-neutral-900 text-gray-500 hover:bg-gray-100 dark:hover:bg-neutral-800'}`}
+                            >
+                                {feat}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Media Upload */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Photos (Up to 5)</label>
+                    <div className="flex flex-col gap-3">
+                        <input type="file" multiple accept="image/*" className="hidden" ref={fileInputRef} onChange={(e) => {
+                            if (e.target.files) handleImageUpload(e.target.files);
+                        }} />
+                        <button onClick={() => fileInputRef.current?.click()} type="button" disabled={uploadingImages || uploadedImageUrls.length >= 5}
+                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#BEF264] flex items-center justify-center gap-2 text-gray-500 font-bold disabled:opacity-50 transition-all">
+                            {uploadingImages ? <Loader2 className="w-5 h-5 animate-spin" /> : <UploadCloud className="w-5 h-5" />}
+                            {uploadingImages ? 'Uploading...' : 'Upload Photos'}
+                        </button>
+                        {uploadedImageUrls.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {uploadedImageUrls.map((url, i) => (
+                                    <div key={i} className="relative w-16 h-16 rounded-xl overflow-hidden group">
+                                        <img src={url} alt={`upload-${i}`} className="w-full h-full object-cover" />
+                                        <button type="button" onClick={() => removeImage(url)} className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center text-white">
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Walkthrough Video (Max 25MB)</label>
+                    <div className="flex flex-col gap-3">
+                        <input type="file" accept="video/*" className="hidden" id="videoUpload" onChange={(e) => {
+                            if (e.target.files?.[0]) handleVideoUpload(e.target.files[0]);
+                        }} />
+                        <button onClick={() => document.getElementById('videoUpload')?.click()} type="button" disabled={uploadingVideo}
+                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#BEF264] flex items-center justify-center gap-2 text-gray-500 font-bold disabled:opacity-50 transition-all">
+                            {uploadingVideo ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+                            {uploadingVideo ? 'Uploading...' : form.video_url ? 'Replace Video' : 'Upload Video'}
+                        </button>
+                        {form.video_url && (
+                            <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1">
+                                <CheckCircle2 className="w-3 h-3" /> Video Uploaded
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
             {/* Location */}
             <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Location Zone</label>
@@ -611,7 +779,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     <p className="text-xs text-[#BEF264] font-black uppercase tracking-widest mt-3">✓ {uploadedImageUrls.length} photo{uploadedImageUrls.length > 1 ? 's' : ''} uploaded</p>
                 )}
             </div>
-            <button onClick={() => { setStep(1); setUploadedImageUrls([]); setForm({ title: '', price: '', description: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
+            <button onClick={() => { setStep(1); setUploadedImageUrls([]); setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
           video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', road_access: 'Tarred' }); onComplete(); }}
                 className="mt-8 text-black font-black uppercase tracking-widest text-[10px] underline underline-offset-8">
                 Add Another Listing

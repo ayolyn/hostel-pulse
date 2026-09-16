@@ -1,4 +1,4 @@
-﻿export const runtime = 'edge';
+export const runtime = 'edge';
 import { createClient } from '@/lib/supabase/server';
 import {
     Wifi, Shield, Zap, Wind, MapPin,
@@ -210,12 +210,12 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                                     label = 'PENDING REVIEW';
                                     desc = 'This listing is waiting for HostelPulse review.';
                                     date = '';
-                                } else if (status === 'Requires Update') {
-                                    color = 'text-orange-700';
-                                    shieldBg = 'bg-orange-100';
-                                    shieldColor = 'text-orange-600';
-                                    label = 'REQUIRES UPDATE';
-                                    desc = 'Some listing information needs to be reconfirmed.';
+                                } else {
+                                    color = 'text-gray-700';
+                                    shieldBg = 'bg-gray-100';
+                                    shieldColor = 'text-gray-500';
+                                    label = 'UNVERIFIED';
+                                    desc = 'This property has not been verified by HostelPulse.';
                                     date = '';
                                 }
 
