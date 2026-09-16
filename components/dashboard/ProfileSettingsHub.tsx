@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin, X, Receipt, MessageCircle, Building2, ArrowUpRight, ArrowDownLeft, PlusCircle, Package, Home } from 'lucide-react';
+import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin, X, Receipt, MessageCircle, Building2, ArrowUpRight, ArrowDownLeft, PlusCircle, Package, Home, BarChart3, LifeBuoy } from 'lucide-react';
 import { DetailedProfileForm } from './DetailedProfileForm';
 import { SavedPropertiesTab } from './SavedPropertiesTab';
 import Link from 'next/link';
@@ -239,6 +239,10 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         { id: 'My Reviews', icon: Star, label: 'My Reviews' },
         { id: 'My Transactions', icon: CreditCard, label: 'My Transactions' },
         { id: 'My Disputes', icon: AlertTriangle, label: 'My Disputes' },
+        ...(accountData?.role === 'Agent' || accountData?.role === 'Landlord' ? [
+            { id: 'Analytics', icon: BarChart3, label: 'Analytics' },
+            { id: 'Support', icon: LifeBuoy, label: 'Support' }
+        ] : []),
         { id: 'Install App', icon: Download, label: 'Install App' },
         { id: 'Explore', icon: MapPin, label: 'Explore Ogbomoso', isLink: true, href: '/explore' }
     ];
@@ -274,7 +278,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                 >
                                     <div className="flex items-center gap-3">
                                         <section.icon className="w-5 h-5" />
-                                        <span className="font-bold text-sm">{section.label}</span>
+                                        <span className="text-[10px] font-black uppercase tracking-widest">{section.label}</span>
                                     </div>
                                     <ChevronRight className="w-4 h-4 opacity-50" />
                                 </Link>
@@ -289,7 +293,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                             >
                                 <div className="flex items-center gap-3">
                                     <section.icon className={`w-5 h-5 ${activeSection === section.id ? 'text-[#BEF264]' : ''}`} />
-                                    <span className="font-bold text-sm">{section.label}</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest">{section.label}</span>
                                 </div>
                                 <ChevronRight className="w-4 h-4 opacity-50" />
                             </button>
@@ -300,15 +304,15 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                 <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-2 shadow-sm mt-4">
                     <Link href="/dashboard/student?tab=support" className="w-full flex items-center gap-3 p-3 rounded-2xl text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all">
                         <HelpCircle className="w-5 h-5" />
-                        <span className="font-bold text-sm">Help & Support</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest">Help & Support</span>
                     </Link>
                     <Link href="/privacy" className="w-full flex items-center gap-3 p-3 rounded-2xl text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all">
                         <FileText className="w-5 h-5" />
-                        <span className="font-bold text-sm">Privacy Policy</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest">Privacy Policy</span>
                     </Link>
                     <Link href="/terms" className="w-full flex items-center gap-3 p-3 rounded-2xl text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all">
                         <FileText className="w-5 h-5" />
-                        <span className="font-bold text-sm">Terms of Service</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest">Terms of Service</span>
                     </Link>
                 </div>
             </div>

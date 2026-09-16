@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -132,10 +132,9 @@ export function AgentSidebar({ isOpen, isRetracted, onClose, onRetractToggle, us
 
     return (
         <aside className={`
-            fixed inset-y-0 left-0 bg-white dark:bg-black border-r border-neutral-200 dark:border-white/5 
-            flex flex-col z-[70] transition-all duration-300 shadow-2xl
-            ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-            ${isRetracted ? 'w-24' : 'w-72'}
+            hidden lg:flex fixed inset-y-0 left-0 bg-white dark:bg-black border-r border-neutral-200 dark:border-white/5 
+            flex-col z-[70] transition-all duration-300 shadow-2xl
+            ${isRetracted ? 'w-24' : 'w-[280px]'}
         `}>
             {/* Header */}
             <div className={`p-6 flex items-center ${isRetracted ? 'justify-center' : 'justify-between'}`}>

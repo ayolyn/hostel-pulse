@@ -438,7 +438,7 @@ function DashboardContent() {
                     {activeTab === 'overview' && renderOverview()}
                     
                     {activeTab === 'profile' && (
-                        <div className="bg-white p-1 sm:p-6 rounded-3xl border-0 sm:border border-gray-100 shadow-none sm:shadow-sm flex flex-col gap-5">
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                             <ProfileSettingsHub accountData={{...account, role: 'Landlord'}} onUpdate={() => window.location.reload()} />
                         </div>
                     )}

@@ -236,7 +236,7 @@ function AgentDashboardContent() {
                 )}
 
                 {activeTab === 'profile' && userId && account && (
-                    <div className="bg-white dark:bg-neutral-950 p-1 sm:p-6 rounded-3xl border-0 sm:border border-gray-100 dark:border-white/5 shadow-none sm:shadow-sm">
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                         <ProfileSettingsHub accountData={{...account, role: 'Agent'}} onUpdate={() => window.location.reload()} />
                     </div>
                 )}

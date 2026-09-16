@@ -9,13 +9,14 @@ import { HostelPulseLogo } from '../ui/HostelPulseLogo';
 import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
 
-import { Map, Users } from 'lucide-react';
+import { Map, Users, ShoppingBag } from 'lucide-react';
 
 const desktopNavItems = [
     { name: 'HOME', href: '/dashboard/student', icon: Home },
     { name: 'MAP', href: '/explore', icon: Map },
     { name: 'ROOMMATES', href: '/roommates', icon: Users },
     { name: 'SEARCH', href: '/rent', icon: Search },
+    { name: 'MARKET', href: '/dashboard/student?tab=market', icon: ShoppingBag },
     { name: 'INSPECT', href: '/dashboard/student?tab=inspections', icon: Calendar },
     { name: 'INBOX', href: '/dashboard/student?tab=messages', icon: MessageSquare },
     { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
@@ -25,6 +26,7 @@ const mobileNavItems = [
     { name: 'HOME', href: '/dashboard/student', icon: Home },
     { name: 'SEARCH', href: '/rent', icon: Search },
     { name: 'MAP', href: '/explore', icon: Map },
+    { name: 'MARKET', href: '/dashboard/student?tab=market', icon: ShoppingBag },
     { name: 'INBOX', href: '/dashboard/student?tab=messages', icon: MessageSquare },
     { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
 ];
@@ -90,9 +92,8 @@ function StudentDashboardShellContent({
             
             {/* Desktop Sidebar */}
             <aside className="hidden lg:flex flex-col w-64 fixed top-0 left-0 bottom-0 bg-white dark:bg-[#0a0a0a] border-r border-neutral-200 dark:border-white/10 z-40 p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-10">
-                    <HostelPulseLogo variant="icon" className="w-8 h-8" />
-                    <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full">HP Student</span>
+                <div className="flex items-center gap-3 mb-10 px-2">
+                    <HostelPulseLogo className="h-7" />
                 </div>
                 <nav className="flex-1 space-y-2">
                     {desktopNavItems.map((item) => (
@@ -106,32 +107,25 @@ function StudentDashboardShellContent({
                         </Link>
                     ))}
                 </nav>
-                <div className="mt-auto space-y-6">
-                    <div className="flex items-center justify-between px-2">
-                        <ThemeToggle />
-                        <NotificationBell />
-                    </div>
-                    <div className="px-2 pb-2">
-                        <UserProfileDropdown />
-                    </div>
-                </div>
             </aside>
 
-            {/* Mobile Top Header */}
-            <header className="lg:hidden fixed top-4 left-4 right-4 z-40 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border border-neutral-200 dark:border-white/10 px-4 py-2.5 rounded-full flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-3">
+            {/* Top Header */}
+            <header className="fixed top-0 lg:top-4 left-0 lg:left-[272px] right-0 lg:right-4 z-40 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border-b lg:border border-neutral-200 dark:border-white/10 px-4 lg:px-6 py-2.5 lg:rounded-full flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3 lg:hidden">
                     <HostelPulseLogo variant="icon" className="w-8 h-8" />
                     <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-2 py-1 rounded-full">HP Student</span>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="hidden lg:block flex-1" />
+                <div className="flex items-center gap-4 justify-end">
                     <ThemeToggle />
+                    <div className="h-6 w-px bg-neutral-200 dark:bg-white/10 mx-1 hidden sm:block" />
                     <NotificationBell />
                     <UserProfileDropdown />
                 </div>
             </header>
 
-            <main className="pt-20 lg:pt-0 lg:pl-64 w-full min-h-screen">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 lg:py-8">
+            <main className="pt-20 w-full min-h-screen lg:pl-[272px]">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 lg:py-8 lg:pr-4">
                     {children}
                 </div>
             </main>

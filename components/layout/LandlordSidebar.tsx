@@ -66,9 +66,8 @@ export function LandlordSidebar({ isApproved, isOpen, isRetracted, onClose, onRe
 
     return (
         <aside className={`
-            fixed inset-y-0 left-0 bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-white/10 
-            flex flex-col z-[70] transition-all duration-300 shadow-sm
-            ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+            hidden lg:flex fixed inset-y-0 left-0 bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-white/10 
+            flex-col z-[70] transition-all duration-300 shadow-sm
             ${isRetracted ? 'w-24' : 'w-72'}
         `}>
             {/* Header */}

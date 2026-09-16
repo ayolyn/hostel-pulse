@@ -32,12 +32,7 @@ export function AgentTopBar({ onMenuClick, isSidebarRetracted }: AgentTopBarProp
     return (
         <header className="h-20 lg:h-24 bg-white/80 dark:bg-black/80 backdrop-blur-2xl border-b border-neutral-200 dark:border-white/5 px-6 lg:px-6 flex items-center justify-between sticky top-0 z-50">
             <div className="flex items-center gap-6">
-                <button 
-                    onClick={onMenuClick}
-                    className="lg:hidden p-3 -ml-3 text-gray-500 hover:text-black dark:hover:text-[#BEF264] transition-all active:scale-90"
-                >
-                    <Menu className="w-6 h-6" />
-                </button>
+                <div className="lg:hidden font-black uppercase tracking-widest text-xs text-[#BEF264] bg-black px-3 py-1.5 rounded-full ml-2">HP Agent</div>
             </div>
 
             <div className="flex items-center gap-4 lg:gap-6">

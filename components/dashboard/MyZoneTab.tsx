@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Edit2, Trash2, Camera, Video, Clock, Heart, Loader2, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
@@ -132,53 +132,64 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
 
                         return (
                             <div key={property.id} className="group relative aspect-[4/5] bg-white/5 rounded-3xl overflow-hidden border border-white/5 hover:border-[#BEF264]/30 transition-all">
-                                {/* Image Overlay */}
-                                <img 
-                                    src={mainImage} 
-                                    alt={property.title} 
-                                    className={"w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 " + (isTaken || isRejected ? 'grayscale opacity-40' : '')} 
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                            {/* Image */}
+                            <img 
+                                src={mainImage} 
+                                alt={property.title} 
+                                className={"w-full h-48 sm:h-56 object-cover transition-transform duration-700 group-hover:scale-105 " + (isTaken || isRejected ? 'grayscale opacity-40' : '')} 
+                            />
+                            
+                            {/* Badges Overlay */}
+                            <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+                                {isActive ? (
+                                    <span className="px-3 py-1.5 bg-emerald-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
+                                        <CheckCircle2 className="w-3 h-3" /> Live
+                                    </span>
+                                ) : isTaken ? (
+                                    <span className="px-3 py-1.5 bg-gray-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Taken</span>
+                                ) : isPending ? (
+                                    <span className="px-3 py-1.5 bg-amber-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
+                                        <Clock className="w-3 h-3" /> Pending Review
+                                    </span>
+                                ) : isChangesRequested ? (
+                                    <span className="px-3 py-1.5 bg-orange-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
+                                        <AlertCircle className="w-3 h-3" /> Changes Requested
+                                    </span>
+                                ) : (
+                                    <span className="px-3 py-1.5 bg-red-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Rejected</span>
+                                )}
+                            </div>
 
-                                {/* Badges */}
-                                <div className="absolute top-6 left-6 flex flex-col gap-2 z-10">
-                                    {isActive ? (
-                                        <span className="px-3 py-1.5 bg-emerald-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center gap-1">
-                                            <CheckCircle2 className="w-3 h-3" /> Live
-                                        </span>
-                                    ) : isTaken ? (
-                                        <span className="px-3 py-1.5 bg-gray-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl">Taken</span>
-                                    ) : isPending ? (
-                                        <span className="px-3 py-1.5 bg-amber-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center gap-1">
-                                            <Clock className="w-3 h-3" /> Pending Review
-                                        </span>
-                                    ) : isChangesRequested ? (
-                                        <span className="px-3 py-1.5 bg-orange-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center gap-1">
-                                            <AlertCircle className="w-3 h-3" /> Changes Requested
-                                        </span>
-                                    ) : (
-                                        <span className="px-3 py-1.5 bg-red-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl">Rejected</span>
+                            {/* Content */}
+                            <div className="p-5 flex flex-col gap-4">
+                                <div>
+                                    {(isChangesRequested || isRejected) && property.verification_notes && (
+                                        <p className="text-[10px] text-red-400 font-bold mb-1 truncate">Reason: {property.verification_notes}</p>
                                     )}
+                                    <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter line-clamp-1">{property.title}</h3>
+                                    <div className="flex items-center justify-between mt-2">
+                                        <p className="text-lg font-black text-[#10b981] dark:text-[#BEF264]">₦{property.price.toLocaleString()}</p>
+                                    </div>
                                 </div>
 
-                                {/* Actions Menu */}
-                                <div className="absolute bottom-6 right-6 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 z-50">
+                                {/* Actions Grid */}
+                                <div className="grid grid-cols-4 gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
                                     <button 
                                         onClick={() => onEditClick(property.id)}
-                                        className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-[#BEF264] hover:text-black transition-colors"
+                                        className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors col-span-1"
                                         title="Edit Listing"
                                     >
-                                        <Edit2 className="w-5 h-5" />
+                                        <Edit2 className="w-4 h-4" />
                                     </button>
                                     
                                     {!isTaken && !isRejected && (
                                         <button 
                                             onClick={() => handleMarkTaken(property.id)}
                                             disabled={actionLoading === property.id}
-                                            className="px-4 py-2 bg-[#BEF264] backdrop-blur-md text-black rounded-xl flex items-center justify-center transition-all font-black uppercase tracking-widest text-[10px] shadow-lg shadow-[#BEF264]/20 hover:bg-[#a6d456] disabled:opacity-50"
-                                            title="Mark as Taken / Unavailable"
+                                            className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white transition-colors col-span-1 disabled:opacity-50"
+                                            title="Mark as Sold/Rented"
                                         >
-                                            {actionLoading === property.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "MARK TAKEN"}
+                                            {actionLoading === property.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wallet className="w-4 h-4" />}
                                         </button>
                                     )}
 
@@ -186,36 +197,25 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                                         <button 
                                             onClick={() => handleReactivation(property.id)}
                                             disabled={actionLoading === property.id}
-                                            className="px-4 py-2 bg-amber-500 backdrop-blur-md text-black rounded-xl flex items-center justify-center transition-all font-black uppercase tracking-widest text-[10px] hover:bg-amber-400 disabled:opacity-50"
+                                            className="h-10 bg-amber-500 text-black rounded-xl flex items-center justify-center transition-all font-black uppercase tracking-widest text-[8px] hover:bg-amber-400 disabled:opacity-50 col-span-2"
                                             title="Request Admin Reactivation"
                                         >
-                                            {actionLoading === property.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "REQUEST REACTIVATION"}
+                                            {actionLoading === property.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "REQUEST REACTIVE"}
                                         </button>
                                     )}
 
                                     <button 
                                         onClick={() => deleteProperty(property.id)}
-                                        className="w-10 h-10 bg-red-600/80 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-red-600 transition-colors self-end mt-2"
+                                        className={`h-10 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center text-red-600 hover:bg-red-500 hover:text-white transition-colors ${!isTaken && !isRejected ? 'col-span-2' : 'col-span-1'}`}
                                         title="Delete Listing"
                                     >
-                                        <Trash2 className="w-5 h-5" />
+                                        <Trash2 className="w-4 h-4" />
                                     </button>
                                 </div>
-
-                                {/* Title/Info */}
-                                <div className="absolute bottom-0 left-0 w-full p-5 pt-20 pointer-events-none">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#BEF264] mb-1">{property.verification_status}</p>
-                                    {(isChangesRequested || isRejected) && property.verification_notes && (
-                                        <p className="text-[10px] text-red-400 font-bold mb-1 truncate">Reason: {property.verification_notes}</p>
-                                    )}
-                                    <h3 className="text-xl font-black text-white uppercase tracking-tighter line-clamp-1">{property.title}</h3>
-                                    <div className="flex items-center justify-between mt-4">
-                                        <p className="text-lg font-black text-white">₦{property.price.toLocaleString()}</p>
-                                    </div>
-                                </div>
                             </div>
-                        );
-                    })}
+                        </div>
+                    );
+                })}
                 </div>
             )}
         </div>

@@ -43,21 +43,21 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
     const [loading, setLoading] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
 
-    const toggleStatus = async (propertyId: string, currentStatus: string) => {
-        const isActivating = currentStatus !== 'active';
-        const nextStatus = isActivating ? 'active' : 'pending';
+    const toggleStatus = async (propertyId: string, currentStatus: string, forceStatus?: string) => {
+        const nextStatus = forceStatus || (currentStatus === 'active' ? 'pending' : 'active');
         
         const { error } = await supabase
             .from('properties')
             .update({ 
                 status: nextStatus,
-                verification_status: nextStatus === 'active' ? 'Verified' : 'Pending'
+                is_active: nextStatus === 'active',
+                verification_status: nextStatus === 'active' ? 'Verified' : (nextStatus === 'sold' ? 'Sold' : 'Pending')
             })
             .eq('id', propertyId);
 
         if (!error) {
             onRefresh();
-            toast.success(isActivating ? 'Property is now live! 🚀' : 'Property moved back to pending');
+            toast.success(nextStatus === 'active' ? 'Property is now live! 🚀' : `Property marked as ${nextStatus}`);
         } else {
             toast.error("Update failed: " + error.message);
         }
@@ -120,55 +120,70 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
                             <img 
                                 src={mainImage} 
                                 alt={property.title} 
-                                className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${property.status === 'sold' || property.status === 'rented' ? 'grayscale opacity-40' : ''}`} 
+                                className={`w-full h-48 sm:h-56 object-cover transition-transform duration-700 group-hover:scale-105 ${property.status === 'sold' || property.status === 'rented' ? 'grayscale opacity-40' : ''}`} 
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-
-                            {/* Badges */}
-                            <div className="absolute top-6 left-6">
-                                {property.status !== 'active' ? (
-                                    <span className="px-3 py-1.5 bg-amber-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center gap-1">
+                            
+                            {/* Badges Overlay */}
+                            <div className="absolute top-4 left-4">
+                                {property.status === 'sold' || property.status === 'rented' ? (
+                                    <span className="px-3 py-1.5 bg-gray-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
+                                        Sold
+                                    </span>
+                                ) : property.status !== 'active' ? (
+                                    <span className="px-3 py-1.5 bg-amber-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
                                         <Clock className="w-3 h-3" /> Pending
                                     </span>
                                 ) : (
-                                    <span className="px-3 py-1.5 bg-emerald-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center gap-1">
+                                    <span className="px-3 py-1.5 bg-emerald-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
                                         <CheckCircle2 className="w-3 h-3" /> Active
                                     </span>
                                 )}
                             </div>
 
-                            {/* Actions */}
-                            <div className="absolute bottom-6 right-6 flex flex-col items-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 z-50">
-                                <button 
-                                    onClick={() => onEditClick(property.id)}
-                                    className="px-4 py-2 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors font-black uppercase tracking-widest text-[10px] gap-2 pointer-events-auto"
-                                >
-                                    <Edit2 className="w-4 h-4" /> Edit Details
-                                </button>
-                                <button 
-                                    onClick={() => toggleStatus(property.id, property.status)}
-                                    className={`px-4 py-2 backdrop-blur-md rounded-xl flex items-center justify-center transition-all font-black uppercase tracking-widest text-[10px] gap-2 pointer-events-auto ${property.status !== 'active' ? 'bg-[#BEF264] text-black shadow-lg shadow-[#BEF264]/20 hover:bg-[#a6d456]' : 'bg-white/20 text-white hover:bg-amber-500 hover:text-black'}`}
-                                >
-                                    <CheckCircle2 className="w-4 h-4" /> {property.status !== 'active' ? 'MARK AS COMPLETE' : 'MARK AS PENDING'}
-                                </button>
-                                <button 
-                                    onClick={() => deleteProperty(property.id)}
-                                    className="px-4 py-2 bg-red-600/80 backdrop-blur-md rounded-xl flex items-center justify-center text-white hover:bg-red-600 transition-colors font-black uppercase tracking-widest text-[10px] gap-2 pointer-events-auto"
-                                >
-                                    <Trash2 className="w-4 h-4" /> Delete
-                                </button>
-                            </div>
-
-                            {/* Title/Price */}
-                            <div className="absolute bottom-0 left-0 w-full p-5 pt-20 pointer-events-none">
-                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#BEF264] mb-1">{property.category}</p>
-                                <h3 className="text-xl font-black text-white uppercase tracking-tighter line-clamp-1">{property.title}</h3>
-                                <div className="flex items-center justify-between mt-4">
-                                    <p className="text-lg font-black text-white">₦{property.price.toLocaleString()}</p>
-                                    <div className="flex items-center gap-2">
-                                        <MapPin className="w-3 h-3 text-white/60" />
-                                        <span className="text-[10px] text-white/60 font-bold uppercase">{property.location}</span>
+                            {/* Content */}
+                            <div className="p-5 flex flex-col gap-4">
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1">{property.category}</p>
+                                    <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter line-clamp-1">{property.title}</h3>
+                                    <div className="flex items-center justify-between mt-2">
+                                        <p className="text-lg font-black text-[#10b981] dark:text-[#BEF264]">₦{property.price.toLocaleString()}</p>
+                                        <div className="flex items-center gap-2">
+                                            <MapPin className="w-3 h-3 text-gray-400" />
+                                            <span className="text-[10px] text-gray-400 font-bold uppercase line-clamp-1">{property.location}</span>
+                                        </div>
                                     </div>
+                                </div>
+
+                                {/* Actions Grid */}
+                                <div className="grid grid-cols-4 gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
+                                    <button 
+                                        onClick={() => onEditClick(property.id)}
+                                        className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                        title="Edit Details"
+                                    >
+                                        <Edit2 className="w-4 h-4" />
+                                    </button>
+                                    <button 
+                                        onClick={() => toggleStatus(property.id, property.status)}
+                                        className={`h-10 rounded-xl flex items-center justify-center transition-all ${property.status !== 'active' && property.status !== 'sold' ? 'bg-[#BEF264] text-black hover:bg-[#a6d456]' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-amber-500 hover:text-black'}`}
+                                        title={property.status !== 'active' ? 'Mark as Active' : 'Mark as Pending'}
+                                    >
+                                        <CheckCircle2 className="w-4 h-4" />
+                                    </button>
+                                    <button 
+                                        onClick={() => toggleStatus(property.id, property.status, property.status === 'sold' ? 'active' : 'sold')}
+                                        className={`h-10 rounded-xl flex items-center justify-center transition-all ${property.status === 'sold' ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white'}`}
+                                        title={property.status === 'sold' ? 'Unmark Sold' : 'Mark as Sold'}
+                                    >
+                                        <Wallet className="w-4 h-4" />
+                                    </button>
+                                    <button 
+                                        onClick={() => deleteProperty(property.id)}
+                                        className="h-10 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center text-red-600 hover:bg-red-500 hover:text-white transition-colors"
+                                        title="Delete"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
                         </div>
