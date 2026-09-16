@@ -9,7 +9,7 @@ import {
     Heart, 
     Edit2, 
     Trash2, 
-    CheckCircle2, 
+    CheckCircle2, Wallet, 
     Clock, 
     Building2,
     Video,
