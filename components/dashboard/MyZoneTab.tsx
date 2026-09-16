@@ -109,7 +109,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
             {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="aspect-[4/5] bg-white/5 rounded-3xl animate-pulse border border-white/5" />
+                        <div key={i} className="h-[340px] bg-white/5 rounded-3xl animate-pulse border border-white/5" />
                     ))}
                 </div>
             ) : properties.length === 0 ? (
@@ -131,52 +131,54 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                         const isActive = property.status === 'active';
 
                         return (
-                            <div key={property.id} className="group relative aspect-[4/5] bg-white/5 rounded-3xl overflow-hidden border border-white/5 hover:border-[#BEF264]/30 transition-all">
-                            {/* Image */}
-                            <img 
-                                src={mainImage} 
-                                alt={property.title} 
-                                className={"w-full h-48 sm:h-56 object-cover transition-transform duration-700 group-hover:scale-105 " + (isTaken || isRejected ? 'grayscale opacity-40' : '')} 
-                            />
-                            
-                            {/* Badges Overlay */}
-                            <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
-                                {isActive ? (
-                                    <span className="px-3 py-1.5 bg-emerald-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
-                                        <CheckCircle2 className="w-3 h-3" /> Live
-                                    </span>
-                                ) : isTaken ? (
-                                    <span className="px-3 py-1.5 bg-gray-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Taken</span>
-                                ) : isPending ? (
-                                    <span className="px-3 py-1.5 bg-amber-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
-                                        <Clock className="w-3 h-3" /> Pending Review
-                                    </span>
-                                ) : isChangesRequested ? (
-                                    <span className="px-3 py-1.5 bg-orange-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
-                                        <AlertCircle className="w-3 h-3" /> Changes Requested
-                                    </span>
-                                ) : (
-                                    <span className="px-3 py-1.5 bg-red-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Rejected</span>
-                                )}
+                            <div key={property.id} className="group relative flex flex-col h-full bg-white dark:bg-white/5 rounded-3xl overflow-hidden border border-gray-200 dark:border-white/5 hover:border-[#BEF264]/30 transition-all shadow-sm">
+                            {/* Image Container */}
+                            <div className="relative w-full h-48 sm:h-56 shrink-0 overflow-hidden">
+                                <img 
+                                    src={mainImage} 
+                                    alt={property.title} 
+                                    className={"w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 " + (isTaken || isRejected ? 'grayscale opacity-40' : '')} 
+                                />
+                                
+                                {/* Badges Overlay */}
+                                <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+                                    {isActive ? (
+                                        <span className="px-3 py-1.5 bg-emerald-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
+                                            <CheckCircle2 className="w-3 h-3" /> Live
+                                        </span>
+                                    ) : isTaken ? (
+                                        <span className="px-3 py-1.5 bg-gray-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Taken</span>
+                                    ) : isPending ? (
+                                        <span className="px-3 py-1.5 bg-amber-500 text-black rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
+                                            <Clock className="w-3 h-3" /> Pending Review
+                                        </span>
+                                    ) : isChangesRequested ? (
+                                        <span className="px-3 py-1.5 bg-orange-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-1">
+                                            <AlertCircle className="w-3 h-3" /> Changes Requested
+                                        </span>
+                                    ) : (
+                                        <span className="px-3 py-1.5 bg-red-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Rejected</span>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Content */}
-                            <div className="p-5 flex flex-col gap-4">
-                                <div>
+                            <div className="p-5 flex flex-col gap-4 flex-1">
+                                <div className="flex-1">
                                     {(isChangesRequested || isRejected) && property.verification_notes && (
-                                        <p className="text-[10px] text-red-400 font-bold mb-1 truncate">Reason: {property.verification_notes}</p>
+                                        <p className="text-[10px] text-red-500 font-bold mb-1 line-clamp-2">Reason: {property.verification_notes}</p>
                                     )}
-                                    <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter line-clamp-1">{property.title}</h3>
+                                    <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tighter line-clamp-2">{property.title}</h3>
                                     <div className="flex items-center justify-between mt-2">
                                         <p className="text-lg font-black text-[#10b981] dark:text-[#BEF264]">₦{property.price.toLocaleString()}</p>
                                     </div>
                                 </div>
 
-                                {/* Actions Grid */}
-                                <div className="grid grid-cols-4 gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
+                                {/* Actions */}
+                                <div className="flex gap-2 pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
                                     <button 
                                         onClick={() => onEditClick(property.id)}
-                                        className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors col-span-1"
+                                        className="flex-1 h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
                                         title="Edit Listing"
                                     >
                                         <Edit2 className="w-4 h-4" />
@@ -186,7 +188,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                                         <button 
                                             onClick={() => handleMarkTaken(property.id)}
                                             disabled={actionLoading === property.id}
-                                            className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white transition-colors col-span-1 disabled:opacity-50"
+                                            className="flex-1 h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-blue-500 hover:text-white transition-colors disabled:opacity-50"
                                             title="Mark as Sold/Rented"
                                         >
                                             {actionLoading === property.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wallet className="w-4 h-4" />}
@@ -197,7 +199,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
                                         <button 
                                             onClick={() => handleReactivation(property.id)}
                                             disabled={actionLoading === property.id}
-                                            className="h-10 bg-amber-500 text-black rounded-xl flex items-center justify-center transition-all font-black uppercase tracking-widest text-[8px] hover:bg-amber-400 disabled:opacity-50 col-span-2"
+                                            className="flex-[2] h-10 bg-amber-500 text-black rounded-xl flex items-center justify-center transition-all font-black uppercase tracking-widest text-[8px] hover:bg-amber-400 disabled:opacity-50"
                                             title="Request Admin Reactivation"
                                         >
                                             {actionLoading === property.id ? <Loader2 className="w-4 h-4 animate-spin" /> : "REQUEST REACTIVE"}
@@ -206,7 +208,7 @@ export default function MyZoneTab({ userId, onAddClick, onEditClick }: MyZoneTab
 
                                     <button 
                                         onClick={() => deleteProperty(property.id)}
-                                        className={`h-10 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center text-red-600 hover:bg-red-500 hover:text-white transition-colors ${!isTaken && !isRejected ? 'col-span-2' : 'col-span-1'}`}
+                                        className={`flex-1 h-10 bg-red-50 dark:bg-red-500/10 rounded-xl flex items-center justify-center text-red-600 hover:bg-red-500 hover:text-white transition-colors`}
                                         title="Delete Listing"
                                     >
                                         <Trash2 className="w-4 h-4" />

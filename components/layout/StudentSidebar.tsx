@@ -174,9 +174,14 @@ export function StudentSidebar({ isOpen, isRetracted, onClose, onRetractToggle }
                         : pathname === item.path;
                     
                     return (
-                        <button
+                        <Link
                             key={item.name}
-                            onClick={() => handleNavigation(item.path)}
+                            href={item.path}
+                            onClick={() => {
+                                if (window.innerWidth < 1024) {
+                                    onClose?.();
+                                }
+                            }}
                             title={isRetracted ? item.name : ''}
                             className={`
                                 w-full flex items-center transition-all duration-200 rounded-2xl group
@@ -195,7 +200,7 @@ export function StudentSidebar({ isOpen, isRetracted, onClose, onRetractToggle }
                             {!isRetracted && item.badge === 'unread' && unreadCount > 0 && (
                                 <span className="bg-red-500 text-white text-[8px] px-2 py-0.5 rounded-full">{unreadCount}</span>
                             )}
-                        </button>
+                        </Link>
                     );
                 })}
 
@@ -208,9 +213,14 @@ export function StudentSidebar({ isOpen, isRetracted, onClose, onRetractToggle }
                         : pathname === item.path;
                     
                     return (
-                        <button
+                        <Link
                             key={item.name}
-                            onClick={() => handleNavigation(item.path)}
+                            href={item.path}
+                            onClick={() => {
+                                if (window.innerWidth < 1024) {
+                                    onClose?.();
+                                }
+                            }}
                             title={isRetracted ? item.name : ''}
                             className={`
                                 w-full flex items-center transition-all duration-200 rounded-2xl group
@@ -228,7 +238,7 @@ export function StudentSidebar({ isOpen, isRetracted, onClose, onRetractToggle }
                             {!isRetracted && item.name === 'Saved' && savedCount > 0 && (
                                 <span className="bg-[#BEF264] text-black text-[8px] px-2 py-0.5 rounded-full font-black">{savedCount}</span>
                             )}
-                        </button>
+                        </Link>
                     );
                 })}
             </nav>

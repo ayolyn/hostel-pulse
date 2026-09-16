@@ -132,9 +132,10 @@ export function AgentSidebar({ isOpen, isRetracted, onClose, onRetractToggle, us
 
     return (
         <aside className={`
-            hidden lg:flex fixed inset-y-0 left-0 bg-white dark:bg-black border-r border-neutral-200 dark:border-white/5 
-            flex-col z-[70] transition-all duration-300 shadow-2xl
-            ${isRetracted ? 'w-24' : 'w-[280px]'}
+            fixed inset-y-0 left-0 bg-white dark:bg-black border-r border-neutral-200 dark:border-white/5 
+            flex flex-col z-[70] transition-all duration-300 shadow-2xl
+            ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+            ${isRetracted ? 'w-24' : 'w-72'}
         `}>
             {/* Header */}
             <div className={`p-6 flex items-center ${isRetracted ? 'justify-center' : 'justify-between'}`}>
@@ -153,14 +154,13 @@ export function AgentSidebar({ isOpen, isRetracted, onClose, onRetractToggle, us
                 </button>
             </div>
 
-            <div className="absolute -right-4 top-24 z-[80] hidden lg:block">
-                <button 
-                    onClick={onRetractToggle}
-                    className="w-8 h-8 bg-[#BEF264] text-black rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-90 transition-all border-4 border-white dark:border-black"
-                >
-                    <ChevronRight className={`w-4 h-4 transition-transform duration-500 ${isRetracted ? '' : 'rotate-180'}`} />
-                </button>
-            </div>
+            {/* Retract Toggle (Desktop Only) */}
+            <button 
+                onClick={onRetractToggle}
+                className="hidden lg:flex absolute -right-3 top-24 w-6 h-6 bg-[#BEF264] text-black border border-white dark:border-neutral-900 rounded-full items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all z-10"
+            >
+                <ChevronRight className={`w-3 h-3 transition-transform duration-300 ${isRetracted ? '' : 'rotate-180'}`} />
+            </button>
 
             {/* Navigation */}
             <nav className={`flex-1 px-4 space-y-2 py-6 overflow-y-auto no-scrollbar ${isRetracted ? 'items-center' : ''}`}>
@@ -172,9 +172,14 @@ export function AgentSidebar({ isOpen, isRetracted, onClose, onRetractToggle, us
                     const hasNotification = item.name === 'Messages' && unreadMessages > 0;
                     
                     return (
-                        <button
+                        <Link
                             key={item.name}
-                            onClick={() => handleNavigation(item.path)}
+                            href={item.path}
+                            onClick={() => {
+                                if (window.innerWidth < 1024) {
+                                    onClose?.();
+                                }
+                            }}
                             title={isRetracted ? displayName : ''}
                             className={`
                                 w-full flex items-center transition-all duration-300 rounded-2xl group relative
@@ -201,7 +206,7 @@ export function AgentSidebar({ isOpen, isRetracted, onClose, onRetractToggle, us
                                     <span className="px-1.5 py-0.5 bg-emerald-500 text-black text-[8px] font-black rounded-md">{unreadMessages}</span>
                                 ) : null
                             )}
-                        </button>
+                        </Link>
                     );
                 })}
             </nav>

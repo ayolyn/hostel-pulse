@@ -115,7 +115,7 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
                     const mainImage = property.images?.[0] || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=800';
 
                     return (
-                        <div key={property.id} className="group relative aspect-[4/5] bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all">
+                        <div key={property.id} className="group relative flex flex-col h-full bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all">
                             {/* Image */}
                             <img 
                                 src={mainImage} 
@@ -141,8 +141,8 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
                             </div>
 
                             {/* Content */}
-                            <div className="p-5 flex flex-col gap-4">
-                                <div>
+                            <div className="p-5 flex flex-col gap-4 flex-1">
+                                <div className="flex-1">
                                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1">{property.category}</p>
                                     <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter line-clamp-1">{property.title}</h3>
                                     <div className="flex items-center justify-between mt-2">
@@ -155,7 +155,7 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
                                 </div>
 
                                 {/* Actions Grid */}
-                                <div className="grid grid-cols-4 gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
+                                <div className="grid grid-cols-4 gap-2 pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
                                     <button 
                                         onClick={() => onEditClick(property.id)}
                                         className="h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"

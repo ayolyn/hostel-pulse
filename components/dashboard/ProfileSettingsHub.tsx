@@ -36,24 +36,45 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         async function fetchTabData() {
             setLoadingData(true);
             if (activeSection === 'My Reviews') {
-                const { data: reviewsData } = await supabase
+                const isProvider = accountData?.role?.toLowerCase() === 'agent' || accountData?.role?.toLowerCase() === 'landlord';
+                let query = supabase
                     .from('provider_reviews')
-                    .select('*, properties(title, images)')
-                    .eq('reviewer_id', user.id)
-                    .order('created_at', { ascending: false });
+                    .select('*, properties(title, images)');
+
+                if (isProvider) {
+                    query = query.eq('provider_id', user.id);
+                } else {
+                    query = query.eq('reviewer_id', user.id);
+                }
+                
+                const { data: reviewsData } = await query.order('created_at', { ascending: false });
 
                 if (reviewsData && reviewsData.length > 0) {
-                    const providerIds = Array.from(new Set(reviewsData.map((r: any) => r.provider_id)));
-                    const { data: profiles } = await supabase
-                        .from('profiles')
-                        .select('id, full_name')
-                        .in('id', providerIds);
-                    
-                    const reviewsWithProfiles = reviewsData.map((r: any) => {
-                        const profile = profiles?.find(p => p.id === r.provider_id);
-                        return { ...r, provider: profile };
-                    });
-                    setReviews(reviewsWithProfiles);
+                    if (isProvider) {
+                        const reviewerIds = Array.from(new Set(reviewsData.map((r: any) => r.reviewer_id)));
+                        const { data: profiles } = await supabase
+                            .from('profiles')
+                            .select('id, full_name')
+                            .in('id', reviewerIds);
+                        
+                        const reviewsWithProfiles = reviewsData.map((r: any) => {
+                            const profile = profiles?.find(p => p.id === r.reviewer_id);
+                            return { ...r, reviewer: profile, provider: { full_name: 'You' } }; // for the UI
+                        });
+                        setReviews(reviewsWithProfiles);
+                    } else {
+                        const providerIds = Array.from(new Set(reviewsData.map((r: any) => r.provider_id)));
+                        const { data: profiles } = await supabase
+                            .from('profiles')
+                            .select('id, full_name')
+                            .in('id', providerIds);
+                        
+                        const reviewsWithProfiles = reviewsData.map((r: any) => {
+                            const profile = profiles?.find(p => p.id === r.provider_id);
+                            return { ...r, provider: profile };
+                        });
+                        setReviews(reviewsWithProfiles);
+                    }
                 } else {
                     setReviews([]);
                 }
@@ -239,10 +260,6 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         { id: 'My Reviews', icon: Star, label: 'My Reviews' },
         { id: 'My Transactions', icon: CreditCard, label: 'My Transactions' },
         { id: 'My Disputes', icon: AlertTriangle, label: 'My Disputes' },
-        ...(accountData?.role === 'Agent' || accountData?.role === 'Landlord' ? [
-            { id: 'Analytics', icon: BarChart3, label: 'Analytics' },
-            { id: 'Support', icon: LifeBuoy, label: 'Support' }
-        ] : []),
         { id: 'Install App', icon: Download, label: 'Install App' },
         { id: 'Explore', icon: MapPin, label: 'Explore Ogbomoso', isLink: true, href: '/explore' }
     ];
@@ -254,11 +271,11 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
             <div className={`w-full md:w-64 shrink-0 flex-col gap-2 ${activeSection !== 'menu' ? 'hidden md:flex' : 'flex'}`}>
                 {/* Profile Summary */}
                 <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-6 shadow-sm mb-4 text-center">
-                    <div className="w-20 h-20 bg-gray-100 rounded-full mx-auto mb-3 overflow-hidden">
-                        {accountData?.avatar_url ? (
+                    <div className="w-20 h-20 bg-gray-100 dark:bg-white/5 rounded-full mx-auto mb-3 flex items-center justify-center overflow-hidden">
+                        {accountData?.avatar_url && accountData.avatar_url !== 'null' && accountData.avatar_url.trim() !== '' ? (
                             <img src={accountData.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
-                            <User className="w-10 h-10 m-5 text-gray-400" />
+                            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(accountData?.full_name || 'User')}&backgroundColor=e5e5e5`} alt="Profile" className="w-full h-full object-cover" />
                         )}
                     </div>
                     <h3 className="font-black text-lg text-gray-900 dark:text-white uppercase truncate">{accountData?.full_name || 'Student'}</h3>
@@ -410,9 +427,9 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                             <div className="space-y-4">
                                 {reviews.map(r => (
                                     <div key={r.id} className="bg-white dark:bg-neutral-900 p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div>
-                                                <h4 className="font-black text-gray-900 dark:text-white">{r.provider?.full_name || r.properties?.title || 'Provider Review'}</h4>
+                                        <div className="flex justify-between items-start mb-2 gap-4">
+                                            <div className="min-w-0 flex-1">
+                                                <h4 className="font-black text-gray-900 dark:text-white truncate">{r.reviewer?.full_name || r.provider?.full_name || r.properties?.title || 'Review'}</h4>
                                                 <div className="flex gap-1 mt-1">
                                                     {[...Array(5)].map((_, i) => (
                                                         <Star key={i} className={`w-3 h-3 ${i < r.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-300 dark:text-neutral-700'}`} />
@@ -458,8 +475,8 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                           onClick={() => setSelectedTx(tx)}
                                           className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 p-4 rounded-3xl flex items-center justify-between cursor-pointer hover:border-[#BEF264]/40 transition-all"
                                       >
-                                          <div className="flex items-center gap-4">
-                                              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
+                                          <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 mr-2">
+                                              <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 ${
                                                   tx.type === 'Property' ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-500' : 
                                                   tx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : 
                                                   tx.type === 'Deposit' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500' : 
@@ -467,19 +484,19 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                                   tx.type === 'Market' ? 'bg-purple-50 dark:bg-purple-500/10 text-purple-500' :
                                                   'bg-gray-50 dark:bg-neutral-800 text-gray-500'
                                               }`}>
-                                                  {tx.type === 'Property' ? <Home className="w-5 h-5" /> : 
-                                                   tx.type === 'Withdrawal' ? <ArrowUpRight className="w-5 h-5" /> :
-                                                   tx.type === 'Deposit' ? <ArrowDownLeft className="w-5 h-5" /> :
-                                                   tx.type === 'Sale' ? <ArrowUpRight className="w-5 h-5" /> :
-                                                   tx.type === 'Market' ? <Package className="w-5 h-5" /> :
-                                                   <Receipt className="w-5 h-5" />}
+                                                  {tx.type === 'Property' ? <Home className="w-4 h-4 sm:w-5 sm:h-5" /> : 
+                                                   tx.type === 'Withdrawal' ? <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" /> :
+                                                   tx.type === 'Deposit' ? <ArrowDownLeft className="w-4 h-4 sm:w-5 sm:h-5" /> :
+                                                   tx.type === 'Sale' ? <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" /> :
+                                                   tx.type === 'Market' ? <Package className="w-4 h-4 sm:w-5 sm:h-5" /> :
+                                                   <Receipt className="w-4 h-4 sm:w-5 sm:h-5" />}
                                               </div>
-                                              <div>
-                                                  <h4 className="font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight line-clamp-1">{tx.title || tx.properties?.title || 'Payment'}</h4>
-                                                  <div className="flex items-center gap-2 mt-1">
-                                                      <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">{new Date(tx.created_at).toLocaleDateString()}</span>
-                                                      <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-neutral-700" />
-                                                      <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">{tx.type || 'Payment'}</span>
+                                              <div className="flex-1 min-w-0">
+                                                  <h4 className="font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight truncate">{tx.title || tx.properties?.title || 'Payment'}</h4>
+                                                  <div className="flex items-center gap-1 sm:gap-2 mt-1">
+                                                      <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-gray-400">{new Date(tx.created_at).toLocaleDateString()}</span>
+                                                      <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-neutral-700 shrink-0" />
+                                                      <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-gray-400 truncate">{tx.type || 'Payment'}</span>
                                                   </div>
                                               </div>
                                           </div>
