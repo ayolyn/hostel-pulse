@@ -272,8 +272,8 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                 {/* Profile Summary */}
                 <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-6 shadow-sm mb-4 text-center">
                     <div className="w-20 h-20 bg-gray-100 dark:bg-white/5 rounded-full mx-auto mb-3 flex items-center justify-center overflow-hidden">
-                        {accountData?.avatar_url && accountData.avatar_url !== 'null' && accountData.avatar_url.trim() !== '' ? (
-                            <img src={accountData.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                        {(accountData?.avatar_url && accountData.avatar_url !== 'null' && accountData.avatar_url.trim() !== '') || (accountData?.logo_url && accountData.logo_url !== 'null' && accountData.logo_url.trim() !== '') ? (
+                            <img src={(accountData?.avatar_url && accountData.avatar_url !== 'null' && accountData.avatar_url.trim() !== '') ? accountData.avatar_url : accountData.logo_url} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(accountData?.full_name || 'User')}&backgroundColor=e5e5e5`} alt="Profile" className="w-full h-full object-cover" />
                         )}
@@ -319,7 +319,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                 </div>
 
                 <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-2 shadow-sm mt-4">
-                    <Link href="/dashboard/student?tab=support" className="w-full flex items-center gap-3 p-3 rounded-2xl text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all">
+                    <Link href={`/dashboard/${accountData?.role?.toLowerCase() || 'student'}?tab=support`} className="w-full flex items-center gap-3 p-3 rounded-2xl text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all">
                         <HelpCircle className="w-5 h-5" />
                         <span className="text-[10px] font-black uppercase tracking-widest">Help & Support</span>
                     </Link>

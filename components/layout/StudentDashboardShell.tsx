@@ -28,9 +28,9 @@ const bottomNavItems = [
 
 const mobileNavItems = [
     { name: 'HOME', href: '/dashboard/student', icon: Home },
-    { name: 'SEARCH', href: '/rent', icon: Search },
+    { name: 'SEARCH', href: '/dashboard/student?tab=find-hostel', icon: Search },
     { name: 'MAP', href: '/explore', icon: Map },
-    { name: 'MARKET', href: '/market', icon: ShoppingBag },
+    { name: 'MARKET', href: '/dashboard/student?tab=market', icon: ShoppingBag },
     { name: 'INBOX', href: '/messages', icon: MessageSquare },
     { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
 ];
