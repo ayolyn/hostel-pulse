@@ -6,28 +6,35 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { HostelPulseLogo } from '../ui/HostelPulseLogo';
+import { HostelPulseLogo } from '../ui/HostelPulseLogo';
 import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
 
-import { Map, Users, ShoppingBag } from 'lucide-react';
+import { Map, Users, ShoppingBag, Heart, HelpCircle } from 'lucide-react';
 
 const desktopNavItems = [
-    { name: 'HOME', href: '/dashboard/student', icon: Home },
-    { name: 'MAP', href: '/explore', icon: Map },
-    { name: 'ROOMMATES', href: '/roommates', icon: Users },
-    { name: 'SEARCH', href: '/rent', icon: Search },
-    { name: 'MARKET', href: '/dashboard/student?tab=market', icon: ShoppingBag },
-    { name: 'INSPECT', href: '/dashboard/student?tab=inspections', icon: Calendar },
-    { name: 'INBOX', href: '/dashboard/student?tab=messages', icon: MessageSquare },
-    { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
+    { name: 'Dashboard', href: '/dashboard/student', icon: Home },
+    { name: 'Find Hostel', href: '/rent', icon: Search },
+    { name: 'Explore Map', href: '/explore', icon: Map },
+    { name: 'Roommates', href: '/roommates', icon: Users },
+    { name: 'Campus Market', href: '/market', icon: ShoppingBag },
+    { name: 'Campus Gigs', href: '/services', icon: ShoppingBag },
+    { name: 'Inspections', href: '/dashboard/student?tab=inspections', icon: Calendar },
+    { name: 'Messages', href: '/messages', icon: MessageSquare },
+];
+
+const bottomNavItems = [
+    { name: 'Saved', href: '/dashboard/student?tab=saved', icon: Heart }, 
+    { name: 'Support', href: '/dashboard/student?tab=support', icon: HelpCircle },
+    { name: 'Profile & Settings', href: '/dashboard/student?tab=profile', icon: User },
 ];
 
 const mobileNavItems = [
     { name: 'HOME', href: '/dashboard/student', icon: Home },
     { name: 'SEARCH', href: '/rent', icon: Search },
     { name: 'MAP', href: '/explore', icon: Map },
-    { name: 'MARKET', href: '/dashboard/student?tab=market', icon: ShoppingBag },
-    { name: 'INBOX', href: '/dashboard/student?tab=messages', icon: MessageSquare },
+    { name: 'MARKET', href: '/market', icon: ShoppingBag },
+    { name: 'INBOX', href: '/messages', icon: MessageSquare },
     { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
 ];
 
@@ -50,42 +57,39 @@ function StudentDashboardShellContent({
         setMounted(true);
     }, []);
 
-    const isActive = (name: string) => {
-        if (!mounted) return false; // Prevent hydration mismatch on initial render for complex tab logic
-        if (name === 'HOME') {
+    const isActive = (name: string, href: string) => {
+        if (!mounted) return false;
+        
+        // Exact match for dashboard home
+        if (href === '/dashboard/student') {
             return pathname === '/dashboard/student' && (!tab || tab === 'home');
         }
-        if (name === 'INSPECT') {
-            return pathname.startsWith('/dashboard/student/inspections') || tab === 'inspections';
+        
+        // Match path prefix for others
+        if (href.startsWith('/dashboard/student?tab=')) {
+            const targetTab = href.split('=')[1];
+            return tab === targetTab;
         }
-        if (name === 'MAP') {
-            return pathname.startsWith('/explore');
-        }
-        if (name === 'ROOMMATES') {
-            return pathname.startsWith('/roommates');
-        }
-        if (name === 'SEARCH') {
-            return pathname.startsWith('/rent') || pathname.startsWith('/search') || pathname.startsWith('/property');
-        }
-        if (name === 'INBOX') {
-            return pathname.startsWith('/dashboard/student/messages') || pathname.startsWith('/messages') || tab === 'messages';
-        }
-        if (name === 'PROFILE') {
-            return pathname.startsWith('/dashboard/student/profile') || pathname.startsWith('/profile') || tab === 'profile';
-        }
-        if (name === 'SEARCH') {
-            return pathname.startsWith('/rent') || pathname.startsWith('/search') || pathname.startsWith('/property');
-        }
-        if (name === 'INBOX') {
-            return pathname.startsWith('/dashboard/student/messages') || pathname.startsWith('/messages') || tab === 'messages';
-        }
-        if (name === 'PROFILE') {
-            return pathname.startsWith('/dashboard/student/profile') || pathname.startsWith('/profile') || tab === 'profile';
-        }
+        
+        if (pathname.startsWith(href)) return true;
+        
+        // Fallbacks for specific tabs if path routing fails
+        if (name === 'HOME' || name === 'Dashboard') return pathname === '/dashboard/student' && (!tab || tab === 'home');
+        if (name === 'INSPECT' || name === 'Inspections') return pathname.startsWith('/dashboard/student/inspections') || tab === 'inspections';
+        if (name === 'MAP' || name === 'Explore Map') return pathname.startsWith('/explore');
+        if (name === 'ROOMMATES' || name === 'Roommates') return pathname.startsWith('/roommates');
+        if (name === 'SEARCH' || name === 'Find Hostel') return pathname.startsWith('/rent') || pathname.startsWith('/search') || pathname.startsWith('/property');
+        if (name === 'MARKET' || name === 'Campus Market') return pathname.startsWith('/market') || tab === 'market';
+        if (name === 'Campus Gigs') return pathname.startsWith('/services');
+        if (name === 'INBOX' || name === 'Messages') return pathname.startsWith('/dashboard/student/messages') || pathname.startsWith('/messages') || tab === 'messages';
+        if (name === 'PROFILE' || name === 'Profile & Settings') return pathname.startsWith('/dashboard/student/profile') || pathname.startsWith('/profile') || tab === 'profile';
+        if (name === 'Saved') return tab === 'saved';
+        if (name === 'Support') return tab === 'support';
+        
         return false;
     };
 
-    const activeIndex = mobileNavItems.findIndex(item => isActive(item.name));
+    const activeIndex = mobileNavItems.findIndex(item => isActive(item.name, item.href));
 
     return (
         <div className="flex min-h-screen bg-gray-50/50 dark:bg-neutral-950 transition-colors duration-500 pb-32 md:pb-0">
@@ -95,18 +99,35 @@ function StudentDashboardShellContent({
                 <div className="flex items-center gap-3 mb-10 px-2">
                     <HostelPulseLogo className="h-7" />
                 </div>
-                <nav className="flex-1 space-y-2">
-                    {desktopNavItems.map((item) => (
-                        <Link 
-                            key={item.name} 
-                            href={item.href}
-                            className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-4 ${isActive(item.name) ? 'bg-[#10b981]/10 dark:bg-[#34d399]/10 text-[#10b981] dark:text-[#34d399]' : 'text-gray-500 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
-                        >
-                            <item.icon className="w-4 h-4" />
-                            {item.name}
-                        </Link>
-                    ))}
-                </nav>
+                <div className="flex-1 overflow-y-auto pr-2 pb-4 no-scrollbar">
+                    <nav className="space-y-1">
+                        {desktopNavItems.map((item) => (
+                            <Link 
+                                key={item.name} 
+                                href={item.href}
+                                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all flex items-center gap-4 ${isActive(item.name, item.href) ? 'bg-[#10b981]/10 dark:bg-[#34d399]/10 text-[#10b981] dark:text-[#34d399] font-bold' : 'text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+                            >
+                                <item.icon className="w-5 h-5" />
+                                {item.name}
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
+                
+                <div className="pt-4 border-t border-gray-100 dark:border-white/10 mt-auto">
+                    <nav className="space-y-1">
+                        {bottomNavItems.map((item) => (
+                            <Link 
+                                key={item.name} 
+                                href={item.href}
+                                className={`px-4 py-3 rounded-xl text-sm font-medium transition-all flex items-center gap-4 ${isActive(item.name, item.href) ? 'bg-[#10b981]/10 dark:bg-[#34d399]/10 text-[#10b981] dark:text-[#34d399] font-bold' : 'text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+                            >
+                                <item.icon className="w-5 h-5" />
+                                {item.name}
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
             </aside>
 
             {/* Top Header */}
