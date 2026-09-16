@@ -272,10 +272,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         const isAgent = roles.includes('agent');
         const isLandlord = roles.includes('landlord');
 
-        const payload = {
-            owner_id: user.id,
-            agent_id: isAgent ? user.id : null,
-            landlord_id: isLandlord ? user.id : null,
+        const payload: any = {
             title: form.title || `${category} in ${form.location}`,
             description: form.description || `A premium ${subCat || category} located in ${form.location}, Ogbomoso.`,
             location: form.location,
@@ -317,24 +314,33 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
 
         // Append road access for Land
         if (category === 'Land') {
+            payload.features = payload.features.filter((f: string) => !f.startsWith('Road Access:'));
             payload.features.push(`Road Access: ${form.road_access}`);
         }
 
-
         let resultId = editId;
         if (editId) {
-            const { error: updateError } = await supabase
+            const { data: updatedData, error: updateError } = await supabase
                 .from('properties')
                 .update(payload)
                 .eq('id', editId)
-                .or(`owner_id.eq.${user.id},agent_id.eq.${user.id},landlord_id.eq.${user.id}`);
+                .select();
             
             if (updateError) {
                 setLoading(false);
                 setError("Update failed: " + updateError.message);
                 return;
             }
+            if (!updatedData || updatedData.length === 0) {
+                setLoading(false);
+                setError("Update failed: You do not have permission to edit this property or it does not exist.");
+                return;
+            }
         } else {
+            payload.owner_id = user.id;
+            payload.agent_id = isAgent ? user.id : null;
+            payload.landlord_id = isLandlord ? user.id : null;
+            
             const { data: newProperty, error: insertError } = await supabase
                 .from('properties')
                 .insert(payload)

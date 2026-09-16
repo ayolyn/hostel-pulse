@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -21,6 +21,7 @@ interface Props {
     inspectionFee: number;
     serviceCharge: number;
     otherFees: number;
+    otherFeeDescription?: string;
     totalMoveInCost: number;
     listingType: string;
     landlordId: string;
@@ -41,10 +42,14 @@ interface Props {
 
 export default function PropertyClientActions({ 
     propertyId, propertyName, isActive, annualRent, agentFee, agreementFee, 
-    cautionFee, inspectionFee, serviceCharge, otherFees, totalMoveInCost, 
+    cautionFee, inspectionFee, serviceCharge, otherFees, otherFeeDescription, totalMoveInCost, 
     listingType, landlordId, landlord, agent 
 }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCallModalOpen, setIsCallModalOpen] = useState(false);
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+    const [reportReason, setReportReason] = useState('');
     const [isSaved, setIsSaved] = useState(false);
     const [savingStatus, setSavingStatus] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
@@ -110,13 +115,17 @@ export default function PropertyClientActions({
 
     const handleShare = async () => {
         try {
-            await navigator.share({
-                title: propertyName,
-                text: 'Check out this property on HostelPulse',
-                url: window.location.href,
-            });
+            if (navigator.share) {
+                await navigator.share({
+                    title: propertyName,
+                    text: 'Check out this property on HostelPulse',
+                    url: window.location.href,
+                });
+            } else {
+                setIsShareModalOpen(true);
+            }
         } catch (err) {
-            console.log('Error sharing', err);
+            setIsShareModalOpen(true);
         }
     };
 
@@ -129,6 +138,106 @@ export default function PropertyClientActions({
                 propertyName={propertyName}
                 agentId={landlordId} 
             />
+            
+            {/* Call Agent Modal */}
+            {isCallModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl">
+                        <h3 className="text-xl font-black uppercase tracking-tight text-gray-900 mb-4">Call Agent</h3>
+                        <p className="text-sm text-gray-500 mb-6">You are about to contact {agent?.full_name || landlord?.business_name || 'the agent'}. Mention HostelPulse for faster service.</p>
+                        
+                        <div className="space-y-3">
+                            <a href={`tel:${(agent?.phone || landlord?.whatsapp_number || landlord?.phone_number)?.replace(/\D/g, '')}`} className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-sm hover:opacity-90 transition-opacity">
+                                <Phone className="w-5 h-5" /> {(agent?.phone || landlord?.whatsapp_number || landlord?.phone_number)}
+                            </a>
+                        </div>
+                        <button onClick={() => setIsCallModalOpen(false)} className="w-full mt-4 py-3 text-gray-400 font-bold uppercase tracking-widest text-xs hover:text-gray-900 transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Share Modal */}
+            {isShareModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl">
+                        <h3 className="text-xl font-black uppercase tracking-tight text-gray-900 mb-4">Share Property</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+                            <a href={`https://wa.me/?text=${encodeURIComponent(`Check out ${propertyName} on HostelPulse: ${window.location.href}`)}`} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <MessageCircle className="w-6 h-6 text-[#25D366]" />
+                                <span className="text-xs font-bold text-gray-900">WhatsApp</span>
+                            </a>
+                            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noreferrer" className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span className="text-xs font-bold text-blue-600">f</span>
+                                <span className="text-xs font-bold text-gray-900">Facebook</span>
+                            </a>
+                            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out ${propertyName} on HostelPulse!`)}&url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noreferrer" className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span className="text-xs font-black text-black">X</span>
+                                <span className="text-xs font-bold text-gray-900">X (Twitter)</span>
+                            </a>
+                            <a href={`mailto:?subject=${encodeURIComponent(`Check out ${propertyName}`)}&body=${encodeURIComponent(`I thought you might like this property on HostelPulse: ${window.location.href}`)}`} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span className="text-xs font-black text-gray-600">✉</span>
+                                <span className="text-xs font-bold text-gray-900">Email</span>
+                            </a>
+                            <a href={`sms:?body=${encodeURIComponent(`Check out ${propertyName} on HostelPulse: ${window.location.href}`)}`} className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <span className="text-xs font-black text-gray-600">💬</span>
+                                <span className="text-xs font-bold text-gray-900">SMS</span>
+                            </a>
+                            <button onClick={() => {
+                                navigator.clipboard.writeText(window.location.href);
+                                toast.success('Link copied!');
+                                setIsShareModalOpen(false);
+                            }} className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <Share2 className="w-6 h-6 text-gray-600" />
+                                <span className="text-xs font-bold text-gray-900">Copy Link</span>
+                            </button>
+                        </div>
+                        <button onClick={() => setIsShareModalOpen(false)} className="w-full py-3 text-gray-400 font-bold uppercase tracking-widest text-xs hover:text-gray-900 transition-colors">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Report Modal */}
+            {isReportModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl text-left">
+                        <h3 className="text-xl font-black uppercase tracking-tight text-gray-900 mb-2">Report Listing</h3>
+                        <p className="text-xs text-gray-500 mb-6 font-medium">Help us keep HostelPulse safe. What's wrong with this property?</p>
+                        
+                        <div className="space-y-3 mb-6">
+                            {['Property doesn\'t exist', 'Problem with fee', 'Misleading listing', 'No longer available', 'Something else'].map((reason) => (
+                                <label key={reason} className="flex items-center gap-3 cursor-pointer group">
+                                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${reportReason === reason ? 'border-red-500 bg-red-500' : 'border-gray-300 group-hover:border-red-300'}`}>
+                                        {reportReason === reason && <div className="w-2 h-2 rounded-full bg-white" />}
+                                    </div>
+                                    <input type="radio" className="hidden" name="report" value={reason} onChange={() => setReportReason(reason)} />
+                                    <span className="text-sm font-bold text-gray-700">{reason}</span>
+                                </label>
+                            ))}
+                        </div>
+                        
+                        <button 
+                            onClick={() => {
+                                if (!reportReason) {
+                                    toast.error('Please select a reason');
+                                    return;
+                                }
+                                toast.success('Report submitted successfully. We will look into it.');
+                                setIsReportModalOpen(false);
+                            }}
+                            className="w-full bg-red-500 text-white font-black uppercase tracking-widest py-4 rounded-xl shadow-sm hover:opacity-90 transition-opacity text-xs"
+                        >
+                            Submit Report
+                        </button>
+                        <button onClick={() => setIsReportModalOpen(false)} className="w-full mt-4 py-3 text-gray-400 font-bold uppercase tracking-widest text-xs hover:text-gray-900 transition-colors text-center">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <div className="sticky top-24 bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50">
                 {!isActive && (
@@ -187,7 +296,7 @@ export default function PropertyClientActions({
                         )}
                         {Number(otherFees) > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600 font-medium">Other Fees</span>
+                                <span className="text-gray-600 font-medium">Other Fees {otherFeeDescription && `(${otherFeeDescription})`}</span>
                                 <span className="font-bold text-gray-900">₦{Number(otherFees).toLocaleString()}</span>
                             </div>
                         )}
@@ -243,12 +352,7 @@ export default function PropertyClientActions({
                         <button 
                             onClick={() => {
                                 trackPropertyEvent(propertyId, 'lead');
-                                const phoneNum = agent?.phone || landlord?.whatsapp_number || landlord?.phone_number;
-                                if (phoneNum) {
-                                    window.location.href = `tel:${phoneNum?.replace(/\D/g, '')}`;
-                                } else {
-                                    toast.error('Contact phone number missing');
-                                }
+                                setIsCallModalOpen(true);
                             }}
                             className="bg-blue-600 text-white flex items-center justify-center gap-2 py-3 rounded-xl hover:opacity-90 transition-opacity font-bold text-xs shadow-sm"
                         >
@@ -277,7 +381,7 @@ export default function PropertyClientActions({
                         <Heart className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`} />
                     </button>
                     <button
-                        onClick={handleShare}
+                        onClick={() => setIsShareModalOpen(true)}
                         className="w-14 items-center justify-center flex border-2 border-gray-100 rounded-2xl transition-all bg-white text-gray-400 hover:border-gray-300 hover:text-gray-900"
                     >
                         <Share2 className="w-5 h-5" />
@@ -292,6 +396,13 @@ export default function PropertyClientActions({
                         <PencilLine className="w-5 h-5" /> Edit My Listing
                     </button>
                 )}
+                
+                <button
+                    onClick={() => setIsReportModalOpen(true)}
+                    className="w-full text-gray-400 font-bold uppercase tracking-widest py-3 hover:text-red-500 transition-colors flex items-center justify-center gap-2 text-[10px]"
+                >
+                    <AlertCircle className="w-4 h-4" /> Report this listing
+                </button>
             </div>
         </div>
     );

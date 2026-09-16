@@ -62,9 +62,21 @@ export default async function PropertyPage({ params }: { params: { id: string } 
             label: f
         })) || [];
 
+    if (property.is_furnished) amenities.push({ icon: CheckCircle, label: 'Furnished' });
+    if (property.is_serviced) amenities.push({ icon: CheckCircle, label: 'Serviced' });
+    if (property.is_newly_built) amenities.push({ icon: CheckCircle, label: 'Newly Built' });
+
     const hasVideo = Boolean(property.video_url && typeof property.video_url === 'string' && property.video_url.trim().length > 5 && property.video_url !== 'null' && property.video_url !== 'undefined');
     const validImages = Array.isArray(property.images) ? property.images.filter((img: string) => typeof img === 'string' && img.trim().length > 5 && img !== 'null' && img !== 'undefined' && !img.includes('placeholder')) : [];
     const displayImages = validImages.length > 0 ? validImages : [];
+
+        const Watermark = () => (
+            <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center opacity-30 mix-blend-overlay">
+                <div className="text-white font-black text-2xl md:text-4xl tracking-widest uppercase transform -rotate-45 drop-shadow-lg select-none flex items-center gap-3">
+                    <Building2 className="w-8 h-8 md:w-12 md:h-12" /> HostelPulse
+                </div>
+            </div>
+        );
 
     return (
         <div className="min-h-screen bg-white pb-24 md:pb-0 relative">
@@ -83,7 +95,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                 <section className="mb-8 relative group">
                     {/* Desktop Gallery */}
                     <div className="hidden md:grid grid-cols-4 grid-rows-2 gap-4 h-[500px] rounded-3xl overflow-hidden">
-                        <div className="col-span-2 row-span-2 relative cursor-pointer hover:opacity-95 transition-opacity bg-black flex flex-col items-center justify-center">
+                        <div className="col-span-2 row-span-2 relative cursor-pointer hover:opacity-95 transition-opacity bg-black flex flex-col items-center justify-center overflow-hidden">
                             {hasVideo ? (
                                 <video src={property.video_url} autoPlay muted loop playsInline controls className="w-full h-full object-cover" />
                             ) : (
@@ -92,31 +104,36 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                                     <p className="text-white/50 font-black uppercase tracking-widest text-xs">Raw walkthrough not available yet</p>
                                 </div>
                             )}
+                            <Watermark />
                             {hasVideo && property.verified_walkthrough && (
-                                <div className="absolute top-4 left-4 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-emerald-500/20">
+                                <div className="absolute top-4 left-4 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-emerald-500/20 z-30">
                                     <CheckCircle className="w-3 h-3" /> HostelPulse Verified Video
                                 </div>
                             )}
                         </div>
-                        <div className="relative cursor-pointer hover:opacity-95 transition-opacity">
+                        <div className="relative cursor-pointer hover:opacity-95 transition-opacity overflow-hidden">
                             <Image src={(displayImages[0] || '/placeholder.jpg')} alt="Main" fill className="object-cover" priority />
+                            <Watermark />
                         </div>
-                        <div className="relative cursor-pointer hover:opacity-95 transition-opacity rounded-tr-3xl">
+                        <div className="relative cursor-pointer hover:opacity-95 transition-opacity rounded-tr-3xl overflow-hidden">
                             <Image src={displayImages[1] || (displayImages[0] || '/placeholder.jpg')} alt="Interior" fill className="object-cover" />
+                            <Watermark />
                         </div>
-                        <div className="relative cursor-pointer hover:opacity-95 transition-opacity">
+                        <div className="relative cursor-pointer hover:opacity-95 transition-opacity overflow-hidden">
                             <Image src={displayImages[2] || (displayImages[0] || '/placeholder.jpg')} alt="Room" fill className="object-cover" />
+                            <Watermark />
                         </div>
-                        <div className="relative cursor-pointer hover:opacity-95 transition-opacity rounded-br-3xl flex items-center justify-center bg-gray-100">
+                        <div className="relative cursor-pointer hover:opacity-95 transition-opacity rounded-br-3xl flex items-center justify-center bg-gray-100 overflow-hidden">
                             <Image src={displayImages[displayImages.length > 3 ? 3 : 0]} alt="More" fill className="object-cover opacity-60" />
-                            <div className="relative z-10 font-bold text-gray-900 bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm">
+                            <Watermark />
+                            <div className="relative z-30 font-bold text-gray-900 bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm">
                                 View all photos
                             </div>
                         </div>
                     </div>
 
                     {/* Mobile Slider Placeholder */}
-                    <div className="md:hidden relative h-[350px] w-full bg-black flex items-center justify-center">
+                    <div className="md:hidden relative h-[350px] w-full bg-black flex items-center justify-center overflow-hidden">
                         {hasVideo ? (
                             <video src={property.video_url} autoPlay muted loop playsInline controls className="w-full h-full object-cover" />
                         ) : (
@@ -125,12 +142,13 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                                 <p className="text-white/50 font-black uppercase tracking-widest text-xs">Raw walkthrough not available yet</p>
                             </div>
                         )}
+                        <Watermark />
                         {hasVideo && property.verified_walkthrough && (
-                            <div className="absolute top-4 left-4 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-emerald-500/20">
+                            <div className="absolute top-4 left-4 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1 shadow-lg shadow-emerald-500/20 z-30">
                                 <CheckCircle className="w-3 h-3" /> Verified Video
                             </div>
                         )}
-                        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm border border-white/10">
+                        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm border border-white/10 z-30">
                             {hasVideo ? '1 Video, ' : ''}{displayImages.length} Photos
                         </div>
                     </div>
@@ -274,13 +292,13 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                             </div>
                             <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-yellow-100 text-yellow-500 mb-2 flex items-center justify-center text-sm"><Zap className="w-4 h-4" /></div>
-                                <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Electricity</p>
-                                <span className="text-[10px] font-bold mt-2 uppercase">{property.electricity_type || 'Not provided'}</span>
+                                <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">Light Score</p>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.light_score ? `${property.light_score}/10` : 'Not provided'}</span>
                             </div>
                             <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-500 mb-2 flex items-center justify-center text-sm">🚶</div>
                                 <p className="text-[10px] uppercase font-black tracking-widest text-gray-400">{property.category === 'Land' ? 'Landmark' : 'Gate Distance'}</p>
-                                <span className="text-[10px] font-bold mt-2 uppercase">{property.distance_to_lautech || property.gate_distance || 'Not provided'}</span>
+                                <span className="text-[10px] font-bold mt-2 uppercase">{property.gate_distance || 'Not provided'}</span>
                             </div>
                             <div className="bg-gray-50 p-4 rounded-3xl border border-gray-100 flex flex-col items-center text-center">
                                 <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-500 mb-2 flex items-center justify-center text-sm">🏠</div>
@@ -299,6 +317,43 @@ export default async function PropertyPage({ params }: { params: { id: string } 
 
                         <div className="w-full h-[1px] bg-gray-100" />
 
+                        {/* Property Details */}
+                        <div className="space-y-6">
+                            <h3 className="text-lg font-black uppercase tracking-tight text-gray-900">Property Details</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-y-6 gap-x-8">
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Reference ID</p>
+                                    <p className="font-bold text-gray-900 mt-1 uppercase">{property.id.split('-')[0]}</p>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Property Type</p>
+                                    <p className="font-bold text-gray-900 mt-1 uppercase">{property.category}</p>
+                                </div>
+                                {property.category !== 'Land' && (
+                                    <>
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Bedrooms</p>
+                                            <p className="font-bold text-gray-900 mt-1 uppercase">{property.bedrooms || 0}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Bathrooms</p>
+                                            <p className="font-bold text-gray-900 mt-1 uppercase">{property.bathrooms || 0}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Toilets</p>
+                                            <p className="font-bold text-gray-900 mt-1 uppercase">{property.toilets || 0}</p>
+                                        </div>
+                                    </>
+                                )}
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Area Size</p>
+                                    <p className="font-bold text-gray-900 mt-1 uppercase">{property.area_size ? `${property.area_size} SQM` : 'Not provided'}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="w-full h-[1px] bg-gray-100" />
+
                         {/* Amenities */}
                         <div className="space-y-6">
                             <h3 className="text-lg font-black uppercase tracking-tight text-gray-900">Amenities & Features</h3>
@@ -309,7 +364,22 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                                         <span>{item.label}</span>
                                     </div>
                                 ))}
+                                {amenities.length === 0 && (
+                                    <p className="text-gray-500 font-medium">No amenities listed.</p>
+                                )}
                             </div>
+                        </div>
+                        
+                        <div className="w-full h-[1px] bg-gray-100" />
+                        
+                        {/* Disclaimer */}
+                        <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                            <h4 className="font-black text-[10px] uppercase tracking-widest text-gray-400 mb-2 flex items-center gap-2">
+                                <Info className="w-4 h-4" /> Disclaimer
+                            </h4>
+                            <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                                The information provided about this property is for general informational purposes only. All details are subject to verification by the prospective tenant or buyer. HostelPulse does not guarantee the accuracy of all information provided by agents or landlords unless marked as &quot;HostelPulse Verified&quot;. We strongly recommend inspecting the property physically before making any payments.
+                            </p>
                         </div>
                     </div>
 
@@ -324,7 +394,8 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                         cautionFee={property.caution_fee}
                         inspectionFee={property.inspection_fee}
                         serviceCharge={property.service_charge}
-                        otherFees={property.other_fees}
+                        otherFees={property.other_fee}
+                        otherFeeDescription={property.other_fee_description}
                         totalMoveInCost={property.total_move_in_cost}
                         listingType={property.listing_type}
                         landlordId={property.agent_id || property.landlord_id}
