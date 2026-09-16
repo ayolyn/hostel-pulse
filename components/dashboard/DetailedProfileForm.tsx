@@ -164,8 +164,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const isApproved = account?.is_approved || account?.is_verified;
-        if (!termsAcceptedAt && !isApproved && (userRole === 'agent' || userRole === 'landlord')) {
+        if (!termsAcceptedAt && (userRole === 'agent' || userRole === 'landlord')) {
             setIsTermsModalOpen(true);
             return;
         }
@@ -422,7 +421,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
             )}
 
             {/* Terms Block for Agents/Landlords */}
-            {(userRole === 'agent' || userRole === 'landlord') && !(account?.is_approved || account?.is_verified) && (
+            {(userRole === 'agent' || userRole === 'landlord') && !termsAcceptedAt && (
                 <div className={`p-5 rounded-3xl border-2 transition-all flex flex-col sm:flex-row items-center gap-4 ${termsAcceptedAt ? 'bg-emerald-50 dark:bg-emerald-900/5 border-emerald-100 dark:border-emerald-900/10' : 'bg-amber-50 dark:bg-amber-900/5 border-amber-100 dark:border-amber-900/10'}`}>
                     <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ${termsAcceptedAt ? 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600' : 'bg-amber-100 dark:bg-amber-900/20 text-amber-600'}`}>
                         <ShieldCheck className="w-8 h-8" />
@@ -646,7 +645,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
             )}
 
             {/* Legal Governance Block */}
-            {!termsAcceptedAt && !(account?.is_approved || account?.is_verified) && (
+            {!termsAcceptedAt && (
                 <div className="mt-6 p-6 bg-black dark:bg-[#BEF264]/5 border-2 border-[#BEF264]/30 rounded-3xl relative overflow-hidden group shadow-2xl">
                     <div className="absolute top-0 right-0 p-5 opacity-10 group-hover:opacity-20 transition-opacity">
                         <ShieldCheck className="w-24 h-24 text-[#BEF264]" />

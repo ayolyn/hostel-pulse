@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { Home, Search, Calendar, MessageSquare, User } from 'lucide-react';
@@ -71,6 +71,15 @@ function StudentDashboardShellContent({
         if (name === 'PROFILE') {
             return pathname.startsWith('/dashboard/student/profile') || pathname.startsWith('/profile') || tab === 'profile';
         }
+        if (name === 'SEARCH') {
+            return pathname.startsWith('/rent') || pathname.startsWith('/search') || pathname.startsWith('/property');
+        }
+        if (name === 'INBOX') {
+            return pathname.startsWith('/dashboard/student/messages') || pathname.startsWith('/messages') || tab === 'messages';
+        }
+        if (name === 'PROFILE') {
+            return pathname.startsWith('/dashboard/student/profile') || pathname.startsWith('/profile') || tab === 'profile';
+        }
         return false;
     };
 
@@ -79,40 +88,50 @@ function StudentDashboardShellContent({
     return (
         <div className="flex min-h-screen bg-gray-50/50 dark:bg-neutral-950 transition-colors duration-500 pb-32 md:pb-0">
             
-            {/* Top Header */}
-            <header className="fixed top-4 left-4 right-4 md:left-8 md:right-8 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-6xl z-40 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border border-neutral-200 dark:border-white/10 px-4 py-2.5 md:py-3 rounded-full flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-4">
-                    
-                    <div className="sm:hidden flex items-center">
-                          <HostelPulseLogo variant="icon" className="w-8 h-8" />
-                      </div>
-                      <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full hidden sm:block">HP Student</span>
-                    
-                    {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex items-center gap-2 ml-auto mr-auto absolute left-1/2 -translate-x-1/2">
-                        {desktopNavItems.map((item) => (
-                            <Link 
-                                key={item.name} 
-                                href={item.href}
-                                className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${isActive(item.name) ? 'text-[#10b981] dark:text-[#34d399]' : 'text-gray-500 hover:text-black dark:hover:text-white'}`}
-                            >
-                                <item.icon className="w-3.5 h-3.5" />
-                                {item.name}
-                            </Link>
-                        ))}
-                    </nav>
+            {/* Desktop Sidebar */}
+            <aside className="hidden lg:flex flex-col w-64 fixed top-0 left-0 bottom-0 bg-white dark:bg-[#0a0a0a] border-r border-neutral-200 dark:border-white/10 z-40 p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-10">
+                    <HostelPulseLogo variant="icon" className="w-8 h-8" />
+                    <span className="text-[12px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-3 py-1.5 rounded-full">HP Student</span>
                 </div>
+                <nav className="flex-1 space-y-2">
+                    {desktopNavItems.map((item) => (
+                        <Link 
+                            key={item.name} 
+                            href={item.href}
+                            className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-4 ${isActive(item.name) ? 'bg-[#10b981]/10 dark:bg-[#34d399]/10 text-[#10b981] dark:text-[#34d399]' : 'text-gray-500 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'}`}
+                        >
+                            <item.icon className="w-4 h-4" />
+                            {item.name}
+                        </Link>
+                    ))}
+                </nav>
+                <div className="mt-auto space-y-6">
+                    <div className="flex items-center justify-between px-2">
+                        <ThemeToggle />
+                        <NotificationBell />
+                    </div>
+                    <div className="px-2 pb-2">
+                        <UserProfileDropdown />
+                    </div>
+                </div>
+            </aside>
 
-                <div className="flex-1 flex justify-end items-center gap-4">
+            {/* Mobile Top Header */}
+            <header className="lg:hidden fixed top-4 left-4 right-4 z-40 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-xl border border-neutral-200 dark:border-white/10 px-4 py-2.5 rounded-full flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                    <HostelPulseLogo variant="icon" className="w-8 h-8" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] bg-black px-2 py-1 rounded-full">HP Student</span>
+                </div>
+                <div className="flex items-center gap-3">
                     <ThemeToggle />
-                    <div className="h-6 w-px bg-neutral-200 dark:bg-white/10 mx-1 hidden sm:block" />
                     <NotificationBell />
                     <UserProfileDropdown />
                 </div>
             </header>
 
-            <main className="pt-20 w-full">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+            <main className="pt-20 lg:pt-0 lg:pl-64 w-full min-h-screen">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 lg:py-8">
                     {children}
                 </div>
             </main>

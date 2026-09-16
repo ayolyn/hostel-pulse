@@ -19,7 +19,7 @@ function getPriceLabel(category: Category): string {
     if (category === 'Hotel') return 'Daily Rate';
     if (category === 'House' || category === 'Land') return 'Sale Price';
     if (category === 'Shop') return 'Monthly Rent';
-    return 'Yearly Rent';
+    return 'Annual Rent';
 }
 
 export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: () => void, editId?: string | null }) {
@@ -96,7 +96,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 .from('properties')
                 .select('*')
                 .eq('id', id)
-                .or(`agent_id.eq.${user.id},landlord_id.eq.${user.id}`)
+                .or(`owner_id.eq.${user.id},agent_id.eq.${user.id},landlord_id.eq.${user.id}`)
                 .single();
 
             if (data && !error) {
@@ -327,7 +327,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 .from('properties')
                 .update(payload)
                 .eq('id', editId)
-                .or(`agent_id.eq.${user.id},landlord_id.eq.${user.id}`);
+                .or(`owner_id.eq.${user.id},agent_id.eq.${user.id},landlord_id.eq.${user.id}`);
             
             if (updateError) {
                 setLoading(false);

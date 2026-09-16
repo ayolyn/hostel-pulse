@@ -7,7 +7,7 @@ import { Building2, Eye, CreditCard, ShieldCheck, Plus, AlertCircle, Calendar, M
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ListingStudio } from '@/components/dashboard/ListingStudio';
-import { DetailedProfileForm } from '@/components/dashboard/DetailedProfileForm';
+import { ProfileSettingsHub } from '@/components/dashboard/ProfileSettingsHub';
 import { ProfileSettings } from '@/components/profile/ProfileSettings';
 import LandlordListingsTab from '@/components/dashboard/LandlordListingsTab';
 import InspectionsTab from '@/components/dashboard/InspectionsTab';
@@ -16,6 +16,7 @@ import AnalyticsTab from '@/components/dashboard/AnalyticsTab';
 import { SupportHub } from '@/components/messages/SupportHub';
 import { WalletOverviewCards } from '@/components/shared/WalletOverviewCards';
 import { WithdrawalModal } from '@/components/dashboard/WithdrawalModal';
+import { TermsModal } from '@/components/modals/TermsModal';
 
 type Property = {
     id: string;
@@ -187,7 +188,7 @@ function DashboardContent() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tighter">
+                    <h1 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                         {account?.full_name ?? 'Landlord Hub'}
                     </h1>
                     <p className="text-gray-500 font-medium">Manage your properties and earnings in Ogbomoso.</p>
@@ -236,7 +237,7 @@ function DashboardContent() {
 
             {/* Listings */}
             <section className="mt-8">
-                <h2 className="text-lg font-black text-gray-900 uppercase tracking-tight mb-4 flex items-center gap-2">
+                <h2 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight mb-4 flex items-center gap-2">
                     <Building2 className="w-5 h-5 text-[#BEF264]" />
                     My Properties
                 </h2>
@@ -437,8 +438,8 @@ function DashboardContent() {
                     {activeTab === 'overview' && renderOverview()}
                     
                     {activeTab === 'profile' && (
-                        <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col gap-5">
-                            <DetailedProfileForm account={account} userId={userId as string} onUpdate={() => window.location.reload()} />
+                        <div className="bg-white p-1 sm:p-6 rounded-3xl border-0 sm:border border-gray-100 shadow-none sm:shadow-sm flex flex-col gap-5">
+                            <ProfileSettingsHub accountData={{...account, role: 'Landlord'}} onUpdate={() => window.location.reload()} />
                         </div>
                     )}
                     
@@ -487,6 +488,19 @@ function DashboardContent() {
                         <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
                             <SupportHub />
                         </div>
+                    )}
+                    
+                    {userId && (
+                        <TermsModal 
+                            isOpen={!termsAccepted}
+                            onClose={() => {}} // User must accept
+                            userType="landlord"
+                            onAccept={async () => {
+                                const now = new Date().toISOString();
+                                await supabase.from('profiles').update({ terms_accepted_at: now }).eq('id', userId);
+                                setTermsAccepted(true);
+                            }}
+                        />
                     )}
                 </>
             )}

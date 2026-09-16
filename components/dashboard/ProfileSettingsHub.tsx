@@ -26,6 +26,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
     const [disputeModal, setDisputeModal] = useState<{ id: string | null, reason: string }>({ id: null, reason: '' });
     const [reviewModalProvider, setReviewModalProvider] = useState<{ id: string, name: string } | null>(null);
     
+    const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [passwordMsg, setPasswordMsg] = useState('');
 
@@ -201,8 +202,23 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
         setPasswordMsg('');
+        if (!currentPassword) {
+            setPasswordMsg('Current password is required');
+            return;
+        }
         if (!newPassword || newPassword.length < 6) {
-            setPasswordMsg('Password must be at least 6 characters');
+            setPasswordMsg('New password must be at least 6 characters');
+            return;
+        }
+        
+        // Verify current password
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: user?.email || '',
+            password: currentPassword
+        });
+
+        if (signInError) {
+            setPasswordMsg('Incorrect current password');
             return;
         }
         
@@ -211,6 +227,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
             setPasswordMsg(error.message);
         } else {
             setPasswordMsg('Password updated successfully');
+            setCurrentPassword('');
             setNewPassword('');
         }
     };
@@ -218,9 +235,9 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
     const sections = [
         { id: 'Edit Profile', icon: User, label: 'Edit Profile' },
         { id: 'Security', icon: Shield, label: 'Security & Login' },
-        { id: 'Saved Hostels', icon: Heart, label: 'Saved Hostels' },
+        ...(accountData?.role !== 'Agent' && accountData?.role !== 'Landlord' ? [{ id: 'Saved Hostels', icon: Heart, label: 'Saved Hostels' }] : []),
         { id: 'My Reviews', icon: Star, label: 'My Reviews' },
-          { id: 'My Transactions', icon: CreditCard, label: 'My Transactions' },
+        { id: 'My Transactions', icon: CreditCard, label: 'My Transactions' },
         { id: 'My Disputes', icon: AlertTriangle, label: 'My Disputes' },
         { id: 'Install App', icon: Download, label: 'Install App' },
         { id: 'Explore', icon: MapPin, label: 'Explore Ogbomoso', isLink: true, href: '/explore' }
@@ -335,6 +352,16 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                     </div>
                                 )}
                                 
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black uppercase tracking-widest text-gray-400">Current Password</label>
+                                    <input 
+                                        type="password" 
+                                        value={currentPassword}
+                                        onChange={e => setCurrentPassword(e.target.value)}
+                                        placeholder="Enter current password"
+                                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-800 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all"
+                                    />
+                                </div>
                                 <div className="space-y-2">
                                     <label className="text-[11px] font-black uppercase tracking-widest text-gray-400">New Password</label>
                                     <input 

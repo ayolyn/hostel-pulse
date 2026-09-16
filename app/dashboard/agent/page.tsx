@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 export const runtime = 'edge';
 
 import { useEffect, useState, Suspense } from 'react';
@@ -46,10 +46,11 @@ import InspectionsTab from '@/components/dashboard/InspectionsTab';
 import WalletTab from '@/components/dashboard/WalletTab';
 import MessagingTab from '@/components/dashboard/MessagingTab';
 import LeaderboardTab from '@/components/dashboard/LeaderboardTab';
-import { DetailedProfileForm } from '@/components/dashboard/DetailedProfileForm';
+import { ProfileSettingsHub } from '@/components/dashboard/ProfileSettingsHub';
 import { AgentDashboardShell } from '@/components/layout/AgentDashboardShell';
 import AnalyticsTab from '@/components/dashboard/AnalyticsTab';
 import { SupportHub } from '@/components/messages/SupportHub';
+import { TermsModal } from '@/components/modals/TermsModal';
 
 function AgentDashboardContent() {
     const supabase = createClient();
@@ -62,6 +63,7 @@ function AgentDashboardContent() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
+    const [termsAccepted, setTermsAccepted] = useState(true);
 
     useEffect(() => {
         async function loadData() {
@@ -75,7 +77,7 @@ function AgentDashboardContent() {
                 { count: toursCount },
                 { count: escrowDeals }
             ] = await Promise.all([
-                supabase.from('profiles').select('wallet_balance').eq('id', user.id).single(),
+                supabase.from('profiles').select('wallet_balance, terms_accepted_at').eq('id', user.id).single(),
                 supabase.from('agent_accounts').select('*').eq('id', user.id).single(),
                 supabase.from('inspections')
                     .select('id, scheduled_at, status, inspection_fee, properties(title, location)')
@@ -109,6 +111,7 @@ function AgentDashboardContent() {
             setAccount(syncedAccount);
             setInspections(insp ?? []);
             setUserId(user.id);
+            setTermsAccepted(!!profile?.terms_accepted_at);
             setLoading(false);
         }
         loadData();
@@ -194,7 +197,7 @@ function AgentDashboardContent() {
                 {/* Header Context */}
                 <div className="mb-10">
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#BEF264] mb-2">Agent HQ / {activeTab}</p>
-                    <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                    <h1 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                         {activeTab === 'overview' ? (loading ? 'Welcome...' : `Welcome, ${account?.full_name?.split(' ')[0] || 'Agent'}`) : activeTab}
                     </h1>
                 </div>
@@ -233,8 +236,8 @@ function AgentDashboardContent() {
                 )}
 
                 {activeTab === 'profile' && userId && account && (
-                    <div className="bg-white dark:bg-neutral-950 p-6 sm:p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
-                        <DetailedProfileForm account={account} userId={userId} onUpdate={() => window.location.reload()} />
+                    <div className="bg-white dark:bg-neutral-950 p-1 sm:p-6 rounded-3xl border-0 sm:border border-gray-100 dark:border-white/5 shadow-none sm:shadow-sm">
+                        <ProfileSettingsHub accountData={{...account, role: 'Agent'}} onUpdate={() => window.location.reload()} />
                     </div>
                 )}
                 
@@ -269,6 +272,18 @@ function AgentDashboardContent() {
                     </div>
                 )}
             </div>
+            {!loading && userId && (
+                <TermsModal 
+                    isOpen={!termsAccepted}
+                    onClose={() => {}} // User must accept
+                    userType="agent"
+                    onAccept={async () => {
+                        const now = new Date().toISOString();
+                        await supabase.from('profiles').update({ terms_accepted_at: now }).eq('id', userId);
+                        setTermsAccepted(true);
+                    }}
+                />
+            )}
         </AgentDashboardShell>
     );
 }
