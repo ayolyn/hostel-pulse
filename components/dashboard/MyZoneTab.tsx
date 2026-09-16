@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Edit2, Trash2, Camera, Video, Clock, Heart, Loader2, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
+import { Edit2, Trash2, Camera, Video, Clock, Heart, Loader2, CheckCircle2, Wallet, AlertCircle, RefreshCw } from 'lucide-react';
 import { agentMarkPropertyTaken, agentRequestReactivation } from '@/app/actions/propertyModeration';
 
 type Property = {
