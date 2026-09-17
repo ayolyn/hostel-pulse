@@ -201,7 +201,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                         whatsapp_number: updates.whatsapp_number,
                         phone: updates.phone_number,
                         student_id_url: updates.student_id_url || formData.student_id_url,
-                        avatar_url: updates.logo_url || formData.logo_url,
+                        avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
                         bank_name: updates.bank_name,
                         account_number: updates.account_number,
                         account_name: updates.account_name,
@@ -213,7 +213,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                     const { error: buyerError } = await supabase.from('non_student_accounts').update({
                         full_name: updates.contact_name,
                         phone: updates.phone_number,
-                        avatar_url: updates.logo_url || formData.logo_url,
+                        avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
                         dob: updates.dob,
                         contact_email: updates.contact_email
                     }).eq('id', userId);
@@ -222,7 +222,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                 
                 await supabase.from('profiles').update({ 
                     full_name: updates.contact_name, 
-                    avatar_url: updates.logo_url || formData.logo_url,
+                    avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
                     department: updates.department, 
                     level: updates.level, 
                     student_id_url: updates.student_id_url || formData.student_id_url,
@@ -250,7 +250,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                     full_name: updates.contact_name,
                     phone: updates.phone_number,
                     whatsapp_number: updates.whatsapp_number,
-                    avatar_url: updates.logo_url || formData.logo_url,
+                    avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
                     dob: updates.dob,
                     contact_email: updates.contact_email,
                     govt_id_url: updates.govt_id_url,
@@ -267,7 +267,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
                 await supabase.from('profiles').update({ 
                     full_name: updates.contact_name,
-                    avatar_url: updates.logo_url || formData.logo_url,
+                    avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
                     dob: updates.dob,
                     contact_email: updates.contact_email
                 }).eq('id', userId);
@@ -275,7 +275,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                 const complianceSubmitted = !!(updates.govt_id_url && updates.selfie_url);
                 const { error } = await supabase.from('landlord_accounts').update({ 
                     full_name: updates.contact_name, 
-                    avatar_url: updates.logo_url || formData.logo_url,
+                    avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
                     logo_url: updates.logo_url || formData.logo_url,
                     compliance_submitted: complianceSubmitted,
                     dob: updates.dob,
@@ -295,7 +295,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
                 await supabase.from('profiles').update({ 
                     full_name: updates.contact_name,
-                    avatar_url: updates.logo_url || formData.logo_url,
+                    avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
                     dob: updates.dob,
                     contact_email: updates.contact_email
                 }).eq('id', userId);
@@ -465,7 +465,27 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
             {/* Dynamic Content based on Role */}
             {userRole !== 'agent' && userRole !== 'landlord' ? (
                 <>
-                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2">
+                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2">Profile Avatar</h3>
+                    <div className="flex items-center gap-4 mb-6">
+                        <label className="w-24 h-24 rounded-full bg-gray-100 dark:bg-neutral-900 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-300 dark:border-white/10 shadow-inner group relative cursor-pointer">
+                            <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={uploadingAvatar} />
+                            {(formData.avatar_url || formData.logo_url) ? (
+                                <Image src={formData.avatar_url || formData.logo_url} alt="Profile" width={96} height={96} className="object-cover w-full h-full transition-transform group-hover:scale-110" />
+                            ) : (
+                                <Image src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(formData.contact_name || 'User')}&backgroundColor=e5e5e5`} alt="Profile Fallback" width={96} height={96} className="object-cover w-full h-full transition-transform group-hover:scale-110" />
+                            )}
+                            <div className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center transition-all">
+                                {uploadingAvatar ? <span className="text-white text-[10px] font-black uppercase">Wait...</span> : <UploadCloud className="w-6 h-6 text-white" />}
+                            </div>
+                        </label>
+                        <div>
+                            <p className="text-[11px] font-black text-gray-900 dark:text-white uppercase tracking-tight">Upload Profile Image</p>
+                            <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-1">PNG, JPG up to 5MB</p>
+                            <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest mt-0.5">Saves instantly</p>
+                        </div>
+                    </div>
+
+                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2 pt-4">
                         {userRole === 'student' ? 'Academic Identity' : 'Basic Identity'}
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
