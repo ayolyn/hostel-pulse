@@ -150,13 +150,13 @@ export function RentView({ isEmbedded = false }: { isEmbedded?: boolean }) {
                             View All Hostels
                         </button>
                         <button onClick={() => {
-                            const params = new URLSearchParams(searchParams.toString());
-                            params.delete('zone');
-                            params.delete('q');
-                            const basePath = isEmbedded ? "/dashboard/student" : "/rent";
-                            router.push(`${basePath}?${params.toString()}`);
+                            if (isEmbedded) {
+                                router.push('/dashboard/student?tab=buy');
+                            } else {
+                                router.push('/buy');
+                            }
                         }} className="bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
-                            Try Another Area
+                            Explore Properties for Sale
                         </button>
                     </div>
                 </div>

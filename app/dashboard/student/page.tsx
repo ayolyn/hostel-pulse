@@ -23,6 +23,7 @@ import { MessageList } from '@/components/messages/MessageList';
 import PayInspectionModal from '@/components/dashboard/PayInspectionModal';
 import { SavedPropertiesTab } from '@/components/dashboard/SavedPropertiesTab';
 import { RentView } from '@/components/rent/RentView';
+import { BuyView } from '@/components/buy/BuyView';
 import { RoommatesView } from '@/components/roommates/RoommatesView';
 
 import Loading from '@/app/loading';
@@ -174,6 +175,8 @@ function StudentDashboardContent() {
             setActiveTab('Roommates');
         } else if (tab === 'find-hostel') {
             setActiveTab('FindHostel');
+        } else if (tab === 'buy') {
+            setActiveTab('Buy');
         } else if (tab === 'profile') {
             setActiveTab('Profile');
         } else if (tab === 'market') {
@@ -656,6 +659,8 @@ function StudentDashboardContent() {
                 <RoommatesView isEmbedded={true} />
             ) : activeTab === 'FindHostel' ? (
                 <RentView isEmbedded={true} />
+            ) : activeTab === 'Buy' ? (
+                <BuyView isEmbedded={true} />
             ) : activeTab === 'Market' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-6">
                     <div className="mb-4">
