@@ -256,7 +256,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
     const sections = [
         { id: 'Edit Profile', icon: User, label: 'Edit Profile' },
         { id: 'Security', icon: Shield, label: 'Security & Login' },
-        ...(accountData?.role !== 'Agent' && accountData?.role !== 'Landlord' ? [{ id: 'Saved Hostels', icon: Heart, label: 'Saved Hostels' }] : []),
+        ...(accountData?.role?.toLowerCase() !== 'agent' && accountData?.role?.toLowerCase() !== 'landlord' ? [{ id: 'Saved Hostels', icon: Heart, label: 'Saved Hostels' }] : []),
         { id: 'My Reviews', icon: Star, label: 'My Reviews' },
         { id: 'My Transactions', icon: CreditCard, label: 'My Transactions' },
         { id: 'My Disputes', icon: AlertTriangle, label: 'My Disputes' },

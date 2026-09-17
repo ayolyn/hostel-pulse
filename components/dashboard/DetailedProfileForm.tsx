@@ -50,9 +50,13 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
             setFormData(prev => ({ ...prev, avatar_url: publicUrl }));
             
-            // Also save immediately to db
-            const table = userRole === 'student' ? 'student_accounts' : (userRole === 'landlord' ? 'landlord_accounts' : 'agent_profiles');
-            await supabase.from(table).update({ avatar_url: publicUrl }).eq('id', userId);
+            if (userRole === 'student') {
+                await supabase.from('student_accounts').update({ avatar_url: publicUrl }).eq('id', userId);
+            } else if (userRole === 'landlord') {
+                await supabase.from('landlord_accounts').update({ avatar_url: publicUrl }).eq('id', userId);
+            } else if (userRole === 'agent') {
+                await supabase.from('agent_accounts').update({ avatar_url: publicUrl }).eq('id', userId);
+            }
             await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', userId);
             
             if(onUpdate) onUpdate();
@@ -66,20 +70,23 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
     const [msg, setMsg] = useState({ type: '', text: '' });
     const [activeSubTab, setActiveSubTab] = useState('Edit Profile');
-    const [userRole, setUserRole] = useState<'student' | 'landlord' | 'agent' | null>(null);
+    const [userRole, setUserRole] = useState<string | null>(null);
     const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
     const [termsAcceptedAt, setTermsAcceptedAt] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchRoleAndTerms() {
             const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', userId).single();
-            if (roleData?.role) setUserRole(roleData.role as any);
+            const finalRole = roleData?.role || account?.role;
+            if (finalRole) {
+                setUserRole(finalRole.toLowerCase());
+            }
 
             const { data: profileData } = await supabase.from('profiles').select('terms_accepted_at').eq('id', userId).single();
             if (profileData?.terms_accepted_at) setTermsAcceptedAt(profileData.terms_accepted_at);
         }
         fetchRoleAndTerms();
-    }, [userId, supabase]);
+    }, [userId, supabase, account]);
 
     const [formData, setFormData] = useState({
         contact_name: account?.full_name || account?.contact_name || '',
@@ -182,48 +189,50 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
             if (files.cac) updates.cac_document_url = await uploadFile(files.cac, 'compliance_docs', 'cac');
             if (files.student_id) updates.student_id_url = await uploadFile(files.student_id, 'compliance_docs', 'student_id');
 
-            if (userRole === 'student') {
-                const { error: studentError } = await supabase.from('student_accounts').update({
-                    full_name: updates.contact_name,
-                    university: updates.university,
-                    department: updates.department,
-                    level: updates.level,
-                    whatsapp_number: updates.whatsapp_number,
-                    phone: updates.phone_number,
-                    student_id_url: updates.student_id_url || formData.student_id_url,
-                    avatar_url: updates.logo_url || formData.logo_url,
-                    bank_name: updates.bank_name,
-                    account_number: updates.account_number,
-                    account_name: updates.account_name,
-                    dob: updates.dob,
-                    contact_email: updates.contact_email
-                }).eq('id', userId);
-                if (studentError) throw studentError;
-                
-                                    await supabase.from('profiles').update({ 
-                        full_name: updates.contact_name, 
-                        avatar_url: updates.logo_url || formData.logo_url,
-                        department: updates.department, 
-                        level: updates.level, 
+            if (userRole !== 'agent' && userRole !== 'landlord') {
+                if (userRole === 'student') {
+                    const { error: studentError } = await supabase.from('student_accounts').update({
+                        full_name: updates.contact_name,
+                        university: updates.university,
+                        department: updates.department,
+                        level: updates.level,
+                        whatsapp_number: updates.whatsapp_number,
+                        phone: updates.phone_number,
                         student_id_url: updates.student_id_url || formData.student_id_url,
+                        avatar_url: updates.logo_url || formData.logo_url,
+                        bank_name: updates.bank_name,
+                        account_number: updates.account_number,
+                        account_name: updates.account_name,
                         dob: updates.dob,
                         contact_email: updates.contact_email
                     }).eq('id', userId);
+                    if (studentError) throw studentError;
+                }
+                
+                await supabase.from('profiles').update({ 
+                    full_name: updates.contact_name, 
+                    avatar_url: updates.logo_url || formData.logo_url,
+                    department: updates.department, 
+                    level: updates.level, 
+                    student_id_url: updates.student_id_url || formData.student_id_url,
+                    dob: updates.dob,
+                    contact_email: updates.contact_email
+                }).eq('id', userId);
 
-                    // Trigger AI Verification in the background if a new ID was uploaded
-                    if (updates.student_id_url) {
-                        toast.loading("Analyzing student ID...", { id: 'ai-verification' });
-                        verifyStudentIdAuto(userId, updates.student_id_url).then(res => {
-                            if (res.success && res.approved) {
-                                toast.success("ID Verified! You have been approved.", { id: 'ai-verification' });
-                                if (onUpdate) onUpdate(); // Reload data
-                            } else if (res.success && !res.approved) {
-                                toast.error("Could not auto-verify. Flagged for Admin review.", { id: 'ai-verification' });
-                            } else {
-                                toast.dismiss('ai-verification');
-                            }
-                        });
-                    }
+                // Trigger AI Verification in the background if a new ID was uploaded
+                if (userRole === 'student' && updates.student_id_url) {
+                    toast.loading("Analyzing student ID...", { id: 'ai-verification' });
+                    verifyStudentIdAuto(userId, updates.student_id_url).then(res => {
+                        if (res.success && res.approved) {
+                            toast.success("ID Verified! You have been approved.", { id: 'ai-verification' });
+                            if (onUpdate) onUpdate(); // Reload data
+                        } else if (res.success && !res.approved) {
+                            toast.error("Could not auto-verify. Flagged for Admin review.", { id: 'ai-verification' });
+                        } else {
+                            toast.dismiss('ai-verification');
+                        }
+                    });
+                }
             } else if (userRole === 'agent') {
                 const complianceSubmitted = !!(updates.govt_id_url && updates.selfie_url);
                 const { error: agentError } = await supabase.from('agent_accounts').update({
@@ -383,7 +392,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                                     </button>
                                 )}
                             </div>
-                        ) : (
+                        ) : (userRole === 'agent' || userRole === 'landlord') ? (
                             ['govt_id_url', 'selfie_url', 'cac_document_url'].map(key => {
                                 const label = key === 'govt_id_url' ? 'Govt. Issued ID' : key === 'selfie_url' ? 'Selfie Photo' : 'Business CAC Document';
                                 const url = formData[key as keyof typeof formData] as string;
@@ -404,6 +413,8 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                                     </div>
                                 )
                             })
+                        ) : (
+                            <div className="py-3 text-[10px] font-black uppercase tracking-widest text-gray-400">No documents required for this account type.</div>
                         )}
                     </div>
                 </div>
@@ -441,9 +452,11 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
             )}
 
             {/* Dynamic Content based on Role */}
-            {userRole === 'student' ? (
+            {userRole !== 'agent' && userRole !== 'landlord' ? (
                 <>
-                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2">Academic Identity</h3>
+                    <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2">
+                        {userRole === 'student' ? 'Academic Identity' : 'Basic Identity'}
+                    </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Full Name (Legal)</label>
@@ -456,17 +469,19 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                                 className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all disabled:opacity-50 disabled:grayscale" 
                             />
                         </div>
-                        <div className="space-y-3">
-                            <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Department</label>
-                            <input 
-                                name="department" 
-                                value={formData.department} 
-                                onChange={handleTextChange} 
-                                disabled={account?.is_approved}
-                                placeholder="e.g. Physiology Dept" 
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all disabled:opacity-50 disabled:grayscale" 
-                            />
-                        </div>
+                        {userRole === 'student' && (
+                            <div className="space-y-3">
+                                <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Department</label>
+                                <input 
+                                    name="department" 
+                                    value={formData.department} 
+                                    onChange={handleTextChange} 
+                                    disabled={account?.is_approved}
+                                    placeholder="e.g. Physiology Dept" 
+                                    className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all disabled:opacity-50 disabled:grayscale" 
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2 pt-6">Personnel Tracking</h3>
@@ -486,32 +501,34 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                     </div>
                     
                     
-                    <div className="pt-6">
-                        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2">Identity Verification</h3>
-                        <div className="mt-4">
-                            {account?.is_approved ? (
-                                <div className="w-full border-2 border-[#BEF264] bg-[#BEF264]/10 rounded-2xl p-6 flex flex-col items-center justify-center cursor-not-allowed">
-                                    <div className="w-12 h-12 bg-[#BEF264] rounded-full flex items-center justify-center mb-3">
-                                        <CheckCircle2 className="w-6 h-6 text-black" />
+                    {userRole === 'student' && (
+                        <div className="pt-6">
+                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-white/5 pb-2">Identity Verification</h3>
+                            <div className="mt-4">
+                                {account?.is_approved ? (
+                                    <div className="w-full border-2 border-[#BEF264] bg-[#BEF264]/10 rounded-2xl p-6 flex flex-col items-center justify-center cursor-not-allowed">
+                                        <div className="w-12 h-12 bg-[#BEF264] rounded-full flex items-center justify-center mb-3">
+                                            <CheckCircle2 className="w-6 h-6 text-black" />
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] block mb-1">
+                                            ID Verified & Locked
+                                        </span>
+                                        <p className="text-[9px] font-bold text-gray-500 uppercase mt-1">Contact support to update identity documents</p>
                                     </div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] block mb-1">
-                                        ID Verified & Locked
-                                    </span>
-                                    <p className="text-[9px] font-bold text-gray-500 uppercase mt-1">Contact support to update identity documents</p>
-                                </div>
-                            ) : (
-                                <label className="block w-full border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#BEF264] rounded-2xl p-6 text-center cursor-pointer transition-colors group">
-                                    <div className="w-12 h-12 bg-gray-50 dark:bg-white/5 group-hover:bg-[#BEF264]/20 rounded-full flex items-center justify-center mx-auto mb-3 transition-colors">
-                                        <UploadCloud className="w-6 h-6 text-gray-400 group-hover:text-[#BEF264]" />
-                                    </div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 block mb-1">
-                                        {files.student_id ? files.student_id.name : formData.student_id_url ? 'ID Uploaded (Click to replace)' : 'Upload Student ID'}
-                                    </span>
-                                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'student_id')} />
-                                </label>
-                            )}
+                                ) : (
+                                    <label className="block w-full border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#BEF264] rounded-2xl p-6 text-center cursor-pointer transition-colors group">
+                                        <div className="w-12 h-12 bg-gray-50 dark:bg-white/5 group-hover:bg-[#BEF264]/20 rounded-full flex items-center justify-center mx-auto mb-3 transition-colors">
+                                            <UploadCloud className="w-6 h-6 text-gray-400 group-hover:text-[#BEF264]" />
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 block mb-1">
+                                            {files.student_id ? files.student_id.name : formData.student_id_url ? 'ID Uploaded (Click to replace)' : 'Upload Student ID'}
+                                        </span>
+                                        <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'student_id')} />
+                                    </label>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                 </>
             ) : (
@@ -645,7 +662,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
             )}
 
             {/* Legal Governance Block */}
-            {!termsAcceptedAt && (
+            {(userRole === 'agent' || userRole === 'landlord') && !termsAcceptedAt && (
                 <div className="mt-6 p-6 bg-black dark:bg-[#BEF264]/5 border-2 border-[#BEF264]/30 rounded-3xl relative overflow-hidden group shadow-2xl">
                     <div className="absolute top-0 right-0 p-5 opacity-10 group-hover:opacity-20 transition-opacity">
                         <ShieldCheck className="w-24 h-24 text-[#BEF264]" />
@@ -675,7 +692,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
             {/* Submit Block */}
             <div className="pt-10 border-t border-gray-100 dark:border-white/5">
                 <button 
-                    disabled={loading || (!termsAcceptedAt && !(account?.is_approved || account?.is_verified))} 
+                    disabled={loading || ((userRole === 'agent' || userRole === 'landlord') && !termsAcceptedAt && !(account?.is_approved || account?.is_verified))} 
                     type="submit" 
                     className="w-full sm:w-auto px-4 py-3 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black rounded-3xl font-black uppercase tracking-widest text-xs transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:hover:scale-100 flex items-center justify-center gap-4 group shadow-xl shadow-black/10"
                 >
@@ -721,7 +738,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                 isOpen={isTermsModalOpen}
                 onClose={() => setIsTermsModalOpen(false)}
                 onAccept={handleAcceptTerms}
-                userType={userRole || 'student'}
+                userType={(userRole as any) || 'student'}
             />
         </div>
     );
