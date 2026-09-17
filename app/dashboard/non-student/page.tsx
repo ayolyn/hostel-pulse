@@ -4,7 +4,7 @@ export const runtime = 'edge';
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { NonStudentDashboardShell } from '@/components/layout/NonStudentDashboardShell';
+
 import { 
     Home, ShoppingBag, Heart, FileSearch, Calendar, MapPin, Clock, 
     CheckCircle2, AlertCircle, Search, ArrowRight, MessageSquare,
@@ -12,10 +12,11 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import MessagingTab from '@/components/dashboard/MessagingTab';
-import { ProfileSettings } from '@/components/profile/ProfileSettings';
+import { ProfileSettingsHub } from '@/components/dashboard/ProfileSettingsHub';
 import { SupportHub } from '@/components/messages/SupportHub';
 import BuyerWalletTab from '@/components/dashboard/BuyerWalletTab';
 import PayInspectionModal from '@/components/dashboard/PayInspectionModal';
+import { SavedPropertiesTab } from '@/components/dashboard/SavedPropertiesTab';
 
 // ===================== DASHBOARD TAB =====================
 function DashboardOverview() {
@@ -215,58 +216,67 @@ function RequestsTab() {
         load();
     }, []);
 
-    const statusStyle: Record<string, { color: string; bg: string }> = {
-        Confirmed: { color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
-        Pending: { color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-500/10' },
-        Completed: { color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-500/10' },
-        Cancelled: { color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-500/10' },
+    const statusStyle: Record<string, { color: string; bg: string; icon: typeof CheckCircle2 }> = {
+        Confirmed: { color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/10', icon: CheckCircle2 },
+        Pending: { color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-500/10', icon: Clock },
+        Completed: { color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-500/10', icon: CheckCircle2 },
+        Cancelled: { color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-500/10', icon: AlertCircle },
     };
 
-    if (loading) return <div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-28 bg-white dark:bg-neutral-900 animate-pulse rounded-3xl" />)}</div>;
+    if (loading) return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[1,2,3].map(i => <div key={i} className="h-32 bg-white dark:bg-neutral-900 animate-pulse rounded-3xl" />)}</div>;
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">My Requests</h1>
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <h2 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight mb-4 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-[#BEF264]" />
+                My Requests
+            </h2>
+            
             {inspections.length === 0 ? (
-                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-6 text-center">
-                    <Calendar className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                    <p className="font-black text-gray-500 uppercase tracking-tight">No inspection requests</p>
-                    <Link href="/rent" className="mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest bg-[#BEF264] text-black px-6 py-3 rounded-2xl hover:bg-[#a6d456] transition-all">
-                        Browse Properties <ArrowRight className="w-4 h-4" />
+                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/5 rounded-3xl p-6 text-center">
+                    <Calendar className="w-10 h-10 text-gray-300 dark:text-neutral-700 mx-auto mb-3" />
+                    <p className="font-black text-gray-400 uppercase tracking-tight">No inspection requests</p>
+                    <p className="text-gray-400 text-sm mt-1">Browse properties and request an inspection.</p>
+                    <Link href="/rent" className="mt-4 inline-block text-xs font-black uppercase tracking-widest text-[#BEF264] underline underline-offset-4">
+                        Browse Properties →
                     </Link>
                 </div>
             ) : (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {inspections.map((item) => {
                         const style = statusStyle[item.status] ?? statusStyle.Pending;
+                        const Icon = style.icon;
                         return (
-                            <div key={item.id} className="bg-white dark:bg-neutral-900 p-6 rounded-3xl border border-neutral-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all">
-                                <div className="flex items-start justify-between">
-                                    <div>
-                                        <h3 className="font-black text-gray-900 dark:text-white">{item.properties?.title ?? 'Property'}</h3>
-                                        <div className="flex items-center gap-1 text-gray-400 text-xs font-bold mt-1">
-                                            <MapPin className="w-3 h-3" /> {item.properties?.location ?? '—'}
-                                        </div>
-                                        <p className="text-gray-400 text-xs mt-1">
-                                            {item.scheduled_at ? new Date(item.scheduled_at).toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' }) : 'Date TBD'}
-                                        </p>
-                                        {item.notes && <p className="text-gray-500 text-sm mt-2 italic">{item.notes}</p>}
-                                        
-                                        {/* Pay Button Logic */}
-                                        {(item.status === 'Pending' || item.status === 'Confirmed') && (
-                                            !escrowTxs.find(tx => tx.reference_id === item.id && (tx.status === 'HELD' || tx.status === 'PENDING' || tx.status === 'Held')) && (
-                                                <button 
-                                                    onClick={() => setSelectedInspectionToPay({ id: item.id, title: item.properties?.title ?? 'Property' })}
-                                                    className="mt-3 text-[10px] font-black uppercase tracking-widest text-emerald-500 underline underline-offset-2 hover:text-emerald-600 transition-colors block"
-                                                >
-                                                    Pay ₦2,000 Escrow To Secure
-                                                </button>
-                                            )
-                                        )}
+                            <div key={item.id} className="bg-white dark:bg-neutral-900 p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm flex items-start justify-between hover:shadow-md transition-all">
+                                <div className="min-w-0">
+                                    <h3 className="font-black text-gray-900 dark:text-white truncate">{item.properties?.title ?? 'Property'}</h3>
+                                    <div className="flex items-center gap-1 text-gray-400 text-xs font-bold mt-1 truncate">
+                                        <MapPin className="w-3 h-3" /> {item.properties?.location ?? '—'}
                                     </div>
-                                    <span className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest ${style.bg} ${style.color}`}>
-                                        {item.status}
-                                    </span>
+                                    <p className="text-gray-400 text-sm mt-1">
+                                        {item.scheduled_at ? new Date(item.scheduled_at).toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' }) : 'Date TBD'}
+                                    </p>
+                                    <div className="flex gap-2 items-center mt-3">
+                                        <span className={`inline-block text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest ${style.bg} ${style.color}`}>
+                                            {item.status}
+                                        </span>
+                                    </div>
+                                    {item.notes && <p className="text-gray-500 text-xs mt-2 italic line-clamp-2">{item.notes}</p>}
+                                    
+                                    {/* Pay Button Logic */}
+                                    {(item.status === 'Pending' || item.status === 'Confirmed') && (
+                                        !escrowTxs.find(tx => tx.reference_id === item.id && (tx.status === 'HELD' || tx.status === 'PENDING' || tx.status === 'Held')) && (
+                                            <button 
+                                                onClick={() => setSelectedInspectionToPay({ id: item.id, title: item.properties?.title ?? 'Property' })}
+                                                className="mt-4 w-full bg-emerald-600 text-white font-black py-2.5 rounded-xl uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-600/10"
+                                            >
+                                                Pay ₦2,000 Escrow To Secure
+                                            </button>
+                                        )
+                                    )}
+                                </div>
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${style.bg}`}>
+                                    <Icon className={`w-5 h-5 ${style.color}`} />
                                 </div>
                             </div>
                         );
@@ -291,67 +301,22 @@ function RequestsTab() {
     );
 }
 
-// ===================== SAVED TAB =====================
-function SavedTab() {
-    const supabase = createClient();
-    const [saved, setSaved] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function load() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) { setLoading(false); return; }
-            const { data } = await supabase
-                .from('saved_properties')
-                .select('id, created_at, properties(id, title, location, price, images)')
-                .eq('student_id', user.id)
-                .order('created_at', { ascending: false });
-            setSaved(data || []);
-            setLoading(false);
-        }
-        load();
-    }, []);
-
-    if (loading) return <div className="space-y-4">{[1,2].map(i => <div key={i} className="h-28 bg-white dark:bg-neutral-900 animate-pulse rounded-3xl" />)}</div>;
-
-    return (
-        <div className="space-y-6">
-            <h1 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Saved Properties</h1>
-            {saved.length === 0 ? (
-                <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-6 text-center">
-                    <Heart className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                    <p className="font-black text-gray-500 uppercase tracking-tight">Nothing saved yet</p>
-                    <Link href="/rent" className="mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest bg-[#BEF264] text-black px-6 py-3 rounded-2xl hover:bg-[#a6d456] transition-all">
-                        Browse Properties <ArrowRight className="w-4 h-4" />
-                    </Link>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {saved.map((item) => (
-                        <Link key={item.id} href={`/property/${item.properties?.id}`} className="bg-white dark:bg-neutral-900 p-6 rounded-3xl border border-neutral-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all block group">
-                            <h3 className="font-black text-gray-900 dark:text-white group-hover:text-[#BEF264] transition-colors">{item.properties?.title}</h3>
-                            <div className="flex items-center gap-1 text-gray-400 text-xs font-bold mt-1">
-                                <MapPin className="w-3 h-3" /> {item.properties?.location ?? '—'}
-                            </div>
-                            <p className="text-[#0D9488] font-black text-lg mt-2">₦{Number(item.properties?.price).toLocaleString()}</p>
-                        </Link>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-}
-
 // ===================== MAIN PAGE =====================
 function NonStudentDashboardContent() {
     const searchParams = useSearchParams();
     const supabase = createClient();
     const [userId, setUserId] = useState<string | null>(null);
+    const [account, setAccount] = useState<any>(null);
     const tab = searchParams.get('tab') || 'overview';
 
     useEffect(() => {
         supabase.auth.getUser().then(({ data: { user } }: any) => {
-            if (user) setUserId(user.id);
+            if (user) {
+                setUserId(user.id);
+                supabase.from('non_student_accounts').select('*').eq('id', user.id).single().then(({data}) => {
+                    setAccount(data);
+                });
+            }
         });
     }, []);
 
@@ -359,12 +324,19 @@ function NonStudentDashboardContent() {
         <>
             {tab === 'overview' && <DashboardOverview />}
             {tab === 'requests' && <RequestsTab />}
-            {tab === 'saved' && <SavedTab />}
+            {tab === 'saved' && <SavedPropertiesTab />}
             {tab === 'wallet' && userId && <BuyerWalletTab userId={userId} />}
             {tab === 'messages' && userId && <MessagingTab userId={userId} userRole="buyer" />}
             {tab === 'profile' && (
                 <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
-                    <ProfileSettings />
+                    {account ? (
+                        <ProfileSettingsHub 
+                            accountData={{...account, role: 'Buyer'}} 
+                            onUpdate={() => window.location.reload()} 
+                        />
+                    ) : (
+                        <div className="animate-pulse h-96 bg-gray-50 rounded-3xl" />
+                    )}
                 </div>
             )}
             {tab === 'support' && (
