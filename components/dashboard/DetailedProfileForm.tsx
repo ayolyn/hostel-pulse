@@ -56,6 +56,8 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                 await supabase.from('landlord_accounts').update({ avatar_url: publicUrl }).eq('id', userId);
             } else if (userRole === 'agent') {
                 await supabase.from('agent_accounts').update({ avatar_url: publicUrl }).eq('id', userId);
+            } else {
+                await supabase.from('non_student_accounts').update({ avatar_url: publicUrl }).eq('id', userId);
             }
             await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', userId);
             
@@ -207,6 +209,15 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                         contact_email: updates.contact_email
                     }).eq('id', userId);
                     if (studentError) throw studentError;
+                } else {
+                    const { error: buyerError } = await supabase.from('non_student_accounts').update({
+                        full_name: updates.contact_name,
+                        phone: updates.phone_number,
+                        avatar_url: updates.logo_url || formData.logo_url,
+                        dob: updates.dob,
+                        contact_email: updates.contact_email
+                    }).eq('id', userId);
+                    if (buyerError) throw buyerError;
                 }
                 
                 await supabase.from('profiles').update({ 

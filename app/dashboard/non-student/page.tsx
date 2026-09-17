@@ -328,7 +328,7 @@ function NonStudentDashboardContent() {
             {tab === 'wallet' && userId && <BuyerWalletTab userId={userId} />}
             {tab === 'messages' && userId && <MessagingTab userId={userId} userRole="buyer" />}
             {tab === 'profile' && (
-                <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     {account ? (
                         <ProfileSettingsHub 
                             accountData={{...account, role: 'Buyer'}} 
@@ -340,7 +340,7 @@ function NonStudentDashboardContent() {
                 </div>
             )}
             {tab === 'support' && (
-                <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <SupportHub />
                 </div>
             )}
