@@ -31,6 +31,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                 is_approved
             ),
             agent:agent_accounts (
+                id,
                 full_name,
                 phone,
                 whatsapp_number,

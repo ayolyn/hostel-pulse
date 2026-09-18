@@ -215,7 +215,7 @@ Note: ${notes}
                                                 min={new Date().toISOString().split('T')[0]}
                                                 value={date}
                                                 onChange={(e) => setDate(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             />
                                         </div>
                                     </div>
@@ -246,7 +246,7 @@ Note: ${notes}
                                                 min={new Date().toISOString().split('T')[0]}
                                                 value={altDate}
                                                 onChange={(e) => setAltDate(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             />
                                         </div>
                                     </div>
@@ -279,7 +279,7 @@ Note: ${notes}
                                                 value={phone}
                                                 onChange={(e) => setPhone(e.target.value)}
                                                 placeholder="080..."
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             />
                                         </div>
                                     </div>
@@ -292,7 +292,7 @@ Note: ${notes}
                                                 value={whatsapp}
                                                 onChange={(e) => setWhatsapp(e.target.value)}
                                                 placeholder="080..."
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             />
                                         </div>
                                     </div>
@@ -305,7 +305,7 @@ Note: ${notes}
                                         value={notes}
                                         onChange={(e) => setNotes(e.target.value)}
                                         placeholder="Any specific instructions for the agent?"
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all resize-none"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all resize-none bg-white"
                                     />
                                 </div>
 

@@ -33,6 +33,7 @@ interface Props {
         logo_url: string;
     };
     agent?: {
+        id?: string;
         full_name: string;
         phone: string;
         whatsapp_number: string;
@@ -56,7 +57,7 @@ export default function PropertyClientActions({
     const [isOwner, setIsOwner] = useState(false);
     
     const router = useRouter();
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, role } = useAuth();
     const supabase = createClient();
 
     useEffect(() => {
@@ -354,13 +355,15 @@ export default function PropertyClientActions({
                             onClick={() => {
                                 handleProtectedAction(() => {
                                     trackPropertyEvent(propertyId, 'lead');
-                                    router.push(`/dashboard/student?tab=messages&contact=${landlordId}`);
+                                    const dashboardPath = role ? `/dashboard/${role.toLowerCase()}` : '/dashboard/student';
+                                    router.push(`${dashboardPath}?tab=messages&contact=${agent?.id || landlordId}`);
                                 });
                             }}
                             className="bg-blue-600 text-white flex items-center justify-center gap-2 py-3 rounded-xl hover:opacity-90 transition-opacity font-bold text-xs shadow-sm"
                         >
                             <MessageCircle className="w-4 h-4" /> Chat Agent
                         </button>
+
                     </div>
                 </div>
 
