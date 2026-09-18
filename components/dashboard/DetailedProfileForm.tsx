@@ -204,18 +204,14 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                         avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
                         bank_name: updates.bank_name,
                         account_number: updates.account_number,
-                        account_name: updates.account_name,
-                        dob: updates.dob,
-                        contact_email: updates.contact_email
+                        account_name: updates.account_name
                     }).eq('id', userId);
                     if (studentError) throw studentError;
                 } else {
                     const { error: buyerError } = await supabase.from('non_student_accounts').update({
                         full_name: updates.contact_name,
                         phone: updates.phone_number,
-                        avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
-                        dob: updates.dob,
-                        contact_email: updates.contact_email
+                        avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url
                     }).eq('id', userId);
                     if (buyerError) throw buyerError;
                 }
@@ -251,8 +247,6 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                     phone: updates.phone_number,
                     whatsapp_number: updates.whatsapp_number,
                     avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
-                    dob: updates.dob,
-                    contact_email: updates.contact_email,
                     govt_id_url: updates.govt_id_url,
                     selfie_url: updates.selfie_url,
                     cac_document_url: updates.cac_document_url,
@@ -278,8 +272,6 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                     avatar_url: updates.logo_url || formData.logo_url || formData.avatar_url,
                     logo_url: updates.logo_url || formData.logo_url,
                     compliance_submitted: complianceSubmitted,
-                    dob: updates.dob,
-                    contact_email: updates.contact_email,
                     business_name: updates.business_name,
                     office_address: updates.office_address,
                     phone_number: updates.phone_number,

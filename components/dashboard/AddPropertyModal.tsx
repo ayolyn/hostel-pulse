@@ -171,7 +171,7 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Price (₦)</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">PRICE (₦) - ANNUAL / SUBSEQUENT PAYMENT</label>
                     <input 
                         name="price" value={form.price} onChange={handleTextChange}
                         placeholder="350000"

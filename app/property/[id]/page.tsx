@@ -221,6 +221,13 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                                     label = 'DETAILS CHECKED';
                                     desc = 'Listing details were checked by HostelPulse.';
                                     date = property.verified_at ? 'Last checked: ' + new Date(property.verified_at).toLocaleDateString() : '';
+                                } else if (property.is_verified || status === 'Verified' || status === 'VERIFIED') {
+                                    color = 'text-emerald-700';
+                                    shieldBg = 'bg-emerald-100';
+                                    shieldColor = 'text-emerald-600';
+                                    label = 'VERIFIED BY HOSTELPULSE';
+                                    desc = 'This property is verified by HostelPulse.';
+                                    date = property.verified_at ? 'Verified on: ' + new Date(property.verified_at).toLocaleDateString() : '';
                                 } else if (status === 'Pending Review' || status === 'Pending') {
                                     color = 'text-amber-700';
                                     shieldBg = 'bg-amber-100';

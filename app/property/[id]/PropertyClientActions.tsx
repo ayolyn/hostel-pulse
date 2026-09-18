@@ -308,6 +308,20 @@ export default function PropertyClientActions({
                     </div>
                 </div>
 
+                {/* Primary CTA */}
+                <div className="mb-6">
+                    <button
+                        onClick={() => handleProtectedAction(() => {
+                            toast.success('Redirecting to secure payment...', { icon: '🔒' });
+                            router.push(`/dashboard/student?tab=wallet`);
+                        })}
+                        disabled={!isActive}
+                        className={`w-full font-black uppercase tracking-[0.1em] py-5 rounded-2xl transition-all shadow-lg text-sm flex items-center justify-center gap-2 border-2 ${isActive ? 'bg-[#BEF264] text-black hover:bg-[#a5d953] active:scale-[0.98] border-transparent hover:border-black/5 shadow-[#BEF264]/20' : 'bg-gray-200 text-gray-400 cursor-not-allowed border-transparent'}`}
+                    >
+                        {listingType === 'buy' ? 'Proceed to Payment (Escrow)' : 'Rent Now (Secure Escrow)'}
+                    </button>
+                </div>
+
                 {/* Agent Card */}
                 <div className="mb-6 bg-gray-50 rounded-2xl p-4 border border-gray-100">
                     <div className="flex items-center gap-3 mb-4">

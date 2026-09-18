@@ -84,6 +84,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     water_source: 'Borehole',
                     gate_distance: '~15 mins walk',
                     listing_type: 'rent',
+                    available_units: '1',
                     road_access: 'Tarred'
                 });
                 setUploadedImageUrls([]);
@@ -132,6 +133,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     water_source: data.water_source || 'Borehole',
                     gate_distance: data.gate_distance || '~15 mins walk',
                     listing_type: data.listing_type || 'rent',
+                    available_units: data.available_units?.toString() || '1',
                     road_access: data.features?.find((f: string) => f.startsWith('Road Access:'))?.replace('Road Access: ', '') || 'Tarred'
                 });
                 setUploadedImageUrls(data.images || []);
@@ -172,6 +174,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         light_score: 7,
         water_source: 'Borehole',
         gate_distance: '~15 mins walk',
+        available_units: '1',
         road_access: 'Tarred', // For Land
         listing_type: 'rent' as string
     });
@@ -304,6 +307,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             light_score: category === 'Land' ? null : Number(form.light_score),
             water_source: form.water_source,
             gate_distance: form.gate_distance,
+            available_units: Number(form.available_units) || 1,
 
             images: imagesToUse,
             status: 'active',
@@ -517,10 +521,18 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
 
                 {/* Price */}
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Price (₦) * — {getPriceLabel(category)}</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">PRICE (₦) - ANNUAL / SUBSEQUENT PAYMENT</label>
                     <input type="text" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })}
                         placeholder="350000"
                         className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                </div>
+
+                {/* Available Units */}
+                <div className="space-y-2 p-4 bg-[#BEF264]/10 border-2 border-[#BEF264] rounded-2xl">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] px-2">Available Units *</label>
+                    <input type="number" min="1" value={form.available_units} onChange={e => setForm({ ...form, available_units: e.target.value })}
+                        placeholder="e.g. 5"
+                        className="w-full p-4 rounded-xl bg-white dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
                 </div>
 
                 {/* Additional Fees */}
@@ -791,7 +803,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 )}
             </div>
             <button onClick={() => { setStep(1); setUploadedImageUrls([]); setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
-          video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', road_access: 'Tarred' }); onComplete(); }}
+          video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); onComplete(); }}
                 className="mt-8 text-black font-black uppercase tracking-widest text-[10px] underline underline-offset-8">
                 Add Another Listing
             </button>

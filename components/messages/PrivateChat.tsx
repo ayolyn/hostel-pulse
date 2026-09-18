@@ -755,6 +755,17 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                 </div>
             )}
 
+            {/* Safety Tip Banner */}
+            <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-900/50 px-4 py-3 flex items-start gap-3 shrink-0">
+                <ShieldCheck className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-800 dark:text-amber-500 mb-1">Safety Tip</h4>
+                    <p className="text-[10px] sm:text-xs text-amber-700 dark:text-amber-400/90 font-medium leading-snug">
+                        HostelPulse will <strong className="font-black">NEVER</strong> ask you to pay into a personal bank account or meet a landlord in a secluded area. Always pay through the app for your safety.
+                    </p>
+                </div>
+            </div>
+
             {/* Messages */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4">
                 {messages.map((msg) => {
