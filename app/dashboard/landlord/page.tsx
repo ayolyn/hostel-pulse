@@ -247,17 +247,17 @@ function DashboardContent() {
                         {[1, 2].map(i => <div key={i} className="bg-gray-100 animate-pulse h-24 rounded-3xl" />)}
                     </div>
                 ) : properties.length === 0 ? (
-                    <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-6 text-center space-y-4">
-                        <Building2 className="w-12 h-12 text-gray-200 mx-auto" />
-                        <p className="font-black text-gray-500 uppercase tracking-tight">No properties listed yet</p>
-                        <button onClick={() => handleTabChange('listings')} className="inline-flex items-center gap-2 bg-black text-[#BEF264] px-4 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 transition-all">
+                    <div className="bg-white dark:bg-neutral-900 rounded-3xl border-2 border-dashed border-gray-200 dark:border-white/10 p-6 text-center space-y-4">
+                        <Building2 className="w-12 h-12 text-gray-200 dark:text-gray-700 mx-auto" />
+                        <p className="font-black text-gray-500 dark:text-gray-400 uppercase tracking-tight">No properties listed yet</p>
+                        <button onClick={() => handleTabChange('listings')} className="inline-flex items-center gap-2 bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-4 py-3 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-neutral-800 dark:hover:bg-[#a6d456] transition-all">
                             <Plus className="w-4 h-4" /> List a Property
                         </button>
                     </div>
                 ) : (
                     <div className="space-y-4">
                         {properties.map(p => (
-                            <Link key={p.id} href={`/property/${p.id}`} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between hover:shadow-md transition-all group block">
+                            <Link key={p.id} href={`/property/${p.id}`} className="bg-white dark:bg-neutral-900 p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm flex items-center justify-between hover:shadow-md transition-all group block">
                                 <div className="flex items-center gap-4">
                                     <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-[#BEF264]/10 transition-colors">
                                         <Building2 className="w-6 h-6 text-gray-400 group-hover:text-[#BEF264] transition-colors" />
@@ -303,9 +303,9 @@ function DashboardContent() {
                 />
             </div>
             {escrowTxs.length === 0 ? (
-                <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-6 text-center">
-                    <Wallet className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                    <p className="font-black text-gray-500 uppercase tracking-tight">No transactions yet</p>
+                <div className="bg-white dark:bg-neutral-900 rounded-3xl border-2 border-dashed border-gray-200 dark:border-white/10 p-6 text-center">
+                    <Wallet className="w-12 h-12 text-gray-200 dark:text-gray-700 mx-auto mb-4" />
+                    <p className="font-black text-gray-500 dark:text-gray-400 uppercase tracking-tight">No transactions yet</p>
                     <p className="text-gray-400 text-sm mt-2">Escrow payments for your properties will appear here.</p>
                 </div>
             ) : (
@@ -314,7 +314,7 @@ function DashboardContent() {
                         <div 
                             key={tx.id} 
                             onClick={() => setSelectedTx(tx)}
-                            className="bg-white p-5 rounded-2xl border border-gray-100 flex items-center justify-between cursor-pointer hover:border-[#BEF264]/50 hover:shadow-md transition-all group"
+                            className="bg-white dark:bg-neutral-900 p-5 rounded-2xl border border-gray-100 dark:border-white/5 flex items-center justify-between cursor-pointer hover:border-[#BEF264]/50 hover:shadow-md transition-all group"
                         >
                             <div>
                                 <p className="font-black text-gray-900 text-sm group-hover:text-[#BEF264] transition-colors">{tx.properties?.title ?? 'Property'}</p>

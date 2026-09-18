@@ -137,7 +137,7 @@ export function RentView({ isEmbedded = false }: { isEmbedded?: boolean }) {
                     <p className="mt-4 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Loading Inventory...</p>
                 </div>
             ) : properties.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-32 text-center bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
+                <div className="flex flex-col items-center justify-center py-32 px-4 text-center bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
                     <div className="w-20 h-20 bg-gray-50 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-6">
                         <Home className="w-10 h-10 text-gray-300 dark:text-neutral-600" />
                     </div>

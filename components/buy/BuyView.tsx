@@ -105,7 +105,7 @@ export function BuyView({ isEmbedded = false }: { isEmbedded?: boolean }) {
                     <p className="mt-4 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Updating Listings...</p>
                 </div>
             ) : properties.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-32 text-center">
+                <div className="flex flex-col items-center justify-center py-32 px-4 text-center bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
                     <Building2 className="w-16 h-16 text-gray-200 mb-4" />
                     <h3 className="text-xl font-black text-gray-400 uppercase tracking-tight">No matching results</h3>
                     <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search area.</p>

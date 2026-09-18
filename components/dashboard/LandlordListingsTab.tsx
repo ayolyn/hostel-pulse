@@ -115,7 +115,7 @@ export default function LandlordListingsTab({ userId, properties, onAddClick, on
                     const mainImage = property.images?.[0] || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=800';
 
                     return (
-                        <div key={property.id} className="group relative flex flex-col h-full bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all">
+                        <div key={property.id} className="group relative flex flex-col h-full bg-white dark:bg-neutral-900 rounded-3xl overflow-hidden border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl transition-all">
                             {/* Image */}
                             <img 
                                 src={mainImage} 

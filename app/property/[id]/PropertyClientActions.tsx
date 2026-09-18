@@ -25,6 +25,7 @@ interface Props {
     totalMoveInCost: number;
     listingType: string;
     landlordId: string;
+    isVerified: boolean;
     landlord?: {
         business_name: string;
         whatsapp_number: string;
@@ -43,7 +44,7 @@ interface Props {
 export default function PropertyClientActions({ 
     propertyId, propertyName, isActive, annualRent, agentFee, agreementFee, 
     cautionFee, inspectionFee, serviceCharge, otherFees, otherFeeDescription, totalMoveInCost, 
-    listingType, landlordId, landlord, agent 
+    listingType, landlordId, landlord, agent, isVerified 
 }: Props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCallModalOpen, setIsCallModalOpen] = useState(false);
@@ -239,7 +240,7 @@ export default function PropertyClientActions({
                 </div>
             )}
 
-            <div className="sticky top-24 bg-white p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50">
+            <div className="sticky top-24 bg-white p-4 md:p-6 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50">
                 {!isActive && (
                     <div className="mb-4 bg-red-50 border border-red-100 p-4 rounded-xl flex items-start gap-3">
                         <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
@@ -309,18 +310,20 @@ export default function PropertyClientActions({
                 </div>
 
                 {/* Primary CTA */}
-                <div className="mb-6">
-                    <button
-                        onClick={() => handleProtectedAction(() => {
-                            toast.success('Redirecting to secure payment...', { icon: '🔒' });
-                            router.push(`/dashboard/student?tab=wallet`);
-                        })}
-                        disabled={!isActive}
-                        className={`w-full font-black uppercase tracking-[0.1em] py-5 rounded-2xl transition-all shadow-lg text-sm flex items-center justify-center gap-2 border-2 ${isActive ? 'bg-[#BEF264] text-black hover:bg-[#a5d953] active:scale-[0.98] border-transparent hover:border-black/5 shadow-[#BEF264]/20' : 'bg-gray-200 text-gray-400 cursor-not-allowed border-transparent'}`}
-                    >
-                        {listingType === 'buy' ? 'Proceed to Payment (Escrow)' : 'Rent Now (Secure Escrow)'}
-                    </button>
-                </div>
+                {isVerified && (
+                    <div className="mb-6">
+                        <button
+                            onClick={() => handleProtectedAction(() => {
+                                toast.success('Redirecting to secure payment...', { icon: '🔒' });
+                                router.push(`/dashboard/student?tab=wallet`);
+                            })}
+                            disabled={!isActive}
+                            className={`w-full font-black uppercase tracking-[0.1em] py-5 rounded-2xl transition-all shadow-lg text-sm flex items-center justify-center gap-2 border-2 ${isActive ? 'bg-[#BEF264] text-black hover:bg-[#a5d953] active:scale-[0.98] border-transparent hover:border-black/5 shadow-[#BEF264]/20' : 'bg-gray-200 text-gray-400 cursor-not-allowed border-transparent'}`}
+                        >
+                            {listingType === 'buy' ? 'Proceed to Payment (Escrow)' : 'Rent Now (Secure Escrow)'}
+                        </button>
+                    </div>
+                )}
 
                 {/* Agent Card */}
                 <div className="mb-6 bg-gray-50 rounded-2xl p-4 border border-gray-100">
@@ -346,31 +349,17 @@ export default function PropertyClientActions({
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-2">
                         <button 
                             onClick={() => {
-                                trackPropertyEvent(propertyId, 'lead');
-                                const waNumber = agent?.whatsapp_number || landlord?.whatsapp_number;
-                                if (waNumber) {
-                                    const cleanNum = waNumber?.replace(/\D/g, '').replace(/^0/, '234');
-                                    const message = encodeURIComponent(`Hi, I saw your listing for "${propertyName}" on HostelPulse. Is it still available? ${window.location.href}`);
-                                    window.open(`https://wa.me/${cleanNum}?text=${message}`, '_blank');
-                                } else {
-                                    toast.error('WhatsApp number missing');
-                                }
-                            }}
-                            className="bg-[#25D366] text-white flex items-center justify-center gap-2 py-3 rounded-xl hover:opacity-90 transition-opacity font-bold text-xs shadow-sm"
-                        >
-                            <MessageCircle className="w-4 h-4" /> WhatsApp
-                        </button>
-                        <button 
-                            onClick={() => {
-                                trackPropertyEvent(propertyId, 'lead');
-                                setIsCallModalOpen(true);
+                                handleProtectedAction(() => {
+                                    trackPropertyEvent(propertyId, 'lead');
+                                    router.push(`/dashboard/student?tab=messages&contact=${landlordId}`);
+                                });
                             }}
                             className="bg-blue-600 text-white flex items-center justify-center gap-2 py-3 rounded-xl hover:opacity-90 transition-opacity font-bold text-xs shadow-sm"
                         >
-                            <Phone className="w-4 h-4" /> Call Agent
+                            <MessageCircle className="w-4 h-4" /> Chat Agent
                         </button>
                     </div>
                 </div>

@@ -519,7 +519,7 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                         </div>
                         <div className="space-y-3">
                             <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-3">Date of Birth</label>
-                            <input type="date" name="dob" value={formData.dob} onChange={handleTextChange} className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                            <input type="date" name="dob" value={formData.dob} onChange={handleTextChange} className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all min-h-[56px] appearance-none" />
                         </div>
                     </div>
                     

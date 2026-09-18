@@ -435,12 +435,12 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                             setForm(prev => ({ ...prev, listing_type: getListingType(cat.id as Category) }));
                             setStep(2); 
                         }}
-                        className="p-5 border-[3px] border-gray-50 dark:border-white/10 rounded-3xl text-center hover:border-[#BEF264] dark:hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group relative overflow-hidden"
+                        className="p-5 border-[3px] border-gray-50 dark:border-white/10 rounded-3xl text-center hover:border-[#BEF264] dark:hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group relative overflow-hidden bg-white dark:bg-neutral-900"
                     >
                         <div className="w-12 h-12 bg-gray-50 dark:bg-neutral-800 dark:text-gray-300 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#BEF264] group-hover:text-black transition-all">
                             <cat.icon className="w-6 h-6" />
                         </div>
-                        <p className="font-black text-xl uppercase tracking-tighter group-hover:scale-110 transition-transform dark:text-white">{cat.label}</p>
+                        <p className="font-black text-xl uppercase tracking-tighter group-hover:scale-110 transition-transform text-gray-900 dark:text-white">{cat.label}</p>
                         <div className="mt-2 text-[8px] font-black uppercase tracking-widest text-gray-400 group-hover:text-[#BEF264]">{cat.desc}</div>
                     </button>
                 ))}
@@ -479,13 +479,13 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {subOptions[category].map((type) => (
                     <button key={type.title} onClick={() => { setSubCat(type.title); setStep(3); }}
-                        className="p-6 border-2 border-gray-100 rounded-3xl text-left hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group flex items-center gap-4">
-                        <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center group-hover:bg-[#BEF264] transition-all">
-                            <Building2 className="w-5 h-5 group-hover:text-black" />
+                        className="p-6 border-2 border-gray-100 dark:border-white/10 rounded-3xl text-left hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group flex items-center gap-4 bg-white dark:bg-neutral-900">
+                        <div className="w-10 h-10 bg-gray-50 dark:bg-neutral-800 rounded-xl flex items-center justify-center group-hover:bg-[#BEF264] transition-all">
+                            <Building2 className="w-5 h-5 group-hover:text-black dark:text-gray-300" />
                         </div>
                         <div>
-                            <p className="font-black text-gray-900 uppercase tracking-tight">{type.title}</p>
-                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{type.desc}</p>
+                            <p className="font-black text-gray-900 dark:text-white uppercase tracking-tight">{type.title}</p>
+                            <p className="text-[10px] text-gray-500 dark:text-neutral-400 font-bold uppercase tracking-widest">{type.desc}</p>
                         </div>
                     </button>
                 ))}

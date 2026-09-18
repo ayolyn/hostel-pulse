@@ -52,6 +52,7 @@ import { AuthHashHandler } from "@/components/providers/AuthHashHandler";
 import { PortalProvider } from "@/components/auth/PortalGuard";
 import { Toaster } from 'react-hot-toast';
 import { GlobalAlertsListener } from "@/components/providers/GlobalAlertsListener";
+import { NewsletterPopup } from "@/components/ui/NewsletterPopup";
 
 import Script from "next/script";
 
@@ -133,6 +134,7 @@ export default function RootLayout({
                                 <SavedProvider>
                                     <AuthHashHandler />
                                     <GlobalAlertsListener />
+                                    <NewsletterPopup />
                                     <main className="flex-1 flex flex-col">
                                         {children}
                                     </main>

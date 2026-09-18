@@ -26,14 +26,18 @@ export default async function PropertyPage({ params }: { params: { id: string } 
             landlord:landlord_accounts (
                 business_name,
                 whatsapp_number,
-                logo_url
+                logo_url,
+                is_verified,
+                is_approved
             ),
             agent:agent_accounts (
                 full_name,
                 phone,
                 whatsapp_number,
                 avatar_url,
-                rank
+                rank,
+                is_verified,
+                is_approved
             )
         `)
         .eq('id', params.id)
@@ -199,7 +203,11 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                             <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-4">Verification Status</h3>
                             
                             {(() => {
-                                const status = property.verification_status;
+                                const status = (property.verification_status || '').toLowerCase();
+                                const isAgentVerified = Array.isArray(property.agent) ? (property.agent[0]?.is_verified || property.agent[0]?.is_approved) : (property.agent?.is_verified || property.agent?.is_approved);
+                                const isLandlordVerified = Array.isArray(property.landlord) ? (property.landlord[0]?.is_verified || property.landlord[0]?.is_approved) : (property.landlord?.is_verified || property.landlord?.is_approved);
+                                const isProviderVerified = isAgentVerified || isLandlordVerified;
+                                
                                 let color = 'text-gray-900';
                                 let label = 'UNVERIFIED';
                                 let desc = 'This property has not been verified by HostelPulse.';
@@ -207,28 +215,35 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                                 let shieldColor = 'text-gray-500';
                                 let shieldBg = 'bg-gray-200';
 
-                                if (status === 'Physically Inspected') {
+                                if (status === 'physically inspected') {
                                     color = 'text-emerald-700';
                                     shieldBg = 'bg-emerald-100';
                                     shieldColor = 'text-emerald-600';
                                     label = 'PHYSICALLY INSPECTED';
                                     desc = 'HostelPulse physically inspected this property.';
                                     date = property.verified_at ? 'Last inspected: ' + new Date(property.verified_at).toLocaleDateString() : '';
-                                } else if (status === 'Details Checked') {
+                                } else if (status === 'details checked') {
                                     color = 'text-blue-700';
                                     shieldBg = 'bg-blue-100';
                                     shieldColor = 'text-blue-600';
                                     label = 'DETAILS CHECKED';
                                     desc = 'Listing details were checked by HostelPulse.';
                                     date = property.verified_at ? 'Last checked: ' + new Date(property.verified_at).toLocaleDateString() : '';
-                                } else if (property.is_verified || status === 'Verified' || status === 'VERIFIED') {
+                                } else if (property.is_verified || status.includes('verified')) {
                                     color = 'text-emerald-700';
                                     shieldBg = 'bg-emerald-100';
                                     shieldColor = 'text-emerald-600';
                                     label = 'VERIFIED BY HOSTELPULSE';
                                     desc = 'This property is verified by HostelPulse.';
                                     date = property.verified_at ? 'Verified on: ' + new Date(property.verified_at).toLocaleDateString() : '';
-                                } else if (status === 'Pending Review' || status === 'Pending') {
+                                } else if (isProviderVerified) {
+                                    color = 'text-emerald-700';
+                                    shieldBg = 'bg-emerald-100';
+                                    shieldColor = 'text-emerald-600';
+                                    label = 'VERIFIED';
+                                    desc = 'This provider is a verified member on HostelPulse.';
+                                    date = '';
+                                } else if (status === 'pending review' || status === 'pending') {
                                     color = 'text-amber-700';
                                     shieldBg = 'bg-amber-100';
                                     shieldColor = 'text-amber-600';
@@ -395,6 +410,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
                         propertyId={property.id}
                         propertyName={property.title}
                         isActive={property.is_active !== false}
+                        isVerified={property.is_verified || (property.verification_status || '').toLowerCase().includes('verified') || (Array.isArray(property.agent) ? (property.agent[0]?.is_verified || property.agent[0]?.is_approved) : (property.agent?.is_verified || property.agent?.is_approved)) || (Array.isArray(property.landlord) ? (property.landlord[0]?.is_verified || property.landlord[0]?.is_approved) : (property.landlord?.is_verified || property.landlord?.is_approved))}
                         annualRent={property.price}
                         agentFee={property.agent_fee}
                         agreementFee={property.agreement_fee}
