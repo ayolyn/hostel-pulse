@@ -319,7 +319,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                 </div>
 
                 <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 p-2 shadow-sm mt-4">
-                    <Link href={`/dashboard/${accountData?.role?.toLowerCase() || 'student'}?tab=support`} className="w-full flex items-center gap-3 p-3 rounded-2xl text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all">
+                    <Link href={`/dashboard/${accountData?.role === 'non_student' ? 'non-student' : accountData?.role?.toLowerCase() || 'student'}?tab=support`} className="w-full flex items-center gap-3 p-3 rounded-2xl text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all">
                         <HelpCircle className="w-5 h-5" />
                         <span className="text-[10px] font-black uppercase tracking-widest">Help & Support</span>
                     </Link>
