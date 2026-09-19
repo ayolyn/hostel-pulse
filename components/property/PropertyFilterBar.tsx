@@ -6,10 +6,10 @@ import { Search, MapPin, ChevronDown, SlidersHorizontal, X, Map as MapIcon, List
 import { cn } from '@/lib/utils';
 import { trackSearch } from '@/lib/analytics';
 
-export function PropertyFilterBar({ mode = 'buy', basePath }: { mode?: 'buy' | 'rent', basePath?: string }) {
+export function PropertyFilterBar({ mode = 'buy', basePath }: { mode?: 'buy' | 'rent' | 'shortlet', basePath?: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const resolvedBasePath = basePath || (mode === 'rent' ? '/rent' : '/buy');
+    const resolvedBasePath = basePath || (mode === 'rent' ? '/rent' : mode === 'shortlet' ? '/shortlet' : '/buy');
 
     // Local state for filter values
     const [filters, setFilters] = useState({
@@ -87,7 +87,9 @@ export function PropertyFilterBar({ mode = 'buy', basePath }: { mode?: 'buy' | '
         router.push(`${baseUrl}?${params.toString()}`, { scroll: false });
     };
 
-    const categoryOptions = mode === 'rent' 
+    const categoryOptions = mode === 'shortlet'
+        ? ['All Categories', 'Shortlet', 'Hotel', 'Apartment']
+        : mode === 'rent' 
         ? ['All Categories', 'Self-Con', 'Single Room', 'Room & Parlour', 'Hostel', 'Apartment', 'Shortlet']
         : ['All Categories', 'Hostel', 'House', 'Flat', 'Shop', 'Land', 'Hotel', 'Office'];
 

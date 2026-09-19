@@ -25,6 +25,7 @@ import { SavedPropertiesTab } from '@/components/dashboard/SavedPropertiesTab';
 import { RentView } from '@/components/rent/RentView';
 import { BuyView } from '@/components/buy/BuyView';
 import { RoommatesView } from '@/components/roommates/RoommatesView';
+import { ShortletView } from '@/components/shortlet/ShortletView';
 
 import Loading from '@/app/loading';
 
@@ -175,6 +176,8 @@ function StudentDashboardContent() {
             setActiveTab('Roommates');
         } else if (tab === 'find-hostel') {
             setActiveTab('FindHostel');
+        } else if (tab === 'shortlet') {
+            setActiveTab('Shortlet');
         } else if (tab === 'buy') {
             setActiveTab('Buy');
         } else if (tab === 'profile') {
@@ -659,6 +662,8 @@ function StudentDashboardContent() {
                 <RoommatesView isEmbedded={true} />
             ) : activeTab === 'FindHostel' ? (
                 <RentView isEmbedded={true} />
+            ) : activeTab === 'Shortlet' ? (
+                <ShortletView isEmbedded={true} />
             ) : activeTab === 'Buy' ? (
                 <BuyView isEmbedded={true} />
             ) : activeTab === 'Market' ? (

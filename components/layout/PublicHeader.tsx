@@ -13,7 +13,7 @@ import { HostelPulseLogo } from '@/components/ui/HostelPulseLogo';
 
 const navLinks = [
     { name: 'Buy', href: '/buy' },
-    { name: 'Shortlet', href: '/search?category=Hotel' },
+    { name: 'Shortlet', href: '/shortlet' },
     { name: 'Rent', href: '/rent' },
     { name: 'Providers', href: '/providers' },
     { name: 'Blog', href: '/blog' },

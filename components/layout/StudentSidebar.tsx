@@ -44,6 +44,7 @@ import { Settings } from 'lucide-react';
 const mainNavItems = [
     { name: 'Dashboard', icon: Home, path: '/dashboard/student' },
     { name: 'Find Hostel', icon: Search, path: '/dashboard/student?tab=find-hostel' },
+    { name: 'Find Shortlet', icon: Search, path: '/dashboard/student?tab=shortlet' },
     { name: 'Explore Map', icon: Map, path: '/explore' },
     { name: 'Roommates', icon: Users, path: '/dashboard/student?tab=roommates' },
     { name: 'Campus Market', icon: ShoppingBag, path: '/dashboard/student?tab=market' },
