@@ -7,22 +7,18 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 
 import NextImage from 'next/image';
+import { PrivateChat } from './PrivateChat';
 
 export function MessageList() {
     const [conversations, setConversations] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [userId, setUserId] = useState<string | null>(null);
     const [filter, setFilter] = useState<'ALL' | 'HOUSING' | 'COMMUNITY'>('ALL');
-    const supabase = createClient();
     const searchParams = useSearchParams();
     const router = useRouter();
-    const urlUserId = searchParams?.get('userId');
+    const supabase = createClient();
+    const urlUserId = searchParams?.get('userId') || searchParams?.get('contact');
 
-    useEffect(() => {
-        if (urlUserId) {
-            router.push(`/messages/${urlUserId}`);
-        }
-    }, [urlUserId, router]);
 
     useEffect(() => {
         async function fetchConversations() {
@@ -219,6 +215,14 @@ export function MessageList() {
         );
     }
 
+    if (urlUserId) {
+        return (
+            <div className="w-full h-full min-h-[600px] animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <PrivateChat receiverId={urlUserId} />
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col gap-4">
             {/* Filter Chips */}
@@ -263,7 +267,7 @@ export function MessageList() {
                                         content: 'Welcome to your Personal Notes! Save links, drafts, or ideas here.'
                                     });
                                 }
-                                window.location.href = `/messages/${user.id}`;
+                                router.push(`?tab=messages&contact=${user.id}`);
                             }
                         }}
                         className="bg-[#BEF264]/10 dark:bg-[#BEF264]/5 p-3 rounded-xl border border-dashed border-dashed border-[#BEF264]/30 hover:border-[#BEF264] transition-all flex items-center gap-4 group"
@@ -290,7 +294,7 @@ export function MessageList() {
                     filteredConversations.map((chat: any) => (
                         <Link 
                             key={chat.groupKey}
-                            href={`/messages/${chat.id}?room_id=${chat.roomId || chat.conversationId || ''}${chat.category === 'HOUSING' ? '&category=HOUSING' : ''}`}
+                            href={`?tab=messages&contact=${chat.id}&room_id=${chat.roomId || chat.conversationId || ''}${chat.category === 'HOUSING' ? '&category=HOUSING' : ''}`}
                             className="bg-white dark:bg-neutral-900 px-4 py-2.5 rounded-xl border border-transparent hover:bg-gray-50 dark:hover:bg-neutral-900/50 flex items-center gap-4 hover:shadow-md hover:border-[#BEF264]/30 transition-all group"
                         >
                             <div className="w-11 h-11 bg-[#BEF264]/10 dark:bg-[#BEF264]/5 rounded-full flex items-center justify-center text-[#BEF264] overflow-hidden relative shrink-0">

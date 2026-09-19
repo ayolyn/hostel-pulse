@@ -64,7 +64,7 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
     const scrollRef = useRef<HTMLDivElement>(null);
     const channelRef = useRef<any>(null);
     const searchParams = useSearchParams();
-    const urlUserId = searchParams?.get('userId');
+    const urlUserId = searchParams?.get('userId') || searchParams?.get('contact');
 
     // ── Fetch sidebar rooms ──────────────────────────────────────────────────
     const fetchRooms = useCallback(async () => {
