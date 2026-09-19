@@ -355,7 +355,9 @@ export default function PropertyClientActions({
                             onClick={() => {
                                 handleProtectedAction(() => {
                                     trackPropertyEvent(propertyId, 'lead');
-                                    const dashboardPath = role ? `/dashboard/${role.toLowerCase()}` : '/dashboard/student';
+                                    const dashboardPath = role === 'non_student' ? '/dashboard/non-student' : 
+                                                          role ? `/dashboard/${role.toLowerCase()}` : 
+                                                          '/dashboard/student';
                                     router.push(`${dashboardPath}?tab=messages&contact=${agent?.id || landlordId}`);
                                 });
                             }}
