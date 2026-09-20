@@ -46,7 +46,7 @@ function AuthPageContent() {
             await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `https://hostelpulse.app/auth/callback`,
+                    redirectTo: `${window.location.origin}/auth/callback`,
                 },
             });
         } catch (error) {
@@ -63,7 +63,7 @@ function AuthPageContent() {
         setLoading(true);
         const supabase = createClient();
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `https://hostelpulse.app/auth/reset-password`,
+            redirectTo: `${window.location.origin}/auth/reset-password`,
         });
 
         if (error) {

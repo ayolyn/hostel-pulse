@@ -173,7 +173,7 @@ Note: ${notes}
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                            className="w-full md:w-[600px] bg-white rounded-t-3xl md:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto pointer-events-auto"
+                            className="w-full md:w-[600px] bg-white dark:bg-[#111] rounded-t-3xl md:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto pointer-events-auto"
                         >
                             <div className="flex justify-between items-center mb-6">
                                 <div>
@@ -215,7 +215,7 @@ Note: ${notes}
                                                 min={new Date().toISOString().split('T')[0]}
                                                 value={date}
                                                 onChange={(e) => setDate(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             />
                                         </div>
                                     </div>
@@ -226,7 +226,7 @@ Note: ${notes}
                                             <select
                                                 value={time}
                                                 onChange={(e) => setTime(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             >
                                                 {generateTimeSlots().map((slot) => (
                                                     <option key={slot} value={slot}>{slot}</option>
@@ -246,7 +246,7 @@ Note: ${notes}
                                                 min={new Date().toISOString().split('T')[0]}
                                                 value={altDate}
                                                 onChange={(e) => setAltDate(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             />
                                         </div>
                                     </div>
@@ -257,7 +257,7 @@ Note: ${notes}
                                             <select
                                                 value={altTime}
                                                 onChange={(e) => setAltTime(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             >
                                                 <option value="">Any time</option>
                                                 {generateTimeSlots().map((slot) => (
@@ -279,7 +279,7 @@ Note: ${notes}
                                                 value={phone}
                                                 onChange={(e) => setPhone(e.target.value)}
                                                 placeholder="080..."
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             />
                                         </div>
                                     </div>
@@ -292,7 +292,7 @@ Note: ${notes}
                                                 value={whatsapp}
                                                 onChange={(e) => setWhatsapp(e.target.value)}
                                                 placeholder="080..."
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
                                             />
                                         </div>
                                     </div>
@@ -305,7 +305,7 @@ Note: ${notes}
                                         value={notes}
                                         onChange={(e) => setNotes(e.target.value)}
                                         placeholder="Any specific instructions for the agent?"
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all resize-none bg-white"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all resize-none bg-white"
                                     />
                                 </div>
 

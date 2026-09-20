@@ -3,17 +3,19 @@
 import { useState, useEffect } from 'react';
 import { X, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { createClient } from '@/utils/supabase/client';
 
 export function NewsletterPopup() {
     const [isOpen, setIsOpen] = useState(false);
     const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const hasSeenPopup = localStorage.getItem('hasSeenNewsletterPopup');
         if (!hasSeenPopup) {
             const timer = setTimeout(() => {
                 setIsOpen(true);
-            }, 8000); // Show after 8 seconds
+            }, 10000);
 
             return () => clearTimeout(timer);
         }
@@ -24,13 +26,18 @@ export function NewsletterPopup() {
         localStorage.setItem('hasSeenNewsletterPopup', 'true');
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email) return;
+        
+        setLoading(true);
+        const supabase = createClient();
+        await supabase.from('newsletter_subscribers').insert([{ email }]);
         
         toast.success("Thanks for subscribing to LAUTECH Updates!");
         setIsOpen(false);
         localStorage.setItem('hasSeenNewsletterPopup', 'true');
+        setLoading(false);
     };
 
     if (!isOpen) return null;
@@ -67,9 +74,10 @@ export function NewsletterPopup() {
                     />
                     <button 
                         type="submit"
-                        className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-[#BEF264]/20 hover:scale-[1.02] active:scale-[0.98] transition-all text-xs"
+                        disabled={loading}
+                        className={`w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-[#BEF264]/20 transition-all text-xs ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] active:scale-[0.98]'}`}
                     >
-                        Subscribe Now
+                        {loading ? 'Subscribing...' : 'Subscribe Now'}
                     </button>
                 </form>
                 
