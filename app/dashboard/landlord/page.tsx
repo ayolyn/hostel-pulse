@@ -114,7 +114,7 @@ function DashboardContent() {
             const [accRes, propsRes, profileRes] = await Promise.all([
                 supabase.from('landlord_accounts').select('id, full_name, contact_name, is_approved, compliance_submitted, business_name, phone, whatsapp_number, logo_url, is_verified, subscription_plan, total_listings, bank_name, account_number, account_name, contact_email, office_state, office_lga, office_address, about_organization, services_provided, facebook_url, twitter_url, linkedin_url, instagram_url, govt_id_url, cac_document_url').eq('id', user.id).maybeSingle(),
                 supabase.from('properties').select('*').or(`owner_id.eq.${user.id},landlord_id.eq.${user.id}`).order('created_at', { ascending: false }),
-                supabase.from('profiles').select('terms_accepted_at, wallet_balance').eq('id', user.id).maybeSingle()
+                supabase.from('profiles').select('terms_accepted_at, wallet_balance, dob, contact_email').eq('id', user.id).maybeSingle()
             ]);
 
             if (accRes.error) console.error("Landlord fetch error:", accRes.error);
@@ -129,7 +129,12 @@ function DashboardContent() {
                 return;
             }
 
-            setAccount(accRes.data);
+            // Merge profiles.dob and profiles.contact_email into account so they persist on refresh
+            setAccount({
+                ...accRes.data,
+                dob: profileRes.data?.dob || accRes.data?.dob || '',
+                contact_email: profileRes.data?.contact_email || accRes.data?.contact_email || '',
+            });
             setIsApproved(accRes.data?.is_approved || accRes.data?.is_verified || false);
             setComplianceSubmitted(accRes.data?.compliance_submitted ?? false);
             setProperties(propsRes.data ?? []);

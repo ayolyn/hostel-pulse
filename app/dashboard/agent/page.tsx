@@ -77,7 +77,7 @@ function AgentDashboardContent() {
                 { count: toursCount },
                 { count: escrowDeals }
             ] = await Promise.all([
-                supabase.from('profiles').select('wallet_balance, terms_accepted_at').eq('id', user.id).single(),
+                supabase.from('profiles').select('wallet_balance, terms_accepted_at, dob, contact_email').eq('id', user.id).single(),
                 supabase.from('agent_accounts').select('*').eq('id', user.id).single(),
                 supabase.from('inspections')
                     .select('id, scheduled_at, status, inspection_fee, properties(title, location)')
@@ -105,7 +105,10 @@ function AgentDashboardContent() {
                 ...acc,
                 wallet_balance: profile?.wallet_balance || 0,
                 deals_closed: (acc.deals_closed || 0) + (escrowDeals || 0),
-                completed_tours: toursCount || 0
+                completed_tours: toursCount || 0,
+                // Merge dob/contact_email from profiles (they are stored there, not in agent_accounts)
+                dob: profile?.dob || acc?.dob || '',
+                contact_email: profile?.contact_email || acc?.contact_email || ''
             };
 
             setAccount(syncedAccount);
