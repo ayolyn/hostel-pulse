@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, Suspense, useEffect } from 'react';
-import { NonStudentSidebar } from './NonStudentSidebar';
-import { Menu, Home, Calendar, Heart, MessageSquare, User } from 'lucide-react';
+import { Home, Calendar, Heart, MessageSquare, User } from 'lucide-react';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { NotificationBell } from '../ui/NotificationBell';
 import { UserProfileDropdown } from '../ui/UserProfileDropdown';
@@ -18,8 +17,6 @@ const mobileNavItems = [
 ];
 
 function NonStudentDashboardShellContent({ children }: { children: React.ReactNode }) {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [isRetracted, setIsRetracted] = useState(false);
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const tab = searchParams?.get('tab') || 'overview';
@@ -39,24 +36,24 @@ function NonStudentDashboardShellContent({ children }: { children: React.ReactNo
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-neutral-950 transition-colors duration-500 pb-32 lg:pb-0">
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 transition-all duration-300">
-                {/* Top Nav (Mobile & Desktop) */}
+            <div className="flex-1 flex flex-col min-w-0">
+                {/* Top Header */}
                 <header className="sticky top-0 z-50 bg-white/80 dark:bg-[#111]/80 backdrop-blur-2xl border-b border-gray-100 dark:border-white/5 shadow-sm">
                     <div className="flex items-center justify-between px-4 sm:px-6 lg:px-10 h-16 sm:h-20 max-w-7xl mx-auto">
                         <div className="flex items-center gap-4">
-                            <span className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-[#BEF264]">Buyer / Renter Hub</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264]">Buyer / Renter Hub</span>
                         </div>
-
-                    <div className="flex-1 flex justify-end items-center gap-4">
-                        <ThemeToggle />
-                        <div className="h-6 w-px bg-neutral-200 dark:bg-white/10 mx-1 hidden sm:block" />
-                        <NotificationBell />
-                        <UserProfileDropdown />
+                        <div className="flex items-center gap-4">
+                            <ThemeToggle />
+                            <div className="h-6 w-px bg-neutral-200 dark:bg-white/10 mx-1 hidden sm:block" />
+                            <NotificationBell />
+                            <UserProfileDropdown />
+                        </div>
                     </div>
                 </header>
 
-                <main className="pt-16 w-full">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-6">
+                <main className="pt-4 w-full">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-6">
                         {children}
                     </div>
                 </main>

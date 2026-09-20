@@ -313,8 +313,19 @@ function NonStudentDashboardContent() {
         supabase.auth.getUser().then(({ data: { user } }: any) => {
             if (user) {
                 setUserId(user.id);
-                supabase.from('non_student_accounts').select('*').eq('id', user.id).single().then(({data}) => {
-                    setAccount(data);
+                // Fetch both non_student_accounts AND profiles to merge dob/contact_email
+                Promise.all([
+                    supabase.from('non_student_accounts').select('*').eq('id', user.id).single(),
+                    supabase.from('profiles').select('dob, contact_email, phone, avatar_url').eq('id', user.id).single()
+                ]).then(([{ data: accountData }, { data: profileData }]) => {
+                    if (accountData) {
+                        setAccount({
+                            ...accountData,
+                            // Merge profile fields that are stored in profiles table
+                            dob: profileData?.dob || accountData?.dob || '',
+                            contact_email: profileData?.contact_email || accountData?.email || '',
+                        });
+                    }
                 });
             }
         });

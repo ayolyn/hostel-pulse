@@ -131,7 +131,7 @@ function StudentDashboardContent() {
             const [{ data: profile }, { count: reviewCount }] = await Promise.all([
                 supabase
                     .from('profiles')
-                    .select('avg_rating, wallet_balance')
+                    .select('avg_rating, wallet_balance, dob, contact_email')
                     .eq('id', user.id)
                     .single(),
                 supabase
@@ -159,7 +159,7 @@ function StudentDashboardContent() {
             
             setPendingTransactions(pending || []);
             const escrowBalance = pending?.reduce((sum: number, t: any) => sum + t.amount, 0) || 0;
-            setAccountData({ ...account, escrowBalance, wallet_balance: profile?.wallet_balance || 0 });
+            setAccountData({ ...account, escrowBalance, wallet_balance: profile?.wallet_balance || 0, dob: profile?.dob || account?.dob || '', contact_email: profile?.contact_email || account?.email || '' });
 
             setLoading(false);
         }
