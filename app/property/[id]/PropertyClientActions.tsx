@@ -316,7 +316,10 @@ export default function PropertyClientActions({
                         <button
                             onClick={() => handleProtectedAction(() => {
                                 toast.success('Redirecting to secure payment...', { icon: '🔒' });
-                                router.push(`/dashboard/student?tab=wallet`);
+                                const dashboardPath = role === 'non_student' ? '/dashboard/non-student' : 
+                                                      role ? `/dashboard/${role.toLowerCase()}` : 
+                                                      '/dashboard/student';
+                                router.push(`${dashboardPath}?tab=wallet`);
                             })}
                             disabled={!isActive}
                             className={`w-full font-black uppercase tracking-[0.1em] py-5 rounded-2xl transition-all shadow-lg text-sm flex items-center justify-center gap-2 border-2 ${isActive ? 'bg-[#BEF264] text-black hover:bg-[#a5d953] active:scale-[0.98] border-transparent hover:border-black/5 shadow-[#BEF264]/20' : 'bg-gray-200 text-gray-400 cursor-not-allowed border-transparent'}`}
