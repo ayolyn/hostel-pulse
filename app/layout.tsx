@@ -66,6 +66,18 @@ export const metadata: Metadata = {
     },
 };
 
+import QueryProvider from "@/components/providers/QueryProvider";
+import { AuthProvider } from "@/components/providers/AuthProvider";
+import { SavedProvider } from "@/components/providers/SavedProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import ConditionalFooter from "@/components/layout/ConditionalFooter";
+import { AuthHashHandler } from "@/components/providers/AuthHashHandler";
+import { PortalProvider } from "@/components/auth/PortalGuard";
+import { Toaster } from 'react-hot-toast';
+import { GlobalAlertsListener } from "@/components/providers/GlobalAlertsListener";
+import { NewsletterPopup } from "@/components/ui/NewsletterPopup";
+import Script from "next/script";
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
