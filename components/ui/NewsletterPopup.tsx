@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 export function NewsletterPopup() {
     const [isOpen, setIsOpen] = useState(false);
