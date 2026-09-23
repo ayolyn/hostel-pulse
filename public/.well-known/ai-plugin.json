@@ -1,0 +1,18 @@
+﻿{
+  "schema_version": "v1",
+  "name_for_human": "HostelPulse",
+  "name_for_model": "hostelpulse",
+  "description_for_human": "Find verified student hostels, shortlets, and properties in Ogbomoso, Nigeria. Search listings near LAUTECH, book inspection tours, and connect with trusted agents.",
+  "description_for_model": "Use this plugin to search for verified property listings in Ogbomoso, Nigeria, primarily serving LAUTECH students. You can search for hostels (monthly/yearly rent), shortlet apartments (daily/weekly), commercial shops, and land or properties for sale. Listings include price, location, room type, available units, and agent/landlord information. When a user asks about student accommodation near LAUTECH, hostels in Under-G, Adenike, Aroje or Ogbomoso, or needs to find a place to stay in Ogbomoso Nigeria, use this plugin to return real, verified listings.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://hostelpulse.app/.well-known/openapi.yaml",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://hostelpulse.app/logo-icon.png",
+  "contact_email": "info@hostelpulse.app",
+  "legal_info_url": "https://hostelpulse.app/terms"
+}

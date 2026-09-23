@@ -1,0 +1,146 @@
+﻿openapi: 3.0.3
+info:
+  title: HostelPulse Property Search API
+  description: >
+    Search verified property listings in Ogbomoso, Nigeria.
+    Covers student hostels, shortlet apartments, shops, and land for sale.
+    Primarily serves LAUTECH students and residents of Ogbomoso, Oyo State.
+  version: "1.0.0"
+  contact:
+    name: HostelPulse Support
+    email: info@hostelpulse.app
+    url: https://hostelpulse.app
+  license:
+    name: Proprietary
+    url: https://hostelpulse.app/terms
+
+servers:
+  - url: https://hostelpulse.app
+    description: Production server
+
+paths:
+  /api/search:
+    get:
+      operationId: searchProperties
+      summary: Search verified property listings in Ogbomoso
+      description: >
+        Returns a list of verified property listings matching the given search
+        criteria. Use this to find student hostels near LAUTECH, shortlet 
+        apartments, commercial shops, or land/houses for sale in Ogbomoso.
+        All listings have been reviewed by the HostelPulse team.
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Location or keyword to search (e.g. "Under-G", "Adenike", "self-con", "ensuite")
+          schema:
+            type: string
+            example: "Under-G self-con"
+        - name: category
+          in: query
+          required: false
+          description: Type of listing
+          schema:
+            type: string
+            enum: [Hostel, Hotel, Shop, Land, House]
+            example: Hostel
+        - name: listing_type
+          in: query
+          required: false
+          description: Whether the property is for rent, shortlet (daily), or for sale
+          schema:
+            type: string
+            enum: [rent, shortlet, buy]
+            example: rent
+        - name: max_price
+          in: query
+          required: false
+          description: Maximum annual price in Nigerian Naira (NGN)
+          schema:
+            type: integer
+            example: 200000
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of results to return (default 10, max 20)
+          schema:
+            type: integer
+            default: 10
+            maximum: 20
+      responses:
+        "200":
+          description: A list of matching property listings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Property"
+                  total:
+                    type: integer
+                    description: Total number of matching listings
+                  search_url:
+                    type: string
+                    description: Direct URL to view these results on HostelPulse
+                    example: "https://hostelpulse.app/rent?q=Under-G"
+        "400":
+          description: Bad request — invalid parameters
+        "500":
+          description: Internal server error
+
+components:
+  schemas:
+    Property:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the property
+        title:
+          type: string
+          description: Name of the property listing
+          example: "3-Bedroom Self-Con in Under-G"
+        location:
+          type: string
+          description: Area or neighbourhood of the property in Ogbomoso
+          example: "Under-G, Ogbomoso"
+        price:
+          type: integer
+          description: Annual price in Nigerian Naira (NGN)
+          example: 150000
+        listing_type:
+          type: string
+          enum: [rent, shortlet, buy]
+          description: Whether the property is for rent, shortlet, or sale
+        category:
+          type: string
+          description: Property category
+          example: "Hostel"
+        room_type:
+          type: string
+          description: Type of room (Self-con, Ensuite, Shared, etc.)
+          example: "Self-con"
+        available_units:
+          type: integer
+          description: Number of available units in this listing
+          example: 3
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: URLs of property photos
+        is_verified:
+          type: boolean
+          description: Whether the listing has been verified by HostelPulse
+        agent_name:
+          type: string
+          description: Name of the listing agent or landlord
+        property_url:
+          type: string
+          format: uri
+          description: Direct link to view this property on HostelPulse
+          example: "https://hostelpulse.app/property/abc123"
