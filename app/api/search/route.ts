@@ -1,5 +1,7 @@
-﻿import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+
+export const runtime = "edge";
 
 // Public read-only Supabase client for AI agent search
 const supabase = createClient(
