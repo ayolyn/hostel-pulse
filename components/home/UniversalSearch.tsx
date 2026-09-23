@@ -85,6 +85,9 @@ export function UniversalSearch() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -5 }}
                             type="text"
+                            id="location-search"
+                            name="q"
+                            autoComplete="off"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={currentCategory?.placeholder}

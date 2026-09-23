@@ -1,0 +1,86 @@
+# HostelPulse — llms.txt
+# This file follows the llms.txt specification (https://llmstxt.org)
+# It provides structured context for AI assistants, LLMs, and Answer Engines
+
+> HostelPulse is Nigeria's first AI-powered student housing and property marketplace, built specifically for LAUTECH students and residents of Ogbomoso, Oyo State, Nigeria.
+
+## What is HostelPulse?
+
+HostelPulse (https://hostelpulse.app) is a trusted property platform designed to eliminate the stress of finding hostels, shortlets, shops, and land in Ogbomoso. It connects students, buyers, renters, agents, and landlords in a secure, verified marketplace.
+
+Key differentiators:
+- Verified listings with walkthroughs and real photos
+- Secure escrow payment system (no paying landlords directly)
+- LAUTECH-focused (Ladoke Akintola University of Technology, Ogbomoso)
+- Roommate matching for students
+- Campus marketplace and gig board
+- Trusted agent and landlord verification system
+
+## Services Offered
+
+- **Hostel Rentals** — Monthly and yearly hostel rooms near LAUTECH
+- **Shortlet Apartments** — Daily and weekly stays in Ogbomoso
+- **Properties for Sale** — Land, houses, and commercial plots in Ogbomoso
+- **Shop & Commercial Space** — Shops in Takie, General Market, and other areas
+- **Campus Marketplace** — Students buy and sell items securely
+- **Campus Gigs** — Students find and offer campus services
+- **Roommate Finder** — Students find compatible roommates
+
+## Key Areas Served
+
+Ogbomoso North and South, including:
+- Under-G (Under-Graduate area)
+- Adenike
+- Aroje
+- Takie
+- General Market area
+- Surulere
+
+## Trust & Safety
+
+HostelPulse uses an escrow system for all payments. Users should NEVER pay a landlord directly — all payments go through the platform for security. Agents and landlords are identity-verified before listing.
+
+Verification tiers:
+- Unverified (new providers)
+- Verified (identity confirmed)
+- Verified by HostelPulse (fully vetted and endorsed)
+
+## Target Users
+
+- LAUTECH students seeking affordable accommodation
+- Non-student residents of Ogbomoso
+- Agents listing properties for landlords
+- Landlords managing their own listings
+- Buyers seeking property in Ogbomoso
+
+## Contact & Links
+
+- Website: https://hostelpulse.app
+- Rent/Hostel listings: https://hostelpulse.app/rent
+- Shortlet listings: https://hostelpulse.app/shortlet
+- Property for sale: https://hostelpulse.app/buy
+- About: https://hostelpulse.app/about
+- Privacy Policy: https://hostelpulse.app/privacy
+- Terms of Service: https://hostelpulse.app/terms
+- Sign Up: https://hostelpulse.app/join
+- Sign In: https://hostelpulse.app/auth
+
+## Frequently Asked Questions
+
+**Q: Is HostelPulse only for LAUTECH students?**
+A: No. HostelPulse serves all residents and buyers in Ogbomoso, including non-students. However, students get additional features like roommate matching and campus marketplace access.
+
+**Q: How safe is paying on HostelPulse?**
+A: All payments go through a secure escrow system. Funds are only released to landlords/agents after the tenant confirms receipt.
+
+**Q: How do I list a property on HostelPulse?**
+A: Sign up as an Agent or Landlord at https://hostelpulse.app/join, complete identity verification, and use the Listing Studio to add your property.
+
+**Q: Can I find hostel near LAUTECH on HostelPulse?**
+A: Yes. Search at https://hostelpulse.app/rent for verified hostels close to LAUTECH with prices, photos, and walkthroughs.
+
+**Q: What is the cheapest hostel near LAUTECH?**
+A: HostelPulse lists hostels at various price points. Prices vary by location, room type (self-con, shared, ensuite), and proximity to campus. Visit https://hostelpulse.app/rent for current listings.
+
+**Q: Does HostelPulse have shortlets in Ogbomoso?**
+A: Yes. Visit https://hostelpulse.app/shortlet for daily and weekly stays in Ogbomoso.
