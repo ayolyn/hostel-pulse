@@ -20,6 +20,15 @@ const nextConfig = {
                 source: "/:path*",
                 headers: securityHeaders,
             },
+            // Allow OpenAI and other AI agents to read plugin files
+            {
+                source: "/.well-known/:path*",
+                headers: [
+                    { key: "Access-Control-Allow-Origin", value: "*" },
+                    { key: "Access-Control-Allow-Methods", value: "GET, OPTIONS" },
+                    { key: "Access-Control-Allow-Headers", value: "Content-Type" },
+                ],
+            },
             // Aggressive cache for hashed static assets
             {
                 source: "/_next/static/:path*",
