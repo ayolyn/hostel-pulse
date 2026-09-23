@@ -68,6 +68,9 @@ export default function LandingPageClient({ latestProperties }: { latestProperti
                                         <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
                                         <input
                                             type="text"
+                                            id="hero-search"
+                                            name="q"
+                                            autoComplete="off"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
