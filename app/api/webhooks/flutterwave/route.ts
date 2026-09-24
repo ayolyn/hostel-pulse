@@ -30,6 +30,9 @@ export async function POST(req: NextRequest) {
     if (isDeposit) {
         // --- DEPOSIT FLOW ---
         if (chargeStatus === "successful" || chargeStatus === "completed") {
+            // Calculate settled amount (what the merchant actually receives)
+            const settledAmount = data.settlement_amount ? Number(data.settlement_amount) : (Number(amount) - Number(data.app_fee || 0));
+
             // Check if already processed
             const { data: existingDeposit } = await supabase
                 .from("deposits")
@@ -46,7 +49,7 @@ export async function POST(req: NextRequest) {
                 .from("deposits")
                 .insert({
                     user_id: meta.payer_id,
-                    amount: amount,
+                    amount: settledAmount,
                     status: "Completed",
                     reference: tx_ref
                 });
@@ -61,7 +64,7 @@ export async function POST(req: NextRequest) {
                 .single();
 
             if (profile) {
-                const newBalance = Number(profile.wallet_balance || 0) + Number(amount);
+                const newBalance = Number(profile.wallet_balance || 0) + settledAmount;
                 await supabase
                     .from("profiles")
                     .update({ wallet_balance: newBalance })
@@ -72,7 +75,7 @@ export async function POST(req: NextRequest) {
             await createNotification(
                 meta.payer_id,
                 'Wallet Funded',
-                `Successfully deposited ₦${Number(amount).toLocaleString()} into your wallet.`,
+                `Successfully deposited ₦${settledAmount.toLocaleString()} into your wallet.`,
                 '/dashboard/student?tab=wallet',
                 'deposit'
             );
