@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
-import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin, X, Receipt, MessageCircle, Building2, ArrowUpRight, ArrowDownLeft, PlusCircle, Package, Home, BarChart3, LifeBuoy } from 'lucide-react';
+import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin, X, Receipt, MessageCircle, Building2, ArrowUpRight, ArrowDownLeft, PlusCircle, Package, Home, BarChart3, LifeBuoy, Wallet } from 'lucide-react';
 import { DetailedProfileForm } from './DetailedProfileForm';
 import { SavedPropertiesTab } from './SavedPropertiesTab';
 import Link from 'next/link';
@@ -254,6 +254,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
     };
 
     const sections = [
+        { id: 'Wallet', icon: Wallet, label: 'Wallet', isLink: true, href: '?tab=wallet', className: 'md:hidden' },
         { id: 'Edit Profile', icon: User, label: 'Edit Profile' },
         { id: 'Security', icon: Shield, label: 'Security & Login' },
         ...(accountData?.role?.toLowerCase() !== 'agent' && accountData?.role?.toLowerCase() !== 'landlord' ? [{ id: 'Saved Hostels', icon: Heart, label: 'Saved Hostels' }] : []),
@@ -291,7 +292,7 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
                                 <Link
                                     key={section.id}
                                     href={section.href || '#'}
-                                    className="w-full flex items-center justify-between p-3 rounded-2xl transition-all text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                                    className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white ${section.className || ''}`}
                                 >
                                     <div className="flex items-center gap-3">
                                         <section.icon className="w-5 h-5" />

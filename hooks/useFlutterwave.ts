@@ -83,7 +83,6 @@ export const useFlutterwave = () => {
                 tx_ref,
                 amount: config.amount,
                 currency: config.currency ?? "NGN",
-                payment_options: "card,ussd,banktransfer,account",
                 customer: {
                     email: config.customer.email,
                     phone_number: config.customer.phone_number ?? "",

@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
-import { useState, useEffect } from "react";
-import { X, Building, Hash, User, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { X, Building, Hash, User, Loader2, Search } from "lucide-react";
 import toast from "react-hot-toast";
 import { requestPayout } from "@/app/actions/wallet";
 import { getNigerianBanks, resolveBankAccount } from "@/app/actions/flutterwave";
@@ -23,11 +23,28 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
     const [bankCode, setBankCode] = useState("");
     const [accountNumber, setAccountNumber] = useState("");
     const [accountName, setAccountName] = useState("");
+    const [accountError, setAccountError] = useState("");
     
     const [banks, setBanks] = useState<Bank[]>([]);
     const [loadingBanks, setLoadingBanks] = useState(false);
     const [verifying, setVerifying] = useState(false);
     const [loading, setLoading] = useState(false);
+    
+    const [searchBank, setSearchBank] = useState("");
+    const [showBankDropdown, setShowBankDropdown] = useState(false);
+    
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setShowBankDropdown(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     // 1. Fetch Banks on mount
     useEffect(() => {
@@ -50,12 +67,15 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
             const verifyAccount = async () => {
                 setVerifying(true);
                 setAccountName("");
+                setAccountError("");
                 
                 const res = await resolveBankAccount(accountNumber, bankCode);
                 if (res.success && res.accountName) {
                     setAccountName(res.accountName);
                 } else {
-                    toast.error(res.error || "Could not verify account.");
+                    const err = res.error || "Could not verify account.";
+                    toast.error(err);
+                    setAccountError(err);
                     setAccountName("");
                 }
                 setVerifying(false);
@@ -68,8 +88,11 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
             return () => clearTimeout(timeoutId);
         } else {
             setAccountName("");
+            setAccountError("");
         }
     }, [accountNumber, bankCode]);
+
+    const filteredBanks = banks.filter(b => b.name.toLowerCase().includes(searchBank.toLowerCase()));
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -150,24 +173,58 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
                         {/* Bank Selection */}
                         <div className="relative">
                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Bank Name</label>
-                            <div className="relative flex items-center">
-                                <Building className="absolute left-4 text-gray-400 w-5 h-5" />
-                                <select
-                                    value={bankCode}
-                                    onChange={(e) => setBankCode(e.target.value)}
-                                    className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-3 pl-12 pr-4 text-gray-900 dark:text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all appearance-none"
-                                    required
-                                    disabled={loadingBanks}
+                            <div className="relative" ref={dropdownRef}>
+                                <div 
+                                    className="relative flex items-center cursor-pointer"
+                                    onClick={() => setShowBankDropdown(!showBankDropdown)}
                                 >
-                                    <option value="" disabled>
-                                        {loadingBanks ? "Loading banks..." : "Select Bank"}
-                                    </option>
-                                    {banks.map(bank => (
-                                        <option key={bank.code} value={bank.code}>
-                                            {bank.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                    <Building className="absolute left-4 text-gray-400 w-5 h-5 z-10" />
+                                    <input
+                                        type="text"
+                                        readOnly
+                                        value={banks.find(b => b.code === bankCode)?.name || ""}
+                                        placeholder={loadingBanks ? "Loading banks..." : "Select Bank"}
+                                        className="w-full bg-gray-50 dark:bg-neutral-900/50 border border-gray-200 dark:border-white/10 rounded-2xl py-3 pl-12 pr-4 text-gray-900 dark:text-white font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all cursor-pointer"
+                                        required
+                                        disabled={loadingBanks}
+                                    />
+                                </div>
+                                
+                                {showBankDropdown && (
+                                    <div className="absolute z-20 w-full mt-2 bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden max-h-60 flex flex-col">
+                                        <div className="p-2 border-b border-gray-100 dark:border-white/5 sticky top-0 bg-white dark:bg-neutral-900 z-10">
+                                            <div className="relative flex items-center">
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Search bank..."
+                                                    value={searchBank}
+                                                    onChange={e => setSearchBank(e.target.value)}
+                                                    className="w-full bg-gray-50 dark:bg-neutral-800 rounded-xl py-2 px-3 text-sm focus:outline-none text-gray-900 dark:text-white font-bold"
+                                                    autoFocus
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="overflow-y-auto flex-1 p-1">
+                                            {filteredBanks.length === 0 ? (
+                                                <div className="p-3 text-center text-sm font-bold text-gray-500">No banks found</div>
+                                            ) : (
+                                                filteredBanks.map(bank => (
+                                                    <div 
+                                                        key={bank.code}
+                                                        onClick={() => {
+                                                            setBankCode(bank.code);
+                                                            setShowBankDropdown(false);
+                                                            setSearchBank("");
+                                                        }}
+                                                        className={`p-3 text-sm font-bold rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors ${bankCode === bank.code ? 'bg-[#BEF264]/10 text-black dark:text-[#BEF264]' : 'text-gray-900 dark:text-white'}`}
+                                                    >
+                                                        {bank.name}
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -201,10 +258,13 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
                                     value={accountName}
                                     readOnly={true}
                                     placeholder={verifying ? 'Verifying account details...' : 'Auto-filled upon verification'}
-                                    className={`w-full bg-gray-50 dark:bg-neutral-900/50 border ${accountName ? 'border-emerald-500/50 text-emerald-600 dark:text-emerald-400' : 'border-gray-200 dark:border-white/10 text-gray-900 dark:text-white'} rounded-2xl py-3 pl-12 pr-4 font-black text-sm focus:outline-none transition-all cursor-not-allowed`}
+                                    className={`w-full bg-gray-50 dark:bg-neutral-900/50 border ${accountError ? 'border-red-500/50 text-red-500' : accountName ? 'border-emerald-500/50 text-emerald-600 dark:text-emerald-400' : 'border-gray-200 dark:border-white/10 text-gray-900 dark:text-white'} rounded-2xl py-3 pl-12 pr-4 font-black text-sm focus:outline-none transition-all cursor-not-allowed`}
                                     required
                                 />
                             </div>
+                            {accountError && (
+                                <p className="text-red-500 text-xs font-bold mt-2">{accountError}</p>
+                            )}
                         </div>
                     </div>
 
