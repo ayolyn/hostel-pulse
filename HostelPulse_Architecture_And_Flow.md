@@ -1,17 +1,27 @@
-# HostelPulse: Complete Application Flow & Architecture
+﻿# HostelPulse: Complete Application Flow & Architecture
 
-This document breaks down how the entire HostelPulse platform works from start to finish, covering User Roles, the Escrow System, Wallet & Withdrawals, and AI integrations.
+This document breaks down how the entire HostelPulse platform works from start to finish, covering User Roles, Verification, the Escrow System, Wallet & Withdrawals, Reviews, Admin Functions, and AI integrations.
 
 ---
 
-## 1. User Roles & Portals
+## 1. User Roles & Account Creation
 
 HostelPulse has a unified login system, but routes users to different portals based on their role. Everyone shares a core `profiles` record (which holds their wallet balance), but they also get a specialized profile record (`student_accounts`, `agent_accounts`, etc.).
 
-*   **Students:** Can search for hostels, book inspections, pay into escrow, manage roommates, and buy/sell on the campus market.
-*   **Non-Students:** Similar to students but without LAUTECH-specific campus features.
-*   **Agents:** Can list properties, manage inspection requests, receive escrow payouts, and withdraw to their bank.
-*   **Landlords:** Similar to agents, but verified as the direct property owner.
+### Role Selection (Onboarding)
+1. A new user signs up via `/join` (Google or Email).
+2. They are redirected to the **Onboarding** page.
+3. They select their intended role:
+   *   **Students:** Can search for hostels, book inspections, pay into escrow, manage roommates, and buy/sell on the campus market.
+   *   **Non-Students:** Similar to students but without LAUTECH-specific campus features.
+   *   **Agents:** Can list properties, manage inspection requests, receive escrow payouts, and withdraw to their bank.
+   *   **Landlords:** Similar to agents, but verified as the direct property owner.
+4. The system creates a record in `user_roles` and their respective specialized table (e.g., `student_accounts`).
+
+### Verification (KYC) Flow
+To maintain a high-trust environment, users must be verified:
+*   **Students:** Upload a picture of their LAUTECH ID card. The Admin reviews this. If it's blurry or expired, the Admin rejects it via the HQ Portal, and the student receives a notification to re-upload. Once approved, they get a "Verified Student" badge.
+*   **Agents/Landlords:** Go through a business verification process. They receive a `moderation_status` which tracks if they are allowed to list properties.
 
 ---
 
@@ -58,7 +68,29 @@ Yes, **all portals have active wallets**. Because the `wallet_balance` lives on 
 
 ---
 
-## 4. The Campus Market
+## 4. The Review System
+
+HostelPulse uses a **Provider Review System** rather than just a Property Review System. 
+
+1. **Who can review?** Only logged-in Students or Non-Students. Providers cannot review themselves.
+2. **How it works:** When a student reviews a property, the rating (1 to 5 stars) and comment are attached to the **Agent/Landlord** who listed it via the `provider_reviews` table.
+3. **The impact:** The agent's average rating is aggregated and displayed publicly. It heavily influences their **"Weighted Score"**—a proprietary ranking algorithm that combines their successful deals closed with their average rating to determine how high they appear in search results.
+
+---
+
+## 5. The HQ Admin Portal
+
+HostelPulse has a hidden, highly secure Admin Dashboard (`/hq_admin_...`).
+
+The Admin is responsible for:
+1. **KYC Verification:** Reviewing uploaded Student IDs and Business Documents. Approving them or rejecting them with specific reasons (e.g., "Image too blurry").
+2. **Dispute Resolution:** Managing Support Tickets when an Escrow goes wrong. The Admin has the power to refund the wallet or force-release the escrow to the agent.
+3. **Moderation:** Banning bad actors, removing fake property listings, and monitoring platform health.
+4. **Financial Oversight:** Tracking the total Total Escrow Volume (money currently locked in the system).
+
+---
+
+## 6. The Campus Market
 
 Students can buy and sell items (fridges, mattresses, textbooks) to other students.
 *   The market uses the exact same Escrow engine as properties.
@@ -68,7 +100,7 @@ Students can buy and sell items (fridges, mattresses, textbooks) to other studen
 
 ---
 
-## 5. AI & SEO Strategy (AEO / LLMO)
+## 7. AI & SEO Strategy (AEO / LLMO)
 
 HostelPulse is heavily optimized for the future of search (ChatGPT, Perplexity, Claude).
 *   **`robots.txt`**: Explicitly welcomes AI bots to crawl the public listings while hiding private dashboards.
@@ -78,7 +110,7 @@ HostelPulse is heavily optimized for the future of search (ChatGPT, Perplexity, 
 
 ---
 
-## 6. Technical Stack Summary
+## 8. Technical Stack Summary
 *   **Frontend:** Next.js 14 (App Router), React, Tailwind CSS, Framer Motion.
 *   **Backend & DB:** Supabase (PostgreSQL), Edge Functions, Row Level Security (RLS).
 *   **Payments:** Flutterwave v3 (Collections & Payouts).
