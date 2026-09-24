@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -20,6 +20,8 @@ export interface FlutterwavePaymentConfig {
         property_id?: string;
         agent_id?: string;
         landlord_id?: string;
+        listing_id?: string;
+        seller_id?: string;
         payer_id: string;
         type: "inspection" | "rent" | "buy" | "market";
         legal_fee?: number;
@@ -93,6 +95,8 @@ export const useFlutterwave = () => {
                     property_id: config.meta.property_id ?? null,
                     agent_id: config.meta.agent_id ?? null,
                     landlord_id: config.meta.landlord_id ?? null,
+                    listing_id: config.meta.listing_id ?? null,
+                    seller_id: config.meta.seller_id ?? null,
                     payer_id: config.meta.payer_id,
                     type: config.meta.type,
                     legal_fee: config.meta.legal_fee ?? 0,
