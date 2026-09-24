@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { X, Wallet, Loader2 } from 'lucide-react';
+import { X, Wallet } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { initializeOpayPayment } from '@/app/actions/opay';
+import FlutterwaveButton from '@/components/ui/FlutterwaveButton';
 
 interface DepositModalProps {
     userId: string;
@@ -15,34 +15,18 @@ interface DepositModalProps {
 export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) {
     const supabase = createClient();
     const [amount, setAmount] = useState<string>('');
-    const [isProcessing, setIsProcessing] = useState(false);
+    const [userProfile, setUserProfile] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const { data } = await supabase.from('profiles').select('*').eq('id', userId).single();
+            setUserProfile(data);
+        };
+        fetchUser();
+    }, [supabase, userId]);
 
     const handleQuickSelect = (value: number) => {
         setAmount(value.toString());
-    };
-
-    const handleDeposit = async () => {
-        const depositAmount = Number(amount);
-        if (isNaN(depositAmount) || depositAmount <= 0) {
-            toast.error('Please enter a valid amount');
-            return;
-        }
-
-        setIsProcessing(true);
-        try {
-            const res = await initializeOpayPayment(depositAmount);
-            
-            if (res.error) {
-                toast.error(res.error);
-                setIsProcessing(false);
-            } else if (res.cashierUrl) {
-                window.location.href = res.cashierUrl;
-            }
-        } catch (error: any) {
-            console.error('Deposit Error:', error);
-            toast.error(error.message || 'Failed to initialize payment');
-            setIsProcessing(false);
-        }
     };
 
     return (
@@ -60,7 +44,7 @@ export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) 
                         <Wallet className="w-6 h-6 sm:w-8 sm:h-8 text-[#BEF264]" />
                     </div>
                     <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Fund Your Wallet</h2>
-                    <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-500 mt-2">Add funds to secure properties or items</p>
+                    <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-500 mt-2">Add funds using Flutterwave</p>
                 </div>
                 
                 <div className="p-6 sm:p-5 space-y-5 sm:space-y-6">
@@ -87,13 +71,34 @@ export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) 
                         ))}
                     </div>
 
-                    <button 
-                        onClick={handleDeposit}
-                        disabled={isProcessing || !amount || Number(amount) <= 0}
-                        className="w-full bg-[#BEF264] disabled:bg-gray-200 dark:disabled:bg-white/5 disabled:text-gray-400 text-black py-3 sm:py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center justify-center gap-3 hover:bg-[#a6d456] transition-all"
-                    >
-                        {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Proceed to Pay'}
-                    </button>
+                    {(!amount || Number(amount) <= 0) ? (
+                        <button 
+                            disabled
+                            className="w-full bg-gray-200 dark:bg-white/5 text-gray-400 py-3 sm:py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center justify-center transition-all"
+                        >
+                            Enter Amount to Proceed
+                        </button>
+                    ) : (
+                        <FlutterwaveButton
+                            amount={Number(amount)}
+                            customerEmail={userProfile?.contact_email || 'student@hostelpulse.com'}
+                            customerName={userProfile?.full_name || 'HostelPulse User'}
+                            customerPhone={userProfile?.phone || ''}
+                            hostelName="Wallet Deposit"
+                            meta={{ 
+                                type: 'deposit',
+                                payer_id: userId
+                            }}
+                            onSuccess={() => {
+                                toast.success('Deposit successful!');
+                                // Fake optimistic update, actual update is via Webhook
+                                onSuccess((Number(userProfile?.wallet_balance) || 0) + Number(amount));
+                                onClose();
+                            }}
+                            label="Proceed to Pay"
+                            className="w-full bg-[#BEF264] text-black py-3 sm:py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs hover:bg-[#a6d456] active:scale-[0.98] transition-all shadow-xl"
+                        />
+                    )}
                 </div>
             </div>
         </div>

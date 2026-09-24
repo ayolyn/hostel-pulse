@@ -23,7 +23,7 @@ export interface FlutterwavePaymentConfig {
         listing_id?: string;
         seller_id?: string;
         payer_id: string;
-        type: "inspection" | "rent" | "buy" | "market";
+        type: "inspection" | "rent" | "buy" | "market" | "deposit";
         legal_fee?: number;
         protection_fee?: number;
     };

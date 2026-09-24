@@ -1,4 +1,4 @@
-﻿export const runtime = "edge";
+export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createNotification } from "@/lib/notifications";
@@ -25,7 +25,64 @@ export async function POST(req: NextRequest) {
     }
 
     const { tx_ref, amount, id: flwId, status: chargeStatus, customer, meta } = data;
+    const isDeposit = meta?.type === "deposit";
 
+    if (isDeposit) {
+        // --- DEPOSIT FLOW ---
+        if (chargeStatus === "successful" || chargeStatus === "completed") {
+            // Check if already processed
+            const { data: existingDeposit } = await supabase
+                .from("deposits")
+                .select("id")
+                .eq("reference", tx_ref)
+                .maybeSingle();
+
+            if (existingDeposit) {
+                return NextResponse.json({ message: "Already processed deposit" }, { status: 200 });
+            }
+
+            // Insert deposit record
+            const { error: depositError } = await supabase
+                .from("deposits")
+                .insert({
+                    user_id: meta.payer_id,
+                    amount: amount,
+                    status: "Completed",
+                    reference: tx_ref
+                });
+
+            if (depositError) throw depositError;
+
+            // Increment wallet balance
+            const { data: profile } = await supabase
+                .from("profiles")
+                .select("wallet_balance")
+                .eq("id", meta.payer_id)
+                .single();
+
+            if (profile) {
+                const newBalance = Number(profile.wallet_balance || 0) + Number(amount);
+                await supabase
+                    .from("profiles")
+                    .update({ wallet_balance: newBalance })
+                    .eq("id", meta.payer_id);
+            }
+
+            // Notify
+            await createNotification(
+                meta.payer_id,
+                'Wallet Funded',
+                `Successfully deposited ₦${Number(amount).toLocaleString()} into your wallet.`,
+                '/dashboard/student?tab=wallet',
+                'deposit'
+            );
+
+            return NextResponse.json({ message: "Deposit processed" }, { status: 200 });
+        }
+        return NextResponse.json({ message: "Deposit not successful" }, { status: 200 });
+    }
+
+    // --- ESCROW FLOW (Rent, Buy, Market, etc.) ---
     const { data: existingTx } = await supabase
         .from("escrow_transactions")
         .select("id, status")
@@ -38,7 +95,6 @@ export async function POST(req: NextRequest) {
 
     if (chargeStatus === "successful" || chargeStatus === "completed") {
         try {
-            // Upsert escrow_transactions
             const isMarket = meta?.type === "market";
             
             const { data: transaction, error: txError } = await supabase
@@ -70,7 +126,6 @@ export async function POST(req: NextRequest) {
 
             // --- MARKET FLOW ---
             if (isMarket && meta?.listing_id) {
-                // Decrement quantity atomically
                 const { data: newQuantity } = await supabase
                     .rpc('decrement_market_quantity', { listing_id_param: meta.listing_id });
 
@@ -81,7 +136,6 @@ export async function POST(req: NextRequest) {
                         .eq('id', meta.listing_id);
                 }
 
-                // Notify Seller
                 if (meta.seller_id) {
                     await createNotification(
                         meta.seller_id,
@@ -92,137 +146,79 @@ export async function POST(req: NextRequest) {
                     );
                 }
                 
-                // Notify Buyer
                 if (meta.payer_id) {
                     await createNotification(
                         meta.payer_id,
                         'Checkout Successful',
                         'Funds securely locked in Escrow.',
                         '/dashboard/student?tab=wallet',
-                        'new_sale'
+                        'new_purchase'
                     );
                 }
-                return NextResponse.json({ message: "Market Webhook processed" }, { status: 200 });
+                return NextResponse.json({ message: "Market payment handled" }, { status: 200 });
             }
 
-            // --- RENT FLOW ---
-            const propertyTitle = (transaction as any)?.properties?.title ?? "your property";
-
+            // --- PROPERTY RENT/BUY FLOW ---
             if (meta?.booking_id) {
-                await supabase
+                const { error: bookingErr } = await supabase
                     .from("bookings")
-                    .update({
-                        status: "CONFIRMED",
-                        payment_status: "PAID",
-                        tx_ref,
-                        updated_at: new Date().toISOString(),
-                    })
+                    .update({ status: "Paid", escrow_id: transaction.id })
                     .eq("id", meta.booking_id);
-            }
 
-            const notifyId = meta?.agent_id ?? meta?.landlord_id ?? null;
-            let recipientName = "Agent";
-            let recipientEmail = "";
-            let recipientPhone = "";
+                if (bookingErr) throw bookingErr;
+                
+                // Notify user
+                await createNotification(
+                    meta.payer_id,
+                    'Payment Successful',
+                    `Your payment of ₦${Number(amount).toLocaleString()} is securely held in escrow.`,
+                    '/dashboard/student?tab=wallet',
+                    'payment_success'
+                );
 
-            if (notifyId) {
-                const { data: agent } = await supabase
-                    .from("agent_accounts")
-                    .select("full_name, phone, whatsapp_number, email")
-                    .eq("id", notifyId)
-                    .maybeSingle();
+                // Notify provider
+                const providerId = meta.agent_id || meta.landlord_id;
+                if (providerId) {
+                    await createNotification(
+                        providerId,
+                        'New Payment Received',
+                        `A payment of ₦${Number(amount).toLocaleString()} is locked in escrow for your property.`,
+                        '/dashboard/agent?tab=wallet',
+                        'new_escrow'
+                    );
 
-                if (agent) {
-                    recipientName = agent.full_name ?? "Agent";
-                    recipientPhone = agent.whatsapp_number ?? agent.phone ?? "";
-                    recipientEmail = agent.email ?? "";
-                } else {
-                    const { data: landlord } = await supabase
-                        .from("landlord_accounts")
-                        .select("full_name, phone, whatsapp_number, contact_email")
-                        .eq("id", notifyId)
-                        .maybeSingle();
-
-                    if (landlord) {
-                        recipientName = landlord.full_name ?? "Landlord";
-                        recipientPhone = landlord.whatsapp_number ?? landlord.phone ?? "";
-                        recipientEmail = landlord.contact_email ?? "";
+                    // Send email to provider
+                    const { data: { user: providerUser }, error: userError } = await supabase.auth.admin.getUserById(providerId);
+                    if (providerUser?.email) {
+                        const htmlBody = `
+                            <div style="background-color: #f6f9fc; font-family: sans-serif; padding: 40px 0;">
+                                <div style="background-color: #ffffff; padding: 40px; border-radius: 4px; margin: 0 auto; max-width: 600px;">
+                                    <h2 style="font-size: 24px; font-weight: bold; color: #16a34a; margin-top: 0;">New Escrow Payment 🔒</h2>
+                                    <p style="font-size: 16px; color: #555;">
+                                        Great news! A payment of <strong>₦${Number(amount).toLocaleString()}</strong> has been securely held in escrow for your property: <strong>${transaction.properties?.title || 'Property'}</strong>.
+                                    </p>
+                                    <p style="font-size: 16px; color: #555;">
+                                        Please reach out to the student to schedule an inspection or finalize the handover.
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                        await sendNotificationEmail(
+                            providerUser.email,
+                            'New Escrow Payment Received 🔒',
+                            htmlBody
+                        ).catch(err => console.error("Email failed:", err));
                     }
                 }
             }
 
-            if (recipientPhone) {
-                const msg =
-                    `🔔 Kpa Alert!\n\nHello ${recipientName}, a student just secured payment for "${propertyTitle}" via HostelPulse Escrow.\n\n` +
-                    `Amount Secured: ₦${Number(amount).toLocaleString()}\nStatus: Held in Escrow 🔒\n\n` +
-                    `Check your INSPECTIONS tab to coordinate. Funds release when they scan your QR code.\n\n— HostelPulse HQ`;
+            return NextResponse.json({ message: "Processed successfully" }, { status: 200 });
 
-                await supabase.from("messages_queue").insert({
-                    phone_number: recipientPhone.replace(/\D/g, ""),
-                    message_body: msg,
-                    status: "pending",
-                });
-            }
-
-            if (notifyId) {
-                await createNotification(
-                    notifyId,
-                    "New Booking & Escrow Held",
-                    `A student secured ₦${Number(amount).toLocaleString()} for "${propertyTitle}". Check Inspections.`,
-                    "/dashboard/agent",
-                    "new_inspection"
-                );
-            }
-
-            if (customer?.email) {
-                const studentHtml = `
-                    <h2>Booking Confirmed — Escrow Secured ✅</h2>
-                    <p>Hello ${customer.name ?? "there"},</p>
-                    <p>Your payment of <strong>₦${Number(amount).toLocaleString()}</strong> for <strong>${propertyTitle}</strong> has been confirmed and is held securely in HostelPulse Escrow.</p>
-                    <p><strong>Your money is 100% safe.</strong> It will only be released to the agent after you physically inspect the room and scan their QR code.</p>
-                    <p>The agent has been notified and will reach out shortly.</p>
-                    <p style="font-size:12px;color:#999;">Transaction Ref: ${tx_ref}</p>
-                `;
-                await sendNotificationEmail(
-                    customer.email,
-                    `Booking Confirmed: ${propertyTitle}`,
-                    studentHtml
-                ).catch(() => null);
-            }
-
-            if (recipientEmail) {
-                const agentHtml = `
-                    <h2>New Escrow Booking for "${propertyTitle}"</h2>
-                    <p>Hello ${recipientName},</p>
-                    <p>A student (${customer?.name ?? "unknown"}) has just secured an inspection payment of <strong>₦${Number(amount).toLocaleString()}</strong> for <strong>${propertyTitle}</strong> via HostelPulse Escrow.</p>
-                    <p>Please log in to your dashboard and navigate to your Inspections tab to coordinate with the student.</p>
-                `;
-                await sendNotificationEmail(
-                    recipientEmail,
-                    `New Booking: ${propertyTitle}`,
-                    agentHtml
-                ).catch(() => null);
-            }
-
-            return NextResponse.json({ message: "Webhook processed" }, { status: 200 });
-        } catch (err: unknown) {
-            const msg = err instanceof Error ? err.message : "Unknown error";
-            console.error("[FLW Webhook] Error:", msg);
-            return NextResponse.json({ error: msg }, { status: 200 });
+        } catch (error: any) {
+            console.error("Webhook Error:", error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
         }
     }
 
-    if (chargeStatus === "failed") {
-        if (meta?.booking_id) {
-            try {
-                await supabase
-                    .from("bookings")
-                    .update({ status: "FAILED", payment_status: "FAILED" })
-                    .eq("id", meta.booking_id);
-            } catch { /* non-critical */ }
-        }
-        return NextResponse.json({ message: "Payment failure recorded" }, { status: 200 });
-    }
-
-    return NextResponse.json({ message: "Event ignored" }, { status: 200 });
+    return NextResponse.json({ message: "Unhandled status" }, { status: 200 });
 }
