@@ -1,71 +1,46 @@
-export const runtime = "edge";
+﻿export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createNotification } from "@/lib/notifications";
 import { sendNotificationEmail } from "@/lib/email/resend";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Service-role Supabase client (bypasses RLS for webhook processing)
-// ─────────────────────────────────────────────────────────────────────────────
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/webhooks/flutterwave
-// Flutterwave sends a POST with the "verif-hash" header.
-// Security model: simple string comparison against FLW_SECRET_HASH env var.
-// This is the correct Flutterwave v3 approach — NOT HMAC.
-// ─────────────────────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
-    // ── 1. Verify Signature ─────────────────────────────────────────────────
     const signature = req.headers.get("verif-hash");
     const secretHash = process.env.FLW_SECRET_HASH;
 
     if (!secretHash || signature !== secretHash) {
-        console.warn("[FLW Webhook] Rejected: invalid verif-hash");
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ── 2. Parse payload ────────────────────────────────────────────────────
     const payload = await req.json();
     const { event, data } = payload;
 
-    // ── 3. Immediately acknowledge (prevents 30-min Flutterwave retries) ───
-    // We do all DB work async after returning 200.
-    // Note: Edge runtime doesn't support waitUntil, so we use try/catch and
-    // return 200 before the heavy lifting where possible.
     if (event !== "charge.completed") {
         return NextResponse.json({ message: "Event ignored" }, { status: 200 });
     }
 
-    const {
-        tx_ref,
-        amount,
-        id: flwId,
-        status: chargeStatus,
-        customer,
-        meta,
-    } = data;
+    const { tx_ref, amount, id: flwId, status: chargeStatus, customer, meta } = data;
 
-    // ── 4. Idempotency check — has this tx_ref been processed already? ──────
     const { data: existingTx } = await supabase
         .from("escrow_transactions")
         .select("id, status")
         .eq("tx_ref", tx_ref)
         .maybeSingle();
 
-    // If already processed with a terminal status, skip
     if (existingTx && existingTx.status !== "Pending") {
-        console.log(`[FLW Webhook] tx_ref ${tx_ref} already processed. Skipping.`);
         return NextResponse.json({ message: "Already processed" }, { status: 200 });
     }
 
-    // ── 5. Route by payment status ──────────────────────────────────────────
     if (chargeStatus === "successful" || chargeStatus === "completed") {
         try {
-            // 5a. Upsert escrow_transactions (idempotent on tx_ref)
+            // Upsert escrow_transactions
+            const isMarket = meta?.type === "market";
+            
             const { data: transaction, error: txError } = await supabase
                 .from("escrow_transactions")
                 .upsert(
@@ -80,7 +55,10 @@ export async function POST(req: NextRequest) {
                         landlord_id: meta?.landlord_id ?? null,
                         legal_fee: meta?.legal_fee ?? 0,
                         service_fee: meta?.protection_fee ?? 0,
-                        payer_type: meta?.type === "market" ? "buyer" : "student",
+                        payer_type: isMarket ? "buyer" : "student",
+                        payee_id: meta?.seller_id ?? null,
+                        payee_type: isMarket ? "student" : null,
+                        listing_id: meta?.listing_id ?? null,
                         created_at: new Date().toISOString(),
                     },
                     { onConflict: "tx_ref" }
@@ -90,10 +68,46 @@ export async function POST(req: NextRequest) {
 
             if (txError) throw txError;
 
-            const propertyTitle =
-                (transaction as any)?.properties?.title ?? "your property";
+            // --- MARKET FLOW ---
+            if (isMarket && meta?.listing_id) {
+                // Decrement quantity atomically
+                const { data: newQuantity } = await supabase
+                    .rpc('decrement_market_quantity', { listing_id_param: meta.listing_id });
 
-            // 5b. Update booking status if booking_id was passed in meta
+                if (newQuantity !== null && newQuantity <= 0) {
+                    await supabase
+                        .from('market_listings')
+                        .update({ status: 'sold' })
+                        .eq('id', meta.listing_id);
+                }
+
+                // Notify Seller
+                if (meta.seller_id) {
+                    await createNotification(
+                        meta.seller_id,
+                        'New Sale!',
+                        'Your item was purchased via Card and funds are locked in Escrow.',
+                        '/dashboard/student?tab=wallet',
+                        'new_sale'
+                    );
+                }
+                
+                // Notify Buyer
+                if (meta.payer_id) {
+                    await createNotification(
+                        meta.payer_id,
+                        'Checkout Successful',
+                        'Funds securely locked in Escrow.',
+                        '/dashboard/student?tab=wallet',
+                        'new_sale'
+                    );
+                }
+                return NextResponse.json({ message: "Market Webhook processed" }, { status: 200 });
+            }
+
+            // --- RENT FLOW ---
+            const propertyTitle = (transaction as any)?.properties?.title ?? "your property";
+
             if (meta?.booking_id) {
                 await supabase
                     .from("bookings")
@@ -106,7 +120,6 @@ export async function POST(req: NextRequest) {
                     .eq("id", meta.booking_id);
             }
 
-            // 5c. Resolve agent/landlord for notifications
             const notifyId = meta?.agent_id ?? meta?.landlord_id ?? null;
             let recipientName = "Agent";
             let recipientEmail = "";
@@ -138,7 +151,6 @@ export async function POST(req: NextRequest) {
                 }
             }
 
-            // 5d. Queue WhatsApp/SMS notification for provider
             if (recipientPhone) {
                 const msg =
                     `🔔 Kpa Alert!\n\nHello ${recipientName}, a student just secured payment for "${propertyTitle}" via HostelPulse Escrow.\n\n` +
@@ -152,7 +164,6 @@ export async function POST(req: NextRequest) {
                 });
             }
 
-            // 5e. In-app notification for provider
             if (notifyId) {
                 await createNotification(
                     notifyId,
@@ -163,7 +174,6 @@ export async function POST(req: NextRequest) {
                 );
             }
 
-            // 5f. Email to student
             if (customer?.email) {
                 const studentHtml = `
                     <h2>Booking Confirmed — Escrow Secured ✅</h2>
@@ -177,10 +187,9 @@ export async function POST(req: NextRequest) {
                     customer.email,
                     `Booking Confirmed: ${propertyTitle}`,
                     studentHtml
-                ).catch(() => null); // non-critical
+                ).catch(() => null);
             }
 
-            // 5g. Email to agent
             if (recipientEmail) {
                 const agentHtml = `
                     <h2>New Escrow Booking for "${propertyTitle}"</h2>
@@ -199,12 +208,10 @@ export async function POST(req: NextRequest) {
         } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : "Unknown error";
             console.error("[FLW Webhook] Error:", msg);
-            // Still return 200 — Flutterwave should not keep retrying a server error
             return NextResponse.json({ error: msg }, { status: 200 });
         }
     }
 
-    // ── 6. Handle failed payments ───────────────────────────────────────────
     if (chargeStatus === "failed") {
         if (meta?.booking_id) {
             try {

@@ -104,7 +104,7 @@ function AgentDashboardContent() {
             const syncedAccount = {
                 ...acc,
                 wallet_balance: profile?.wallet_balance || 0,
-                deals_closed: (acc.deals_closed || 0) + (escrowDeals || 0),
+                deals_closed: acc.deals_closed || 0,
                 completed_tours: toursCount || 0,
                 // Merge dob/contact_email from profiles (they are stored there, not in agent_accounts)
                 dob: profile?.dob || acc?.dob || '',

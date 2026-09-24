@@ -7,6 +7,8 @@ import { useAuth } from '@/components/providers/AuthProvider';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 
+import toast from 'react-hot-toast';
+
 type Notification = {
     id: string;
     title: string;
@@ -48,8 +50,6 @@ export function NotificationBell() {
                 .order('created_at', { ascending: false })
                 .limit(50);
 
-            console.log('--- BELL FETCH RESULT ---', { data, error, currentUserId: user.id });
-
             if (!error && data) {
                 setNotifications(data as Notification[]);
             }
@@ -71,6 +71,16 @@ export function NotificationBell() {
                 (payload: any) => {
                     const newNotification = payload.new as Notification;
                     setNotifications((prev) => prev.some(n => n.id === newNotification.id) ? prev : [newNotification, ...prev]);
+                    
+                    // Show a toast when a new notification arrives in real-time
+                    toast(newNotification.title, {
+                        icon: '🔔',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    });
                 }
             )
             .subscribe();
