@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -31,7 +31,7 @@ export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) 
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="w-full max-w-md bg-white dark:bg-neutral-950 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-white/10 shadow-2xl relative overflow-hidden">
+            <div className="w-full max-w-md bg-white dark:bg-neutral-950 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-white/10 shadow-2xl relative overflow-y-auto max-h-[85vh]">
                 <button 
                     onClick={onClose}
                     className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 bg-gray-100 dark:bg-white/5 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
