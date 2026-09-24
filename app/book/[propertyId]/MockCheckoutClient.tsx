@@ -1,10 +1,12 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import {  ShieldCheck, Lock, Calendar, CreditCard, Wallet , Smartphone } from 'lucide-react';
+import { ShieldCheck, Lock, Calendar, Wallet, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import FlutterwaveButton from "@/components/ui/FlutterwaveButton";
+import Image from "next/image";
 
 interface Props {
     propertyId: string;
@@ -20,7 +22,7 @@ interface Props {
     studentId: string;
 }
 
-export default function MockCheckoutClient({
+export default function CheckoutClient({
     propertyId,
     propertyTitle,
     propertyImage,
@@ -31,135 +33,183 @@ export default function MockCheckoutClient({
     legalFee,
     protectionFee,
     totalAmount,
-    studentId
+    studentId,
 }: Props) {
-    const [isProcessing, setIsProcessing] = useState(false);
+    const [isProcessingWallet, setIsProcessingWallet] = useState(false);
     const [checkInDate, setCheckInDate] = useState("");
     const [walletBalance, setWalletBalance] = useState<number | null>(null);
+    const [userEmail, setUserEmail] = useState("");
+    const [userName, setUserName] = useState("");
+    const [bookingId, setBookingId] = useState<string | undefined>();
     const router = useRouter();
     const supabase = createClient();
 
+    // ── Fetch wallet balance + user profile ────────────────────────────────
     useEffect(() => {
-        const fetchWallet = async () => {
-            const { data } = await supabase.from('profiles').select('wallet_balance').eq('id', studentId).single();
-            if (data) setWalletBalance(Number(data.wallet_balance || 0));
-        };
-        fetchWallet();
-    }, [studentId, supabase]);
-
-    const executePayment = async (method: 'WALLET' | 'CARD' | 'OPAY') => {
-        if (!checkInDate) {
-            toast.error("Please select a move-in date");
-            return;
-        }
-
-        if (method === 'WALLET') {
-            if (walletBalance === null || walletBalance < totalAmount) {
-                toast.error("Insufficient wallet balance.");
-                return;
-            }
-        }
-
-        setIsProcessing(true);
-        toast.loading(`Processing payment via ${method === 'WALLET' ? 'Wallet' : method === 'OPAY' ? 'OPay' : 'Paystack'}...`, { id: "payment" });
-
-        try {
-            if (method === 'WALLET') {
-                const { error: walletError } = await supabase.rpc('increment_wallet_balance', {
-                    payee_id_param: studentId,
-                    amount_param: -totalAmount
-                });
-                if (walletError) throw walletError;
-            }
-
-            // 1. Create Escrow Transaction
-            const { data: escrowData, error: escrowError } = await supabase
-                .from("escrow_transactions")
-                .insert({
-                    property_id: propertyId,
-                    amount: totalAmount,
-                    payer_id: studentId,
-                    buyer_id: studentId,
-                    payee_id: providerId,
-                    seller_id: providerId,
-                    agent_id: providerId,
-                    status: "Locked",
-                    type: "RENT"
-                })
-                .select("id")
+        const fetchProfile = async () => {
+            const { data } = await supabase
+                .from("profiles")
+                .select("wallet_balance, full_name, contact_email")
+                .eq("id", studentId)
                 .single();
+            if (data) {
+                setWalletBalance(Number(data.wallet_balance ?? 0));
+                setUserName(data.full_name ?? "");
+                // contact_email may be null; fall back to auth email
+                if (data.contact_email) setUserEmail(data.contact_email);
+            }
+            // Also get the auth email as fallback
+            const { data: authData } = await supabase.auth.getUser();
+            if (authData?.user?.email && !userEmail) {
+                setUserEmail(authData.user.email);
+            }
+        };
+        fetchProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [studentId]);
 
-            if (escrowError) throw escrowError;
-
-            // 2. Create Booking
-            const { error: bookingError } = await supabase
+    // ── Pre-create a booking record (draft) so we have an ID for the meta ──
+    // This makes the escrow webhook able to update the booking atomically.
+    useEffect(() => {
+        const preDraftBooking = async () => {
+            const { data, error } = await supabase
                 .from("bookings")
                 .insert({
                     property_id: propertyId,
                     student_id: studentId,
                     provider_id: providerId,
-                    status: "Confirmed",
-                    check_in_date: checkInDate,
-                    duration_months: 12,
-                    total_price: totalAmount,
-                    escrow_id: escrowData.id
+                    amount: totalAmount,
+                    status: "PENDING",
+                    payment_status: "PENDING",
+                    check_in_date: null,
+                    created_at: new Date().toISOString(),
+                })
+                .select("id")
+                .single();
+            if (!error && data) setBookingId(data.id);
+        };
+        preDraftBooking();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // ── Wallet payment path ────────────────────────────────────────────────
+    const handleWalletPayment = async () => {
+        if (!checkInDate) {
+            toast.error("Please select a move-in date");
+            return;
+        }
+        if (walletBalance === null || walletBalance < totalAmount) {
+            toast.error("Insufficient wallet balance. Top up or pay by card.");
+            return;
+        }
+
+        setIsProcessingWallet(true);
+        const toastId = toast.loading("Processing wallet payment…");
+        try {
+            // Deduct from wallet
+            const { error: walletError } = await supabase.rpc(
+                "increment_wallet_balance",
+                { payee_id_param: studentId, amount_param: -totalAmount }
+            );
+            if (walletError) throw walletError;
+
+            // Create escrow record
+            const tx_ref = `HSL-WALLET-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}`;
+            const { error: escrowError } = await supabase
+                .from("escrow_transactions")
+                .insert({
+                    property_id: propertyId,
+                    payer_id: studentId,
+                    payer_type: "student",
+                    agent_id: providerId,
+                    amount: totalAmount,
+                    legal_fee: legalFee,
+                    service_fee: protectionFee,
+                    status: "Held",
+                    tx_ref,
+                    created_at: new Date().toISOString(),
                 });
+            if (escrowError) throw escrowError;
 
-            if (bookingError) throw bookingError;
+            // Update booking
+            if (bookingId) {
+                await supabase
+                    .from("bookings")
+                    .update({
+                        status: "CONFIRMED",
+                        payment_status: "PAID",
+                        tx_ref,
+                        check_in_date: checkInDate,
+                    })
+                    .eq("id", bookingId);
+            }
 
-            // 3. Send automated message
-            await supabase.from("messages").insert({
-                sender_id: studentId,
-                receiver_id: providerId,
-                property_id: propertyId,
-                content: `SYSTEM: Booking Confirmed! Escrow has locked ₦${totalAmount.toLocaleString()}. Expected move-in date: ${checkInDate}.`,
-                is_read: false
-            });
-
-            // 4. Send Notification to Provider
+            // Notify provider
             await supabase.from("notifications").insert({
                 user_id: providerId,
-                title: "New Booking Request!",
-                message: `Escrow has locked ₦${totalAmount.toLocaleString()} for a new booking.`,
-                body: `Escrow has locked ₦${totalAmount.toLocaleString()} for a new booking.`,
-                type: "success",
-                link: "/dashboard/agent?tab=wallet",
-                is_read: false
+                title: "New Booking / Escrow Held",
+                message: `A student has secured payment for "${propertyTitle}" in Escrow. Check your Inspections tab.`,
+                link: "/dashboard/agent",
+                type: "new_inspection",
+                is_read: false,
             });
 
-            // 5. Send Notification to Student (Buyer)
-            await supabase.from("notifications").insert({
-                user_id: studentId,
-                title: "Checkout Successful!",
-                message: `Your payment of ₦${totalAmount.toLocaleString()} has been locked in Escrow.`,
-                body: `Your payment of ₦${totalAmount.toLocaleString()} has been locked in Escrow.`,
-                type: "success",
-                link: "/dashboard/student?tab=wallet",
-                is_read: false
+            toast.success("Payment successful! Funds are locked in escrow 🔒", {
+                id: toastId,
+                duration: 4000,
             });
-
-            toast.success(`Payment Successful via ${method === 'WALLET' ? 'Wallet' : 'Card'}! Funds Locked.`, { id: "payment" });
-            
             setTimeout(() => {
-                router.push("/messages"); // Redirect to messages conversation
-            }, 1500);
-
-        } catch (error: any) {
-            console.error("Payment Flow Error:", error);
-            toast.error("Payment failed: " + error.message, { id: "payment" });
-            setIsProcessing(false);
+                router.push(
+                    `/booking/success?tx_ref=${tx_ref}&amount=${totalAmount}&property=${encodeURIComponent(propertyTitle)}`
+                );
+            }, 1200);
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : "Payment failed";
+            toast.error(msg, { id: toastId });
+            setIsProcessingWallet(false);
         }
+    };
+
+    // ── Flutterwave success callback ───────────────────────────────────────
+    const handleFlutterwaveSuccess = async (tx_ref: string) => {
+        // Update booking with check-in date if selected
+        if (bookingId && checkInDate) {
+            await supabase
+                .from("bookings")
+                .update({ check_in_date: checkInDate, tx_ref })
+                .eq("id", bookingId)
+                .catch(() => null);
+        }
+        // Redirect to success page — the webhook will confirm in the background
+        setTimeout(() => {
+            router.push(
+                `/booking/success?tx_ref=${tx_ref}&amount=${totalAmount}&property=${encodeURIComponent(propertyTitle)}`
+            );
+        }, 1500);
     };
 
     return (
         <div className="bg-white rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden">
+            {/* ── Property Header ─────────────────────────────────────────── */}
             <div className="p-5 border-b border-gray-100 bg-gray-50 flex flex-col md:flex-row items-center gap-6">
-                <img src={propertyImage} alt={propertyTitle} className="w-24 h-24 object-cover rounded-2xl shadow-sm" />
+                <div className="w-24 h-24 rounded-2xl overflow-hidden shadow-sm shrink-0 bg-gray-200 relative">
+                    <Image
+                        src={propertyImage}
+                        alt={propertyTitle}
+                        fill
+                        className="object-cover"
+                        sizes="96px"
+                    />
+                </div>
                 <div className="flex-1 text-center md:text-left">
-                    <p className="text-[#0D9488] font-black uppercase tracking-widest text-xs mb-1">Booking Request</p>
-                    <h2 className="text-xl font-black text-gray-900 tracking-tight">{propertyTitle}</h2>
+                    <p className="text-[#0D9488] font-black uppercase tracking-widest text-xs mb-1">
+                        Secure Booking
+                    </p>
+                    <h2 className="text-xl font-black text-gray-900 tracking-tight">
+                        {propertyTitle}
+                    </h2>
                     <p className="text-gray-500 font-medium text-sm mt-1 flex items-center justify-center md:justify-start gap-2">
-                        Hosted by {providerName} 
+                        Hosted by {providerName}
                         <ShieldCheck className="w-4 h-4 text-emerald-500" />
                     </p>
                 </div>
@@ -167,18 +217,20 @@ export default function MockCheckoutClient({
 
             <div className="p-5">
                 <div className="grid md:grid-cols-2 gap-6">
-                    {/* Left Column: Form & details */}
-                    <div className="space-y-8">
+                    {/* ── Left: Move-in date + escrow info ──────────────── */}
+                    <div className="space-y-6">
                         <div>
                             <label className="block text-xs font-black uppercase tracking-widest text-gray-900 mb-2 flex items-center gap-2">
                                 <Calendar className="w-4 h-4" /> Move-In Date
                             </label>
-                            <input 
+                            <input
+                                id="checkin-date"
+                                name="checkin_date"
                                 type="date"
                                 value={checkInDate}
                                 onChange={(e) => setCheckInDate(e.target.value)}
                                 min={new Date().toISOString().split("T")[0]}
-                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-black font-medium"
+                                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-black font-medium dark:bg-neutral-900 dark:border-white/10 dark:text-white"
                             />
                         </div>
 
@@ -187,45 +239,73 @@ export default function MockCheckoutClient({
                                 <Lock className="w-4 h-4" /> HostelPulse Escrow
                             </h4>
                             <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Your money is held safely by HostelPulse. It is only released to the landlord <strong>after</strong> you have moved in and verified the property. 
+                                Your money is held safely by HostelPulse. It is only released
+                                to the landlord{" "}
+                                <strong>after</strong> you inspect and confirm the property.
                             </p>
                         </div>
                     </div>
 
-                    {/* Right Column: Pricing Summary */}
-                    <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-                        <h3 className="font-black uppercase tracking-widest text-gray-900 mb-6 text-sm">Price Breakdown</h3>
-                        
-                        <div className="space-y-4">
+                    {/* ── Right: Price breakdown + payment buttons ───────── */}
+                    <div className="bg-gray-50 dark:bg-neutral-900 p-6 rounded-3xl border border-gray-100 dark:border-white/10">
+                        <h3 className="font-black uppercase tracking-widest text-gray-900 dark:text-white mb-6 text-sm">
+                            Price Breakdown
+                        </h3>
+
+                        <div className="space-y-3 mb-6">
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 font-medium">1 Year Rent</span>
-                                <span className="font-bold text-gray-900">₦{basePrice.toLocaleString()}</span>
+                                <span className="text-gray-600 dark:text-gray-400 font-medium">1 Year Rent</span>
+                                <span className="font-bold text-gray-900 dark:text-white">
+                                    ₦{basePrice.toLocaleString()}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 font-medium">Legal / Agency (5%)</span>
-                                <span className="font-bold text-gray-900">₦{legalFee.toLocaleString()}</span>
+                                <span className="text-gray-600 dark:text-gray-400 font-medium">
+                                    Legal / Agency (5%)
+                                </span>
+                                <span className="font-bold text-gray-900 dark:text-white">
+                                    ₦{legalFee.toLocaleString()}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 font-medium">Buyer Protection</span>
-                                <span className="font-bold text-gray-900">₦{protectionFee.toLocaleString()}</span>
+                                <span className="text-gray-600 dark:text-gray-400 font-medium">
+                                    Buyer Protection
+                                </span>
+                                <span className="font-bold text-gray-900 dark:text-white">
+                                    ₦{protectionFee.toLocaleString()}
+                                </span>
                             </div>
-                            
-                            <div className="h-px w-full bg-gray-200 my-4" />
-                            
+                            <div className="h-px w-full bg-gray-200 dark:bg-white/10 my-2" />
                             <div className="flex justify-between items-center">
-                                <span className="font-black uppercase tracking-widest text-gray-900 text-sm">Total Due</span>
-                                <span className="font-black text-xl text-gray-900">₦{totalAmount.toLocaleString()}</span>
+                                <span className="font-black uppercase tracking-widest text-gray-900 dark:text-white text-sm">
+                                    Total Due
+                                </span>
+                                <span className="font-black text-xl text-gray-900 dark:text-white">
+                                    ₦{totalAmount.toLocaleString()}
+                                </span>
                             </div>
                         </div>
 
-                        <div className="mt-8 space-y-3">
-                            <button 
-                                onClick={() => executePayment('WALLET')}
-                                disabled={isProcessing || walletBalance === null || walletBalance < totalAmount}
+                        {/* Payment Buttons */}
+                        <div className="space-y-3">
+                            {/* Wallet */}
+                            <button
+                                type="button"
+                                onClick={handleWalletPayment}
+                                disabled={
+                                    isProcessingWallet ||
+                                    walletBalance === null ||
+                                    walletBalance < totalAmount
+                                }
                                 className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 flex items-center justify-between px-6 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <span className="flex items-center gap-2">
-                                    <Wallet className="w-5 h-5" /> Pay from Wallet
+                                    {isProcessingWallet ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <Wallet className="w-4 h-4" />
+                                    )}
+                                    Pay from Wallet
                                 </span>
                                 {walletBalance !== null && (
                                     <span className="text-[10px] bg-black/10 px-2 py-1 rounded-lg">
@@ -234,29 +314,24 @@ export default function MockCheckoutClient({
                                 )}
                             </button>
 
-                            <button 
-                                onClick={() => executePayment('CARD')}
-                                disabled={isProcessing}
-                                className="w-full bg-black text-[#BEF264] font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-neutral-800 transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-200 disabled:opacity-50"
-                            >
-                                {isProcessing ? "Processing..." : (
-                                    <>
-                                        <CreditCard className="w-5 h-5" /> Pay with Paystack
-                                    </>
-                                )}
-                            </button>
-
-                            <button 
-                                onClick={() => executePayment('OPAY')}
-                                disabled={isProcessing}
-                                className="w-full bg-[#1dbf73] text-white font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#18a061] transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-200 disabled:opacity-50"
-                            >
-                                {isProcessing ? "Processing..." : (
-                                    <>
-                                        <Smartphone className="w-5 h-5" /> Pay with OPay
-                                    </>
-                                )}
-                            </button>
+                            {/* Flutterwave Card / USSD / Bank Transfer */}
+                            <FlutterwaveButton
+                                amount={totalAmount}
+                                customerEmail={userEmail}
+                                customerName={userName}
+                                hostelName={propertyTitle}
+                                bookingId={bookingId}
+                                meta={{
+                                    payer_id: studentId,
+                                    property_id: propertyId,
+                                    agent_id: providerId,
+                                    type: "rent",
+                                    legal_fee: legalFee,
+                                    protection_fee: protectionFee,
+                                }}
+                                label="Pay with Card / USSD / Bank"
+                                onSuccess={handleFlutterwaveSuccess}
+                            />
                         </div>
                     </div>
                 </div>
