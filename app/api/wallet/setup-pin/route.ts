@@ -1,6 +1,7 @@
+export const runtime = 'edge';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { randomBytes, scryptSync } from 'crypto';
+import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 
 const supabase = createClient(
@@ -32,9 +33,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Account is currently locked' }, { status: 403 });
     }
 
-    const salt = randomBytes(16).toString('hex');
-    const derivedKey = scryptSync(pin, salt, 64).toString('hex');
-    const pinHash = `${salt}:${derivedKey}`;
+    const pinHash = bcrypt.hashSync(pin, 10);
 
     const { error: upsertError } = await supabase
       .from('user_security')
@@ -58,3 +57,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+

@@ -1,6 +1,7 @@
+export const runtime = 'edge';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { scryptSync, timingSafeEqual } from 'crypto';
+import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -43,10 +44,7 @@ export async function POST(req: Request) {
 
     let isPinValid = false;
     try {
-      const [salt, key] = security.pin_hash.split(':');
-      const keyBuffer = Buffer.from(key, 'hex');
-      const derivedKey = scryptSync(pin, salt, 64);
-      isPinValid = timingSafeEqual(keyBuffer, derivedKey);
+      isPinValid = bcrypt.compareSync(pin, security.pin_hash);
     } catch (err) {
       isPinValid = false;
     }
@@ -165,3 +163,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
