@@ -13,6 +13,7 @@ import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, Cartesia
 import { AdminChatWindow } from './AdminChatWindow';
 import { PropertiesTab } from './PropertiesTab';
 import { ServicesManager } from '@/components/admin/ServicesManager';
+import { PayoutRequestsTab } from '@/components/admin/PayoutRequestsTab';
 import {
     CheckCircle,
     AlertTriangle,
@@ -223,6 +224,7 @@ const AdminHqPortal = () => {
 
                  <div className="p-5 max-w-7xl mx-auto w-full">
 
+                {activeTab === 'payouts' && <PayoutRequestsTab />}
                 {activeTab === 'properties' && <PropertiesTab />}
                 {activeTab === 'verifications' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">

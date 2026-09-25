@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { sendNotificationEmail } from '@/lib/email/resend';
 import { getEmailTemplate } from '@/app/actions/emailTemplates';
@@ -34,6 +34,8 @@ async function verifyAdmin() {
     if (roleData?.role !== 'super_admin') {
         throw new Error("Unauthorized: Insufficient privileges");
     }
+
+    return user;
 }
 
 
@@ -634,111 +636,240 @@ export async function broadcastSystemAlert(message: string, type: 'info' | 'warn
 }
 
 // ============================================
-// Payout Queue Actions
+// Payout Queue Actions (Option 2: Admin-Approved Payouts)
 // ============================================
-export async function getPendingWithdrawals() {
+export async function getPayoutRequests(filterStatus?: string) {
     await verifyAdmin();
     const db = getAdminClient();
-    const { data: withdrawals, error } = await db
-        .from('withdrawals')
+
+    let query = db
+        .from('payout_requests')
         .select('*')
-        .eq('status', 'pending')
         .order('created_at', { ascending: false });
-        
+
+    if (filterStatus && filterStatus !== 'ALL') {
+        query = query.eq('status', filterStatus);
+    }
+
+    const { data: requests, error } = await query;
     if (error) {
-        console.error('getPendingWithdrawals error:', error);
+        console.error('getPayoutRequests error:', error);
         return [];
     }
-    
-    if (!withdrawals || withdrawals.length === 0) return [];
 
-    const userIds = Array.from(new Set(withdrawals.map(w => w.user_id)));
+    if (!requests || requests.length === 0) return [];
 
+    const userIds = Array.from(new Set(requests.map(r => r.user_id)));
     const { data: profiles } = await db
         .from('profiles')
-        .select('id, full_name, email')
+        .select('id, full_name, first_name, last_name, email, contact_email, phone, phone_number, role, avatar_url')
         .in('id', userIds);
 
-    const mergedData = withdrawals.map(w => {
-        const profile = profiles?.find(p => p.id === w.user_id);
+    const mergedData = requests.map(r => {
+        const profile = profiles?.find(p => p.id === r.user_id);
         return {
-            ...w,
-            profiles: profile || null
+            ...r,
+            profile: profile || null
         };
     });
 
     return mergedData;
 }
 
-export async function approveWithdrawal(id: string) {
-    await verifyAdmin();
-    const db = getAdminClient();
-    const { error } = await db.from('withdrawals').update({ status: 'completed' }).eq('id', id);
-    if (error) return { error: error.message };
-    
-    // Notify Seller
-    const { data: withdrawal } = await db.from('withdrawals').select('*, profiles(contact_email)').eq('id', id).single();
-    if (withdrawal) {
-        await createNotification(
-            withdrawal.user_id,
-            'Withdrawal Successful',
-            'Your withdrawal request has been approved and processed.',
-            '/dashboard/agent?tab=wallet',
-            'withdrawal'
-        );
+export async function getPendingWithdrawals() {
+    return getPayoutRequests('PENDING');
+}
 
-        if (withdrawal.profiles?.contact_email) {
-            const html = getEmailTemplate({
-                subHeading: 'WALLET UPDATE',
-                title: 'Withdrawal Approved',
-                body: 'Your funds are on the way to your linked bank account. Please check your bank statement in the next few hours.',
-                buttonText: 'View Wallet',
-                buttonLink: 'https://hostel-pulse.pages.dev/dashboard/agent?tab=wallet',
-                showFallbackLink: false
-            });
-            await sendNotificationEmail(withdrawal.profiles.contact_email, 'Withdrawal Approved 💸', html);
-        }
+export async function approveWithdrawal(id: string, adminNotes?: string) {
+    const adminUser = await verifyAdmin();
+    const db = getAdminClient();
+
+    // 1. Fetch payout request
+    const { data: payout, error: fetchErr } = await db
+        .from('payout_requests')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    if (fetchErr || !payout) {
+        return { error: fetchErr?.message || 'Payout request not found.' };
     }
-    
+
+    if (payout.status === 'SUCCESSFUL') {
+        return { error: 'This payout has already been approved and paid.' };
+    }
+
+    // 2. Call PostgreSQL atomic RPC to permanently deduct locked balance
+    const { error: rpcErr } = await db.rpc('process_withdrawal_finalize', {
+        p_user_id: payout.user_id,
+        p_amount: payout.amount
+    });
+
+    if (rpcErr) {
+        console.error('RPC Error process_withdrawal_finalize:', rpcErr);
+        return { error: rpcErr.message || 'Failed to finalize wallet debit.' };
+    }
+
+    // 3. Mark payout request as SUCCESSFUL
+    const { error: updateErr } = await db
+        .from('payout_requests')
+        .update({
+            status: 'SUCCESSFUL',
+            admin_notes: adminNotes || 'Approved and disbursed by admin',
+            approved_by: adminUser.id,
+            approved_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        })
+        .eq('id', id);
+
+    if (updateErr) {
+        console.error('Failed to update payout_requests status:', updateErr);
+        return { error: updateErr.message };
+    }
+
+    // 4. Fetch user profile for notifications & email
+    const { data: profile } = await db
+        .from('profiles')
+        .select('id, full_name, first_name, last_name, email, contact_email, role')
+        .eq('id', payout.user_id)
+        .single();
+
+    const userName = profile?.full_name || (profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : payout.account_name) || 'HostelPulse Member';
+    const recipientEmail = profile?.contact_email || profile?.email;
+    const userRole = (profile?.role || 'student').toLowerCase();
+    const dashboardLink = userRole === 'agent' 
+        ? 'https://hostelpulse.app/dashboard/agent?tab=wallet' 
+        : userRole === 'landlord'
+        ? 'https://hostelpulse.app/dashboard/landlord?tab=wallet'
+        : 'https://hostelpulse.app/dashboard/student?tab=wallet';
+
+    // 5. In-App Notification
+    try {
+        await createNotification(
+            payout.user_id,
+            'Withdrawal Approved & Paid! 💸',
+            `Your withdrawal of ₦${Number(payout.amount).toLocaleString()} to ${payout.bank_name || 'Bank'} (${payout.account_number}) has been sent. Check your bank account!`,
+            dashboardLink,
+            'withdrawal_success'
+        );
+    } catch (notifErr) {
+        console.warn('Failed to dispatch in-app notification:', notifErr);
+    }
+
+    // 6. Send transactional confirmation email
+    if (recipientEmail) {
+        const emailHtml = getEmailTemplate({
+            subHeading: 'WALLET UPDATE',
+            title: 'Withdrawal Approved & Paid! 💸',
+            body: `Hello ${userName},<br/><br/>
+            Great news! Your withdrawal request of <strong>₦${Number(payout.amount).toLocaleString()}</strong> has been approved and paid out to your verified bank account.<br/><br/>
+            🏦 <strong>Bank:</strong> ${payout.bank_name || 'Bank'}<br/>
+            🔢 <strong>Account Number:</strong> ${payout.account_number}<br/>
+            👤 <strong>Account Name:</strong> ${payout.account_name}<br/>
+            🔖 <strong>Reference:</strong> ${payout.flw_reference || payout.id}<br/>
+            ${adminNotes ? `📝 <strong>Payment Note / Session ID:</strong> ${adminNotes}<br/>` : ''}
+            <br/>The funds should reflect in your bank account shortly. Thank you for using Hostel Pulse!`,
+            buttonText: 'View Wallet Balance',
+            buttonLink: dashboardLink,
+            showFallbackLink: false
+        });
+        await sendNotificationEmail(recipientEmail, 'Hostel Pulse: Withdrawal Approved & Paid 💸', emailHtml);
+    }
+
     return { success: true };
 }
 
-export async function rejectWithdrawal(id: string) {
+export async function rejectWithdrawal(id: string, reason: string) {
     await verifyAdmin();
     const db = getAdminClient();
-    // Fetch withdrawal to refund the wallet
-    const { data: withdrawal, error: fetchErr } = await db.from('withdrawals').select('*, profiles(contact_email)').eq('id', id).single();
-    if (fetchErr || !withdrawal) return { error: fetchErr?.message || 'Withdrawal not found' };
 
-    const { error: updateErr } = await db.from('withdrawals').update({ status: 'failed' }).eq('id', id);
-    if (updateErr) return { error: updateErr.message };
+    // 1. Fetch payout request
+    const { data: payout, error: fetchErr } = await db
+        .from('payout_requests')
+        .select('*')
+        .eq('id', id)
+        .single();
 
-    // Refund wallet
-    const { data: profile } = await db.from('profiles').select('wallet_balance').eq('id', withdrawal.user_id).single();
-    if (profile) {
-        await db.from('profiles').update({ wallet_balance: Number(profile.wallet_balance || 0) + Number(withdrawal.amount) }).eq('id', withdrawal.user_id);
+    if (fetchErr || !payout) {
+        return { error: fetchErr?.message || 'Payout request not found.' };
     }
-    
-    if (withdrawal) {
-        await createNotification(
-            withdrawal.user_id,
-            'Withdrawal Rejected',
-            'Your withdrawal request was declined. Please contact support.',
-            '/dashboard/agent?tab=wallet',
-            'system_alert'
-        );
 
-        if (withdrawal.profiles?.contact_email) {
-            const html = getEmailTemplate({
-                subHeading: 'WALLET UPDATE',
-                title: 'Withdrawal Rejected',
-                body: 'Your recent withdrawal request was declined. Please contact support or verify your bank details before trying again.',
-                buttonText: 'Contact Support',
-                buttonLink: 'mailto:hello@hostel-pulse.com',
-                showFallbackLink: false
-            });
-            await sendNotificationEmail(withdrawal.profiles.contact_email, 'Withdrawal Rejected ❌', html);
-        }
+    if (payout.status === 'SUCCESSFUL') {
+        return { error: 'Cannot reject a payout that has already been approved and paid.' };
+    }
+
+    // 2. Call PostgreSQL atomic RPC to refund the locked balance back to available balance
+    const { error: rpcErr } = await db.rpc('process_withdrawal_refund', {
+        p_user_id: payout.user_id,
+        p_amount: payout.amount
+    });
+
+    if (rpcErr) {
+        console.error('RPC Error process_withdrawal_refund:', rpcErr);
+        return { error: rpcErr.message || 'Failed to refund locked funds back to wallet.' };
+    }
+
+    // 3. Mark payout request as REJECTED
+    const rejectionReason = reason?.trim() || 'Declined by platform administrator';
+    const { error: updateErr } = await db
+        .from('payout_requests')
+        .update({
+            status: 'REJECTED',
+            failure_reason: rejectionReason,
+            admin_notes: rejectionReason,
+            updated_at: new Date().toISOString()
+        })
+        .eq('id', id);
+
+    if (updateErr) {
+        console.error('Failed to update payout_requests status:', updateErr);
+        return { error: updateErr.message };
+    }
+
+    // 4. Fetch user profile for notifications & email
+    const { data: profile } = await db
+        .from('profiles')
+        .select('id, full_name, first_name, last_name, email, contact_email, role')
+        .eq('id', payout.user_id)
+        .single();
+
+    const userName = profile?.full_name || (profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : payout.account_name) || 'HostelPulse Member';
+    const recipientEmail = profile?.contact_email || profile?.email;
+    const userRole = (profile?.role || 'student').toLowerCase();
+    const dashboardLink = userRole === 'agent' 
+        ? 'https://hostelpulse.app/dashboard/agent?tab=wallet' 
+        : userRole === 'landlord'
+        ? 'https://hostelpulse.app/dashboard/landlord?tab=wallet'
+        : 'https://hostelpulse.app/dashboard/student?tab=wallet';
+
+    // 5. In-App Notification
+    try {
+        await createNotification(
+            payout.user_id,
+            'Withdrawal Rejected - Funds Refunded 🔄',
+            `Your withdrawal of ₦${Number(payout.amount).toLocaleString()} was rejected: "${rejectionReason}". Your funds have been refunded to your wallet.`,
+            dashboardLink,
+            'withdrawal_refunded'
+        );
+    } catch (notifErr) {
+        console.warn('Failed to dispatch in-app notification:', notifErr);
+    }
+
+    // 6. Send transactional email
+    if (recipientEmail) {
+        const emailHtml = getEmailTemplate({
+            subHeading: 'WALLET UPDATE',
+            title: 'Withdrawal Update: Funds Refunded 🔄',
+            body: `Hello ${userName},<br/><br/>
+            Your withdrawal request of <strong>₦${Number(payout.amount).toLocaleString()}</strong> could not be disbursed at this time.<br/><br/>
+            ❓ <strong>Reason:</strong> ${rejectionReason}<br/><br/>
+            ✅ <strong>Funds Restored:</strong> The full amount of ₦${Number(payout.amount).toLocaleString()} has been safely returned to your available wallet balance.<br/><br/>
+            Please review your bank details or contact support if you believe this was an error.`,
+            buttonText: 'View Wallet Balance',
+            buttonLink: dashboardLink,
+            showFallbackLink: false
+        });
+        await sendNotificationEmail(recipientEmail, 'Hostel Pulse: Withdrawal Request Update 🔄', emailHtml);
     }
 
     return { success: true };

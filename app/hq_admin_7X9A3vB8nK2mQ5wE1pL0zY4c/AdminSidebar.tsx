@@ -15,7 +15,8 @@ import {
     Wallet,
     HeadphonesIcon,
     Megaphone,
-    BookOpen
+    BookOpen,
+    Banknote
 } from 'lucide-react';
 
 export default function AdminSidebar() {
@@ -32,6 +33,7 @@ export default function AdminSidebar() {
 
     const navItems = [
         { id: 'analytics', label: 'Analytics Engine', color: 'green', icon: LineChart },
+        { id: 'payouts', label: 'Payout Approvals', color: 'green', icon: Banknote },
         { id: 'properties', label: 'Property Review', color: 'green', icon: LayoutDashboard },
         { id: 'verifications', label: 'Account Queue', color: 'green', icon: ShieldCheck },
         { id: 'users', label: 'User Management', color: 'blue', icon: Users },

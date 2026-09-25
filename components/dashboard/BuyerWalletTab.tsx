@@ -27,6 +27,7 @@ import {
     MessageCircle
 } from 'lucide-react';
 import { ReviewModal } from '@/components/reviews/ReviewModal';
+import { TransactionHistoryTable } from '@/components/dashboard/TransactionHistoryTable';
 
 interface Transaction {
     id: string;
@@ -46,6 +47,7 @@ interface Transaction {
 export default function BuyerWalletTab({ userId }: { userId: string }) {
     const supabase = createClient();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [withdrawals, setWithdrawals] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentBalance, setCurrentBalance] = useState(0);
     const [showDepositModal, setShowDepositModal] = useState(false);
@@ -142,7 +144,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                     .or(`payer_id.eq.${userId},payee_id.eq.${userId}`);
 
                 const withdrawPromise = supabase
-                    .from('withdrawals')
+                    .from('payout_requests')
                     .select('*')
                     .eq('user_id', userId);
 
@@ -173,6 +175,17 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
                         payee_name: t.profiles?.full_name || 'Provider'
                     };
                 });
+                const withdrawData = withdrawRes.data || [];
+                setWithdrawals(withdrawData.map((w: any) => ({
+                    id: w.id,
+                    amount: Math.abs(Number(w.amount)),
+                    status: w.status,
+                    created_at: w.created_at,
+                    account_name: w.account_name || 'Bank Payout',
+                    bank_name: w.bank_name || 'Bank',
+                    failure_reason: w.failure_reason || ''
+                })));
+
 
                 const withdrawFormatted = (withdrawRes.data || []).map((w: any) => ({
                     id: w.id,
@@ -352,6 +365,8 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
             </section>
 
 
+
+            <TransactionHistoryTable transactions={withdrawals} />
 
             {/* Dispute Modal */}
             {disputeModal.id && (
