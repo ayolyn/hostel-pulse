@@ -46,14 +46,38 @@ export function LandlordSidebar({ isApproved, isOpen, isRetracted, onClose, onRe
     const { pulseColor, pulseLabel } = useHostelPulse(user?.id || null);
     const [profile, setProfile] = useState<{ full_name?: string; avatar_url?: string } | null>(null);
 
+    const [unreadMessages, setUnreadMessages] = useState(0);
+
     useEffect(() => {
         if (!user) return;
-        const fetchProfile = async () => {
+        const fetchData = async () => {
             const supabase = createClient();
             const { data } = await supabase.from('profiles').select('full_name, avatar_url').eq('id', user.id).single();
             if (data) setProfile(data);
+
+            const { count } = await supabase
+                .from('messages')
+                .select('*', { count: 'exact', head: true })
+                .eq('receiver_id', user.id)
+                .eq('is_read', false);
+            setUnreadMessages(count || 0);
         };
-        fetchProfile();
+        fetchData();
+
+        const supabase = createClient();
+        const channel = supabase
+            .channel('landlord-sidebar')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'messages', filter: `receiver_id=eq.${user.id}` }, async () => {
+                const { count } = await supabase
+                    .from('messages')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('receiver_id', user.id)
+                    .eq('is_read', false);
+                setUnreadMessages(count || 0);
+            })
+            .subscribe();
+
+        return () => { supabase.removeChannel(channel); };
     }, [user]);
 
     const pulseStyles = useMemo(() => ({
@@ -100,6 +124,7 @@ export function LandlordSidebar({ isApproved, isOpen, isRetracted, onClose, onRe
                 <nav className={`space-y-2 px-4 ${isRetracted ? 'flex flex-col items-center' : ''}`}>
                     {navItems.map((item) => {
                         const isActive = activeTab === item.id;
+                        const hasNotification = item.id === 'messages' && unreadMessages > 0;
                         
                         return (
                             <Link
@@ -111,15 +136,27 @@ export function LandlordSidebar({ isApproved, isOpen, isRetracted, onClose, onRe
                                     }
                                 }}
                                 title={isRetracted ? item.label : ''}
-                                className={`flex items-center transition-all duration-200 rounded-2xl group
+                                className={`flex items-center transition-all duration-200 rounded-2xl group relative
                                     ${isRetracted ? 'justify-center p-3.5 w-full' : 'gap-3 px-5 py-3.5 text-[10px] uppercase tracking-widest font-black'}
                                     ${isActive 
                                         ? 'bg-black text-[#BEF264] dark:bg-[#BEF264] dark:text-black shadow-md' 
                                         : 'text-neutral-500 hover:text-black dark:text-neutral-400 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
                                     }`}
                             >
-                                <item.icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${isActive ? 'scale-110' : ''}`} />
-                                {!isRetracted && <span>{item.label}</span>}
+                                <div className="relative">
+                                    <item.icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${isActive ? 'scale-110' : ''}`} />
+                                    {hasNotification && (
+                                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 border-2 border-white dark:border-black rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                    )}
+                                </div>
+                                {!isRetracted && (
+                                    <div className="flex-1 flex items-center justify-between">
+                                        <span>{item.label}</span>
+                                        {hasNotification && (
+                                            <span className="px-1.5 py-0.5 bg-emerald-500 text-black text-[8px] font-black rounded-md">{unreadMessages}</span>
+                                        )}
+                                    </div>
+                                )}
                             </Link>
                         );
                     })}

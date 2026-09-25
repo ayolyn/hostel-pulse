@@ -31,6 +31,7 @@ interface ConvRoom {
     otherUser: { id: string; full_name: string; avatar_url: string | null; phone: string | null } | null;
     property: { id: string; title: string; price: number; images: string[] } | null;
     last_message: string | null;
+    unread_count?: number;
 }
 
 interface Msg {
@@ -124,12 +125,16 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
                         property_id: msg.property_id,
                         last_message: msg.content,
                         last_message_at: msg.created_at,
+                        unread_count: msg.receiver_id === userId && !msg.is_read ? 1 : 0,
                     });
                 } else {
                     const room = roomMap.get(roomId);
                     if (new Date(msg.created_at) >= new Date(room.last_message_at)) {
                         room.last_message = msg.content;
                         room.last_message_at = msg.created_at;
+                    }
+                    if (msg.receiver_id === userId && !msg.is_read) {
+                        room.unread_count = (room.unread_count || 0) + 1;
                     }
                 }
             });
@@ -190,6 +195,45 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
     }, [userId, supabase]);
 
     useEffect(() => { fetchRooms(); }, [fetchRooms]);
+
+    // ── Subscribe to ALL incoming messages to update sidebar rooms ───────────
+    const activeRoomRef = useRef<ConvRoom | null>(activeRoom);
+    useEffect(() => {
+        activeRoomRef.current = activeRoom;
+    }, [activeRoom]);
+
+    useEffect(() => {
+        if (!userId) return;
+        const channel = supabase
+            .channel(`msg_tab_all_${userId}`)
+            .on('postgres_changes', {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'messages',
+                filter: `receiver_id=eq.${userId}`
+            }, (payload: any) => {
+                const m = payload.new as Msg;
+                setRooms(prev => {
+                    // Try to guess the room ID
+                    const roomId = m.room_id || m.conversation_id || `direct_${[m.sender_id, m.receiver_id].sort().join('_')}`;
+                    const existingRoom = prev.find(r => r.id === roomId);
+                    if (existingRoom) {
+                        return prev.map(r => r.id === roomId ? {
+                            ...r,
+                            last_message: m.content,
+                            last_message_at: m.created_at,
+                            unread_count: activeRoomRef.current?.id === roomId ? 0 : (r.unread_count || 0) + 1
+                        } : r).sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
+                    } else {
+                        // A brand new conversation, re-fetch to get user info
+                        fetchRooms();
+                        return prev;
+                    }
+                });
+            })
+            .subscribe();
+        return () => { supabase.removeChannel(channel); };
+    }, [userId, fetchRooms, supabase]);
 
     // ── Auto-select room from URL ────────────────────────────────────────────
     useEffect(() => {
@@ -258,13 +302,14 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
         setTimeout(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' }); }, 80);
 
         // Mark as read
-        await supabase.from('messages')
-            .update({ is_read: true })
-            .eq('receiver_id', userId)
-            .neq('is_read', true)
-            .or(room.id.startsWith('direct_') 
-                ? `and(sender_id.eq.${room.otherUser?.id},conversation_id.is.null,room_id.is.null)`
-                : `conversation_id.eq.${room.id},room_id.eq.${room.id}`);
+        const unreadMsgIds = all.filter((m: Msg) => m.receiver_id === userId && !m.is_read).map((m: Msg) => m.id);
+        if (unreadMsgIds.length > 0) {
+            await supabase.from('messages')
+                .update({ is_read: true })
+                .in('id', unreadMsgIds);
+                
+            setRooms(prev => prev.map(r => r.id === room.id ? { ...r, unread_count: 0 } : r));
+        }
     }, [userId, supabase]);
 
     // ── Subscribe to realtime when room changes ──────────────────────────────
@@ -299,6 +344,10 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
                 }
                 setMessages(prev => prev.find(x => x.id === m.id) ? prev : [...prev, m]);
                 setTimeout(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' }); }, 80);
+
+                if (m.receiver_id === userId) {
+                    supabase.from('messages').update({ is_read: true }).eq('id', m.id).then();
+                }
             })
             .subscribe();
 
@@ -496,8 +545,13 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
                             {/* Text */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex justify-between items-center mb-0.5">
-                                    <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">
+                                    <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate flex items-center gap-2">
                                         {room.otherUser?.full_name || 'User'}
+                                        {room.unread_count ? (
+                                            <span className="bg-emerald-500 text-black text-[9px] font-black px-1.5 py-0.5 rounded-md">
+                                                {room.unread_count}
+                                            </span>
+                                        ) : null}
                                     </h4>
                                     {room.last_message_at && (
                                         <span className="text-[9px] font-bold text-gray-400 ml-2 shrink-0">

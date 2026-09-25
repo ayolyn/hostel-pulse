@@ -5,12 +5,18 @@
  * @param subject The subject line of the email
  * @param htmlTemplate The HTML body of the email
  */
+import { getEmailTemplate } from '@/app/actions/emailTemplates';
+
 export async function sendNotificationEmail(to: string, subject: string, htmlTemplate: string) {
     try {
         if (!process.env.RESEND_API_KEY) {
             console.warn('RESEND_API_KEY is not defined. Email will not be sent.');
             return { success: false, error: 'Missing RESEND_API_KEY' };
         }
+
+        const finalHtml = htmlTemplate.includes('<html') || htmlTemplate.includes('<body') 
+            ? htmlTemplate 
+            : getEmailTemplate({ title: subject, body: htmlTemplate });
 
         const res = await fetch('https://api.resend.com/emails', {
             method: 'POST',
@@ -22,7 +28,7 @@ export async function sendNotificationEmail(to: string, subject: string, htmlTem
                 from: 'Hostel Pulse <info@hostelpulse.app>',
                 to: [to],
                 subject: subject,
-                html: htmlTemplate,
+                html: finalHtml,
             })
         });
 

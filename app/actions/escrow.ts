@@ -94,17 +94,8 @@ export async function releaseEscrowFunds(transactionId: string) {
             : { data: null };
             
         const htmlBody = `
-            <div style="background-color: #f6f9fc; font-family: sans-serif; padding: 40px 0;">
-                <div style="background-color: #ffffff; padding: 40px; border-radius: 4px; margin: 0 auto; max-width: 600px;">
-                    <h2 style="font-size: 24px; font-weight: bold; color: #16a34a; margin-top: 0;">Funds Released to Wallet 💰</h2>
-                    <p style="font-size: 16px; color: #555;">
-                        Great news! The escrow funds of <strong>₦${Number(transaction.amount).toLocaleString()}</strong> for <strong>${property?.title || 'Property'}</strong> have been released to your wallet.
-                    </p>
-                    <p style="font-size: 16px; color: #555;">
-                        You can now withdraw these funds to your local bank account at any time.
-                    </p>
-                </div>
-            </div>
+            <p>Great news! The escrow funds of <strong>₦${Number(transaction.amount).toLocaleString()}</strong> for <strong>${property?.title || 'Property'}</strong> have been released to your wallet.</p>
+            <p>You can now withdraw these funds to your local bank account at any time.</p>
         `;
         
         await sendNotificationEmail(
@@ -170,6 +161,26 @@ export async function initiateEscrowDispute(transactionId: string, reason?: stri
         'dispute_opened'
     );
 
+    // 4. Send Emails
+    const { data: { user: payeeUser } } = await db.auth.admin.getUserById(transaction.payee_id);
+    const { data: { user: payerUser } } = await db.auth.admin.getUserById(transaction.payer_id);
+
+    if (payeeUser?.email) {
+        await sendNotificationEmail(
+            payeeUser.email,
+            'Transaction Dispute Opened ⚠️',
+            `<p>A dispute has been opened for a recent transaction (ID: ${transactionId}).</p><p>Funds are frozen until resolved.</p>`
+        );
+    }
+    
+    if (payerUser?.email) {
+        await sendNotificationEmail(
+            payerUser.email,
+            'Dispute Logged successfully',
+            `<p>Your dispute for transaction ${transactionId} has been logged and is under review by our Admin team.</p>`
+        );
+    }
+
     return { success: true };
 }
 
@@ -226,6 +237,16 @@ export async function cancelAndRefundOrder(transactionId: string) {
         '/dashboard/student?tab=wallet',
         'system_alert'
     );
+
+    // 5. Send Email
+    const { data: { user: buyerUser } } = await db.auth.admin.getUserById(transaction.payer_id);
+    if (buyerUser?.email) {
+        await sendNotificationEmail(
+            buyerUser.email,
+            'Order Cancelled & Refunded 💸',
+            `<p>Your order for <strong>${itemTitle}</strong> was cancelled by the seller.</p><p>The escrow funds of <strong>₦${Number(transaction.amount).toLocaleString()}</strong> have been fully refunded to your wallet.</p>`
+        );
+    }
 
     return { success: true };
 }
@@ -291,6 +312,25 @@ export async function resolveEscrowDispute(transactionId: string, resolution: 'R
             'system_alert'
         );
 
+        const { data: { user: payeeUser } } = await db.auth.admin.getUserById(transaction.payee_id);
+        const { data: { user: payerUser } } = await db.auth.admin.getUserById(transaction.payer_id);
+
+        if (payerUser?.email) {
+            await sendNotificationEmail(
+                payerUser.email,
+                'Dispute Resolved - Funds Refunded 💸',
+                `<p>Your dispute was resolved in your favor. <strong>₦${Number(transaction.amount).toLocaleString()}</strong> has been refunded to your wallet.</p>`
+            );
+        }
+        
+        if (payeeUser?.email) {
+            await sendNotificationEmail(
+                payeeUser.email,
+                'Dispute Resolved',
+                `<p>A dispute was resolved in the buyer's favor. The funds were refunded to the buyer.</p>`
+            );
+        }
+
     } else if (resolution === 'RELEASE_SELLER') {
         // Update status to 'Released' and resolve dispute
         const { error: updateErr } = await db
@@ -333,6 +373,25 @@ export async function resolveEscrowDispute(transactionId: string, resolution: 'R
             '/dashboard/student?tab=wallet',
             'system_alert'
         );
+
+        const { data: { user: payeeUser } } = await db.auth.admin.getUserById(transaction.payee_id);
+        const { data: { user: payerUser } } = await db.auth.admin.getUserById(transaction.payer_id);
+
+        if (payeeUser?.email) {
+            await sendNotificationEmail(
+                payeeUser.email,
+                'Dispute Resolved - Funds Released 💰',
+                `<p>A dispute was resolved in your favor. <strong>₦${Number(transaction.amount).toLocaleString()}</strong> has been released to your wallet.</p>`
+            );
+        }
+        
+        if (payerUser?.email) {
+            await sendNotificationEmail(
+                payerUser.email,
+                'Dispute Resolved',
+                `<p>Your dispute was reviewed and resolved in the seller's favor. The funds were released to the seller.</p>`
+            );
+        }
     }
 
     return { success: true };
@@ -412,6 +471,26 @@ export async function processCustomOffer(offerId: string, amount: number, seller
         '/dashboard/student?tab=wallet',
         'new_sale'
     );
+
+    // 5. Send Emails
+    const { data: { user: sellerUser } } = await db.auth.admin.getUserById(sellerId);
+    const { data: { user: buyerUser } } = await db.auth.admin.getUserById(buyerId);
+
+    if (sellerUser?.email) {
+        await sendNotificationEmail(
+            sellerUser.email,
+            'Offer Accepted & Paid 🎉',
+            `<p>A custom offer of <strong>₦${amount.toLocaleString()}</strong> has been paid and is securely locked in Escrow.</p>`
+        );
+    }
+    
+    if (buyerUser?.email) {
+        await sendNotificationEmail(
+            buyerUser.email,
+            'Payment Successful - Offer Locked 🔒',
+            `<p>You have successfully paid <strong>₦${amount.toLocaleString()}</strong> for a custom offer.</p><p>The funds are securely locked in Escrow.</p>`
+        );
+    }
 
     return { success: true };
 }

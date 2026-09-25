@@ -373,6 +373,10 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                             return [...prev, normalizedMsg];
                         });
                         scrollToBottom();
+
+                        if (normalizedMsg.receiver_id === user.id) {
+                            supabase.from('messages').update({ is_read: true }).eq('id', normalizedMsg.id).then();
+                        }
                     }
                 })
                 .on('postgres_changes', {
@@ -392,12 +396,15 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                 });
             
             // Mark as read
-            await supabase
-                .from('messages')
-                .update({ is_read: true })
-                .eq('receiver_id', user.id)
-                .eq('sender_id', receiverId)
-                .eq('is_read', false);
+            if (finalMessages && finalMessages.length > 0) {
+                const unreadMsgIds = finalMessages.filter((m: any) => m.receiver_id === user.id && m.is_read !== true).map((m: any) => m.id);
+                if (unreadMsgIds.length > 0) {
+                    await supabase
+                        .from('messages')
+                        .update({ is_read: true })
+                        .in('id', unreadMsgIds);
+                }
+            }
         }
 
         setup();
