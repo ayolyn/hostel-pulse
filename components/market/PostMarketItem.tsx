@@ -79,19 +79,29 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
             image_url = publicUrl;
         }
 
-        const { error } = await supabase
+        const payload: any = {
+            seller_id: user.id,
+            title: formData.title,
+            category: formData.category,
+            price: parseFloat(formData.price),
+            description: `Condition: ${formData.condition} | Pickup: ${formData.location === 'Other' ? formData.custom_location : formData.location}`,
+            image_url: image_url,
+            is_featured: false,
+            status: 'active',
+            quantity: formData.quantity
+        };
+
+        let { error } = await supabase
             .from('market_listings')
-            .insert({
-                seller_id: user.id,
-                title: formData.title,
-                category: formData.category,
-                price: parseFloat(formData.price),
-                description: `Condition: ${formData.condition} | Pickup: ${formData.location === 'Other' ? formData.custom_location : formData.location}`,
-                image_url: image_url,
-                is_featured: false,
-                status: 'active',
-                quantity: formData.quantity
-            });
+            .insert(payload);
+
+        // Fallback retry if quantity or other column is not yet in schema cache
+        if (error && (error.message?.includes('quantity') || error.message?.toLowerCase().includes('schema cache'))) {
+            const fallbackPayload = { ...payload };
+            delete fallbackPayload.quantity;
+            const retry = await supabase.from('market_listings').insert(fallbackPayload);
+            error = retry.error;
+        }
 
         setLoading(false);
         if (!error) {

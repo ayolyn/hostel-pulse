@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS properties (
   bathrooms INT DEFAULT 1,
   features TEXT[] DEFAULT '{}',
   images TEXT[] DEFAULT '{}',
+  available_units INT DEFAULT 1,
   verification_status TEXT DEFAULT 'Pending',
   is_active BOOLEAN DEFAULT FALSE,
   view_count INT DEFAULT 0,
@@ -25,6 +26,18 @@ CREATE TABLE IF NOT EXISTS properties (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE properties ADD COLUMN IF NOT EXISTS available_units INTEGER DEFAULT 1;
+ALTER TABLE properties ADD COLUMN IF NOT EXISTS room_type TEXT;
+ALTER TABLE market_listings ADD COLUMN IF NOT EXISTS quantity INTEGER DEFAULT 1;
+CREATE TABLE IF NOT EXISTS property_audit_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  property_id UUID REFERENCES properties(id) ON DELETE CASCADE,
+  changed_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  action TEXT NOT NULL,
+  field TEXT,
+  new_value TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
 ALTER TABLE properties DISABLE ROW LEVEL SECURITY;
 
 # ============================================================

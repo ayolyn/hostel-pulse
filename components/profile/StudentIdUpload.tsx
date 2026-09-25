@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { Loader2, UploadCloud, CheckCircle2, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { verifyStudentIdAuto } from '@/app/actions/verification';
 
 export function StudentIdUpload() {
     const { user } = useAuth();
@@ -13,6 +14,8 @@ export function StudentIdUpload() {
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
     const [studentIdUrl, setStudentIdUrl] = useState<string | null>(null);
+    const [isVerified, setIsVerified] = useState(false);
+    const [adminNotes, setAdminNotes] = useState<string | null>(null);
 
     useEffect(() => {
         if (!user) return;
@@ -20,13 +23,15 @@ export function StudentIdUpload() {
         const fetchProfile = async () => {
             const { data } = await supabase
                 .from('profiles')
-                .select('student_id_url')
+                .select('student_id_url, is_verified, identity_verification_status, internal_admin_notes')
                 .eq('id', user.id)
                 .single();
                 
             if (data?.student_id_url) {
                 setStudentIdUrl(data.student_id_url);
             }
+            setIsVerified(data?.is_verified === true);
+            setAdminNotes(data?.internal_admin_notes || null);
             setLoading(false);
         };
         
@@ -56,14 +61,19 @@ export function StudentIdUpload() {
             
             setStudentIdUrl(data.publicUrl);
             
-            // Automatically Verify for Campus Market
-            await supabase.from('profiles').update({ 
-                student_id_url: data.publicUrl
-            }).eq('id', user?.id);
+            // Trigger AI Verification or forward to Admin Queue
+            toast.loading('Analyzing student ID...', { id: 'ai-verification' });
+            const verifyRes = await verifyStudentIdAuto(user.id, data.publicUrl);
+            
+            if (verifyRes.approved) {
+                toast.success('Student ID Verified! Campus Market Unlocked.', { id: 'ai-verification' });
+                setIsVerified(true);
+            } else {
+                toast(verifyRes.reason ? `ID Review: ${verifyRes.reason}. Forwarded to Admin.` : 'Student ID uploaded! Forwarded to Admin HQ for review.', { id: 'ai-verification', icon: '📋' });
+                setIsVerified(false);
+            }
 
-            toast.success('Student ID Verified! Campus Market Unlocked.');
-
-            // Refresh the page to unlock the market tab visually
+            // Refresh the page to update verification status visually
             window.location.reload();
 
         } catch (error: any) {
@@ -89,16 +99,50 @@ export function StudentIdUpload() {
                 <h3 className="text-lg font-bold text-black dark:text-white">Campus Market Verification</h3>
             </div>
             
-            {studentIdUrl ? (
+            {studentIdUrl && isVerified ? (
                 <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl p-4 flex items-start gap-4">
                     <CheckCircle2 className="w-6 h-6 text-emerald-500 mt-0.5" />
                     <div>
-                        <h4 className="font-bold text-emerald-700 dark:text-emerald-400">ID Verified</h4>
+                        <h4 className="font-bold text-emerald-700 dark:text-emerald-400">ID Verified 🎉</h4>
                         <p className="text-sm text-emerald-600 dark:text-emerald-300/80 mt-1">Your Student ID has been verified. You can now buy and sell on the Campus Market.</p>
                         
                         <a href={studentIdUrl} target="_blank" rel="noreferrer" className="mt-3 inline-block text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 underline underline-offset-2">
                             View Uploaded ID
                         </a>
+                    </div>
+                </div>
+            ) : studentIdUrl && !isVerified ? (
+                <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl p-5">
+                    <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                            📋
+                        </div>
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                                <h4 className="font-bold text-amber-800 dark:text-amber-300">Queued for Admin HQ Review</h4>
+                                <span className="bg-amber-500/20 text-amber-700 dark:text-amber-300 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full">Pending</span>
+                            </div>
+                            <p className="text-xs text-amber-700 dark:text-amber-400/90 mt-1">
+                                {adminNotes ? adminNotes : "Your student ID was received and forwarded to our Admin team at HQ for review."}
+                            </p>
+                            
+                            <div className="mt-4 flex flex-wrap items-center gap-3">
+                                <a href={studentIdUrl} target="_blank" rel="noreferrer" className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 underline underline-offset-2">
+                                    View Current Upload
+                                </a>
+                                
+                                <label className="cursor-pointer inline-flex items-center gap-1.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-200 text-xs font-bold px-3 py-1.5 rounded-lg border border-amber-500/30 transition-all">
+                                    {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Re-upload Clearer Photo'}
+                                    <input 
+                                        type="file" 
+                                        accept="image/*"
+                                        className="hidden" 
+                                        onChange={handleIdUpload}
+                                        disabled={uploading}
+                                    />
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             ) : (

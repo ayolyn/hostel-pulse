@@ -324,11 +324,49 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
 
         let resultId = editId;
         if (editId) {
-            const { data: updatedData, error: updateError } = await supabase
-                .from('properties')
-                .update(payload)
-                .eq('id', editId)
-                .select();
+            let currentPayload = { ...payload };
+            let updatedData: any = null;
+            let updateError: any = null;
+
+            for (let attempt = 0; attempt < 5; attempt++) {
+                const res = await supabase
+                    .from('properties')
+                    .update(currentPayload)
+                    .eq('id', editId)
+                    .select();
+                updatedData = res.data;
+                updateError = res.error;
+
+                if (!updateError) break;
+
+                const errMsg = updateError.message || '';
+                const match = errMsg.match(/Could not find the ['"]?([a-zA-Z0-9_]+)['"]? column/i) 
+                           || errMsg.match(/column ['"]?([a-zA-Z0-9_]+)['"]? of relation/i);
+                const missingCol = match ? (match[1] || match[2]) : null;
+
+                if (missingCol && currentPayload[missingCol] !== undefined) {
+                    delete currentPayload[missingCol];
+                    continue;
+                }
+
+                if (errMsg.toLowerCase().includes('available_units') && currentPayload.available_units !== undefined) {
+                    delete currentPayload.available_units;
+                    continue;
+                }
+
+                if (errMsg.toLowerCase().includes('schema cache')) {
+                    if (currentPayload.available_units !== undefined) {
+                        delete currentPayload.available_units;
+                        continue;
+                    }
+                    if (currentPayload.room_type !== undefined) {
+                        delete currentPayload.room_type;
+                        continue;
+                    }
+                }
+
+                break;
+            }
             
             if (updateError) {
                 setLoading(false);
@@ -344,12 +382,50 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             payload.owner_id = user.id;
             payload.agent_id = isAgent ? user.id : null;
             payload.landlord_id = isLandlord ? user.id : null;
-            
-            const { data: newProperty, error: insertError } = await supabase
-                .from('properties')
-                .insert(payload)
-                .select('id')
-                .single();
+
+            let currentPayload = { ...payload };
+            let newProperty: any = null;
+            let insertError: any = null;
+
+            for (let attempt = 0; attempt < 5; attempt++) {
+                const res = await supabase
+                    .from('properties')
+                    .insert(currentPayload)
+                    .select('id')
+                    .single();
+                newProperty = res.data;
+                insertError = res.error;
+
+                if (!insertError) break;
+
+                const errMsg = insertError.message || '';
+                const match = errMsg.match(/Could not find the ['"]?([a-zA-Z0-9_]+)['"]? column/i) 
+                           || errMsg.match(/column ['"]?([a-zA-Z0-9_]+)['"]? of relation/i);
+                const missingCol = match ? (match[1] || match[2]) : null;
+
+                if (missingCol && currentPayload[missingCol] !== undefined) {
+                    delete currentPayload[missingCol];
+                    continue;
+                }
+
+                if (errMsg.toLowerCase().includes('available_units') && currentPayload.available_units !== undefined) {
+                    delete currentPayload.available_units;
+                    continue;
+                }
+
+                if (errMsg.toLowerCase().includes('schema cache')) {
+                    if (currentPayload.available_units !== undefined) {
+                        delete currentPayload.available_units;
+                        continue;
+                    }
+                    if (currentPayload.room_type !== undefined) {
+                        delete currentPayload.room_type;
+                        continue;
+                    }
+                }
+
+                break;
+            }
 
             if (insertError) {
                 setLoading(false);
@@ -361,16 +437,20 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
 
         // Update property_details if bedroom/bathroom info exists
         if (resultId && (category === 'Hostel' || category === 'House' || category === 'Hotel')) {
-            const detailsPayload = {
-                property_id: resultId,
-                bedrooms: Number(form.bedrooms) || 1,
-                bathrooms: Number(form.bathrooms) || 1,
-            };
+            try {
+                const detailsPayload = {
+                    property_id: resultId,
+                    bedrooms: Number(form.bedrooms) || 1,
+                    bathrooms: Number(form.bathrooms) || 1,
+                };
 
-            if (editId) {
-                await supabase.from('property_details').upsert(detailsPayload, { onConflict: 'property_id' });
-            } else {
-                await supabase.from('property_details').insert(detailsPayload);
+                if (editId) {
+                    await supabase.from('property_details').upsert(detailsPayload, { onConflict: 'property_id' });
+                } else {
+                    await supabase.from('property_details').insert(detailsPayload);
+                }
+            } catch (err) {
+                console.warn('Non-fatal property_details sync error:', err);
             }
         }
 

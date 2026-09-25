@@ -228,16 +228,14 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
 
                 // Trigger AI Verification in the background if a new ID was uploaded
                 if (userRole === 'student' && updates.student_id_url) {
-                    toast.loading("Analyzing student ID...", { id: 'ai-verification' });
+                    toast.loading("Analyzing student ID with AI bot...", { id: 'ai-verification' });
                     verifyStudentIdAuto(userId, updates.student_id_url).then(res => {
                         if (res.success && res.approved) {
-                            toast.success("ID Verified! You have been approved.", { id: 'ai-verification' });
-                            if (onUpdate) onUpdate(); // Reload data
-                        } else if (res.success && !res.approved) {
-                            toast.error("Could not auto-verify. Flagged for Admin review.", { id: 'ai-verification' });
+                            toast.success("Student ID Verified! Full campus access unlocked.", { id: 'ai-verification' });
                         } else {
-                            toast.dismiss('ai-verification');
+                            toast(res.reason ? `ID Review: ${res.reason}. Forwarded to Admin.` : "Student ID forwarded to Admin HQ for review.", { id: 'ai-verification', icon: '📋' });
                         }
+                        if (onUpdate) onUpdate();
                     });
                 }
             } else if (userRole === 'agent') {
@@ -384,10 +382,15 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                         {userRole === 'student' ? (
                             <div className="flex justify-between items-center py-3 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors px-4 -mx-4 rounded-xl">
                                 <span className="text-sm font-black text-gray-700 dark:text-neutral-300 uppercase tracking-tight">University ID (LAUTECH)</span>
-                                {formData.student_id_url || account?.is_approved || account?.is_verified ? (
+                                {account?.is_approved || account?.is_verified ? (
                                     <div className="flex items-center gap-2">
                                         <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264]">Authenticated</span>
                                         {formData.student_id_url && <a href={formData.student_id_url} target="_blank" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">View</a>}
+                                    </div>
+                                ) : formData.student_id_url ? (
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">In Review (Admin Queue)</span>
+                                        <a href={formData.student_id_url} target="_blank" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">View</a>
                                     </div>
                                 ) : (
                                     <button type="button" onClick={() => setActiveSubTab('Edit Profile')} className="text-[10px] text-red-500 font-black uppercase tracking-widest hover:underline text-right">
@@ -403,10 +406,15 @@ export function DetailedProfileForm({ account, userId, onUpdate }: ProfileFormPr
                                 return (
                                     <div key={key} className="flex justify-between items-center py-3 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors px-4 -mx-4 rounded-xl">
                                         <span className="text-sm font-black text-gray-700 dark:text-neutral-300 uppercase tracking-tight">{label}</span>
-                                        {url || account?.is_approved || account?.is_verified ? (
+                                        {account?.is_approved || account?.is_verified ? (
                                             <div className="flex items-center gap-2">
                                                 <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264]">Authenticated</span>
                                                 {url && <a href={url} target="_blank" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">View</a>}
+                                            </div>
+                                        ) : url ? (
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">In Review (Admin Queue)</span>
+                                                <a href={url} target="_blank" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:underline">View</a>
                                             </div>
                                         ) : (
                                             <button type="button" onClick={() => isMandatory && setActiveSubTab('Edit Profile')} className={`text-[10px] font-black uppercase tracking-widest text-right ${isMandatory ? 'text-red-500 hover:underline' : 'text-gray-400 cursor-default'}`}>

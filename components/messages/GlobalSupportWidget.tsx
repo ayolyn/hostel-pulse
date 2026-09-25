@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, X, Send, Loader2, Bot, User, AlertTriangle } from 'lucide-react';
@@ -10,7 +10,7 @@ export function GlobalSupportWidget() {
     const { user } = useAuth();
     const pathname = usePathname();
 
-    if (pathname && (pathname.includes('/messages/') || pathname.includes('/chat/'))) return null;
+    if (pathname && (pathname.includes('/messages/') || pathname.includes('/chat/') || pathname.startsWith('/hq_admin') || pathname.startsWith('/admin'))) return null;
     const supabase = createClient();
     
     const [isOpen, setIsOpen] = useState(false);

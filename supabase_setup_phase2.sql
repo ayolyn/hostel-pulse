@@ -8,9 +8,12 @@ CREATE TABLE IF NOT EXISTS market_listings (
   description TEXT,
   price NUMERIC NOT NULL,
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'pending_escrow', 'sold', 'delisted')),
+  quantity INT DEFAULT 1,
+  image_url TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE market_listings ADD COLUMN IF NOT EXISTS quantity INTEGER DEFAULT 1;
 ALTER TABLE market_listings DISABLE ROW LEVEL SECURITY;
 
 -- ============================================================

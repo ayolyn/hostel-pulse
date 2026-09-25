@@ -95,7 +95,7 @@ async function getPendingCount(db: any) {
     const { count: profilesCount } = await db
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .eq('is_verified', false)
+        .or('is_verified.eq.false,is_verified.is.null')
         .not('student_id_url', 'is', null).neq('student_id_url', '');
     
     count += profilesCount || 0;
@@ -121,14 +121,31 @@ export async function getPendingAccounts() {
     const { data: studentData, error: studentError } = await db
         .from('profiles')
         .select('*')
-        .eq('is_verified', false)
+        .or('is_verified.eq.false,is_verified.is.null')
         .not('student_id_url', 'is', null).neq('student_id_url', '') // We know business fields aren't inherently in profiles, but student_id_url is.
-        .order('updated_at', { ascending: true });
+        .order('updated_at', { ascending: false });
 
     if (studentError) {
         console.error("getPendingAccounts [profiles] error:", studentError.message);
     } else if (studentData) {
         allPending = [...allPending, ...studentData.map(row => ({ ...row, _tableName: 'profiles' }))];
+    }
+
+    // Also include any student_accounts with uploaded ID not already captured in profiles
+    const { data: studentAccs, error: accError } = await db
+        .from('student_accounts')
+        .select('*')
+        .or('is_approved.eq.false,is_approved.is.null')
+        .not('student_id_url', 'is', null).neq('student_id_url', '')
+        .order('created_at', { ascending: false });
+
+    if (!accError && studentAccs) {
+        const existingIds = new Set(allPending.map(p => p.id));
+        for (const s of studentAccs) {
+            if (!existingIds.has(s.id)) {
+                allPending.push({ ...s, _tableName: 'student_accounts' });
+            }
+        }
     }
 
     const tables = ['landlord_accounts', 'agent_accounts'];
@@ -155,36 +172,45 @@ export async function approveAccount(id: string, tableName: string) {
     await verifyAdmin();
     const db = getAdminClient();
 
-    if (tableName === 'profiles') {
+    if (tableName === 'profiles' || tableName === 'student_accounts') {
         const { error, data: profileData } = await db
             .from('profiles')
-            .update({ is_verified: true, trust_level: 'Verified Member' })
+            .update({ 
+                is_verified: true, 
+                trust_level: 'Verified Member',
+                identity_verification_status: 'VERIFIED_ADMIN',
+                internal_admin_notes: 'Approved manually by Admin at HQ'
+            })
             .eq('id', id)
             .select('*')
             .single();
 
         if (!error && profileData) {
-            // Also update student_accounts to show "Verified" just in case it is queried elsewhere
-            await db.from('student_accounts').update({ is_approved: true }).eq('id', id);
+            // Also update student_accounts to show "Approved"
+            await db.from('student_accounts').update({ is_approved: true, is_verified: true }).eq('id', id);
 
-            const { data: { user: authUser } } = await db.auth.admin.getUserById(id);
+            try {
+                const { data: { user: authUser } } = await db.auth.admin.getUserById(id);
 
-            // In-App Notification (Live Sync)
-            await db.from('notifications').insert({
-                user_id: id,
-                title: 'Verification Successful! 🎉',
-                message: 'Your Student ID has been verified. You can now use the Campus Market.',
-                type: 'VERIFICATION_SUCCESS'
-            });
+                // In-App Notification (Live Sync)
+                await db.from('notifications').insert({
+                    user_id: id,
+                    title: 'Verification Successful! 🎉',
+                    message: 'Your Student ID has been verified. You can now use the Campus Market.',
+                    type: 'VERIFICATION_SUCCESS'
+                });
 
-            // Automated Messages Queue (n8n/Make Watcher)
-            await db.from('messages_queue').insert({
-                user_id: id,
-                email: authUser?.email || null,
-                phone_number: authUser?.phone || null,
-                message_body: `Wahala over! 🚀\n\nHello ${profileData.full_name}, your Student ID has been verified by the HOSTELPULSE team.\n\nYour Trust Profile is now active and your account is Verified. You can now:\n✅ Post items for sale in the Campus Market.\n✅ Find and message potential Roommates.\n✅ Book inspections for Hostels & Shops.\n\nLog in now to see your new badge:\nhttps://HOSTELPULSE.vercel.app/dashboard`,
-                status: 'pending'
-            });
+                // Automated Messages Queue (n8n/Make Watcher)
+                await db.from('messages_queue').insert({
+                    user_id: id,
+                    email: authUser?.email || null,
+                    phone_number: authUser?.phone || null,
+                    message_body: `Wahala over! 🚀\n\nHello ${profileData.full_name}, your Student ID has been verified by the HOSTELPULSE team.\n\nYour Trust Profile is now active and your account is Verified. You can now:\n✅ Post items for sale in the Campus Market.\n✅ Find and message potential Roommates.\n✅ Book inspections for Hostels & Shops.\n\nLog in now to see your new badge:\nhttps://HOSTELPULSE.vercel.app/dashboard`,
+                    status: 'pending'
+                });
+            } catch (notifyErr) {
+                console.warn('Optional notification dispatch failed (non-fatal):', notifyErr);
+            }
         }
 
         if (error) return { error: error.message };
@@ -237,23 +263,34 @@ export async function rejectAccount(id: string, tableName: string) {
     await verifyAdmin();
     const db = getAdminClient();
     
-    if (tableName === 'profiles') {
+    if (tableName === 'profiles' || tableName === 'student_accounts') {
         const { error, data: profileData } = await db
             .from('profiles')
-            .update({ student_id_url: null, is_verified: false })
+            .update({ 
+                student_id_url: null, 
+                is_verified: false,
+                identity_verification_status: 'REJECTED_ADMIN',
+                internal_admin_notes: 'Rejected by Admin at HQ - re-upload required'
+            })
             .eq('id', id)
             .select('*')
             .single();
+
+        await db.from('student_accounts').update({ student_id_url: null, is_approved: false }).eq('id', id);
             
         if (!error && profileData) {
-            const { data: { user: authUser } } = await db.auth.admin.getUserById(id);
-            await db.from('messages_queue').insert({
-                user_id: id,
-                email: authUser?.email || null,
-                phone_number: authUser?.phone || null,
-                message_body: `Hello ${profileData.full_name},\n\nWe couldn't verify your Student ID for HOSTELPULSE.\nReason: Image too blurry / ID Expired / Invalid Document\n\nPlease re-upload a clear photo of your LAUTECH ID in your profile to unlock full access.\nFix it here: https://HOSTELPULSE.vercel.app/dashboard/student`,
-                status: 'pending'
-            });
+            try {
+                const { data: { user: authUser } } = await db.auth.admin.getUserById(id);
+                await db.from('messages_queue').insert({
+                    user_id: id,
+                    email: authUser?.email || null,
+                    phone_number: authUser?.phone || null,
+                    message_body: `Hello ${profileData.full_name},\n\nWe couldn't verify your Student ID for HOSTELPULSE.\nReason: Image too blurry / ID Expired / Invalid Document\n\nPlease re-upload a clear photo of your LAUTECH ID in your profile to unlock full access.\nFix it here: https://HOSTELPULSE.vercel.app/dashboard/student`,
+                    status: 'pending'
+                });
+            } catch (notifyErr) {
+                console.warn('Optional notification dispatch failed (non-fatal):', notifyErr);
+            }
             await createNotification(id, 'Verification Failed ❌', 'We couldn\'t verify your Student ID. Please re-upload a clear photo.', '/dashboard/student', 'VERIFICATION_FAILED');
             return { success: true };
         }

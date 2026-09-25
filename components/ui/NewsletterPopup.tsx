@@ -4,13 +4,36 @@ import { useState, useEffect } from 'react';
 import { X, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { createClient } from '@/lib/supabase/client';
+import { usePathname } from 'next/navigation';
+import { useAuth } from '@/components/providers/AuthProvider';
 
 export function NewsletterPopup() {
     const [isOpen, setIsOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
+    const pathname = usePathname();
+    const { user } = useAuth();
+
+    // Ensure the newsletter modal NEVER shows on admin, dashboard, or authenticated workspace routes
+    const isRestrictedRoute = 
+        !pathname ||
+        pathname.startsWith('/hq_admin') || 
+        pathname.startsWith('/admin') || 
+        pathname.startsWith('/dashboard') ||
+        pathname.startsWith('/messages') ||
+        pathname.startsWith('/wallet') ||
+        pathname.startsWith('/profile') ||
+        pathname.startsWith('/book') ||
+        pathname.startsWith('/join') ||
+        pathname.startsWith('/auth') ||
+        user !== null;
 
     useEffect(() => {
+        if (isRestrictedRoute) {
+            setIsOpen(false);
+            return;
+        }
+
         const hasSeenPopup = localStorage.getItem('hasSeenNewsletterPopup');
         if (!hasSeenPopup) {
             const timer = setTimeout(() => {
@@ -19,7 +42,7 @@ export function NewsletterPopup() {
 
             return () => clearTimeout(timer);
         }
-    }, []);
+    }, [isRestrictedRoute]);
 
     const handleClose = () => {
         setIsOpen(false);
@@ -40,7 +63,7 @@ export function NewsletterPopup() {
         setLoading(false);
     };
 
-    if (!isOpen) return null;
+    if (isRestrictedRoute || !isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 export const runtime = 'edge';
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -72,6 +72,18 @@ const AccountApprovalCard = ({ account, onApprove, onReject }: { account: any, o
                                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">
                                     {account.phone || account.phone_number || 'No Phone provided'} • {account.contact_email || account.email || 'No Email'}
                                 </p>
+                                {account.identity_verification_status && (
+                                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                                        <span className="text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                                            🤖 AI Bot: {account.identity_verification_status.replace(/_/g, ' ')}
+                                        </span>
+                                        {account.internal_admin_notes && (
+                                            <span className="text-[10px] text-gray-400 italic">
+                                                {account.internal_admin_notes}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                             <span className="bg-yellow-500/10 text-yellow-500 text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest border border-yellow-500/20">
                                 Pending

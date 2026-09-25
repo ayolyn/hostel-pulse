@@ -10,7 +10,10 @@ export default function ConditionalFooter() {
     const isPortal = pathname?.startsWith('/dashboard') || 
                      pathname?.startsWith('/messages') || 
                      pathname?.startsWith('/wallet') || 
-                     pathname?.startsWith('/profile') || pathname?.startsWith('/book');
+                     pathname?.startsWith('/profile') || 
+                     pathname?.startsWith('/book') ||
+                     pathname?.startsWith('/hq_admin') ||
+                     pathname?.startsWith('/admin');
     
     if (isPortal) return null;
     

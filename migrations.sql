@@ -78,3 +78,55 @@ BEGIN
     ORDER BY weighted_score DESC;
 END;
 $$ LANGUAGE plpgsql;
+
+-- 4. Add available_units and room_type to properties table
+ALTER TABLE public.properties
+ADD COLUMN IF NOT EXISTS available_units INTEGER DEFAULT 1;
+
+ALTER TABLE public.properties
+ADD COLUMN IF NOT EXISTS room_type TEXT;
+
+-- 5. Add quantity to market_listings and decrement RPC
+ALTER TABLE public.market_listings
+ADD COLUMN IF NOT EXISTS quantity INTEGER DEFAULT 1;
+
+CREATE OR REPLACE FUNCTION public.decrement_market_quantity(listing_id_param UUID)
+RETURNS INTEGER AS $$
+DECLARE
+    new_qty INTEGER;
+BEGIN
+    UPDATE public.market_listings
+    SET quantity = GREATEST(COALESCE(quantity, 1) - 1, 0)
+    WHERE id = listing_id_param
+    RETURNING quantity INTO new_qty;
+    
+    RETURN new_qty;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 6. Add KYC verification tracking to profiles & student_accounts
+ALTER TABLE public.profiles
+ADD COLUMN IF NOT EXISTS identity_verification_status TEXT DEFAULT 'UNVERIFIED';
+
+ALTER TABLE public.profiles
+ADD COLUMN IF NOT EXISTS internal_admin_notes TEXT;
+
+ALTER TABLE public.student_accounts
+ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT FALSE;
+
+ALTER TABLE public.student_accounts
+ADD COLUMN IF NOT EXISTS student_id_url TEXT;
+
+-- 7. Add property_audit_logs table for admin property actions
+CREATE TABLE IF NOT EXISTS public.property_audit_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE,
+    changed_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    action TEXT NOT NULL,
+    field TEXT,
+    new_value TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Reload PostgREST schema cache
+NOTIFY pgrst, 'reload schema';

@@ -1,4 +1,4 @@
-﻿import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
     try {
         let query = supabase
             .from("properties")
-            .select("id, title, location, price, listing_type, category, room_type, available_units, images, is_verified, agent_accounts(full_name), landlord_accounts(business_name)")
+            .select("id, title, location, price, listing_type, category, images, verification_status, agent_accounts(full_name), landlord_accounts(business_name)")
             .eq("is_active", true)
             .limit(limit);
 
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
             const intent = extractIntent(q);
             
             if (intent.roomType) {
-                query = query.eq('room_type', intent.roomType);
+                query = query.or(`title.ilike.%${intent.roomType}%,description.ilike.%${intent.roomType}%`);
             }
             
             if (intent.terms.length > 0) {
