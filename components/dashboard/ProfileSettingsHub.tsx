@@ -27,9 +27,6 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
     const [disputeModal, setDisputeModal] = useState<{ id: string | null, reason: string }>({ id: null, reason: '' });
     const [reviewModalProvider, setReviewModalProvider] = useState<{ id: string, name: string } | null>(null);
     
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [passwordMsg, setPasswordMsg] = useState('');
 
     useEffect(() => {
         if (!user) return;
@@ -221,38 +218,6 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
         }
     };
 
-    const handlePasswordChange = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setPasswordMsg('');
-        if (!currentPassword) {
-            setPasswordMsg('Current password is required');
-            return;
-        }
-        if (!newPassword || newPassword.length < 6) {
-            setPasswordMsg('New password must be at least 6 characters');
-            return;
-        }
-        
-        // Verify current password
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-            email: user?.email || '',
-            password: currentPassword
-        });
-
-        if (signInError) {
-            setPasswordMsg('Incorrect current password');
-            return;
-        }
-        
-        const { error } = await supabase.auth.updateUser({ password: newPassword });
-        if (error) {
-            setPasswordMsg(error.message);
-        } else {
-            setPasswordMsg('Password updated successfully');
-            setCurrentPassword('');
-            setNewPassword('');
-        }
-    };
 
     const sections = [
         { id: 'Wallet', icon: Wallet, label: 'Wallet', isLink: true, href: '?tab=wallet', className: 'md:hidden' },
@@ -360,54 +325,8 @@ export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any
 
                 {activeSection === 'Security' && (
                     <div className="space-y-6 animate-in fade-in duration-300">
-                        <div className="bg-white dark:bg-neutral-900 p-6 md:p-8 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
-                            <div className="flex items-center gap-3 mb-8">
-                                <Lock className="w-8 h-8 text-[#BEF264]" />
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Security Settings</h3>
-                            </div>
-                            
-                            <div className="max-w-md space-y-6">
-                                <form onSubmit={handlePasswordChange} className="space-y-4">
-                                    <h4 className="font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 border-b border-gray-100 dark:border-white/5 pb-2">Change Password</h4>
-                                    
-                                    {passwordMsg && (
-                                        <div className={`p-3 rounded-xl text-xs font-bold ${passwordMsg.includes('success') ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
-                                            {passwordMsg}
-                                        </div>
-                                    )}
-                                    
-                                    <div className="space-y-2">
-                                        <label className="text-[11px] font-black uppercase tracking-widest text-gray-400">Current Password</label>
-                                        <input 
-                                            type="password" 
-                                            value={currentPassword}
-                                            onChange={e => setCurrentPassword(e.target.value)}
-                                            placeholder="Enter current password"
-                                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-800 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[11px] font-black uppercase tracking-widest text-gray-400">New Password</label>
-                                        <input 
-                                            type="password" 
-                                            value={newPassword}
-                                            onChange={e => setNewPassword(e.target.value)}
-                                            placeholder="Min. 6 characters"
-                                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-800 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all"
-                                        />
-                                    </div>
-                                    
-                                    <button type="submit" className="w-full bg-black dark:bg-white text-white dark:text-black font-black uppercase tracking-widest text-xs py-4 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-transform">
-                                        Update Password
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        {/* Payout Security PIN Settings */}
                         <SecuritySettingsCard 
                             userId={user?.id || ''} 
-                            hasPinSet={accountData?.pin_set || false} 
                         />
                     </div>
                 )}

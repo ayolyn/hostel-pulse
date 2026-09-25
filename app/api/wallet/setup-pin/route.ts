@@ -58,4 +58,36 @@ export async function POST(req: Request) {
   }
 }
 
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('userId');
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Missing userId parameter' }, { status: 400 });
+    }
+
+    const { data: securityData, error: securityError } = await supabase
+      .from('user_security')
+      .select('pin_set, locked_until')
+      .eq('user_id', userId)
+      .single();
+
+    if (securityError && securityError.code !== 'PGRST116') {
+      console.error('Error fetching user security status:', securityError);
+      return NextResponse.json({ error: 'Failed to fetch status' }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      hasPinSet: securityData?.pin_set === true,
+      lockedUntil: securityData?.locked_until || null
+    });
+  } catch (error) {
+    console.error('Unexpected error in GET setup-pin:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+
 
