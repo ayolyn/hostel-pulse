@@ -28,6 +28,24 @@ export function SecuritySettingsCard({ userId: propUserId }: SecuritySettingsCar
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loadingPassword, setLoadingPassword] = useState(false);
 
+    // Forgot PIN / Reset states
+    const [isResettingPin, setIsResettingPin] = useState(false);
+    const [sendingForgotPin, setSendingForgotPin] = useState(false);
+    const [resetPinLoading, setResetPinLoading] = useState(false);
+    const [resetOtp, setResetOtp] = useState("");
+    const [resetNewPin, setResetNewPin] = useState("");
+    const [resetConfirmPin, setResetConfirmPin] = useState("");
+    const [maskedEmail, setMaskedEmail] = useState("");
+    const [cooldown, setCooldown] = useState(0);
+
+    useEffect(() => {
+        if (cooldown <= 0) return;
+        const timer = setInterval(() => {
+            setCooldown((prev) => prev - 1);
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [cooldown]);
+
     useEffect(() => {
         let isMounted = true;
 
@@ -175,6 +193,93 @@ export function SecuritySettingsCard({ userId: propUserId }: SecuritySettingsCar
         }
     };
 
+    const handleTriggerForgotPin = async () => {
+        if (cooldown > 0) return;
+        setSendingForgotPin(true);
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            const targetUid = user?.id || activeUserId;
+
+            if (!targetUid) {
+                toast.error("User session not found. Please log in again.");
+                return;
+            }
+
+            const res = await fetch('/api/wallet/forgot-pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: targetUid })
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                toast.success("Verification code sent to your email!");
+                setMaskedEmail(data.email || "your registered email");
+                setIsResettingPin(true);
+                setCooldown(60);
+            } else {
+                toast.error(data.error || "Failed to send reset code.");
+            }
+        } catch (error) {
+            toast.error("An unexpected error occurred.");
+        } finally {
+            setSendingForgotPin(false);
+        }
+    };
+
+    const handleResetPinSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (resetOtp.length !== 6) {
+            toast.error("Please enter the 6-digit verification code.");
+            return;
+        }
+        if (resetNewPin.length !== 4) {
+            toast.error("New PIN must be 4 digits.");
+            return;
+        }
+        if (resetNewPin !== resetConfirmPin) {
+            toast.error("New PINs do not match.");
+            return;
+        }
+
+        setResetPinLoading(true);
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            const targetUid = user?.id || activeUserId;
+
+            if (!targetUid) {
+                toast.error("User session not found. Please log in again.");
+                return;
+            }
+
+            const res = await fetch('/api/wallet/reset-pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: targetUid,
+                    otp: resetOtp,
+                    newPin: resetNewPin
+                })
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                toast.success("Security PIN reset successfully!");
+                setIsResettingPin(false);
+                setHasPinSet(true);
+                setResetOtp("");
+                setResetNewPin("");
+                setResetConfirmPin("");
+            } else {
+                toast.error(data.error || "Failed to reset PIN.");
+            }
+        } catch (error) {
+            toast.error("An unexpected error occurred.");
+        } finally {
+            setResetPinLoading(false);
+        }
+    };
+
     const handleUpdatePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!currentPassword || !newPassword) {
@@ -267,7 +372,101 @@ export function SecuritySettingsCard({ userId: propUserId }: SecuritySettingsCar
                     )}
                 </div>
 
-                {!hasPinSet ? (
+                {isResettingPin ? (
+                    <form onSubmit={handleResetPinSubmit} className="space-y-4 max-w-lg">
+                        <div className="p-4 bg-emerald-50/70 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl flex items-start gap-3 mb-2">
+                            <Mail className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                            <div>
+                                <p className="text-xs font-black text-emerald-900 dark:text-emerald-300 uppercase tracking-tight">
+                                    Check Your Email
+                                </p>
+                                <p className="text-xs font-medium text-emerald-800 dark:text-emerald-400/90 mt-0.5">
+                                    We sent a 6-digit verification code to <span className="font-bold underline">{maskedEmail}</span>. Enter it below with your new PIN.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">
+                                6-Digit Email Code
+                            </label>
+                            <input
+                                type="text"
+                                inputMode="numeric"
+                                maxLength={6}
+                                value={resetOtp}
+                                onChange={(e) => setResetOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                placeholder="123456"
+                                className="w-full bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-white/10 rounded-2xl py-3 px-4 text-gray-900 dark:text-white font-black text-xl tracking-[0.4em] text-center focus:outline-none focus:ring-2 focus:ring-[#BEF264]"
+                                required
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">New PIN (4 digits)</label>
+                                <input
+                                    type="password"
+                                    inputMode="numeric"
+                                    maxLength={4}
+                                    value={resetNewPin}
+                                    onChange={(e) => setResetNewPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                                    placeholder="••••"
+                                    className="w-full bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-white/10 rounded-2xl py-3 px-4 text-gray-900 dark:text-white font-black text-xl tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-[#BEF264]"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 block">Confirm New PIN</label>
+                                <input
+                                    type="password"
+                                    inputMode="numeric"
+                                    maxLength={4}
+                                    value={resetConfirmPin}
+                                    onChange={(e) => setResetConfirmPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                                    placeholder="••••"
+                                    className="w-full bg-gray-50 dark:bg-neutral-800 border border-gray-200 dark:border-white/10 rounded-2xl py-3 px-4 text-gray-900 dark:text-white font-black text-xl tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-[#BEF264]"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                            <div className="flex items-center gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleTriggerForgotPin}
+                                    disabled={cooldown > 0 || sendingForgotPin}
+                                    className="text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors disabled:opacity-50"
+                                >
+                                    {sendingForgotPin ? "Resending..." : cooldown > 0 ? `Resend Code (${cooldown}s)` : "Resend Code"}
+                                </button>
+                                <span className="text-gray-300 dark:text-neutral-700">|</span>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsResettingPin(false);
+                                        setResetOtp("");
+                                        setResetNewPin("");
+                                        setResetConfirmPin("");
+                                    }}
+                                    className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={resetPinLoading || resetOtp.length !== 6 || resetNewPin.length !== 4 || resetConfirmPin.length !== 4}
+                                className="w-full sm:w-auto bg-[#BEF264] text-black font-black uppercase tracking-widest text-xs py-3 px-6 rounded-2xl hover:bg-[#a6d456] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                            >
+                                {resetPinLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+                                {resetPinLoading ? 'Verifying...' : 'Reset Payout PIN'}
+                            </button>
+                        </div>
+                    </form>
+                ) : !hasPinSet ? (
                     <form onSubmit={handleSetPin} className="space-y-4 max-w-lg">
                         <div className="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl flex items-start gap-3 mb-2">
                             <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
@@ -362,10 +561,12 @@ export function SecuritySettingsCard({ userId: propUserId }: SecuritySettingsCar
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
                             <button
                                 type="button"
-                                onClick={() => toast.success("For PIN reset instructions, please contact security support or verify your email.")}
-                                className="text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors"
+                                onClick={handleTriggerForgotPin}
+                                disabled={sendingForgotPin}
+                                className="text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors flex items-center gap-1.5 disabled:opacity-50"
                             >
-                                Forgot PIN?
+                                {sendingForgotPin && <Loader2 className="w-3 h-3 animate-spin" />}
+                                {sendingForgotPin ? "Sending Code to Email..." : "Forgot PIN?"}
                             </button>
                             <button
                                 type="submit"

@@ -8,11 +8,12 @@ interface PinKeypadModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (pin: string) => Promise<void>;
+    onForgotPin?: () => void;
     title?: string;
     loading?: boolean;
 }
 
-export function PinKeypadModal({ isOpen, onClose, onSubmit, title = "Enter Payout PIN", loading = false }: PinKeypadModalProps) {
+export function PinKeypadModal({ isOpen, onClose, onSubmit, onForgotPin, title = "Enter Payout PIN", loading = false }: PinKeypadModalProps) {
     const [pin, setPin] = useState<string>("");
     const [shake, setShake] = useState(false);
     const [maskedDigits, setMaskedDigits] = useState<boolean[]>([false, false, false, false]);
@@ -152,7 +153,17 @@ export function PinKeypadModal({ isOpen, onClose, onSubmit, title = "Enter Payou
                                 })}
                             </motion.div>
 
-                            <button className="text-sm font-bold text-[#BEF264] hover:text-[#a6d456] transition-colors mb-8">
+                            <button 
+                                type="button"
+                                onClick={() => {
+                                    if (onForgotPin) {
+                                        onForgotPin();
+                                    } else {
+                                        window.location.href = '?tab=profile';
+                                    }
+                                }}
+                                className="text-sm font-bold text-[#BEF264] hover:text-[#a6d456] transition-colors mb-8"
+                            >
                                 Forgot PIN?
                             </button>
 
