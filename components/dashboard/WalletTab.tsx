@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { WalletOverviewCards } from '@/components/shared/WalletOverviewCards';
 import { WithdrawalModal } from '@/components/dashboard/WithdrawalModal';
 import { FundWalletModal } from '@/components/dashboard/FundWalletModal';
+import { TransactionHistoryTable } from '@/components/dashboard/TransactionHistoryTable';
 import { 
     Wallet, 
     ArrowUpRight, 
@@ -45,6 +46,7 @@ interface WalletTabProps {
 export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
     const supabase = createClient();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [withdrawals, setWithdrawals] = useState<any[]>([]);
     const [localBalance, setLocalBalance] = useState(Number(agentAccount?.wallet_balance || 0));
     const [loading, setLoading] = useState(true);
     const [showWithdrawModal, setShowWithdrawModal] = useState(false);
@@ -86,7 +88,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                         .eq('payee_id', userId)
                         .order('created_at', { ascending: false }),
                     supabase
-                        .from('withdrawals')
+                        .from('payout_requests')
                         .select('*')
                         .eq('user_id', userId)
                         .order('created_at', { ascending: false })
@@ -96,7 +98,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                     console.error("Escrow transactions fetch error:", escrowRes.error);
                 }
                 if (withdrawRes.error) {
-                    console.error("Withdrawals fetch error:", withdrawRes.error);
+                    console.error("Payout requests fetch error:", withdrawRes.error);
                 }
 
                 const escrowData = escrowRes.data || [];
@@ -122,14 +124,17 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                     status: w.status,
                     created_at: w.created_at,
                     type: 'Withdrawal',
-                    student_name: 'Bank Payout',
+                    student_name: w.account_name || 'Bank Payout',
+                    bank_name: w.bank_name || '',
+                    failure_reason: w.failure_reason || ''
                 }));
 
-                const combined = [...formattedEscrow, ...formattedWithdrawals].sort((a, b) => 
+                const combined = [...formattedEscrow].sort((a, b) => 
                     new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
                 );
 
                 setTransactions(combined);
+                setWithdrawals(formattedWithdrawals);
             } catch (err) {
                 console.error("Unexpected error fetching wallet data:", err);
             } finally {
@@ -191,12 +196,12 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                 onFund={() => setShowFundModal(true)}
             />
 
-            {/* Transaction Ledger */}
+            {/* Escrow Payments Ledger */}
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h2 className="text-base font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                         <Receipt className="w-6 h-6 text-[#0D9488] dark:text-[#BEF264]" />
-                        Transaction History
+                        Escrow Payments
                     </h2>
                     <span className="text-[8px] font-black uppercase tracking-widest text-gray-600">{transactions.length} Total</span>
                 </div>
@@ -204,7 +209,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                 {transactions.length === 0 ? (
                     <div className="bg-gray-50 dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 rounded-3xl p-20 text-center">
                         <Wallet className="w-16 h-16 text-gray-200 dark:text-white/5 mx-auto mb-6" />
-                        <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">Your Wallet is Empty</h3>
+                        <h3 className="text-base font-black text-gray-900 dark:text-white uppercase tracking-tight">No Escrow Payments</h3>
                         <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-2 px-10">Start listing properties in Under-G to earn your first commission!</p>
                     </div>
                 ) : (
@@ -223,8 +228,8 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                                         className="py-2 px-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex items-center justify-between group cursor-pointer"
                                     >
                                         <div className="flex items-center gap-2">
-                                            <div className={`w-6 h-6 rounded-md flex items-center justify-center border ${isDisputed ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : tx.type === 'Withdrawal' ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : isHeld ? 'bg-amber-50 dark:bg-amber-400/10 border-amber-100 dark:border-amber-400/20 text-amber-500 dark:text-amber-400' : isReleased ? 'bg-emerald-50 dark:bg-[#BEF264]/10 border-emerald-100 dark:border-[#BEF264]/20 text-[#0D9488] dark:text-[#BEF264]' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
-                                                {tx.type === 'Withdrawal' ? <ArrowUpRight className="w-4 h-4" /> : isReleased ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
+                                            <div className={`w-6 h-6 rounded-md flex items-center justify-center border ${isDisputed ? 'bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20 text-red-500' : isHeld ? 'bg-amber-50 dark:bg-amber-400/10 border-amber-100 dark:border-amber-400/20 text-amber-500 dark:text-amber-400' : isReleased ? 'bg-emerald-50 dark:bg-[#BEF264]/10 border-emerald-100 dark:border-[#BEF264]/20 text-[#0D9488] dark:text-[#BEF264]' : 'bg-gray-50 border-gray-100 text-gray-500'}`}>
+                                                {isReleased ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
                                             </div>
                                             <div>
                                                 <h4 className="text-xs font-black text-xs text-gray-900 dark:text-white uppercase tracking-tight">{tx.type} Payment</h4>
@@ -257,6 +262,16 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                     </div>
                 )}
             </section>
+
+            <TransactionHistoryTable transactions={withdrawals.map(w => ({
+                id: w.id,
+                amount: Math.abs(w.amount),
+                status: w.status,
+                created_at: w.created_at,
+                account_name: w.student_name,
+                bank_name: w.bank_name,
+                failure_reason: w.failure_reason
+            }))} />
 
             {/* Payout Modal */}
             {showWithdrawModal && (
