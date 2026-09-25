@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { X, Building, Hash, User, Loader2, ArrowRight, ShieldCheck, KeyRound, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { getNigerianBanks } from "@/app/actions/flutterwave";
+import { PinKeypadModal } from "@/components/ui/PinKeypadModal";
 
 interface Bank {
     id: number;
@@ -377,33 +378,71 @@ export function WithdrawalModal({ userId, onClose, onSuccess }: WithdrawalModalP
     );
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white dark:bg-[#0F172A] w-full max-w-md rounded-3xl shadow-2xl overflow-y-auto max-h-[85vh] border border-gray-100 dark:border-white/10 relative">
-                
-                <div className="p-6 md:p-5 flex flex-col items-center border-b border-gray-100 dark:border-white/5 relative bg-neutral-50 dark:bg-neutral-900/50">
-                    <button 
-                        onClick={onClose}
-                        className="absolute right-6 top-6 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200/50 dark:bg-neutral-800 text-gray-500 hover:text-black dark:hover:text-white transition-colors"
-                    >
-                        <X className="w-4 h-4" />
-                    </button>
-                    <div className="flex items-center gap-2 mb-4">
-                        <div className={`w-8 h-1 rounded-full ${step >= 1 ? 'bg-[#BEF264]' : 'bg-gray-200 dark:bg-white/10'}`} />
-                        <div className={`w-8 h-1 rounded-full ${step >= 2 ? 'bg-[#BEF264]' : 'bg-gray-200 dark:bg-white/10'}`} />
-                        <div className={`w-8 h-1 rounded-full ${step >= 3 ? 'bg-[#BEF264]' : 'bg-gray-200 dark:bg-white/10'}`} />
-                    </div>
-                    <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight text-center">
-                        Request Payout
-                    </h3>
-                    <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1 text-center">
-                        {step === 1 ? 'Verify Identity' : step === 2 ? 'Amount & Details' : 'Security PIN'}
-                    </p>
-                </div>
+        <>
+            {step < 3 && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-[#0F172A] w-full max-w-md rounded-3xl shadow-2xl overflow-y-auto max-h-[85vh] border border-gray-100 dark:border-white/10 relative">
+                        
+                        <div className="p-6 md:p-5 flex flex-col items-center border-b border-gray-100 dark:border-white/5 relative bg-neutral-50 dark:bg-neutral-900/50">
+                            <button 
+                                onClick={onClose}
+                                className="absolute right-6 top-6 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200/50 dark:bg-neutral-800 text-gray-500 hover:text-black dark:hover:text-white transition-colors"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                            <div className="flex items-center gap-2 mb-4">
+                                <div className={`w-8 h-1 rounded-full ${step >= 1 ? 'bg-[#BEF264]' : 'bg-gray-200 dark:bg-white/10'}`} />
+                                <div className={`w-8 h-1 rounded-full ${step >= 2 ? 'bg-[#BEF264]' : 'bg-gray-200 dark:bg-white/10'}`} />
+                                <div className={`w-8 h-1 rounded-full ${step >= 3 ? 'bg-[#BEF264]' : 'bg-gray-200 dark:bg-white/10'}`} />
+                            </div>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight text-center">
+                                Request Payout
+                            </h3>
+                            <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1 text-center">
+                                {step === 1 ? 'Verify Identity' : 'Amount & Details'}
+                            </p>
+                        </div>
 
-                {step === 1 && renderStep1()}
-                {step === 2 && renderStep2()}
-                {step === 3 && renderStep3()}
-            </div>
-        </div>
+                        {step === 1 && renderStep1()}
+                        {step === 2 && renderStep2()}
+                    </div>
+                </div>
+            )}
+            
+            <PinKeypadModal
+                isOpen={step === 3}
+                onClose={() => setStep(2)}
+                onSubmit={async (pinCode) => {
+                    setWithdrawing(true);
+                    try {
+                        const res = await fetch('/api/wallet/request-withdrawal', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                userId,
+                                amount: Number(amount),
+                                bankAccountId,
+                                pin: pinCode
+                            })
+                        });
+                        
+                        const data = await res.json();
+                        
+                        if (res.ok && data.success) {
+                            toast.success("Withdrawal processed successfully!");
+                            onSuccess(balance - Number(amount));
+                            onClose();
+                        } else {
+                            toast.error(data.error || "Failed to process withdrawal.");
+                            throw new Error(data.error || "Failed");
+                        }
+                    } finally {
+                        setWithdrawing(false);
+                    }
+                }}
+                loading={withdrawing}
+                title={`Confirm ₦${Number(amount).toLocaleString()}`}
+            />
+        </>
     );
 }
