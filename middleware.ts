@@ -15,7 +15,7 @@ function applySecurityHeaders(res: NextResponse) {
     res.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
     res.headers.set('X-Content-Type-Options', 'nosniff');
     res.headers.set('Referrer-Policy', 'origin-when-cross-origin');
-    res.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' blob: data: https:; font-src 'self' data: https:; connect-src 'self' https: wss: blob:; frame-src 'self' https:;");
+    res.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' blob: data: https: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.basemaps.cartocdn.com https://basemaps.cartocdn.com https://*.mapbox.com; font-src 'self' data: https:; connect-src 'self' https: wss: blob: https://*.mapbox.com https://events.mapbox.com https://api.mapbox.com https://*.basemaps.cartocdn.com https://basemaps.cartocdn.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org; frame-src 'self' https:;");
     return res;
 }
 

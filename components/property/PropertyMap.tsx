@@ -23,8 +23,8 @@ type Property = {
     location: string;
     price: number;
     images?: string[];
-    latitude?: number;
-    longitude?: number;
+    latitude?: number | string;
+    longitude?: number | string;
 };
 
 interface PropertyMapProps {
@@ -32,8 +32,11 @@ interface PropertyMapProps {
 }
 
 function getPropertyCoordinates(p: Property): [number, number] {
-    if (typeof p.latitude === 'number' && typeof p.longitude === 'number' && p.latitude !== 0 && p.longitude !== 0) {
-        return [p.latitude, p.longitude];
+    const lat = typeof p.latitude === 'number' ? p.latitude : parseFloat(String(p.latitude ?? ''));
+    const lng = typeof p.longitude === 'number' ? p.longitude : parseFloat(String(p.longitude ?? ''));
+
+    if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
+        return [lat, lng];
     }
 
     const loc = `${p.location || ''} ${p.title || ''}`.toLowerCase();
@@ -67,12 +70,21 @@ function MapUpdater({ properties }: { properties: Property[] }) {
 
     useEffect(() => {
         // Fix Leaflet blank tile issue on dynamic mount / tab change
-        const timer1 = setTimeout(() => {
+        const resize = () => {
             map.invalidateSize();
-        }, 150);
-        const timer2 = setTimeout(() => {
-            map.invalidateSize();
-        }, 500);
+        };
+
+        const timer1 = setTimeout(resize, 150);
+        const timer2 = setTimeout(resize, 500);
+        const timer3 = setTimeout(resize, 1200);
+
+        window.addEventListener('resize', resize);
+        const container = map.getContainer();
+        let ro: ResizeObserver | null = null;
+        if (typeof ResizeObserver !== 'undefined' && container) {
+            ro = new ResizeObserver(() => resize());
+            ro.observe(container);
+        }
 
         if (properties.length > 0) {
             const coords = properties.map(p => getPropertyCoordinates(p));
@@ -85,6 +97,9 @@ function MapUpdater({ properties }: { properties: Property[] }) {
         return () => {
             clearTimeout(timer1);
             clearTimeout(timer2);
+            clearTimeout(timer3);
+            window.removeEventListener('resize', resize);
+            if (ro) ro.disconnect();
         };
     }, [properties, map]);
 
@@ -103,8 +118,8 @@ export default function PropertyMap({ properties }: PropertyMapProps) {
                 style={{ height: '100%', width: '100%', minHeight: '400px', zIndex: 0 }}
             >
                 <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>'
                 />
                 
                 {properties.map(p => {

@@ -9,7 +9,7 @@ const securityHeaders = [
     { key: "Referrer-Policy", value: "origin-when-cross-origin" },
     {
         key: "Content-Security-Policy",
-        value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' blob: data: https:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https:;"
+        value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' blob: data: https: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.basemaps.cartocdn.com https://basemaps.cartocdn.com https://*.mapbox.com; font-src 'self' data: https:; connect-src 'self' https: wss: blob: https://*.mapbox.com https://events.mapbox.com https://api.mapbox.com https://*.basemaps.cartocdn.com https://basemaps.cartocdn.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org; frame-src 'self' https:;"
     }
 ];
 

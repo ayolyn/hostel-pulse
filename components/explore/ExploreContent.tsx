@@ -73,6 +73,17 @@ export function ExploreContent({ isEmbedded = false }: { isEmbedded?: boolean })
         }
     };
 
+    const getBrowseListingsHref = () => {
+        if (!isEmbedded) return '/rent';
+        const normalized = role?.toLowerCase();
+        if (normalized === 'landlord') {
+            return '/dashboard/landlord?tab=my-properties';
+        } else if (normalized === 'agent') {
+            return '/dashboard/agent?tab=listings';
+        }
+        return '/dashboard/student?tab=find-hostel';
+    };
+
     return (
         <div className="flex flex-col gap-6">
             {isEmbedded && (
@@ -98,7 +109,7 @@ export function ExploreContent({ isEmbedded = false }: { isEmbedded?: boolean })
                     </p>
                 </div>
                 <Link
-                    href="/rent"
+                    href={getBrowseListingsHref()}
                     className="flex items-center gap-2 bg-[#BEF264] text-black px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] transition-all shadow-lg shadow-[#BEF264]/20"
                 >
                     <Home className="w-4 h-4" />
@@ -169,7 +180,7 @@ export function ExploreContent({ isEmbedded = false }: { isEmbedded?: boolean })
                     <div className="bg-black dark:bg-[#BEF264]/10 rounded-2xl p-5 border border-white/5 dark:border-[#BEF264]/20 mt-2">
                         <p className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] mb-4">Quick Actions</p>
                         <div className="space-y-3">
-                            <Link href="/rent" className="flex items-center justify-between text-white dark:text-[#BEF264] text-xs font-black uppercase tracking-wider hover:opacity-80 transition-all">
+                            <Link href={getBrowseListingsHref()} className="flex items-center justify-between text-white dark:text-[#BEF264] text-xs font-black uppercase tracking-wider hover:opacity-80 transition-all">
                                 Browse Hostels <ExternalLink className="w-3.5 h-3.5" />
                             </Link>
                             <Link href="/agents" className="flex items-center justify-between text-white dark:text-[#BEF264] text-xs font-black uppercase tracking-wider hover:opacity-80 transition-all">
