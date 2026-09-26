@@ -48,11 +48,16 @@ export default async function DashboardRoot() {
         redirect('/dashboard/student');
     }
 
-    // Only redirect to super admin HQ if strictly verified as super_admin
-    if (role === 'super_admin') {
-        redirect('/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c');
+    const { data: agentAcc } = await supabase.from('agent_accounts').select('id').eq('id', user.id).maybeSingle();
+    if (agentAcc) {
+        redirect('/dashboard/agent');
     }
 
-    // Fallback: if no role exists, check if user needs onboarding, otherwise default to student dashboard
+    const { data: landlordAcc } = await supabase.from('landlord_accounts').select('id').eq('id', user.id).maybeSingle();
+    if (landlordAcc) {
+        redirect('/dashboard/landlord');
+    }
+
+    // Default fallback: always route to standard user portal, never redirect /dashboard to secret admin HQ
     redirect('/dashboard/student');
 }

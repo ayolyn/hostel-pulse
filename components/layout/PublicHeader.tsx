@@ -26,11 +26,9 @@ export function PublicHeader() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const userRole = role?.toLowerCase();
-    const dashboardLink = userRole === 'student' ? '/dashboard/student' :
-                          userRole === 'landlord' ? '/dashboard/landlord' :
+    const dashboardLink = userRole === 'landlord' ? '/dashboard/landlord' :
                           userRole === 'agent' ? '/dashboard/agent' :
                           userRole === 'non_student' ? '/dashboard/non-student' :
-                          userRole === 'super_admin' ? '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c' :
                           '/dashboard/student';
 
     return (

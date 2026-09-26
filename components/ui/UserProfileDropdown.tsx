@@ -73,20 +73,29 @@ export function UserProfileDropdown() {
                         */}
                         {(() => {
                             const normalizedRole = role?.toLowerCase();
-                            const targetHref = normalizedRole === 'student' ? '/dashboard/student?tab=profile' :
-                                               normalizedRole === 'landlord' ? '/dashboard/landlord?tab=overview' :
+                            const targetHref = normalizedRole === 'landlord' ? '/dashboard/landlord?tab=overview' :
                                                normalizedRole === 'agent' ? '/dashboard/agent' :
                                                normalizedRole === 'non_student' ? '/dashboard/non-student' :
-                                               normalizedRole === 'super_admin' ? '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c' :
-                                               '/dashboard/student';
+                                               '/dashboard/student?tab=profile';
                             return (
-                                <Link 
-                                    href={targetHref}
-                                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors text-neutral-700 dark:text-neutral-300 w-full text-left text-sm font-bold"
-                                    onClick={() => setIsOpen(false)}
-                                >
-                                    <Settings className="w-4 h-4" /> {normalizedRole === 'student' ? 'Profile & Settings' : 'Dashboard'}
-                                </Link>
+                                <>
+                                    <Link 
+                                        href={targetHref}
+                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors text-neutral-700 dark:text-neutral-300 w-full text-left text-sm font-bold"
+                                        onClick={() => setIsOpen(false)}
+                                    >
+                                        <Settings className="w-4 h-4" /> Profile & Settings
+                                    </Link>
+                                    {normalizedRole === 'super_admin' && (
+                                        <Link 
+                                            href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c"
+                                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#BEF264]/10 text-emerald-600 dark:text-[#BEF264] transition-colors w-full text-left text-sm font-bold"
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-[#BEF264]" /> Admin HQ
+                                        </Link>
+                                    )}
+                                </>
                             );
                         })()}
                         <button

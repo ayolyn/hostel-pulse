@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { computeImageHashServer, calculateSimilarity, hammingDistanceHex } from '@/lib/phash';
 
-export const runtime = 'nodejs'; // Use Node.js runtime for Buffer & zlib support
+export const runtime = 'edge';
 
 function getAdmin() {
     return createAdminClient(
@@ -53,10 +53,10 @@ export async function POST(req: Request) {
 
         for (const file of files) {
             const arrayBuffer = await file.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
+            const bytes = new Uint8Array(arrayBuffer);
 
             // Compute 64-bit dHash in pure TypeScript
-            const phash = await computeImageHashServer(buffer);
+            const phash = await computeImageHashServer(bytes);
 
             // Upload image to Supabase Storage bucket 'property-images'
             const ext = file.name.split('.').pop() || 'jpg';
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 
             const { data: uploadData, error: uploadErr } = await admin.storage
                 .from('property-images')
-                .upload(storagePath, buffer, {
+                .upload(storagePath, bytes, {
                     contentType: file.type || 'image/jpeg',
                     upsert: false
                 });

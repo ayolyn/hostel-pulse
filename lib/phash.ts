@@ -182,39 +182,41 @@ export async function computeImageHashBrowser(fileOrUrl: File | Blob | string): 
 }
 
 /**
- * Server-side image perceptual hashing from Buffer (Node.js).
+ * Server-side image perceptual hashing from Uint8Array / Buffer.
  * Decodes PNG, BMP, or JPEG buffers in pure JavaScript without native C++ compilation.
+ * 100% compatible with Edge runtime (Cloudflare Workers, Next.js Edge, Node.js).
  */
-export async function computeImageHashServer(buffer: Buffer): Promise<string> {
-    if (!buffer || buffer.length < 16) {
+export async function computeImageHashServer(data: Uint8Array | ArrayBuffer | Buffer): Promise<string> {
+    const bytes = data instanceof Uint8Array ? data : new Uint8Array(data);
+    if (!bytes || bytes.length < 16) {
         return '0000000000000000';
     }
 
     try {
         // 1. Check for PNG signature (89 50 4E 47 0D 0A 1A 0A)
         if (
-            buffer[0] === 0x89 &&
-            buffer[1] === 0x50 &&
-            buffer[2] === 0x4e &&
-            buffer[3] === 0x47
+            bytes[0] === 0x89 &&
+            bytes[1] === 0x50 &&
+            bytes[2] === 0x4e &&
+            bytes[3] === 0x47
         ) {
-            const pngRgba = await decodePngToRgba(buffer);
+            const pngRgba = await decodePngToRgba(bytes);
             if (pngRgba) {
                 return computeDHashFromRgba(pngRgba.data, pngRgba.width, pngRgba.height);
             }
         }
 
         // 2. Check for BMP signature ('BM' = 0x42 0x4D)
-        if (buffer[0] === 0x42 && buffer[1] === 0x4d) {
-            const bmpRgba = decodeBmpToRgba(buffer);
+        if (bytes[0] === 0x42 && bytes[1] === 0x4d) {
+            const bmpRgba = decodeBmpToRgba(bytes);
             if (bmpRgba) {
                 return computeDHashFromRgba(bmpRgba.data, bmpRgba.width, bmpRgba.height);
             }
         }
 
         // 3. Check for JPEG signature (FF D8)
-        if (buffer[0] === 0xff && buffer[1] === 0xd8) {
-            const jpegHash = extractJpegPerceptualHash(buffer);
+        if (bytes[0] === 0xff && bytes[1] === 0xd8) {
+            const jpegHash = extractJpegPerceptualHash(bytes);
             if (jpegHash) {
                 return jpegHash;
             }
@@ -224,31 +226,57 @@ export async function computeImageHashServer(buffer: Buffer): Promise<string> {
     }
 
     // 4. Robust content-structure fallback: sample buffer bytes across a 9x8 grid
-    return computeFallbackBufferHash(buffer);
+    return computeFallbackBufferHash(bytes);
+}
+
+function readU16BE(buf: Uint8Array, pos: number): number {
+    return (buf[pos] << 8) | buf[pos + 1];
+}
+
+function readU32BE(buf: Uint8Array, pos: number): number {
+    return ((buf[pos] << 24) >>> 0) + (buf[pos + 1] << 16) + (buf[pos + 2] << 8) + buf[pos + 3];
+}
+
+function readU16LE(buf: Uint8Array, pos: number): number {
+    return buf[pos] | (buf[pos + 1] << 8);
+}
+
+function readU32LE(buf: Uint8Array, pos: number): number {
+    return ((buf[pos + 3] << 24) >>> 0) + (buf[pos + 2] << 16) + (buf[pos + 1] << 8) + buf[pos];
+}
+
+function readI32LE(buf: Uint8Array, pos: number): number {
+    return buf[pos] | (buf[pos + 1] << 8) | (buf[pos + 2] << 16) | (buf[pos + 3] << 24);
+}
+
+function readAscii(buf: Uint8Array, start: number, end: number): string {
+    let str = '';
+    for (let i = start; i < end; i++) {
+        str += String.fromCharCode(buf[i]);
+    }
+    return str;
 }
 
 /**
  * Lightweight pure-TS PNG decoder for perceptual hashing.
  */
-async function decodePngToRgba(buf: Buffer): Promise<{ width: number; height: number; data: Uint8Array } | null> {
+async function decodePngToRgba(buf: Uint8Array): Promise<{ width: number; height: number; data: Uint8Array } | null> {
     try {
-        if (typeof window !== 'undefined') return null;
-
         let pos = 8;
         let width = 0;
         let height = 0;
         let bitDepth = 8;
         let colorType = 2; // 2=RGB, 6=RGBA
-        const idatChunks: Buffer[] = [];
+        const idatChunks: Uint8Array[] = [];
 
         while (pos < buf.length - 8) {
-            const length = buf.readUInt32BE(pos);
-            const type = buf.toString('ascii', pos + 4, pos + 8);
+            const length = readU32BE(buf, pos);
+            const type = readAscii(buf, pos + 4, pos + 8);
             pos += 8;
 
             if (type === 'IHDR') {
-                width = buf.readUInt32BE(pos);
-                height = buf.readUInt32BE(pos + 4);
+                width = readU32BE(buf, pos);
+                height = readU32BE(buf, pos + 4);
                 bitDepth = buf[pos + 8];
                 colorType = buf[pos + 9];
             } else if (type === 'IDAT') {
@@ -261,10 +289,29 @@ async function decodePngToRgba(buf: Buffer): Promise<{ width: number; height: nu
 
         if (width === 0 || height === 0 || idatChunks.length === 0) return null;
 
-        const compressed = Buffer.concat(idatChunks);
-        const zlibMod = 'zlib';
-        const zlib = await import(/* webpackIgnore: true */ zlibMod);
-        const decompressed = zlib.inflateSync(compressed);
+        // Concatenate IDAT chunks
+        const totalLen = idatChunks.reduce((acc, c) => acc + c.length, 0);
+        const compressed = new Uint8Array(totalLen);
+        let offset = 0;
+        for (const chunk of idatChunks) {
+            compressed.set(chunk, offset);
+            offset += chunk.length;
+        }
+
+        let decompressed: Uint8Array | null = null;
+        if (typeof DecompressionStream !== 'undefined') {
+            try {
+                const ds = new DecompressionStream('deflate');
+                const writer = ds.writable.getWriter();
+                writer.write(compressed);
+                writer.close();
+                const resp = new Response(ds.readable);
+                const ab = await resp.arrayBuffer();
+                decompressed = new Uint8Array(ab);
+            } catch (_) {}
+        }
+
+        if (!decompressed) return null;
 
         const bytesPerPixel = colorType === 6 ? 4 : colorType === 2 ? 3 : 1;
         const stride = width * bytesPerPixel;
@@ -306,12 +353,12 @@ async function decodePngToRgba(buf: Buffer): Promise<{ width: number; height: nu
 /**
  * Lightweight BMP decoder for perceptual hashing.
  */
-function decodeBmpToRgba(buf: Buffer): { width: number; height: number; data: Uint8Array } | null {
+function decodeBmpToRgba(buf: Uint8Array): { width: number; height: number; data: Uint8Array } | null {
     try {
-        const dataOffset = buf.readUInt32LE(10);
-        const width = buf.readInt32LE(18);
-        const height = Math.abs(buf.readInt32LE(22));
-        const bpp = buf.readUInt16LE(28);
+        const dataOffset = readU32LE(buf, 10);
+        const width = readI32LE(buf, 18);
+        const height = Math.abs(readI32LE(buf, 22));
+        const bpp = readU16LE(buf, 28);
 
         if (bpp !== 24 && bpp !== 32) return null;
 
@@ -341,7 +388,7 @@ function decodeBmpToRgba(buf: Buffer): { width: number; height: number; data: Ui
  * Extracts perceptual hash from JPEG markers and DCT scan data.
  * Samples scanline entropy and luminance blocks across 72 regions.
  */
-function extractJpegPerceptualHash(buf: Buffer): string | null {
+function extractJpegPerceptualHash(buf: Uint8Array): string | null {
     try {
         let pos = 2;
         let scanStart = 0;
@@ -350,12 +397,12 @@ function extractJpegPerceptualHash(buf: Buffer): string | null {
             if (buf[pos] === 0xff) {
                 const marker = buf[pos + 1];
                 if (marker === 0xda) { // SOS (Start of Scan)
-                    const length = buf.readUInt16BE(pos + 2);
+                    const length = readU16BE(buf, pos + 2);
                     scanStart = pos + 2 + length;
                     break;
                 }
                 if (marker !== 0x00 && marker !== 0xd8 && marker !== 0xd9) {
-                    const length = buf.readUInt16BE(pos + 2);
+                    const length = readU16BE(buf, pos + 2);
                     pos += 2 + length;
                     continue;
                 }
@@ -373,7 +420,7 @@ function extractJpegPerceptualHash(buf: Buffer): string | null {
 /**
  * Computes a deterministic 64-bit gradient hash across 72 sampled segments.
  */
-export function computeFallbackBufferHash(buf: Buffer): string {
+export function computeFallbackBufferHash(buf: Uint8Array): string {
     const targetW = 9;
     const targetH = 8;
     const totalCells = targetW * targetH; // 72
