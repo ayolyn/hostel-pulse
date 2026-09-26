@@ -1,12 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Map, Home, ShoppingBag, Bus, Coffee, BookOpen, MapPin, ExternalLink, ArrowLeft } from 'lucide-react';
+import { Map, Home, ShoppingBag, Bus, Coffee, BookOpen, MapPin, ExternalLink, ArrowLeft, Flame, Users, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/providers/AuthProvider';
 import dynamic from 'next/dynamic';
-import { Loader2 } from 'lucide-react';
 
 const PulseMapbox = dynamic(() => import('@/components/map/PulseMapbox'), {
     ssr: false,
@@ -22,6 +21,8 @@ const PulseMapbox = dynamic(() => import('@/components/map/PulseMapbox'), {
 
 const categories = [
     { id: 'all', label: 'All', icon: Map, query: '' },
+    { id: 'hotspots', label: 'Hotspots 🔥', icon: Flame, query: 'hotspots' },
+    { id: 'roommates', label: 'Roommates 👥', icon: Users, query: 'roommates' },
     { id: 'hostels', label: 'Hostels', icon: Home, query: 'hostels+near+LAUTECH+Ogbomoso' },
     { id: 'markets', label: 'Markets', icon: ShoppingBag, query: 'markets+Ogbomoso+Nigeria' },
     { id: 'transport', label: 'Transport', icon: Bus, query: 'motor+park+Ogbomoso' },
@@ -141,8 +142,8 @@ export function ExploreContent({ isEmbedded = false }: { isEmbedded?: boolean })
             {/* Main Layout: Map + Sidebar */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Map */}
-                <div className="lg:col-span-2 rounded-[2rem] overflow-hidden border border-gray-100 dark:border-white/5 shadow-xl bg-gray-100 dark:bg-neutral-900" style={{ minHeight: 480 }}>
-                    <PulseMapbox properties={[]} showLandmarks={true} snapMode={true} activeCategory={activeCategory} flyToLocation={flyToLocation} zoom={13} />
+                <div className="lg:col-span-2 rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-[#090d16]" style={{ minHeight: 540 }}>
+                    <PulseMapbox properties={[]} showLandmarks={true} snapMode={true} activeCategory={activeCategory} flyToLocation={flyToLocation} zoom={14.2} />
                 </div>
 
                 {/* Nearby Spots Sidebar */}
