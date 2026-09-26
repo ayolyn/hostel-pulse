@@ -25,11 +25,13 @@ export function PublicHeader() {
     const { user, role } = useAuth();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    const dashboardLink = role === 'student' ? '/dashboard/student' :
-                          role === 'landlord' ? '/dashboard/landlord' :
-                          role === 'agent' ? '/dashboard/agent' :
-                          role === 'non_student' ? '/dashboard/non-student' :
-                          '/dashboard';
+    const userRole = role?.toLowerCase();
+    const dashboardLink = userRole === 'student' ? '/dashboard/student' :
+                          userRole === 'landlord' ? '/dashboard/landlord' :
+                          userRole === 'agent' ? '/dashboard/agent' :
+                          userRole === 'non_student' ? '/dashboard/non-student' :
+                          userRole === 'super_admin' ? '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c' :
+                          '/dashboard/student';
 
     return (
         <>

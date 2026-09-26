@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/dashboard/', '/api/', '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c/'],
+      disallow: ['/dashboard/', '/api/', '/onboarding/', '/auth/'],
     },
     sitemap: 'https://hostelpulse.app/sitemap.xml',
   };

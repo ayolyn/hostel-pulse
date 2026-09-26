@@ -26,6 +26,7 @@ import { RentView } from '@/components/rent/RentView';
 import { BuyView } from '@/components/buy/BuyView';
 import { RoommatesView } from '@/components/roommates/RoommatesView';
 import { ShortletView } from '@/components/shortlet/ShortletView';
+import { ExploreContent } from '@/components/explore/ExploreContent';
 
 import Loading from '@/app/loading';
 
@@ -192,6 +193,8 @@ function StudentDashboardContent() {
             setActiveTab('Gigs');
         } else if (tab === 'wallet') {
             setActiveTab('Wallet');
+        } else if (tab === 'explore') {
+            setActiveTab('Explore');
         } else {
             setActiveTab('Overview');
         }
@@ -703,6 +706,10 @@ function StudentDashboardContent() {
             ) : activeTab === 'Support' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                     <SupportHub />
+                </div>
+            ) : activeTab === 'Explore' ? (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <ExploreContent isEmbedded={true} />
                 </div>
             ) : activeTab === 'Profile' ? (
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">

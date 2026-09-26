@@ -33,10 +33,10 @@ export default async function AdminLayout({
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-    if (roleData?.role !== 'super_admin') {
-        redirect('/dashboard'); // Kick unauthorized users out
+    if (roleData?.role?.toLowerCase() !== 'super_admin') {
+        redirect('/dashboard/student'); // Kick unauthorized users out
     }
 
     return (

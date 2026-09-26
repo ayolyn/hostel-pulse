@@ -41,9 +41,9 @@ export default async function LandlordDashboardLayout({
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-    if (roleData?.role !== 'landlord') {
+    if (roleData?.role?.toLowerCase() !== 'landlord') {
         redirect('/dashboard');
     }
 
@@ -56,7 +56,7 @@ export default async function LandlordDashboardLayout({
         .from('landlord_accounts')
         .select('is_approved, compliance_submitted')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
     const isApproved = account?.is_approved ?? false;
     const skippedCompliance = cookieStore.get('skip_compliance')?.value === 'true';

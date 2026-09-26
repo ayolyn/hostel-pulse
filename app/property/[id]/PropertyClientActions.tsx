@@ -8,6 +8,7 @@ import InspectionModal from '@/components/ui/InspectionModal';
 import { Heart, MessageCircle, Phone, ExternalLink, PencilLine, Building2, Share2, AlertCircle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
+import { submitPropertyReport } from '@/app/actions/propertyModeration';
 import { trackPropertyEvent } from '@/lib/analytics';
 
 interface Props {
@@ -52,6 +53,8 @@ export default function PropertyClientActions({
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [reportReason, setReportReason] = useState('');
+    const [reportDetails, setReportDetails] = useState('');
+    const [isSubmittingReport, setIsSubmittingReport] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [savingStatus, setSavingStatus] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
@@ -221,20 +224,53 @@ export default function PropertyClientActions({
                             ))}
                         </div>
                         
+                        <div className="mb-4">
+                            <textarea
+                                value={reportDetails}
+                                onChange={(e) => setReportDetails(e.target.value)}
+                                placeholder="Additional details or context (optional)..."
+                                rows={2}
+                                className="w-full text-xs p-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:border-red-500 text-gray-800 placeholder:text-gray-400"
+                            />
+                        </div>
+
                         <button 
-                            onClick={() => {
+                            disabled={isSubmittingReport}
+                            onClick={async () => {
                                 if (!reportReason) {
                                     toast.error('Please select a reason');
                                     return;
                                 }
-                                toast.success('Report submitted successfully. We will look into it.');
-                                setIsReportModalOpen(false);
+                                setIsSubmittingReport(true);
+                                try {
+                                    const res = await submitPropertyReport({
+                                        propertyId,
+                                        reason: reportReason,
+                                        details: reportDetails
+                                    });
+                                    if (res?.error) {
+                                        toast.error(res.error);
+                                    } else {
+                                        toast.success('Report submitted successfully. Our team will review it.');
+                                        setIsReportModalOpen(false);
+                                        setReportReason('');
+                                        setReportDetails('');
+                                    }
+                                } catch (err: any) {
+                                    toast.error(err.message || 'Failed to submit report');
+                                } finally {
+                                    setIsSubmittingReport(false);
+                                }
                             }}
-                            className="w-full bg-red-500 text-white font-black uppercase tracking-widest py-4 rounded-xl shadow-sm hover:opacity-90 transition-opacity text-xs"
+                            className="w-full bg-red-500 disabled:opacity-50 text-white font-black uppercase tracking-widest py-4 rounded-xl shadow-sm hover:opacity-90 transition-opacity text-xs"
                         >
-                            Submit Report
+                            {isSubmittingReport ? 'Submitting Report...' : 'Submit Report'}
                         </button>
-                        <button onClick={() => setIsReportModalOpen(false)} className="w-full mt-4 py-3 text-gray-400 font-bold uppercase tracking-widest text-xs hover:text-gray-900 transition-colors text-center">
+                        <button 
+                            disabled={isSubmittingReport}
+                            onClick={() => setIsReportModalOpen(false)} 
+                            className="w-full mt-4 py-3 text-gray-400 font-bold uppercase tracking-widest text-xs hover:text-gray-900 transition-colors text-center"
+                        >
                             Cancel
                         </button>
                     </div>

@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { 
@@ -16,12 +16,15 @@ import {
     HeadphonesIcon,
     Megaphone,
     BookOpen,
-    Banknote
+    Banknote,
+    Layers
 } from 'lucide-react';
 
 export default function AdminSidebar() {
     const searchParams = useSearchParams();
     const activeTab = searchParams.get('tab') || 'analytics';
+    const pathname = usePathname();
+    const ADMIN_BASE = '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c';
     const router = useRouter();
     const supabase = createClient();
     const [isRetracted, setIsRetracted] = useState(false);
@@ -35,6 +38,7 @@ export default function AdminSidebar() {
         { id: 'analytics', label: 'Analytics Engine', color: 'green', icon: LineChart },
         { id: 'payouts', label: 'Payout Approvals', color: 'green', icon: Banknote },
         { id: 'properties', label: 'Property Review', color: 'green', icon: LayoutDashboard },
+        { id: 'duplicates', label: 'Duplicate Review', color: 'orange', icon: Layers },
         { id: 'verifications', label: 'Account Queue', color: 'green', icon: ShieldCheck },
         { id: 'users', label: 'User Management', color: 'blue', icon: Users },
         { id: 'escrow', label: 'Escrow Control', color: 'orange', icon: Wallet },
@@ -67,7 +71,7 @@ export default function AdminSidebar() {
             <nav className={`flex-1 space-y-2 text-gray-400 ${isRetracted ? 'items-center' : ''}`}>
                 {!isRetracted && <div className="px-3 py-2 text-xs font-bold uppercase tracking-widest text-gray-500">Main Control</div>}
                 {navItems.map((item) => {
-                    const isActive = activeTab === item.id;
+                    const isActive = 'path' in item ? pathname === item.path : (activeTab === item.id && pathname === ADMIN_BASE);
                     const activeClass = item.color === 'red'
                         ? 'bg-red-500/10 text-red-400'
                         : item.color === 'blue'
@@ -81,7 +85,7 @@ export default function AdminSidebar() {
                     return (
                         <Link
                             key={item.id}
-                            href={'path' in item ? item.path : `?tab=${item.id}`}
+                            href={'path' in item ? item.path : `${ADMIN_BASE}?tab=${item.id}`}
                             scroll={false}
                             title={isRetracted ? item.label : ''}
                             className={`

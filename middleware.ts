@@ -15,7 +15,7 @@ function applySecurityHeaders(res: NextResponse) {
     res.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
     res.headers.set('X-Content-Type-Options', 'nosniff');
     res.headers.set('Referrer-Policy', 'origin-when-cross-origin');
-    res.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' blob: data: https:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-src 'self' https:;");
+    res.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline' https:; img-src 'self' blob: data: https:; font-src 'self' data: https:; connect-src 'self' https: wss: blob:; frame-src 'self' https:;");
     return res;
 }
 
@@ -57,6 +57,22 @@ export async function middleware(request: NextRequest) {
         }
     }
 
+    // Protect all /dashboard/* and admin routes from banned users
+    const isBanned = Boolean(
+        user?.banned_until ||
+        user?.app_metadata?.banned ||
+        user?.user_metadata?.banned ||
+        user?.user_metadata?.status === 'banned'
+    );
+    if (isBanned && (
+        request.nextUrl.pathname.startsWith('/dashboard') || 
+        request.nextUrl.pathname.startsWith('/messages') ||
+        request.nextUrl.pathname.startsWith('/onboarding') ||
+        request.nextUrl.pathname.startsWith('/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c')
+    )) {
+        return applySecurityHeaders(NextResponse.redirect(new URL('/join?banned=true', request.url)));
+    }
+
     // Protect all /dashboard/* routes
     const isDashboard = request.nextUrl.pathname.startsWith('/dashboard');
 
@@ -78,10 +94,10 @@ export async function middleware(request: NextRequest) {
             .from('user_roles')
             .select('role')
             .eq('user_id', user.id)
-            .single();
+            .maybeSingle();
             
-        if (roleData?.role !== 'super_admin') {
-            return applySecurityHeaders(NextResponse.redirect(new URL('/join', request.url))); // or /dashboard
+        if (roleData?.role?.toLowerCase() !== 'super_admin') {
+            return applySecurityHeaders(NextResponse.redirect(new URL('/dashboard/student', request.url)));
         }
     }
 

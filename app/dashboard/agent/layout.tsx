@@ -39,9 +39,9 @@ export default async function AgentDashboardLayout({
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-    if (roleData?.role !== 'agent') {
+    if (roleData?.role?.toLowerCase() !== 'agent') {
         redirect('/dashboard');
     }
 
@@ -54,7 +54,7 @@ export default async function AgentDashboardLayout({
         .from('agent_accounts')
         .select('is_approved, compliance_submitted')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
     const isApproved = account?.is_approved ?? false;
     const skippedCompliance = cookieStore.get('skip_compliance')?.value === 'true';

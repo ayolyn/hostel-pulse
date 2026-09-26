@@ -35,10 +35,18 @@ export default async function StudentDashboardLayout({
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-    if (roleData?.role !== 'student') {
-        redirect('/dashboard');
+    const role = roleData?.role?.toLowerCase();
+
+    if (role === 'landlord') {
+        redirect('/dashboard/landlord');
+    }
+    if (role === 'agent') {
+        redirect('/dashboard/agent');
+    }
+    if (role === 'non_student') {
+        redirect('/dashboard/non-student');
     }
 
     const { data: account } = await supabase

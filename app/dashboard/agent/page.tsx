@@ -51,6 +51,7 @@ import { AgentDashboardShell } from '@/components/layout/AgentDashboardShell';
 import AnalyticsTab from '@/components/dashboard/AnalyticsTab';
 import { SupportHub } from '@/components/messages/SupportHub';
 import { TermsModal } from '@/components/modals/TermsModal';
+import { ExploreContent } from '@/components/explore/ExploreContent';
 
 function AgentDashboardContent() {
     const supabase = createClient();
@@ -251,6 +252,12 @@ function AgentDashboardContent() {
                 {activeTab === 'support' && (
                     <div className="bg-white dark:bg-neutral-950 p-6 sm:p-6 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <SupportHub />
+                    </div>
+                )}
+                
+                {activeTab === 'explore' && (
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        <ExploreContent isEmbedded={true} />
                     </div>
                 )}
                 

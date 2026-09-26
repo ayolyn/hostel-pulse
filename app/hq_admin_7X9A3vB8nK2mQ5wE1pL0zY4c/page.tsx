@@ -12,6 +12,7 @@ import { getAdminServices } from '@/app/actions/services';
 import { BarChart, Bar, AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts';
 import { AdminChatWindow } from './AdminChatWindow';
 import { PropertiesTab } from './PropertiesTab';
+import { DuplicateReviewTab } from '@/components/admin/DuplicateReviewTab';
 import { ServicesManager } from '@/components/admin/ServicesManager';
 import { PayoutRequestsTab } from '@/components/admin/PayoutRequestsTab';
 import {
@@ -238,6 +239,7 @@ const AdminHqPortal = () => {
 
                 {activeTab === 'payouts' && <PayoutRequestsTab />}
                 {activeTab === 'properties' && <PropertiesTab />}
+                {activeTab === 'duplicates' && <DuplicateReviewTab />}
                 {activeTab === 'verifications' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="flex items-center justify-between px-4">
@@ -541,8 +543,13 @@ const AdminHqPortal = () => {
                                                         </button>
                                                         <button 
                                                             onClick={async () => {
-                                                                if (confirm("HARD BAN this user?")) {
-                                                                    await banDevice(user.id, user._tableName);
+                                                                if (confirm("HARD BAN this user? This will revoke access and deactivate listings.")) {
+                                                                    const res = await banDevice(user.id, user._tableName);
+                                                                    if (res?.error) {
+                                                                        alert("Ban failed: " + res.error);
+                                                                    } else {
+                                                                        alert("User successfully banned and logged out.");
+                                                                    }
                                                                     const updated = await getAllUsers();
                                                                     setAllUsersData(updated);
                                                                 }

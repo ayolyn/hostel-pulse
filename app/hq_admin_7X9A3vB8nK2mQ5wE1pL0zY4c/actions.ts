@@ -29,9 +29,9 @@ async function verifyAdmin() {
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-    if (roleData?.role !== 'super_admin') {
+    if (roleData?.role?.toLowerCase() !== 'super_admin') {
         throw new Error("Unauthorized: Insufficient privileges");
     }
 
@@ -473,11 +473,25 @@ export async function getAllUsers() {
     const db = getAdminClient();
     let allUsers: any[] = [];
 
+    const { data: profiles } = await db.from('profiles').select('id, status, is_verified, full_name, email');
+    const profileMap = new Map((profiles || []).map((p: any) => [p.id, p]));
+
     const tables = ['student_accounts', 'agent_accounts', 'landlord_accounts'];
     for (const table of tables) {
         const { data, error } = await db.from(table).select('*').order('created_at', { ascending: false });
         if (!error && data) {
-            allUsers = [...allUsers, ...data.map(row => ({ ...row, _tableName: table }))];
+            allUsers = [
+                ...allUsers, 
+                ...data.map((row: any) => {
+                    const prof = profileMap.get(row.id);
+                    return {
+                        ...row,
+                        status: row.status || prof?.status || (row.is_approved ? 'active' : 'pending'),
+                        is_verified: row.is_verified ?? prof?.is_verified ?? false,
+                        _tableName: table
+                    };
+                })
+            ];
         }
     }
     return allUsers;
@@ -539,34 +553,70 @@ export async function revokeVerification(id: string, tableName: string) {
 export async function suspendAccount(id: string, tableName: string) {
     await verifyAdmin();
     const db = getAdminClient();
-    // 1. Update status in table
     const targetTable = tableName === 'profiles' ? 'student_accounts' : tableName;
-    await db.from(targetTable).update({ status: 'suspended' }).eq('id', id);
-    if (tableName === 'student_accounts') {
-        await db.from('profiles').update({ is_verified: false }).eq('id', id);
-    }
+
+    try {
+        await db.from('profiles').update({ status: 'suspended', is_verified: false }).eq('id', id);
+    } catch (e) {}
+
+    try {
+        if (targetTable === 'student_accounts') {
+            await db.from('student_accounts').update({ is_approved: false }).eq('id', id);
+        } else {
+            await db.from(targetTable).update({ is_approved: false, is_verified: false }).eq('id', id);
+        }
+    } catch (e) {}
+
+    try {
+        await db.from(targetTable).update({ status: 'suspended' }).eq('id', id);
+    } catch (e) {}
     
-    // 2. Sever auth session via Supabase Admin API
+    // Sever auth session via Supabase Admin API & set metadata
     const { error } = await db.auth.admin.updateUserById(id, {
-        user_metadata: { suspended: true } // We can track this in metadata
+        user_metadata: { suspended: true, status: 'suspended' },
+        app_metadata: { suspended: true, status: 'suspended' }
     });
     
-    // We could also ban them entirely if we wanted, but we'll stick to suspended status 
-    // The client login will check the DB or metadata to block login
     if (error) return { error: error.message };
     await createNotification(id, 'Account Suspended 🛑', 'Your account has been suspended due to policy violations.', '/dashboard', 'account_suspended');
     
-    // Invalidate sessions...
     return { success: true };
 }
 
-export async function banDevice(id: string, tableName: string) {
+export async function banDevice(id: string, tableName?: string) {
     await verifyAdmin();
     const db = getAdminClient();
-    const targetTable = tableName === 'profiles' ? 'student_accounts' : tableName;
-    const { error } = await db.from(targetTable).update({ status: 'banned', is_verified: false }).eq('id', id);
-    await db.auth.admin.updateUserById(id, { ban_duration: '87600h' }); // Ban for 10 years
-    if (error) return { error: error.message };
+
+    try {
+        await db.from('profiles').update({ status: 'banned', is_verified: false }).eq('id', id);
+    } catch (e) {
+        console.error('Error updating profiles to banned:', e);
+    }
+
+    const tables = ['student_accounts', 'agent_accounts', 'landlord_accounts'];
+    for (const t of tables) {
+        try {
+            await db.from(t).update({ is_approved: false }).eq('id', id);
+        } catch (e) {}
+    }
+
+    try {
+        await db.from('properties').update({ is_active: false, status: 'taken_down' }).or(`agent_id.eq.${id},landlord_id.eq.${id}`);
+    } catch (e) {
+        console.error('Error updating properties on ban:', e);
+    }
+
+    // Hard ban in Supabase Auth (10 years) + mark both user and app metadata
+    const { error } = await db.auth.admin.updateUserById(id, {
+        ban_duration: '87600h',
+        app_metadata: { banned: true, status: 'banned' },
+        user_metadata: { banned: true, status: 'banned', suspended: true }
+    });
+
+    if (error) {
+        console.error('Error banning user in auth:', error);
+        return { error: error.message };
+    }
 
     await createNotification(id, 'Account Banned 🚫', 'Your account has been permanently banned.', '/join', 'account_banned');
     return { success: true };

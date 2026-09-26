@@ -17,6 +17,7 @@ import { SupportHub } from '@/components/messages/SupportHub';
 import { WalletOverviewCards } from '@/components/shared/WalletOverviewCards';
 import { WithdrawalModal } from '@/components/dashboard/WithdrawalModal';
 import { TermsModal } from '@/components/modals/TermsModal';
+import { ExploreContent } from '@/components/explore/ExploreContent';
 
 type Property = {
     id: string;
@@ -492,6 +493,12 @@ function DashboardContent() {
                     {activeTab === 'support' && (
                         <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
                             <SupportHub />
+                        </div>
+                    )}
+                    
+                    {activeTab === 'explore' && (
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                            <ExploreContent isEmbedded={true} />
                         </div>
                     )}
                     

@@ -3,9 +3,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Home, MapPin, Building2, Zap, CheckCircle2, RefreshCcw, ShieldCheck, Loader2, Store, TreePine, UploadCloud, X, Image as ImageIcon , Camera} from 'lucide-react';
+import { Home, MapPin, Building2, Zap, CheckCircle2, RefreshCcw, ShieldCheck, Loader2, Store, TreePine, UploadCloud, X, Image as ImageIcon , Camera, ShieldAlert, AlertTriangle } from 'lucide-react';
 import { LocationCombobox } from '@/components/ui/LocationCombobox';
 import toast from 'react-hot-toast';
+import { computeImageHashBrowser } from '@/lib/phash';
+import { checkAndRecordListingDuplicates } from '@/app/actions/duplicateModeration';
 
 type Category = 'Hostel' | 'Shop' | 'House' | 'Hotel' | 'Land';
 
@@ -37,6 +39,9 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
     const [hasTerms, setHasTerms] = useState(false);
     const [isCheckingTerms, setIsCheckingTerms] = useState(true);
     const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
+    const [uploadedImagesWithHashes, setUploadedImagesWithHashes] = useState<{ url: string; phash: string }[]>([]);
+    const [isFlaggedDuplicate, setIsFlaggedDuplicate] = useState(false);
+    const [duplicateScore, setDuplicateScore] = useState(0);
 
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -187,7 +192,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         }));
     };
 
-    // Upload images to Supabase Storage
+    // Upload images to Supabase Storage & compute perceptual hash for de-duplication
     const handleImageUpload = async (files: FileList) => {
         if (!files.length) return;
         setUploadingImages(true);
@@ -195,27 +200,35 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         if (!user) { setUploadingImages(false); return; }
 
         const uploaded: string[] = [];
+        const uploadedWithHashes: { url: string; phash: string }[] = [];
+
         for (const file of Array.from(files)) {
+            // Compute 64-bit dHash in browser using HTML5 Canvas
+            const phashPromise = computeImageHashBrowser(file);
+
             const ext = file.name.split('.').pop();
             const path = `properties/${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
             const { data, error } = await supabase.storage
                 .from('property-images')
                 .upload(path, file, { upsert: false, cacheControl: '3600' });
 
+            const phash = await phashPromise;
+
             if (!error && data) {
                 const { data: urlData } = supabase.storage
                     .from('property-images')
                     .getPublicUrl(data.path);
                 uploaded.push(urlData.publicUrl);
+                uploadedWithHashes.push({ url: urlData.publicUrl, phash });
             } else {
                 console.error('Image upload error:', error?.message);
             }
         }
         setUploadedImageUrls(prev => [...prev, ...uploaded]);
+        setUploadedImagesWithHashes(prev => [...prev, ...uploadedWithHashes]);
         setUploadingImages(false);
     };
 
-    
     const handleVideoUpload = async (file: File) => {
         if (!file) return;
         if (file.size > 25 * 1024 * 1024) {
@@ -247,6 +260,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
 
     const removeImage = (url: string) => {
         setUploadedImageUrls(prev => prev.filter(u => u !== url));
+        setUploadedImagesWithHashes(prev => prev.filter(u => u.url !== url));
     };
 
     const FALLBACK_IMAGES: Record<Category, string> = {
@@ -451,6 +465,42 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 }
             } catch (err) {
                 console.warn('Non-fatal property_details sync error:', err);
+            }
+        }
+
+        if (resultId) {
+            try {
+                let imagesToCheck = uploadedImagesWithHashes;
+                if (imagesToCheck.length === 0 && imagesToUse.length > 0) {
+                    try {
+                        imagesToCheck = await Promise.all(
+                            imagesToUse.map(async (u) => ({
+                                url: u,
+                                phash: await computeImageHashBrowser(u)
+                            }))
+                        );
+                    } catch (_) {
+                        imagesToCheck = imagesToUse.map(u => ({ url: u, phash: '0000000000000000' }));
+                    }
+                }
+
+                const dupRes = await checkAndRecordListingDuplicates({
+                    propertyId: resultId,
+                    imagesWithHashes: imagesToCheck,
+                    location: form.location,
+                    userId: user.id,
+                    excludePropertyId: editId || undefined
+                });
+
+                if (dupRes.isDuplicate) {
+                    setIsFlaggedDuplicate(true);
+                    setDuplicateScore(dupRes.confidenceScore);
+                    toast.success("Listing submitted! Queued for quick admin verification.", { duration: 5000 });
+                } else {
+                    setIsFlaggedDuplicate(false);
+                }
+            } catch (dupErr) {
+                console.warn('De-duplication check error:', dupErr);
             }
         }
 
@@ -869,22 +919,69 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         </div>
     );
 
-    // ─── STEP 4: Success ──────────────────────────────────────────────────────
+    // ─── STEP 4: Success / Queued State ──────────────────────────────────────
+    if (isFlaggedDuplicate) {
+        return (
+            <div className="text-center py-20 animate-in zoom-in-95">
+                <div className="w-24 h-24 bg-amber-500/10 text-amber-500 rounded-3xl flex items-center justify-center mx-auto rotate-3 shadow-xl border border-amber-500/20">
+                    <ShieldAlert className="w-12 h-12" />
+                </div>
+                <div className="mt-8 text-black p-6 rounded-3xl border border-amber-500/20 shadow-sm bg-white dark:bg-neutral-900 max-w-xl mx-auto">
+                    <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                        Verification Queued • {duplicateScore}% Visual Match
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tighter mt-4 text-gray-900 dark:text-white">
+                        Listing Queued for Admin Verification ⏱️
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium tracking-wide mt-2 text-sm leading-relaxed">
+                        Listing submitted! Your listing is currently queued for quick admin verification because our visual similarity system detected photos matching an existing listing in {form.location}.
+                    </p>
+                    {uploadedImageUrls.length > 0 && (
+                        <p className="text-xs text-amber-600 dark:text-amber-400 font-black uppercase tracking-widest mt-4">
+                            ✓ {uploadedImageUrls.length} photo{uploadedImageUrls.length > 1 ? 's' : ''} uploaded & queued
+                        </p>
+                    )}
+                </div>
+                <button onClick={() => { 
+                    setStep(1); 
+                    setUploadedImageUrls([]); 
+                    setUploadedImagesWithHashes([]);
+                    setIsFlaggedDuplicate(false);
+                    setDuplicateScore(0);
+                    setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
+                        video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); 
+                    onComplete(); 
+                }}
+                    className="mt-8 text-black dark:text-white font-black uppercase tracking-widest text-[10px] underline underline-offset-8">
+                    Add Another Listing
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div className="text-center py-20 animate-in zoom-in-95">
             <div className="w-24 h-24 bg-[#BEF264]/10 text-[#BEF264] rounded-3xl flex items-center justify-center mx-auto rotate-3 shadow-xl border border-[#BEF264]/20">
                 <CheckCircle2 className="w-12 h-12" />
             </div>
-            <div className="mt-8 text-black p-6 rounded-3xl border border-gray-100 shadow-sm bg-white">
-                <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tighter">Listing Live! 🎉</h3>
-                <p className="text-gray-500 font-medium tracking-wide mt-2">Your {category} listing is now visible to all users on HOSTELPULSE.</p>
+            <div className="mt-8 text-black p-6 rounded-3xl border border-gray-100 shadow-sm bg-white dark:bg-neutral-900 max-w-xl mx-auto">
+                <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tighter text-gray-900 dark:text-white">Listing Live! 🎉</h3>
+                <p className="text-gray-500 dark:text-gray-400 font-medium tracking-wide mt-2 text-sm">Your {category} listing is now visible to all users on HOSTELPULSE.</p>
                 {uploadedImageUrls.length > 0 && (
                     <p className="text-xs text-[#BEF264] font-black uppercase tracking-widest mt-3">✓ {uploadedImageUrls.length} photo{uploadedImageUrls.length > 1 ? 's' : ''} uploaded</p>
                 )}
             </div>
-            <button onClick={() => { setStep(1); setUploadedImageUrls([]); setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
-          video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); onComplete(); }}
-                className="mt-8 text-black font-black uppercase tracking-widest text-[10px] underline underline-offset-8">
+            <button onClick={() => { 
+                setStep(1); 
+                setUploadedImageUrls([]); 
+                setUploadedImagesWithHashes([]);
+                setIsFlaggedDuplicate(false);
+                setDuplicateScore(0);
+                setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
+                    video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); 
+                onComplete(); 
+            }}
+                className="mt-8 text-black dark:text-white font-black uppercase tracking-widest text-[10px] underline underline-offset-8">
                 Add Another Listing
             </button>
         </div>

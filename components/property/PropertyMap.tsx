@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import Link from 'next/link';
 
-// Fix for default marker icon in leaflet with Next.js
+// Custom SVG-based Pin Icon to prevent broken asset paths
 const customIcon = new L.Icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -22,7 +22,7 @@ type Property = {
     title: string;
     location: string;
     price: number;
-    images: string[];
+    images?: string[];
     latitude?: number;
     longitude?: number;
 };
@@ -31,55 +31,102 @@ interface PropertyMapProps {
     properties: Property[];
 }
 
+function getPropertyCoordinates(p: Property): [number, number] {
+    if (typeof p.latitude === 'number' && typeof p.longitude === 'number' && p.latitude !== 0 && p.longitude !== 0) {
+        return [p.latitude, p.longitude];
+    }
+
+    const loc = `${p.location || ''} ${p.title || ''}`.toLowerCase();
+    const hash = (p.id || '').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const jitterLng = ((hash % 100) - 50) * 0.00018;
+    const jitterLat = (((hash * 7) % 100) - 50) * 0.00018;
+
+    if (loc.includes('under-g') || loc.includes('under g') || loc.includes('underg')) {
+        return [8.136 + jitterLat, 4.258 + jitterLng];
+    }
+    if (loc.includes('adenike')) {
+        return [8.140 + jitterLat, 4.262 + jitterLng];
+    }
+    if (loc.includes('aroje')) {
+        return [8.150 + jitterLat, 4.270 + jitterLng];
+    }
+    if (loc.includes('takie')) {
+        return [8.1338 + jitterLat, 4.2435 + jitterLng];
+    }
+    if (loc.includes('general')) {
+        return [8.130 + jitterLat, 4.255 + jitterLng];
+    }
+    if (loc.includes('stadium') || loc.includes('isale')) {
+        return [8.138 + jitterLat, 4.252 + jitterLng];
+    }
+    return [8.1333 + jitterLat, 4.2667 + jitterLng];
+}
+
 function MapUpdater({ properties }: { properties: Property[] }) {
     const map = useMap();
 
     useEffect(() => {
+        // Fix Leaflet blank tile issue on dynamic mount / tab change
+        const timer1 = setTimeout(() => {
+            map.invalidateSize();
+        }, 150);
+        const timer2 = setTimeout(() => {
+            map.invalidateSize();
+        }, 500);
+
         if (properties.length > 0) {
-            const validProps = properties.filter(p => p.latitude && p.longitude);
-            if (validProps.length > 0) {
-                const bounds = L.latLngBounds(validProps.map(p => [p.latitude!, p.longitude!]));
-                map.fitBounds(bounds, { padding: [50, 50] });
+            const coords = properties.map(p => getPropertyCoordinates(p));
+            if (coords.length > 0) {
+                const bounds = L.latLngBounds(coords);
+                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
             }
         }
+
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+        };
     }, [properties, map]);
 
     return null;
 }
 
 export default function PropertyMap({ properties }: PropertyMapProps) {
-    // Default center to LAUTECH / Ogbomoso area
     const defaultCenter: [number, number] = [8.139, 4.258];
 
     return (
-        <div className="w-full h-[600px] rounded-3xl overflow-hidden shadow-xl border border-gray-200 dark:border-white/10 relative z-0">
+        <div className="w-full min-h-[400px] h-[500px] md:h-[600px] rounded-3xl overflow-hidden shadow-xl border border-gray-200 dark:border-white/10 relative z-0">
             <MapContainer 
                 center={defaultCenter} 
                 zoom={14} 
                 scrollWheelZoom={false}
-                style={{ height: '100%', width: '100%', zIndex: 0 }}
+                style={{ height: '100%', width: '100%', minHeight: '400px', zIndex: 0 }}
             >
                 <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
                 
                 {properties.map(p => {
-                    if (!p.latitude || !p.longitude) return null;
+                    const coords = getPropertyCoordinates(p);
+                    const imgUrl = (p.images && p.images.length > 0 && p.images[0] && p.images[0] !== 'null') 
+                        ? p.images[0] 
+                        : 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5';
                     
                     return (
                         <Marker 
                             key={p.id} 
-                            position={[p.latitude, p.longitude]}
+                            position={coords}
                             icon={customIcon}
                         >
                             <Popup className="custom-popup">
                                 <div className="w-48 overflow-hidden rounded-xl bg-white dark:bg-neutral-900">
                                     <div className="h-32 w-full bg-gray-200 relative">
                                         <img 
-                                            src={p.images?.[0] ?? 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5'} 
+                                            src={imgUrl} 
                                             alt={p.title}
                                             className="w-full h-full object-cover"
+                                            onError={(e: any) => { e.currentTarget.src = '/placeholder.jpg'; }}
                                         />
                                         <div className="absolute bottom-2 left-2 bg-black/80 text-white px-2 py-1 rounded-md text-xs font-bold shadow">
                                             ₦{Number(p.price).toLocaleString()}

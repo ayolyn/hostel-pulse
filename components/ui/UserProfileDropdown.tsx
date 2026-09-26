@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { User, LogOut, Settings } from 'lucide-react';
@@ -71,13 +71,24 @@ export function UserProfileDropdown() {
                           So we either use a generic /profile or let them go back to dashboard. 
                           The user requested to encapsulate "Sign Out". 
                         */}
-                        <Link 
-                            href={role === 'student' ? '/dashboard/student?tab=profile' : '/dashboard'}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors text-neutral-700 dark:text-neutral-300 w-full text-left text-sm font-bold"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            <Settings className="w-4 h-4" /> {role === 'student' ? 'Profile & Settings' : 'Dashboard'}
-                        </Link>
+                        {(() => {
+                            const normalizedRole = role?.toLowerCase();
+                            const targetHref = normalizedRole === 'student' ? '/dashboard/student?tab=profile' :
+                                               normalizedRole === 'landlord' ? '/dashboard/landlord?tab=overview' :
+                                               normalizedRole === 'agent' ? '/dashboard/agent' :
+                                               normalizedRole === 'non_student' ? '/dashboard/non-student' :
+                                               normalizedRole === 'super_admin' ? '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c' :
+                                               '/dashboard/student';
+                            return (
+                                <Link 
+                                    href={targetHref}
+                                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors text-neutral-700 dark:text-neutral-300 w-full text-left text-sm font-bold"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <Settings className="w-4 h-4" /> {normalizedRole === 'student' ? 'Profile & Settings' : 'Dashboard'}
+                                </Link>
+                            );
+                        })()}
                         <button
                             onClick={() => {
                                 setIsOpen(false);

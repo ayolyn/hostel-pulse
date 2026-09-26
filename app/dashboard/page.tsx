@@ -26,22 +26,33 @@ export default async function DashboardRoot() {
     }
 
     const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', user.id).maybeSingle();
+    const role = roleData?.role?.toLowerCase();
 
-    if (roleData?.role === 'super_admin') {
+    // Prioritize standard user dashboards
+    if (role === 'student') {
+        redirect('/dashboard/student');
+    }
+    if (role === 'landlord') {
+        redirect('/dashboard/landlord');
+    }
+    if (role === 'agent') {
+        redirect('/dashboard/agent');
+    }
+    if (role === 'non_student') {
+        redirect('/dashboard/non-student');
+    }
+
+    // Check account tables in case user_roles wasn't populated or differs
+    const { data: studentAcc } = await supabase.from('student_accounts').select('id').eq('id', user.id).maybeSingle();
+    if (studentAcc) {
+        redirect('/dashboard/student');
+    }
+
+    // Only redirect to super admin HQ if strictly verified as super_admin
+    if (role === 'super_admin') {
         redirect('/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c');
     }
 
-    if (roleData?.role) {
-        const dashboardMap: Record<string, string> = {
-            student: '/dashboard/student',
-            non_student: '/dashboard/non-student',
-            landlord: '/dashboard/landlord',
-            agent: '/dashboard/agent'
-        };
-        // Redirect to role specific dashboard, fallback to student if role exists but is unknown
-        redirect(dashboardMap[roleData.role] || '/dashboard/student');
-    }
-
-    // Default fallback: if no role exists, user needs to onboard
-    redirect('/onboarding');
+    // Fallback: if no role exists, check if user needs onboarding, otherwise default to student dashboard
+    redirect('/dashboard/student');
 }

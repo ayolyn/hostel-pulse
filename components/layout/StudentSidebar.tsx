@@ -45,12 +45,12 @@ const mainNavItems = [
     { name: 'Dashboard', icon: Home, path: '/dashboard/student' },
     { name: 'Find Hostel', icon: Search, path: '/dashboard/student?tab=find-hostel' },
     { name: 'Find Shortlet', icon: Search, path: '/dashboard/student?tab=shortlet' },
-    { name: 'Explore Map', icon: Map, path: '/explore' },
+    { name: 'Explore Map', icon: Map, path: '/dashboard/student?tab=explore' },
     { name: 'Roommates', icon: Users, path: '/dashboard/student?tab=roommates' },
     { name: 'Campus Market', icon: ShoppingBag, path: '/dashboard/student?tab=market' },
     { name: 'Campus Gigs', icon: Wrench, path: '/dashboard/student?tab=gigs' },
     { name: 'Inspections', icon: Calendar, path: '/dashboard/student?tab=inspections' },
-    { name: 'Messages', icon: MessageCircle, path: '/messages', badge: 'unread' },
+    { name: 'Messages', icon: MessageCircle, path: '/dashboard/student?tab=messages', badge: 'unread' },
 ];
 
 const bottomNavItems = [

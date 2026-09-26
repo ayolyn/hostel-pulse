@@ -11,13 +11,13 @@ import { UserProfileDropdown } from '../ui/UserProfileDropdown';
 
 const desktopNavItems = [
     { name: 'Dashboard', href: '/dashboard/student', icon: Home },
-    { name: 'Find Hostel', href: '/rent', icon: Search },
-    { name: 'Explore Map', href: '/explore', icon: Map },
-    { name: 'Roommates', href: '/roommates', icon: Users },
-    { name: 'Campus Market', href: '/market', icon: ShoppingBag },
-    { name: 'Campus Gigs', href: '/services', icon: ShoppingBag },
+    { name: 'Find Hostel', href: '/dashboard/student?tab=find-hostel', icon: Search },
+    { name: 'Explore Map', href: '/dashboard/student?tab=explore', icon: Map },
+    { name: 'Roommates', href: '/dashboard/student?tab=roommates', icon: Users },
+    { name: 'Campus Market', href: '/dashboard/student?tab=market', icon: ShoppingBag },
+    { name: 'Campus Gigs', href: '/dashboard/student?tab=gigs', icon: ShoppingBag },
     { name: 'Inspections', href: '/dashboard/student?tab=inspections', icon: Calendar },
-    { name: 'Messages', href: '/messages', icon: MessageSquare },
+    { name: 'Messages', href: '/dashboard/student?tab=messages', icon: MessageSquare },
 ];
 
 const bottomNavItems = [
@@ -29,9 +29,9 @@ const bottomNavItems = [
 const mobileNavItems = [
     { name: 'HOME', href: '/dashboard/student', icon: Home },
     { name: 'SEARCH', href: '/dashboard/student?tab=find-hostel', icon: Search },
-    { name: 'MAP', href: '/explore', icon: Map },
+    { name: 'MAP', href: '/dashboard/student?tab=explore', icon: Map },
     { name: 'MARKET', href: '/dashboard/student?tab=market', icon: ShoppingBag },
-    { name: 'INBOX', href: '/messages', icon: MessageSquare },
+    { name: 'INBOX', href: '/dashboard/student?tab=messages', icon: MessageSquare },
     { name: 'PROFILE', href: '/dashboard/student?tab=profile', icon: User },
 ];
 

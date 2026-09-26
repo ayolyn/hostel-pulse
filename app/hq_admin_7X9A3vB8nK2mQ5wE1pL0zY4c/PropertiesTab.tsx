@@ -1,13 +1,37 @@
-﻿"use client";
+"use client";
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { adminApproveProperty, adminRejectProperty, adminRequestChanges, adminUpdateVerification } from '@/app/actions/propertyModeration';
-import { CheckCircle2, XCircle, AlertCircle, Eye, MapPin, Video, CheckSquare, Square, Loader2 } from 'lucide-react';
+import { 
+    adminApproveProperty, 
+    adminRejectProperty, 
+    adminRequestChanges, 
+    adminUpdateVerification,
+    adminGetPropertyReports,
+    adminDismissReport,
+    adminTakeDownReportedProperty
+} from '@/app/actions/propertyModeration';
+import { 
+    CheckCircle2, 
+    XCircle, 
+    AlertCircle, 
+    AlertTriangle, 
+    Eye, 
+    MapPin, 
+    Video, 
+    CheckSquare, 
+    Square, 
+    Loader2, 
+    ExternalLink, 
+    ShieldAlert, 
+    RefreshCw 
+} from 'lucide-react';
 
 export function PropertiesTab() {
     const supabase = createClient();
     const [properties, setProperties] = useState<any[]>([]);
+    const [reports, setReports] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [reportsLoading, setReportsLoading] = useState(false);
     const [subTab, setSubTab] = useState('pending');
     const [selectedProp, setSelectedProp] = useState<any | null>(null);
     const [actionLoading, setActionLoading] = useState(false);
@@ -35,8 +59,21 @@ export function PropertiesTab() {
         setLoading(false);
     };
 
+    const fetchReports = async () => {
+        setReportsLoading(true);
+        try {
+            const data = await adminGetPropertyReports();
+            setReports(data || []);
+        } catch (err) {
+            console.error("fetchReports error:", err);
+        } finally {
+            setReportsLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchProperties();
+        fetchReports();
     }, []);
 
     const filteredProps = properties.filter(p => {
@@ -45,6 +82,7 @@ export function PropertiesTab() {
         if (subTab === 'changes') return p.status === 'changes_requested';
         if (subTab === 'rejected') return p.status === 'rejected';
         if (subTab === 'taken') return p.status === 'taken';
+        if (subTab === 'duplicates') return p.status === 'flagged_duplicate' || !!p.duplicate_match_property_id;
         return true;
     });
 
@@ -125,27 +163,212 @@ export function PropertiesTab() {
         }
     };
 
+    const handleDismissReport = async (reportId: string) => {
+        if (!confirm("Are you sure you want to dismiss this report?")) return;
+        setActionLoading(true);
+        try {
+            await adminDismissReport(reportId);
+            await fetchReports();
+        } catch (err: any) {
+            alert(err.message || "Failed to dismiss report");
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const handleTakeDownProperty = async (reportId: string, propertyId: string) => {
+        const note = prompt("Enter takedown reason / verification note:", "Taken down following report investigation.");
+        if (note === null) return;
+        setActionLoading(true);
+        try {
+            await adminTakeDownReportedProperty(reportId, propertyId, note);
+            await Promise.all([fetchReports(), fetchProperties()]);
+            alert("Listing taken down and report marked resolved.");
+        } catch (err: any) {
+            alert(err.message || "Failed to take down property");
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const pendingReportsCount = reports.filter(r => r.status === 'pending').length;
+    const duplicatePropsCount = properties.filter(p => p.status === 'flagged_duplicate' || !!p.duplicate_match_property_id).length;
+
     return (
         <div className="space-y-6">
-            <div className="flex gap-4 border-b border-white/10 pb-4">
-                {['pending', 'active', 'changes', 'rejected', 'taken'].map(t => (
-                    <button 
-                        key={t}
-                        onClick={() => { setSubTab(t); setSelectedProp(null); }}
-                        className={"uppercase text-xs font-black tracking-widest px-4 py-2 rounded-xl transition-all " + (subTab === t ? "bg-[#BEF264] text-black" : "bg-white/5 text-white hover:bg-white/10")}
-                    >
-                        {t}
-                    </button>
-                ))}
+            <div className="flex gap-3 border-b border-white/10 pb-4 overflow-x-auto">
+                {['pending', 'active', 'changes', 'rejected', 'taken', 'duplicates', 'reported'].map(t => {
+                    const isReported = t === 'reported';
+                    const isDuplicates = t === 'duplicates';
+                    const isActive = subTab === t;
+                    return (
+                        <button 
+                            key={t}
+                            onClick={() => { 
+                                setSubTab(t); 
+                                setSelectedProp(null); 
+                                if (isReported) fetchReports();
+                            }}
+                            className={"uppercase text-xs font-black tracking-widest px-4 py-2 rounded-xl transition-all whitespace-nowrap flex items-center gap-2 " + (isActive ? "bg-[#BEF264] text-black" : "bg-white/5 text-white hover:bg-white/10")}
+                        >
+                            <span>{t}</span>
+                            {isDuplicates && duplicatePropsCount > 0 && (
+                                <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-orange-600 text-white' : 'bg-orange-500/20 text-orange-400 border border-orange-500/40'}`}>
+                                    {duplicatePropsCount}
+                                </span>
+                            )}
+                            {isReported && pendingReportsCount > 0 && (
+                                <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${isActive ? 'bg-red-600 text-white' : 'bg-red-500/20 text-red-400 border border-red-500/40'}`}>
+                                    {pendingReportsCount}
+                                </span>
+                            )}
+                        </button>
+                    );
+                })}
             </div>
 
             {loading ? (
-                <div className="flex items-center gap-2"><Loader2 className="animate-spin w-5 h-5 text-[#BEF264]" /> Loading...</div>
+                <div className="flex items-center gap-2 text-white/70">
+                    <Loader2 className="animate-spin w-5 h-5 text-[#BEF264]" /> 
+                    <span>Loading properties...</span>
+                </div>
+            ) : subTab === 'reported' ? (
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-white/5">
+                        <div>
+                            <h3 className="text-white font-bold text-base">Reported Listings</h3>
+                            <p className="text-xs text-gray-400">Reports submitted by students regarding fraud, fake pricing, or unavailable listings.</p>
+                        </div>
+                        <button 
+                            onClick={fetchReports}
+                            disabled={reportsLoading}
+                            className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-[#BEF264] text-xs font-bold rounded-lg border border-white/10 flex items-center gap-1.5 transition-all"
+                        >
+                            <RefreshCw className={`w-3.5 h-3.5 ${reportsLoading ? 'animate-spin' : ''}`} />
+                            Refresh
+                        </button>
+                    </div>
+
+                    {reportsLoading && reports.length === 0 ? (
+                        <div className="flex items-center gap-2 text-white/70 py-8">
+                            <Loader2 className="animate-spin w-5 h-5 text-[#BEF264]" /> 
+                            <span>Loading reports...</span>
+                        </div>
+                    ) : reports.length === 0 ? (
+                        <div className="text-center py-12 bg-white/5 rounded-2xl border border-white/10 text-gray-400">
+                            <ShieldAlert className="w-10 h-10 mx-auto text-gray-500 mb-3" />
+                            <p className="font-bold text-white text-base">No Property Reports</p>
+                            <p className="text-xs text-gray-400 mt-1">No reported listings found. Student submissions will appear here for review.</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {reports.map((r: any) => {
+                                const prop = r.properties;
+                                const isPending = r.status === 'pending';
+                                return (
+                                    <div key={r.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-all space-y-4">
+                                        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+                                            <div className="space-y-2 flex-1">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                                        r.status === 'pending' 
+                                                            ? 'bg-red-500/20 text-red-400 border border-red-500/40' 
+                                                            : r.status === 'resolved' 
+                                                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' 
+                                                            : 'bg-white/10 text-gray-400 border border-white/10'
+                                                    }`}>
+                                                        {r.status}
+                                                    </span>
+                                                    <span className="text-xs text-red-300 font-bold bg-red-950/60 border border-red-800/40 px-2.5 py-0.5 rounded-md flex items-center gap-1.5">
+                                                        <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
+                                                        {r.reason}
+                                                    </span>
+                                                    <span className="text-xs text-gray-500">
+                                                        Reported {new Date(r.created_at).toLocaleString()}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center gap-3 flex-wrap pt-1">
+                                                    <h4 className="font-bold text-white text-base">
+                                                        {prop?.title || `Property ID: ${r.property_id}`}
+                                                    </h4>
+                                                    {prop?.location && (
+                                                        <span className="text-xs text-gray-400 flex items-center gap-1">
+                                                            <MapPin className="w-3 h-3 text-gray-500" />
+                                                            {prop.location}
+                                                        </span>
+                                                    )}
+                                                    {prop?.price && (
+                                                        <span className="text-xs font-bold text-[#BEF264]">
+                                                            ₦{Number(prop.price).toLocaleString()}/yr
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                {r.details && (
+                                                    <div className="bg-black/30 p-3 rounded-xl border border-white/5 text-xs text-gray-300">
+                                                        <span className="text-gray-500 font-bold uppercase text-[10px] block mb-1">Reporter Details:</span>
+                                                        {r.details}
+                                                    </div>
+                                                )}
+
+                                                <div className="text-xs text-gray-400 flex items-center gap-3 pt-1">
+                                                    <span>Reporter: <strong className="text-white">{r.reporter?.full_name || r.reporter?.email || r.reporter_id?.slice?.(0, 8) || 'Anonymous'}</strong></span>
+                                                    {r.reporter?.email && (
+                                                        <span className="text-gray-500">({r.reporter.email})</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-2 self-start lg:self-center shrink-0">
+                                                <a 
+                                                    href={`/property/${r.property_id}`} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all"
+                                                >
+                                                    <ExternalLink className="w-3.5 h-3.5 text-gray-400" />
+                                                    View Property
+                                                </a>
+                                                
+                                                {isPending && (
+                                                    <>
+                                                        <button 
+                                                            disabled={actionLoading}
+                                                            onClick={() => handleDismissReport(r.id)}
+                                                            className="px-3 py-2 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl text-xs font-bold border border-white/10 transition-all disabled:opacity-50"
+                                                        >
+                                                            Dismiss
+                                                        </button>
+                                                        <button 
+                                                            disabled={actionLoading}
+                                                            onClick={() => handleTakeDownProperty(r.id, r.property_id)}
+                                                            className="px-3 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black shadow-lg shadow-red-900/30 transition-all disabled:opacity-50"
+                                                        >
+                                                            Take Down
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
             ) : !selectedProp ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredProps.map(p => (
                         <div key={p.id} className="bg-white/5 p-4 rounded-2xl border border-white/10 hover:border-[#BEF264]/50 cursor-pointer transition-all" onClick={() => openProp(p)}>
-                            <p className="text-[10px] uppercase font-black tracking-widest text-[#BEF264] mb-1">{p.verification_status}</p>
+                            <div className="flex items-center justify-between mb-1">
+                                <p className="text-[10px] uppercase font-black tracking-widest text-[#BEF264]">{p.verification_status}</p>
+                                {(p.status === 'flagged_duplicate' || p.duplicate_confidence_score) && (
+                                    <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                                        {p.duplicate_confidence_score || 88}% Match
+                                    </span>
+                                )}
+                            </div>
                             <h3 className="font-bold text-lg text-white mb-2">{p.title}</h3>
                             <div className="flex justify-between items-center text-sm text-gray-400">
                                 <span>₦{p.price.toLocaleString()}</span>
@@ -157,6 +380,24 @@ export function PropertiesTab() {
                 </div>
             ) : (
                 <div className="bg-white/5 p-6 rounded-3xl border border-white/10 space-y-6">
+                    {selectedProp.duplicate_match_property_id && (
+                        <div className="bg-orange-500/10 border border-orange-500/30 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <span className="text-orange-400 font-black text-xs uppercase tracking-wider block">
+                                    ⚠️ Visual Collision Flagged ({selectedProp.duplicate_confidence_score || 88}% Match)
+                                </span>
+                                <p className="text-xs text-gray-300 mt-0.5">
+                                    Identified as potential duplicate of listing ID: {selectedProp.duplicate_match_property_id}
+                                </p>
+                            </div>
+                            <a 
+                                href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c?tab=duplicates"
+                                className="px-3.5 py-2 bg-orange-500 text-black text-[10px] font-black uppercase tracking-wider rounded-xl hover:bg-orange-400 transition-colors"
+                            >
+                                Open Duplicate Review Queue
+                            </a>
+                        </div>
+                    )}
                     <div className="flex justify-between items-start">
                         <div>
                             <button onClick={() => setSelectedProp(null)} className="text-[#BEF264] text-xs font-bold mb-4 hover:underline">&larr; Back to List</button>
