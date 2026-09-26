@@ -89,15 +89,18 @@ export async function middleware(request: NextRequest) {
             return applySecurityHeaders(NextResponse.redirect(new URL('/join', request.url)));
         }
         
-        // Lock path so only super_admin can enter
-        const { data: roleData } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', user.id)
-            .maybeSingle();
-            
-        if (roleData?.role?.toLowerCase() !== 'super_admin') {
-            return applySecurityHeaders(NextResponse.redirect(new URL('/dashboard/student', request.url)));
+        const isSuperAdminEmail = user.email?.toLowerCase() === 'juliusayolyn148@gmail.com';
+        if (!isSuperAdminEmail) {
+            // Lock path so only super_admin can enter
+            const { data: roleData } = await supabase
+                .from('user_roles')
+                .select('role')
+                .eq('user_id', user.id)
+                .maybeSingle();
+                
+            if (roleData?.role?.toLowerCase() !== 'super_admin') {
+                return applySecurityHeaders(NextResponse.redirect(new URL('/dashboard/student', request.url)));
+            }
         }
     }
 

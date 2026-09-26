@@ -25,8 +25,10 @@ export function PublicHeader() {
     const { user, role } = useAuth();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+    const isSuperAdmin = user?.email?.toLowerCase() === 'juliusayolyn148@gmail.com';
     const userRole = role?.toLowerCase();
-    const dashboardLink = userRole === 'landlord' ? '/dashboard/landlord' :
+    const dashboardLink = isSuperAdmin ? '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c' :
+                          userRole === 'landlord' ? '/dashboard/landlord' :
                           userRole === 'agent' ? '/dashboard/agent' :
                           userRole === 'non_student' ? '/dashboard/non-student' :
                           '/dashboard/student';

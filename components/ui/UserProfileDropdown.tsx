@@ -72,8 +72,11 @@ export function UserProfileDropdown() {
                           The user requested to encapsulate "Sign Out". 
                         */}
                         {(() => {
+                            const isSuperAdminEmail = user?.email?.toLowerCase() === 'juliusayolyn148@gmail.com';
                             const normalizedRole = role?.toLowerCase();
-                            const targetHref = normalizedRole === 'landlord' ? '/dashboard/landlord?tab=overview' :
+                            const isSuperAdmin = isSuperAdminEmail || normalizedRole === 'super_admin';
+                            const targetHref = isSuperAdminEmail ? '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c' :
+                                               normalizedRole === 'landlord' ? '/dashboard/landlord?tab=overview' :
                                                normalizedRole === 'agent' ? '/dashboard/agent' :
                                                normalizedRole === 'non_student' ? '/dashboard/non-student' :
                                                '/dashboard/student?tab=profile';
@@ -84,9 +87,9 @@ export function UserProfileDropdown() {
                                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors text-neutral-700 dark:text-neutral-300 w-full text-left text-sm font-bold"
                                         onClick={() => setIsOpen(false)}
                                     >
-                                        <Settings className="w-4 h-4" /> Profile & Settings
+                                        <Settings className="w-4 h-4" /> {isSuperAdminEmail ? 'Admin Dashboard' : 'Profile & Settings'}
                                     </Link>
-                                    {normalizedRole === 'super_admin' && (
+                                    {isSuperAdmin && !isSuperAdminEmail && (
                                         <Link 
                                             href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c"
                                             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#BEF264]/10 text-emerald-600 dark:text-[#BEF264] transition-colors w-full text-left text-sm font-bold"

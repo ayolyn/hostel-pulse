@@ -28,6 +28,11 @@ export default async function DashboardRoot() {
     const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', user.id).maybeSingle();
     const role = roleData?.role?.toLowerCase();
 
+    // Dedicated super admin account routes directly to Admin HQ
+    if (user.email?.toLowerCase() === 'juliusayolyn148@gmail.com') {
+        redirect('/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c');
+    }
+
     // Prioritize standard user dashboards
     if (role === 'student') {
         redirect('/dashboard/student');

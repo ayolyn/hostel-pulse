@@ -25,13 +25,15 @@ async function verifyAdmin() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Unauthorized");
 
+    const isSuperAdminEmail = user.email?.toLowerCase() === 'juliusayolyn148@gmail.com';
+
     const { data: roleData } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
         .maybeSingle();
 
-    if (roleData?.role?.toLowerCase() !== 'super_admin') {
+    if (!isSuperAdminEmail && roleData?.role?.toLowerCase() !== 'super_admin') {
         throw new Error("Unauthorized: Insufficient privileges");
     }
 
