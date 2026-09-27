@@ -880,7 +880,7 @@ export default function PulseMapbox({
         }
     }, [flyToLocation]);
 
-    // Live Supabase query for Pulse Mode
+    // Live Supabase query & Realtime subscription for Pulse Mode
     useEffect(() => {
         if (!isPulseActive) return;
 
@@ -890,14 +890,14 @@ export default function PulseMapbox({
                     .from('properties')
                     .select('*')
                     .eq('is_active', true)
-                    .limit(35);
+                    .limit(50);
                 if (propsData) setLiveProperties(propsData);
 
                 const { data: roomiesData } = await supabase
                     .from('student_accounts')
                     .select('*')
                     .eq('looking_for_roommate', true)
-                    .limit(20);
+                    .limit(30);
                 if (roomiesData) setLiveRoommates(roomiesData);
             } catch (err) {
                 console.error('[PulseMapbox] Error fetching live data:', err);
@@ -905,6 +905,29 @@ export default function PulseMapbox({
         }
 
         fetchLiveMapData();
+
+        // Subscribe to real-time additions, updates, or removals
+        const channel = supabase
+            .channel('pulse-map-realtime-sync')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'properties' },
+                () => {
+                    fetchLiveMapData();
+                }
+            )
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'student_accounts' },
+                () => {
+                    fetchLiveMapData();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [isPulseActive, supabase]);
 
     // Render Markers with Campus Pulse Avatar / Heatmap / Price aesthetics
