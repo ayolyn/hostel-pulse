@@ -154,9 +154,8 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
 ];
 
 // Mapbox Vector Styles
-const PULSE_NIGHT_STYLE = 'mapbox://styles/mapbox/navigation-night-v1';
 const PULSE_DARK_STYLE = 'mapbox://styles/mapbox/dark-v11';
-const PULSE_SATELLITE_STYLE = 'mapbox://styles/mapbox/satellite-streets-v12';
+const PULSE_SATELLITE_STYLE = 'mapbox://styles/mapbox/satellite-v9';
 
 // 100% Zero-Token Sleek Dark Raster Base (Esri Dark Gray Canvas - No watermark, no API key needed)
 export const ESRI_DARK_CANVAS_STYLE: any = {
@@ -518,8 +517,8 @@ export default function PulseMapbox({
 
     const [mapLoaded, setMapLoaded] = useState(false);
     const [is3DMode, setIs3DMode] = useState(true);
-    const [activeStyleName, setActiveStyleName] = useState<'pulse-night' | 'pulse-dark' | 'pulse-satellite' | 'midnight-base'>('pulse-night');
-    const activeStyleNameRef = useRef(activeStyleName);
+    const [mapStyle, setMapStyle] = useState<'3d' | 'satellite'>('3d');
+    const mapStyleRef = useRef<'3d' | 'satellite'>('3d');
     const [liveProperties, setLiveProperties] = useState<Property[]>([]);
     const [liveRoommates, setLiveRoommates] = useState<Roommate[]>([]);
     
@@ -540,7 +539,31 @@ export default function PulseMapbox({
         displayPropertiesRef.current = displayProperties;
     }, [displayProperties]);
 
-    const isSatelliteActive = activeStyleName === 'pulse-satellite';
+    const isSatelliteActive = mapStyle === 'satellite';
+
+    /**
+     * Strip out default Mapbox POI and transit labels for a clean, uncluttered background
+     */
+    const stripPoiLabels = useCallback((m: mapboxgl.Map) => {
+        try {
+            const style = m.getStyle();
+            if (!style || !style.layers) return;
+            style.layers.forEach((layer: any) => {
+                const id = (layer.id || '').toLowerCase();
+                const sourceLayer = (layer['source-layer'] || '').toLowerCase();
+                if (
+                    id.includes('poi') || 
+                    id.includes('point-of-interest') || 
+                    id.includes('transit-label') ||
+                    sourceLayer.includes('poi')
+                ) {
+                    m.setLayoutProperty(layer.id, 'visibility', 'none');
+                }
+            });
+        } catch (e) {
+            // Safe ignore
+        }
+    }, []);
 
     /**
      * Add Mapbox composite fill-extrusion 3D layer and procedural GeoJSON building blocks
@@ -646,18 +669,43 @@ export default function PulseMapbox({
         }
     }, []);
 
-    // Toggle 3D tilt camera (Campus Pulse bird's eye 48-degree angle vs top-down 2D)
-    const toggle3D = useCallback(() => {
+    // Toggle between 3D Dark Mode and Satellite Mode
+    const handleSelectStyle = useCallback((mode: '3d' | 'satellite') => {
         if (!map.current) return;
-        const targetPitch = is3DMode ? 0 : 48;
-        const targetBearing = is3DMode ? 0 : -12;
-        map.current.easeTo({
-            pitch: targetPitch,
-            bearing: targetBearing,
-            duration: 900
-        });
-        setIs3DMode(!is3DMode);
-    }, [is3DMode]);
+        setMapStyle(mode);
+        mapStyleRef.current = mode;
+
+        try {
+            if (mode === '3d') {
+                if (hasMapboxToken && !fallbackRef.current) {
+                    map.current.setStyle(PULSE_DARK_STYLE);
+                } else {
+                    map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
+                }
+                map.current.easeTo({
+                    pitch: 48,
+                    bearing: -10,
+                    duration: 900
+                });
+                setIs3DMode(true);
+            } else {
+                if (hasMapboxToken && !fallbackRef.current) {
+                    map.current.setStyle(PULSE_SATELLITE_STYLE);
+                } else {
+                    map.current.setStyle(ESRI_SATELLITE_STYLE);
+                }
+                map.current.easeTo({
+                    pitch: 0,
+                    bearing: 0,
+                    duration: 900
+                });
+                setIs3DMode(false);
+            }
+        } catch (err) {
+            console.warn('[PulseMapbox] Style switch failed:', err);
+        }
+        setTimeout(() => map.current?.resize(), 200);
+    }, []);
 
     // Recenter to LAUTECH Campus
     const recenterToCampus = useCallback(() => {
@@ -665,89 +713,20 @@ export default function PulseMapbox({
         map.current.flyTo({
             center: [4.2667, 8.1333],
             zoom: 14.5,
-            pitch: 48,
-            bearing: -10,
+            pitch: mapStyleRef.current === '3d' ? 48 : 0,
+            bearing: mapStyleRef.current === '3d' ? -10 : 0,
             duration: 1200,
             essential: true
         });
     }, []);
 
-    // Switch theme style seamlessly between Pulse Night, Dark, Satellite & Base
-    const switchStyle = useCallback((styleKey: 'pulse-night' | 'pulse-dark' | 'pulse-satellite' | 'midnight-base') => {
-        if (!map.current) return;
-        try {
-            if (styleKey === 'pulse-night') {
-                if (hasMapboxToken && !fallbackRef.current) {
-                    map.current.setStyle(PULSE_NIGHT_STYLE);
-                    setActiveStyleName('pulse-night');
-                } else {
-                    map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
-                    setActiveStyleName('midnight-base');
-                }
-            } else if (styleKey === 'pulse-dark') {
-                if (hasMapboxToken && !fallbackRef.current) {
-                    map.current.setStyle(PULSE_DARK_STYLE);
-                    setActiveStyleName('pulse-dark');
-                } else {
-                    map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
-                    setActiveStyleName('midnight-base');
-                }
-            } else if (styleKey === 'pulse-satellite') {
-                if (hasMapboxToken && !fallbackRef.current) {
-                    map.current.setStyle(PULSE_SATELLITE_STYLE);
-                    setActiveStyleName('pulse-satellite');
-                } else {
-                    map.current.setStyle(ESRI_SATELLITE_STYLE);
-                    setActiveStyleName('pulse-satellite');
-                }
-            } else {
-                map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
-                setActiveStyleName('midnight-base');
-            }
-        } catch (err) {
-            console.warn('[PulseMapbox] Style switch failed, falling back:', err);
-            if (styleKey === 'pulse-satellite') {
-                map.current.setStyle(ESRI_SATELLITE_STYLE);
-                setActiveStyleName('pulse-satellite');
-            } else {
-                map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
-                setActiveStyleName('midnight-base');
-            }
-        }
-        setTimeout(() => map.current?.resize(), 200);
-    }, []);
-
-    // Handlers for the Floating 🛰️ / 3D Toggle Pill
-    const handleToggleSatellite = useCallback(() => {
-        if (!map.current) return;
-        switchStyle('pulse-satellite');
-        map.current.easeTo({
-            pitch: 15,
-            bearing: 0,
-            duration: 900
-        });
-    }, [switchStyle]);
-
-    const handleToggle3D = useCallback(() => {
-        if (!map.current) return;
-        if (activeStyleName === 'pulse-satellite') {
-            switchStyle('pulse-night');
-        }
-        map.current.easeTo({
-            pitch: 48,
-            bearing: -12,
-            duration: 900
-        });
-        setIs3DMode(true);
-    }, [activeStyleName, switchStyle]);
-
-    // Keep activeStyleNameRef synced and update 3D layers when style or properties change
+    // Keep layers synced when style or properties change
     useEffect(() => {
-        activeStyleNameRef.current = activeStyleName;
         if (map.current && mapLoaded) {
-            apply3DBuildingLayers(map.current, displayProperties, activeStyleName === 'pulse-satellite');
+            stripPoiLabels(map.current);
+            apply3DBuildingLayers(map.current, displayProperties, mapStyle === 'satellite');
         }
-    }, [activeStyleName, displayProperties, mapLoaded, apply3DBuildingLayers]);
+    }, [mapStyle, displayProperties, mapLoaded, apply3DBuildingLayers, stripPoiLabels]);
 
     // Initialize Map with 3D perspective
     useEffect(() => {
@@ -761,11 +740,7 @@ export default function PulseMapbox({
         const defaultCenter: [number, number] = center || [4.2667, 8.1333];
         const defaultZoom = zoom || 14.2;
 
-        const initialStyle = hasMapboxToken ? PULSE_NIGHT_STYLE : ESRI_DARK_CANVAS_STYLE;
-        if (!hasMapboxToken) {
-            setActiveStyleName('midnight-base');
-            activeStyleNameRef.current = 'midnight-base';
-        }
+        const initialStyle = hasMapboxToken ? PULSE_DARK_STYLE : ESRI_DARK_CANVAS_STYLE;
 
         let newMap: mapboxgl.Map;
         try {
@@ -790,8 +765,6 @@ export default function PulseMapbox({
                     bearing: -10,
                     attributionControl: false
                 });
-                setActiveStyleName('midnight-base');
-                activeStyleNameRef.current = 'midnight-base';
                 fallbackRef.current = true;
             } catch (fallbackErr) {
                 console.error('[PulseMapbox] Critical map error:', fallbackErr);
@@ -813,12 +786,10 @@ export default function PulseMapbox({
                 fallbackRef.current = true;
                 console.warn('[PulseMapbox] Token authorization failed. Activating zero-token fallback.');
                 try {
-                    if (activeStyleNameRef.current === 'pulse-satellite') {
+                    if (mapStyleRef.current === 'satellite') {
                         newMap.setStyle(ESRI_SATELLITE_STYLE);
                     } else {
                         newMap.setStyle(ESRI_DARK_CANVAS_STYLE);
-                        setActiveStyleName('midnight-base');
-                        activeStyleNameRef.current = 'midnight-base';
                     }
                 } catch (sErr) {
                     console.error('[PulseMapbox] Failed to apply fallback:', sErr);
@@ -828,7 +799,8 @@ export default function PulseMapbox({
 
         const handleMapReady = () => {
             setMapLoaded(true);
-            apply3DBuildingLayers(newMap, displayPropertiesRef.current, activeStyleNameRef.current === 'pulse-satellite');
+            stripPoiLabels(newMap);
+            apply3DBuildingLayers(newMap, displayPropertiesRef.current, mapStyleRef.current === 'satellite');
             newMap.resize();
         };
 
@@ -950,56 +922,20 @@ export default function PulseMapbox({
             });
 
             filteredHotspots.forEach(hotspot => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'pulse-hotspot-container cursor-pointer select-none group';
-                wrapper.style.display = 'flex';
-                wrapper.style.flexDirection = 'column';
-                wrapper.style.alignItems = 'center';
-                wrapper.style.transform = 'translate(-50%, -50%)';
+                const el = document.createElement('div');
+                el.className = 'bg-[#151718]/95 text-white px-4 py-2.5 rounded-2xl border border-gray-700 shadow-xl flex flex-col justify-center items-center cursor-pointer backdrop-blur-md min-w-[140px]';
 
-                wrapper.innerHTML = `
-                    <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-                        <!-- Pulsing Heatmap Halo -->
-                        <div style="
-                            position: absolute;
-                            width: 68px;
-                            height: 68px;
-                            border-radius: 9999px;
-                            background: radial-gradient(circle, ${hotspot.pulseColor} 0%, rgba(0,0,0,0) 70%);
-                            animation: pulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-                            pointer-events: none;
-                        "></div>
-                        <!-- Hotspot Pill -->
-                        <div style="
-                            position: relative;
-                            display: flex;
-                            align-items: center;
-                            gap: 6px;
-                            padding: 5px 11px;
-                            border-radius: 9999px;
-                            backdrop-filter: blur(12px);
-                            background: rgba(10, 15, 29, 0.85);
-                            border: 1.5px solid rgba(255, 255, 255, 0.15);
-                            box-shadow: 0 10px 25px -3px rgba(0,0,0,0.6), 0 0 15px ${hotspot.pulseColor};
-                            transition: transform 0.2s ease;
-                        ">
-                            <span style="font-size: 13px;">${hotspot.icon}</span>
-                            <span style="font-size: 11px; font-weight: 900; color: white; letter-spacing: -0.01em; white-space: nowrap;">
-                                ${hotspot.name}
-                            </span>
-                            <span style="
-                                font-size: 9px;
-                                font-weight: 900;
-                                color: #BEF264;
-                                background: rgba(190, 242, 100, 0.15);
-                                padding: 1px 6px;
-                                border-radius: 9999px;
-                            ">${hotspot.activeCount}</span>
-                        </div>
+                el.innerHTML = `
+                    <div class="text-sm font-bold flex items-center gap-2">
+                        <span>${hotspot.icon}</span>
+                        <span>${hotspot.name}</span>
+                    </div>
+                    <div class="text-green-400 text-xs mt-0.5">
+                        ${hotspot.activeCount} active
                     </div>
                 `;
 
-                wrapper.onclick = (e) => {
+                el.onclick = (e) => {
                     e.stopPropagation();
                     setSelectedHotspot(hotspot);
                     setSelectedRoommate(null);
@@ -1012,7 +948,7 @@ export default function PulseMapbox({
                     });
                 };
 
-                const marker = new mapboxgl.Marker({ element: wrapper, anchor: 'center' })
+                const marker = new mapboxgl.Marker({ element: el })
                     .setLngLat([hotspot.lng, hotspot.lat])
                     .addTo(map.current!);
                 markersRef.current.push(marker);
@@ -1024,8 +960,8 @@ export default function PulseMapbox({
             const roommatesToRender = liveRoommates.length > 0 ? liveRoommates : [
                 {
                     id: 'rm-julius',
-                    full_name: 'Juliuscliniko',
-                    department: 'Accounting',
+                    full_name: 'Julius cliniko',
+                    department: 'Physiology',
                     level: '400L',
                     preferred_zone: 'Under-G',
                     avatar_url: '',
@@ -1061,93 +997,21 @@ export default function PulseMapbox({
                 const fuzzedLat = zoneMatch.lat + ((((hash * 3) % 100) - 50) * 0.00028);
 
                 // Adhere strictly to User Rule #2 for Avatar/Logo resolution
-                const avatarSrc = rm.avatar_url || rm.logo_url;
-                const initials = (rm.full_name || 'U').substring(0, 2).toUpperCase();
+                const avatarSrc = rm.avatar_url || rm.logo_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(rm.full_name || 'Julius')}`;
+                const displayName = rm.full_name.split(' ')[0] || 'Student';
+                const dept = rm.department || 'Physiology';
+                const labelText = `${displayName} • ${dept}`;
 
                 const el = document.createElement('div');
-                el.className = 'pulse-avatar-marker cursor-pointer select-none group';
-                el.style.display = 'flex';
-                el.style.flexDirection = 'column';
-                el.style.alignItems = 'center';
-                el.style.transform = 'translate(-50%, -100%)';
+                el.className = 'relative flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-transform';
 
                 el.innerHTML = `
-                    <!-- Floating Speech Bubble -->
-                    <div style="
-                        position: relative;
-                        margin-bottom: 5px;
-                        padding: 3px 8px;
-                        border-radius: 9999px;
-                        background: rgba(15, 23, 42, 0.9);
-                        border: 1px solid rgba(255, 255, 255, 0.15);
-                        backdrop-filter: blur(8px);
-                        box-shadow: 0 4px 14px rgba(0,0,0,0.5);
-                        display: flex;
-                        align-items: center;
-                        gap: 4px;
-                        white-space: nowrap;
-                    ">
-                        <span style="font-size: 10px; font-weight: 900; color: white;">${rm.full_name.split(' ')[0]}</span>
-                        <span style="font-size: 9px; color: #BEF264; font-weight: 800;">${rm.department ? `• ${rm.department.substring(0, 8)}` : ''}</span>
-                        <span style="width: 6px; height: 6px; border-radius: 9999px; background: #22c55e;"></span>
+                    <div class="absolute -top-8 bg-[#151718]/90 text-white text-[10px] font-medium px-3 py-1 rounded-full border border-gray-700 whitespace-nowrap shadow-lg flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>
+                        <span>${labelText}</span>
                     </div>
-
-                    <!-- Circular Avatar with Radar Aura -->
-                    <div style="position: relative; width: 44px; height: 44px;">
-                        <!-- Animated radar ring -->
-                        <div style="
-                            position: absolute;
-                            inset: -3px;
-                            border-radius: 9999px;
-                            background: rgba(190, 242, 100, 0.25);
-                            animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-                        "></div>
-
-                        <!-- Avatar Frame -->
-                        <div style="
-                            position: relative;
-                            width: 44px;
-                            height: 44px;
-                            border-radius: 9999px;
-                            border: 2.5px solid #BEF264;
-                            background: #0f172a;
-                            box-shadow: 0 8px 20px rgba(0,0,0,0.8), 0 0 15px rgba(190, 242, 100, 0.4);
-                            overflow: hidden;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            color: #BEF264;
-                            font-size: 12px;
-                            font-weight: 900;
-                        ">
-                            ${avatarSrc 
-                                ? `<img src="${avatarSrc}" alt="${rm.full_name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentElement.innerText='${initials}';" />`
-                                : initials
-                            }
-                        </div>
-
-                        <!-- Active Online Dot -->
-                        <div style="
-                            position: absolute;
-                            bottom: -1px;
-                            right: -1px;
-                            width: 13px;
-                            height: 13px;
-                            border-radius: 9999px;
-                            background: #22c55e;
-                            border: 2px solid #000;
-                        "></div>
-                    </div>
-
-                    <!-- 3D Ground Drop-Shadow -->
-                    <div style="
-                        width: 26px;
-                        height: 6px;
-                        border-radius: 9999px;
-                        background: rgba(0,0,0,0.7);
-                        filter: blur(2px);
-                        margin-top: 2px;
-                    "></div>
+                    <div class="w-14 h-14 rounded-full border-2 border-green-500 bg-cover bg-center shadow-[0_0_25px_rgba(34,197,94,0.5)]" style="background-image: url('${avatarSrc}');"></div>
+                    <div class="absolute bottom-0 right-1 w-3.5 h-3.5 bg-green-500 border-2 border-[#151718] rounded-full"></div>
                 `;
 
                 el.onclick = (e) => {
@@ -1164,7 +1028,7 @@ export default function PulseMapbox({
                     });
                 };
 
-                const marker = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
+                const marker = new mapboxgl.Marker({ element: el })
                     .setLngLat([fuzzedLng, fuzzedLat])
                     .addTo(map.current!);
                 markersRef.current.push(marker);
@@ -1176,30 +1040,13 @@ export default function PulseMapbox({
             displayProperties.forEach(p => {
                 const coords = getPropertyCoordinates(p);
                 const priceNum = typeof p.price === 'number' ? p.price : parseFloat(String(p.price || 0));
-                const priceFormatted = priceNum > 1000 ? `${(priceNum / 1000).toFixed(0)}k` : priceNum;
+                const priceFormatted = priceNum >= 1000 ? `${(priceNum / 1000).toFixed(0)}k` : priceNum;
 
                 const el = document.createElement('div');
-                el.className = 'pulse-hostel-pill cursor-pointer select-none';
-                el.style.transform = 'translate(-50%, -50%)';
+                el.className = 'bg-[#151718]/95 text-white font-bold text-xs px-3 py-1.5 rounded-full border border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)] flex items-center gap-1.5 cursor-pointer backdrop-blur-md';
 
                 el.innerHTML = `
-                    <div style="
-                        display: flex;
-                        align-items: center;
-                        gap: 4px;
-                        padding: 4px 10px;
-                        border-radius: 9999px;
-                        background: rgba(10, 15, 29, 0.9);
-                        border: 1.5px solid #BEF264;
-                        backdrop-filter: blur(8px);
-                        box-shadow: 0 8px 18px rgba(0,0,0,0.7), 0 0 10px rgba(190, 242, 100, 0.3);
-                        transition: transform 0.15s ease;
-                    ">
-                        <span style="font-size: 10px;">🏠</span>
-                        <span style="font-size: 11px; font-weight: 900; color: #BEF264; letter-spacing: -0.01em;">
-                            ₦${priceFormatted}
-                        </span>
-                    </div>
+                    <span>₦${priceFormatted}</span>
                 `;
 
                 el.onclick = (e) => {
@@ -1215,7 +1062,7 @@ export default function PulseMapbox({
                     });
                 };
 
-                const marker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+                const marker = new mapboxgl.Marker({ element: el })
                     .setLngLat(coords)
                     .addTo(map.current!);
                 markersRef.current.push(marker);
@@ -1233,114 +1080,43 @@ export default function PulseMapbox({
                 style={{ width: '100%', height: '100%', minHeight: '480px' }} 
             />
 
-            {/* Top Campus Pulse Live Radar HUD */}
-            <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
-                {/* Left Live Campus Radar Badge */}
-                <div className="pointer-events-auto flex items-center gap-2 bg-neutral-950/85 backdrop-blur-xl px-4 py-2 rounded-full border border-white/15 shadow-2xl">
-                    <span className="relative flex h-2.5 w-2.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#BEF264] opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#BEF264]"></span>
+            {/* Top Left: LAUTECH PULSE RADAR with pulsing green dot */}
+            <div className="absolute top-4 left-4 z-20 pointer-events-auto">
+                <div className="flex items-center gap-2.5 bg-[#151718]/90 text-white backdrop-blur-md px-3.5 py-1.5 rounded-full border border-gray-700 shadow-xl">
+                    <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                     </span>
-                    <span className="text-[11px] font-black uppercase tracking-wider text-white">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-white">
                         LAUTECH PULSE RADAR
                     </span>
-                    <span className="hidden sm:inline-block text-[10px] font-extrabold uppercase text-[#BEF264] bg-[#BEF264]/10 px-2 py-0.5 rounded-full border border-[#BEF264]/20">
-                        140+ ACTIVE
-                    </span>
-                </div>
-
-                {/* Right Camera & Theme Controls */}
-                <div className="pointer-events-auto flex items-center gap-2">
-                    {/* Compass / 3D Tilt Toggle */}
-                    <button
-                        type="button"
-                        onClick={toggle3D}
-                        className="flex items-center gap-1.5 bg-neutral-950/85 backdrop-blur-xl px-3.5 py-2 rounded-full border border-white/15 text-white hover:text-[#BEF264] text-xs font-black uppercase tracking-wider transition-all shadow-xl hover:scale-105 active:scale-95"
-                        title="Toggle 3D Bird's-Eye Perspective"
-                    >
-                        <Compass className={`w-3.5 h-3.5 ${is3DMode ? 'text-[#BEF264]' : 'text-gray-400'}`} />
-                        <span>{is3DMode ? '3D' : '2D'}</span>
-                    </button>
-
-                    {/* Recenter Campus */}
-                    <button
-                        type="button"
-                        onClick={recenterToCampus}
-                        className="p-2 bg-neutral-950/85 backdrop-blur-xl rounded-full border border-white/15 text-white hover:text-[#BEF264] transition-all shadow-xl hover:scale-105 active:scale-95"
-                        title="Center Campus"
-                    >
-                        <Navigation className="w-3.5 h-3.5" />
-                    </button>
-
-                    {/* Theme Switcher Dropdown */}
-                    <div className="relative group">
-                        <button
-                            type="button"
-                            className="flex items-center gap-1.5 bg-neutral-950/85 backdrop-blur-xl px-3 py-2 rounded-full border border-white/15 text-white text-xs font-black uppercase transition-all shadow-xl hover:text-[#BEF264]"
-                        >
-                            <Layers className="w-3.5 h-3.5 text-[#BEF264]" />
-                            <span className="hidden sm:inline-block">
-                                {activeStyleName === 'pulse-night' ? 'Night' : activeStyleName === 'pulse-dark' ? 'Dark' : activeStyleName === 'pulse-satellite' ? 'Satellite' : 'Base'}
-                            </span>
-                        </button>
-                        <div className="absolute right-0 top-full mt-1.5 hidden group-hover:flex flex-col bg-neutral-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl p-1.5 shadow-2xl min-w-[145px] z-30">
-                            <button
-                                onClick={() => switchStyle('pulse-night')}
-                                className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'pulse-night' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
-                            >
-                                🌙 Pulse Night
-                            </button>
-                            <button
-                                onClick={() => switchStyle('pulse-dark')}
-                                className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'pulse-dark' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
-                            >
-                                🌑 Pulse Dark
-                            </button>
-                            <button
-                                onClick={() => switchStyle('pulse-satellite')}
-                                className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'pulse-satellite' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
-                            >
-                                🛰️ Pulse Satellite
-                            </button>
-                            <button
-                                onClick={() => switchStyle('midnight-base')}
-                                className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'midnight-base' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
-                            >
-                                🌌 Pulse Base
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            {/* Floating 🛰️ / 3D Mode Toggle Pill (Matching reference UI) */}
-            <div className="absolute top-16 right-4 z-20 pointer-events-auto">
-                <div className="flex items-center bg-neutral-950/90 backdrop-blur-xl border border-white/20 p-1 rounded-full shadow-2xl">
+            {/* Top Right: Dark Floating Action Buttons for 3D and Satellite toggles */}
+            <div className="absolute top-4 right-4 z-20 pointer-events-auto flex items-center gap-2">
+                <div className="flex items-center bg-[#151718]/95 backdrop-blur-md border border-gray-700 p-1 rounded-full shadow-xl">
                     <button
                         type="button"
-                        onClick={handleToggleSatellite}
-                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all shadow-sm ${
-                            isSatelliteActive
-                                ? 'bg-[#BEF264] text-black shadow-lg shadow-[#BEF264]/25 scale-105'
-                                : 'text-gray-300 hover:text-white hover:bg-white/10'
+                        onClick={() => handleSelectStyle('3d')}
+                        className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
+                            mapStyle === '3d'
+                                ? 'bg-green-500 text-black shadow-md'
+                                : 'text-gray-300 hover:text-white'
                         }`}
-                        title="High-Resolution Satellite Aerial View"
                     >
-                        <span className="text-sm">🛰️</span>
-                        <span className="text-[11px]">Satellite</span>
+                        3D
                     </button>
                     <button
                         type="button"
-                        onClick={handleToggle3D}
-                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all shadow-sm ${
-                            !isSatelliteActive
-                                ? 'bg-[#BEF264] text-black shadow-lg shadow-[#BEF264]/25 scale-105'
-                                : 'text-gray-300 hover:text-white hover:bg-white/10'
+                        onClick={() => handleSelectStyle('satellite')}
+                        className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
+                            mapStyle === 'satellite'
+                                ? 'bg-green-500 text-black shadow-md'
+                                : 'text-gray-300 hover:text-white'
                         }`}
-                        title="3D Building Extrusions View"
                     >
-                        <span className="text-sm">🏙️</span>
-                        <span className="text-[11px]">3D</span>
+                        Satellite
                     </button>
                 </div>
             </div>
