@@ -143,7 +143,7 @@ export function ExploreContent({ isEmbedded = false }: { isEmbedded?: boolean })
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Map */}
                 <div className="lg:col-span-2 rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-[#090d16]" style={{ minHeight: 540 }}>
-                    <PulseMapbox properties={[]} showLandmarks={true} snapMode={true} activeCategory={activeCategory} flyToLocation={flyToLocation} zoom={14.2} />
+                    <PulseMapbox properties={[]} showLandmarks={true} pulseMode={true} activeCategory={activeCategory} flyToLocation={flyToLocation} zoom={14.2} />
                 </div>
 
                 {/* Nearby Spots Sidebar */}

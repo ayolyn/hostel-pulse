@@ -73,13 +73,14 @@ interface PulseMapboxProps {
     center?: [number, number]; // [lng, lat]
     zoom?: number;
     showLandmarks?: boolean;
-    snapMode?: boolean;
+    pulseMode?: boolean;
+    snapMode?: boolean; // Backward compatibility alias
     activeCategory?: string;
     flyToLocation?: [number, number] | null;
 }
 
-// Iconic Snapchat-style Campus Activity Hotspots in Ogbomoso
-export const SNAP_HOTSPOTS: Hotspot[] = [
+// Iconic Campus Activity Hotspots in Ogbomoso
+export const PULSE_HOTSPOTS: Hotspot[] = [
     {
         id: 'under-g-strip',
         name: 'Under-G Food & Hub',
@@ -153,13 +154,14 @@ export const SNAP_HOTSPOTS: Hotspot[] = [
 ];
 
 // Mapbox Vector Styles
-const SNAP_NIGHT_STYLE = 'mapbox://styles/mapbox/navigation-night-v1';
-const SNAP_DARK_STYLE = 'mapbox://styles/mapbox/dark-v11';
+const PULSE_NIGHT_STYLE = 'mapbox://styles/mapbox/navigation-night-v1';
+const PULSE_DARK_STYLE = 'mapbox://styles/mapbox/dark-v11';
+const PULSE_SATELLITE_STYLE = 'mapbox://styles/mapbox/satellite-streets-v12';
 
 // 100% Zero-Token Sleek Dark Raster Base (Esri Dark Gray Canvas - No watermark, no API key needed)
 export const ESRI_DARK_CANVAS_STYLE: any = {
     version: 8,
-    name: 'Snap Midnight Base',
+    name: 'Pulse Midnight Base',
     sources: {
         'esri-dark-base': {
             type: 'raster',
@@ -179,7 +181,7 @@ export const ESRI_DARK_CANVAS_STYLE: any = {
     },
     layers: [
         {
-            id: 'snap-dark-bg',
+            id: 'pulse-dark-bg',
             type: 'background',
             paint: {
                 'background-color': '#090d16'
@@ -196,6 +198,52 @@ export const ESRI_DARK_CANVAS_STYLE: any = {
             id: 'esri-dark-labels-layer',
             type: 'raster',
             source: 'esri-dark-labels',
+            minzoom: 0,
+            maxzoom: 19
+        }
+    ]
+};
+
+// High-Resolution Aerial Satellite Fallback Style (Esri World Imagery + Reference labels)
+export const ESRI_SATELLITE_STYLE: any = {
+    version: 8,
+    name: 'Pulse Satellite Aerial',
+    sources: {
+        'esri-satellite': {
+            type: 'raster',
+            tiles: [
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256,
+            attribution: '&copy; Esri, Maxar, Earthstar Geographics'
+        },
+        'esri-satellite-labels': {
+            type: 'raster',
+            tiles: [
+                'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256
+        }
+    },
+    layers: [
+        {
+            id: 'satellite-bg',
+            type: 'background',
+            paint: {
+                'background-color': '#050b14'
+            }
+        },
+        {
+            id: 'esri-satellite-layer',
+            type: 'raster',
+            source: 'esri-satellite',
+            minzoom: 0,
+            maxzoom: 19
+        },
+        {
+            id: 'esri-satellite-labels-layer',
+            type: 'raster',
+            source: 'esri-satellite-labels',
             minzoom: 0,
             maxzoom: 19
         }
@@ -264,15 +312,205 @@ function getPropertyCoordinates(p: Property): [number, number] {
     return [4.2667 + jitterLng, 8.1333 + jitterLat];
 }
 
+/**
+ * Procedural 3D building polygon generator for genuine 3D perspective extrusions
+ * Returns closed GeoJSON coordinates [[lng, lat], ...]
+ */
+function createBuildingPolygon(
+    centerLng: number, 
+    centerLat: number, 
+    widthMeters: number, 
+    lengthMeters: number, 
+    rotationDeg: number = 0
+): [number, number][] {
+    const latMeters = 111320;
+    const lngMeters = 111320 * Math.cos((centerLat * Math.PI) / 180);
+    const rad = (rotationDeg * Math.PI) / 180;
+    const cosR = Math.cos(rad);
+    const sinR = Math.sin(rad);
+
+    const halfW = widthMeters / 2;
+    const halfL = lengthMeters / 2;
+
+    const corners: [number, number][] = [
+        [-halfW, -halfL],
+        [halfW, -halfL],
+        [halfW, halfL],
+        [-halfW, halfL],
+        [-halfW, -halfL]
+    ];
+
+    return corners.map(([x, y]) => {
+        const rotX = x * cosR - y * sinR;
+        const rotY = x * sinR + y * cosR;
+        return [
+            centerLng + rotX / lngMeters,
+            centerLat + rotY / latMeters
+        ];
+    });
+}
+
+// Comprehensive realistic 3D building footprints for LAUTECH Campus and student districts (85+ structures)
+const CAMPUS_3D_BUILDINGS = [
+    // 1. LAUTECH Central Academic & Administrative Complex
+    { name: 'Senate Administrative Tower', lng: 4.2685, lat: 8.1382, width: 44, length: 28, rotation: 12, height: 42, min_height: 0, color: '#1e293b' },
+    { name: 'Senate East Wing', lng: 4.2692, lat: 8.1382, width: 28, length: 18, rotation: 12, height: 28, min_height: 0, color: '#243247' },
+    { name: 'Senate West Wing', lng: 4.2678, lat: 8.1382, width: 28, length: 18, rotation: 12, height: 28, min_height: 0, color: '#243247' },
+    { name: 'Senate Council Chambers', lng: 4.2685, lat: 8.1375, width: 34, length: 24, rotation: 12, height: 22, min_height: 0, color: '#1b2636' },
+    { name: 'Olusegun Oke Central Library', lng: 4.2725, lat: 8.1378, width: 54, length: 36, rotation: -8, height: 28, min_height: 0, color: '#1e293b' },
+    { name: 'Library Reading Annex & Archives', lng: 4.2732, lat: 8.1374, width: 36, length: 22, rotation: -8, height: 20, min_height: 0, color: '#243247' },
+    { name: 'Central ICT Complex & CBT Centre', lng: 4.2715, lat: 8.1384, width: 42, length: 28, rotation: -8, height: 26, min_height: 0, color: '#2a3b52' },
+    { name: 'CAD & Cyber Lab Annex', lng: 4.2720, lat: 8.1390, width: 36, length: 22, rotation: -8, height: 20, min_height: 0, color: '#1e293b' },
+    { name: 'Great Hall & Alumni Event Centre', lng: 4.2670, lat: 8.1365, width: 56, length: 36, rotation: 20, height: 24, min_height: 0, color: '#1e293b' },
+    { name: '1200-Seater Amphitheatre', lng: 4.2678, lat: 8.1358, width: 44, length: 32, rotation: 20, height: 22, min_height: 0, color: '#243247' },
+    { name: 'MKO Abiola Lecture Theatre', lng: 4.2683, lat: 8.1350, width: 38, length: 24, rotation: 15, height: 20, min_height: 0, color: '#1e293b' },
+    { name: '250 Lecture Theatre', lng: 4.2690, lat: 8.1355, width: 32, length: 20, rotation: 15, height: 18, min_height: 0, color: '#1b2636' },
+    { name: '500 Lecture Theatre Hall', lng: 4.2696, lat: 8.1348, width: 36, length: 24, rotation: 15, height: 18, min_height: 0, color: '#243247' },
+    { name: '750 Lecture Theatre Hall', lng: 4.2704, lat: 8.1342, width: 40, length: 26, rotation: 15, height: 20, min_height: 0, color: '#1e293b' },
+    { name: 'Faculty of Engineering (Block A - Mech/Civil)', lng: 4.2698, lat: 8.1402, width: 50, length: 24, rotation: 35, height: 26, min_height: 0, color: '#1e293b' },
+    { name: 'Faculty of Engineering (Block B - Elect/Comp)', lng: 4.2706, lat: 8.1410, width: 50, length: 24, rotation: 35, height: 26, min_height: 0, color: '#243247' },
+    { name: 'Faculty of Engineering (Block C - Chem/Food)', lng: 4.2712, lat: 8.1418, width: 48, length: 24, rotation: 35, height: 24, min_height: 0, color: '#1b2636' },
+    { name: 'Central Engineering Workshops', lng: 4.2720, lat: 8.1424, width: 46, length: 28, rotation: 35, height: 18, min_height: 0, color: '#1e293b' },
+    { name: 'Faculty of Pure & Applied Sciences (Block 1)', lng: 4.2708, lat: 8.1360, width: 48, length: 26, rotation: 0, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Faculty of Pure & Applied Sciences (Block 2)', lng: 4.2715, lat: 8.1366, width: 46, length: 24, rotation: 0, height: 24, min_height: 0, color: '#243247' },
+    { name: 'Science Laboratory Complex', lng: 4.2716, lat: 8.1354, width: 42, length: 24, rotation: 0, height: 22, min_height: 0, color: '#1b2636' },
+    { name: 'Faculty of Environmental Sciences', lng: 4.2658, lat: 8.1412, width: 46, length: 26, rotation: -25, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Architecture Design Studios', lng: 4.2652, lat: 8.1420, width: 38, length: 22, rotation: -25, height: 20, min_height: 0, color: '#243247' },
+    { name: 'Urban & Regional Planning Complex', lng: 4.2646, lat: 8.1428, width: 40, length: 24, rotation: -25, height: 20, min_height: 0, color: '#1b2636' },
+    { name: 'College of Health Sciences Complex', lng: 4.2640, lat: 8.1385, width: 52, length: 28, rotation: 10, height: 26, min_height: 0, color: '#1e293b' },
+    { name: 'Medical Anatomy & Pathology Labs', lng: 4.2646, lat: 8.1393, width: 44, length: 24, rotation: 10, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Faculty of Agricultural Sciences', lng: 4.2736, lat: 8.1352, width: 48, length: 26, rotation: 5, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Faculty of Management Sciences', lng: 4.2675, lat: 8.1395, width: 46, length: 24, rotation: 10, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Student Union Building (SUB)', lng: 4.2660, lat: 8.1350, width: 40, length: 26, rotation: 15, height: 18, min_height: 0, color: '#1e293b' },
+    { name: 'University Health Centre', lng: 4.2650, lat: 8.1370, width: 38, length: 24, rotation: 15, height: 16, min_height: 0, color: '#243247' },
+    { name: 'Sports Pavilion & Gymnasium', lng: 4.2710, lat: 8.1432, width: 54, length: 34, rotation: 40, height: 22, min_height: 0, color: '#1e293b' },
+    { name: 'Stadium Spectators Grandstand', lng: 4.2718, lat: 8.1440, width: 60, length: 20, rotation: 40, height: 18, min_height: 0, color: '#243247' },
+    { name: 'Convocation Arena & Stage', lng: 4.2680, lat: 8.1425, width: 52, length: 30, rotation: 0, height: 16, min_height: 0, color: '#1b2636' },
+    { name: 'LAUTECH Main Gate Complex', lng: 4.2670, lat: 8.1338, width: 34, length: 18, rotation: 0, height: 14, min_height: 0, color: '#1e293b' },
+    { name: 'Gate Commercial Banks Terminal', lng: 4.2664, lat: 8.1343, width: 30, length: 16, rotation: 0, height: 14, min_height: 0, color: '#243247' },
+    { name: 'Campus On-Site Hall 1', lng: 4.2740, lat: 8.1400, width: 44, length: 28, rotation: 20, height: 22, min_height: 0, color: '#1e293b' },
+    { name: 'Campus On-Site Hall 2', lng: 4.2748, lat: 8.1408, width: 44, length: 28, rotation: 20, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Post-Graduate Student Hall', lng: 4.2730, lat: 8.1415, width: 40, length: 26, rotation: 20, height: 20, min_height: 0, color: '#1b2636' },
+
+    // 2. Under-G Student District Hostels, Plazas & Apartments
+    { name: 'Under-G Food & Hub Center', lng: 4.2580, lat: 8.1360, width: 38, length: 22, rotation: 25, height: 20, min_height: 0, color: '#1e293b' },
+    { name: 'Under-G Commercial Plaza', lng: 4.2588, lat: 8.1365, width: 36, length: 20, rotation: 25, height: 18, min_height: 0, color: '#243247' },
+    { name: 'Diamond Villa Student Hostel', lng: 4.2570, lat: 8.1375, width: 40, length: 26, rotation: 20, height: 26, min_height: 0, color: '#1e293b' },
+    { name: 'Royal Crest Apartments', lng: 4.2562, lat: 8.1382, width: 42, length: 28, rotation: 20, height: 26, min_height: 0, color: '#243247' },
+    { name: 'Platinum Hall Lodge', lng: 4.2580, lat: 8.1386, width: 44, length: 26, rotation: 15, height: 28, min_height: 0, color: '#1e293b' },
+    { name: 'Emerald Court Hostel', lng: 4.2592, lat: 8.1376, width: 38, length: 24, rotation: 15, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Crystal Heights Hostel', lng: 4.2564, lat: 8.1355, width: 38, length: 24, rotation: 30, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Sunshine Villa Residence', lng: 4.2555, lat: 8.1366, width: 34, length: 22, rotation: 30, height: 20, min_height: 0, color: '#243247' },
+    { name: 'Alpha Court Lodge', lng: 4.2574, lat: 8.1348, width: 36, length: 22, rotation: 20, height: 22, min_height: 0, color: '#1b2636' },
+    { name: 'Prestige Lodge Apartments', lng: 4.2584, lat: 8.1352, width: 38, length: 24, rotation: 20, height: 24, min_height: 0, color: '#243247' },
+    { name: 'White House Student Villa', lng: 4.2598, lat: 8.1362, width: 40, length: 26, rotation: 25, height: 22, min_height: 0, color: '#1e293b' },
+    { name: 'Harmony Heights Hostel', lng: 4.2550, lat: 8.1378, width: 42, length: 26, rotation: 15, height: 26, min_height: 0, color: '#243247' },
+    { name: 'Kings Court Residence', lng: 4.2542, lat: 8.1385, width: 38, length: 24, rotation: 15, height: 22, min_height: 0, color: '#1e293b' },
+    { name: 'Prime Haven Student Lodge', lng: 4.2568, lat: 8.1394, width: 40, length: 26, rotation: 15, height: 24, min_height: 0, color: '#243247' },
+    { name: 'Excel Court Apartments', lng: 4.2586, lat: 8.1396, width: 36, length: 22, rotation: 10, height: 22, min_height: 0, color: '#1b2636' },
+    { name: 'Marvel Hall Hostel', lng: 4.2598, lat: 8.1388, width: 42, length: 26, rotation: 10, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Crown Student Apartments', lng: 4.2576, lat: 8.1368, width: 38, length: 24, rotation: 25, height: 24, min_height: 0, color: '#243247' },
+    { name: 'Under-G Supermarket Plaza', lng: 4.2605, lat: 8.1370, width: 34, length: 20, rotation: 25, height: 18, min_height: 0, color: '#1b2636' },
+    { name: 'Student Cyber & Tech Hub', lng: 4.2602, lat: 8.1358, width: 32, length: 20, rotation: 25, height: 18, min_height: 0, color: '#243247' },
+
+    // 3. Adenike Student Corridor (high density student living)
+    { name: 'Adenike Transit Terminal', lng: 4.2622, lat: 8.1402, width: 34, length: 22, rotation: -10, height: 16, min_height: 0, color: '#1e293b' },
+    { name: 'Harmony Lodge Hostels', lng: 4.2615, lat: 8.1412, width: 42, length: 26, rotation: -10, height: 26, min_height: 0, color: '#1e293b' },
+    { name: 'Olive Student Palace', lng: 4.2635, lat: 8.1415, width: 40, length: 26, rotation: -10, height: 24, min_height: 0, color: '#243247' },
+    { name: 'Shalom Court Hostels', lng: 4.2620, lat: 8.1426, width: 44, length: 28, rotation: -15, height: 26, min_height: 0, color: '#1e293b' },
+    { name: 'Goshen Villa Residence', lng: 4.2608, lat: 8.1420, width: 38, length: 24, rotation: -15, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Apex Luxury Lodge', lng: 4.2640, lat: 8.1432, width: 40, length: 26, rotation: -15, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Bethel Court', lng: 4.2626, lat: 8.1440, width: 36, length: 22, rotation: -15, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Grace Villa Hostels', lng: 4.2612, lat: 8.1435, width: 38, length: 24, rotation: -10, height: 22, min_height: 0, color: '#1b2636' },
+    { name: 'Zion Crest Apartments', lng: 4.2632, lat: 8.1448, width: 40, length: 26, rotation: -10, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Silver Spring Lodge', lng: 4.2645, lat: 8.1442, width: 38, length: 24, rotation: -10, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Peace Haven Hostels', lng: 4.2602, lat: 8.1445, width: 36, length: 22, rotation: -15, height: 20, min_height: 0, color: '#1b2636' },
+    { name: 'Oasis Court Apartments', lng: 4.2622, lat: 8.1456, width: 42, length: 26, rotation: -15, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Millennium Student Lodge', lng: 4.2638, lat: 8.1462, width: 38, length: 24, rotation: -15, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Adenike Shopping Mart & Plaza', lng: 4.2618, lat: 8.1395, width: 34, length: 20, rotation: -10, height: 18, min_height: 0, color: '#1b2636' },
+
+    // 4. Aroje & Stadium District
+    { name: 'Horizon Student Lodge', lng: 4.2695, lat: 8.1495, width: 40, length: 26, rotation: 5, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Cedar Villa', lng: 4.2710, lat: 8.1510, width: 38, length: 24, rotation: 5, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Grace Court Hostels', lng: 4.2685, lat: 8.1518, width: 42, length: 26, rotation: 5, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Prime Heights Hostel', lng: 4.2720, lat: 8.1526, width: 38, length: 24, rotation: 5, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Legacy Apartments Aroje', lng: 4.2702, lat: 8.1534, width: 36, length: 22, rotation: 5, height: 22, min_height: 0, color: '#1b2636' },
+    { name: 'Summit Hall Lodge', lng: 4.2678, lat: 8.1504, width: 40, length: 24, rotation: 5, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'Ogbomoso Township Stadium Grandstand', lng: 4.2520, lat: 8.1380, width: 56, length: 24, rotation: 20, height: 22, min_height: 0, color: '#243247' },
+    { name: 'General Hospital Main Medical Wing', lng: 4.2550, lat: 8.1300, width: 52, length: 28, rotation: 0, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'General Hospital Doctors Quarters', lng: 4.2562, lat: 8.1305, width: 40, length: 22, rotation: 0, height: 20, min_height: 0, color: '#243247' },
+
+    // 5. Takie Commercial Square
+    { name: 'First Bank Financial Plaza', lng: 4.2430, lat: 8.1335, width: 36, length: 26, rotation: 45, height: 30, min_height: 0, color: '#1e293b' },
+    { name: 'GTBank Commercial Tower', lng: 4.2442, lat: 8.1340, width: 34, length: 24, rotation: 45, height: 28, min_height: 0, color: '#243247' },
+    { name: 'Zenith & Access Bank Complex', lng: 4.2438, lat: 8.1328, width: 38, length: 26, rotation: 45, height: 28, min_height: 0, color: '#1e293b' },
+    { name: 'Takie Central Market Mall', lng: 4.2450, lat: 8.1346, width: 50, length: 34, rotation: 45, height: 24, min_height: 0, color: '#1e293b' },
+    { name: 'City Mega Supermarket', lng: 4.2425, lat: 8.1346, width: 42, length: 28, rotation: 45, height: 22, min_height: 0, color: '#243247' },
+    { name: 'Heritage Shopping Plaza', lng: 4.2455, lat: 8.1332, width: 40, length: 24, rotation: 45, height: 22, min_height: 0, color: '#1b2636' },
+    { name: 'Ogbomoso Central Town Hall', lng: 4.2420, lat: 8.1320, width: 44, length: 26, rotation: 45, height: 22, min_height: 0, color: '#243247' },
+    { name: 'UBA Commercial Building', lng: 4.2448, lat: 8.1322, width: 36, length: 22, rotation: 45, height: 26, min_height: 0, color: '#1e293b' }
+];
+
+function generateCampus3DBuildingsGeoJSON(extraProperties: Property[] = []): any {
+    const features: any[] = [];
+    
+    // 1. Add all 85+ defined campus & district 3D buildings
+    CAMPUS_3D_BUILDINGS.forEach((b, i) => {
+        features.push({
+            type: 'Feature',
+            id: `campus-bldg-${i}`,
+            properties: {
+                name: b.name,
+                height: b.height,
+                min_height: b.min_height || 0,
+                color: b.color || '#1e293b'
+            },
+            geometry: {
+                type: 'Polygon',
+                coordinates: [createBuildingPolygon(b.lng, b.lat, b.width, b.length, b.rotation || 0)]
+            }
+        });
+    });
+
+    // 2. Add realistic 3D building extrusions beneath every active hostel/property
+    extraProperties.forEach((p, idx) => {
+        const coords = getPropertyCoordinates(p);
+        const hash = (p.id || '').split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+        const rot = (hash % 90) - 45;
+        const bldgHeight = 18 + (hash % 12);
+        features.push({
+            type: 'Feature',
+            id: `prop-bldg-${p.id || idx}`,
+            properties: {
+                name: p.title || 'Student Hostel Lodge',
+                height: bldgHeight,
+                min_height: 0,
+                color: '#1e293b'
+            },
+            geometry: {
+                type: 'Polygon',
+                coordinates: [createBuildingPolygon(coords[0], coords[1], 26, 22, rot)]
+            }
+        });
+    });
+
+    return {
+        type: 'FeatureCollection',
+        features
+    };
+}
+
 export default function PulseMapbox({ 
     properties = [], 
     center = [4.2667, 8.1333], // Default center around LAUTECH Main Gate
     zoom = 14.2,
     showLandmarks = true,
-    snapMode = true,
+    pulseMode = true,
+    snapMode,
     activeCategory = 'all',
     flyToLocation = null
 }: PulseMapboxProps) {
+    const isPulseActive = pulseMode ?? snapMode ?? true;
     const mapContainer = useRef<HTMLDivElement>(null);
     const map = useRef<mapboxgl.Map | null>(null);
     const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -280,21 +518,138 @@ export default function PulseMapbox({
 
     const [mapLoaded, setMapLoaded] = useState(false);
     const [is3DMode, setIs3DMode] = useState(true);
-    const [activeStyleName, setActiveStyleName] = useState<'snap-night' | 'snap-dark' | 'midnight-base'>('snap-night');
+    const [activeStyleName, setActiveStyleName] = useState<'pulse-night' | 'pulse-dark' | 'pulse-satellite' | 'midnight-base'>('pulse-night');
+    const activeStyleNameRef = useRef(activeStyleName);
     const [liveProperties, setLiveProperties] = useState<Property[]>([]);
     const [liveRoommates, setLiveRoommates] = useState<Roommate[]>([]);
     
-    // Interactive Snapchat Drawers / Modals
+    // Interactive Campus Pulse Drawers / Modals
     const [selectedRoommate, setSelectedRoommate] = useState<Roommate | null>(null);
     const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
     const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
     const supabase = createClient();
 
-    // Toggle 3D tilt camera (Snapchat bird's eye 45-degree angle vs top-down 2D)
+    // Priority: explicitly passed properties first; fallback to live properties if passed is empty
+    const displayProperties = properties && properties.length > 0 
+        ? properties 
+        : (liveProperties.length > 0 ? liveProperties : properties);
+
+    const displayPropertiesRef = useRef<Property[]>(displayProperties);
+    useEffect(() => {
+        displayPropertiesRef.current = displayProperties;
+    }, [displayProperties]);
+
+    const isSatelliteActive = activeStyleName === 'pulse-satellite';
+
+    /**
+     * Add Mapbox composite fill-extrusion 3D layer and procedural GeoJSON building blocks
+     * If in satellite mode, hides 3D solid extrusions so high-resolution rooftops are visible
+     */
+    const apply3DBuildingLayers = useCallback((m: mapboxgl.Map, currentProperties: Property[], isSatelliteMode: boolean) => {
+        try {
+            const style = m.getStyle();
+            if (!style) return;
+
+            // Configure directional lighting for real architectural depth and shadow on 3D building faces
+            if (typeof m.setLight === 'function') {
+                m.setLight({
+                    anchor: 'viewport',
+                    color: '#ffffff',
+                    intensity: 0.45,
+                    position: [1.5, 180, 50]
+                });
+            }
+
+            const labelLayerId = style.layers?.find(
+                (l: any) => l.type === 'symbol' && l.layout && l.layout['text-field']
+            )?.id;
+
+            const visibilityState: 'visible' | 'none' = isSatelliteMode ? 'none' : 'visible';
+
+            // 1. If Mapbox Composite vector source exists (official Mapbox style), add/update Mapbox 3D building extrusion
+            if (m.getSource('composite')) {
+                if (!m.getLayer('3d-buildings-composite')) {
+                    m.addLayer(
+                        {
+                            id: '3d-buildings-composite',
+                            source: 'composite',
+                            'source-layer': 'building',
+                            filter: ['==', 'extrude', 'true'],
+                            type: 'fill-extrusion',
+                            minzoom: 12,
+                            layout: {
+                                visibility: visibilityState
+                            },
+                            paint: {
+                                'fill-extrusion-color': '#1e293b',
+                                'fill-extrusion-height': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['zoom'],
+                                    12, 0,
+                                    14.05, ['coalesce', ['get', 'height'], 16]
+                                ],
+                                'fill-extrusion-base': [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['zoom'],
+                                    12, 0,
+                                    14.05, ['coalesce', ['get', 'min_height'], 0]
+                                ],
+                                'fill-extrusion-opacity': 0.92
+                            }
+                        },
+                        labelLayerId
+                    );
+                } else {
+                    m.setLayoutProperty('3d-buildings-composite', 'visibility', visibilityState);
+                }
+            }
+
+            // 2. Add / Update LAUTECH & Ogbomoso procedural 3D GeoJSON building blocks
+            const campusGeoJSON = generateCampus3DBuildingsGeoJSON(currentProperties);
+            const existingSource = m.getSource('pulse-campus-3d') as mapboxgl.GeoJSONSource | undefined;
+            if (existingSource) {
+                existingSource.setData(campusGeoJSON);
+            } else {
+                m.addSource('pulse-campus-3d', {
+                    type: 'geojson',
+                    data: campusGeoJSON
+                });
+            }
+
+            if (!m.getLayer('pulse-campus-3d-layer')) {
+                m.addLayer(
+                    {
+                        id: 'pulse-campus-3d-layer',
+                        type: 'fill-extrusion',
+                        source: 'pulse-campus-3d',
+                        minzoom: 11,
+                        layout: {
+                            visibility: visibilityState
+                        },
+                        paint: {
+                            'fill-extrusion-color': ['coalesce', ['get', 'color'], '#1e293b'],
+                            'fill-extrusion-height': ['coalesce', ['get', 'height'], 18],
+                            'fill-extrusion-base': ['coalesce', ['get', 'min_height'], 0],
+                            'fill-extrusion-opacity': 0.92
+                        }
+                    },
+                    labelLayerId
+                );
+            } else {
+                m.setLayoutProperty('pulse-campus-3d-layer', 'visibility', visibilityState);
+            }
+        } catch (err) {
+            console.warn('[PulseMapbox] Note adding 3D building layers:', err);
+        }
+    }, []);
+
+    // Toggle 3D tilt camera (Campus Pulse bird's eye 48-degree angle vs top-down 2D)
     const toggle3D = useCallback(() => {
         if (!map.current) return;
-        const targetPitch = is3DMode ? 0 : 45;
+        const targetPitch = is3DMode ? 0 : 48;
         const targetBearing = is3DMode ? 0 : -12;
         map.current.easeTo({
             pitch: targetPitch,
@@ -310,46 +665,91 @@ export default function PulseMapbox({
         map.current.flyTo({
             center: [4.2667, 8.1333],
             zoom: 14.5,
-            pitch: 45,
+            pitch: 48,
             bearing: -10,
             duration: 1200,
             essential: true
         });
     }, []);
 
-    // Switch theme style seamlessly
-    const switchStyle = useCallback((styleKey: 'snap-night' | 'snap-dark' | 'midnight-base') => {
+    // Switch theme style seamlessly between Pulse Night, Dark, Satellite & Base
+    const switchStyle = useCallback((styleKey: 'pulse-night' | 'pulse-dark' | 'pulse-satellite' | 'midnight-base') => {
         if (!map.current) return;
         try {
-            if (styleKey === 'snap-night') {
-                if (hasMapboxToken) {
-                    map.current.setStyle(SNAP_NIGHT_STYLE);
-                    setActiveStyleName('snap-night');
+            if (styleKey === 'pulse-night') {
+                if (hasMapboxToken && !fallbackRef.current) {
+                    map.current.setStyle(PULSE_NIGHT_STYLE);
+                    setActiveStyleName('pulse-night');
                 } else {
                     map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
                     setActiveStyleName('midnight-base');
                 }
-            } else if (styleKey === 'snap-dark') {
-                if (hasMapboxToken) {
-                    map.current.setStyle(SNAP_DARK_STYLE);
-                    setActiveStyleName('snap-dark');
+            } else if (styleKey === 'pulse-dark') {
+                if (hasMapboxToken && !fallbackRef.current) {
+                    map.current.setStyle(PULSE_DARK_STYLE);
+                    setActiveStyleName('pulse-dark');
                 } else {
                     map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
                     setActiveStyleName('midnight-base');
+                }
+            } else if (styleKey === 'pulse-satellite') {
+                if (hasMapboxToken && !fallbackRef.current) {
+                    map.current.setStyle(PULSE_SATELLITE_STYLE);
+                    setActiveStyleName('pulse-satellite');
+                } else {
+                    map.current.setStyle(ESRI_SATELLITE_STYLE);
+                    setActiveStyleName('pulse-satellite');
                 }
             } else {
                 map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
                 setActiveStyleName('midnight-base');
             }
         } catch (err) {
-            console.warn('[PulseMapbox] Style switch failed, falling back to Esri Dark Canvas:', err);
-            map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
-            setActiveStyleName('midnight-base');
+            console.warn('[PulseMapbox] Style switch failed, falling back:', err);
+            if (styleKey === 'pulse-satellite') {
+                map.current.setStyle(ESRI_SATELLITE_STYLE);
+                setActiveStyleName('pulse-satellite');
+            } else {
+                map.current.setStyle(ESRI_DARK_CANVAS_STYLE);
+                setActiveStyleName('midnight-base');
+            }
         }
         setTimeout(() => map.current?.resize(), 200);
     }, []);
 
-    // Initialize Map with Snapchat 3D perspective
+    // Handlers for the Floating 🛰️ / 3D Toggle Pill
+    const handleToggleSatellite = useCallback(() => {
+        if (!map.current) return;
+        switchStyle('pulse-satellite');
+        map.current.easeTo({
+            pitch: 15,
+            bearing: 0,
+            duration: 900
+        });
+    }, [switchStyle]);
+
+    const handleToggle3D = useCallback(() => {
+        if (!map.current) return;
+        if (activeStyleName === 'pulse-satellite') {
+            switchStyle('pulse-night');
+        }
+        map.current.easeTo({
+            pitch: 48,
+            bearing: -12,
+            duration: 900
+        });
+        setIs3DMode(true);
+    }, [activeStyleName, switchStyle]);
+
+    // Keep activeStyleNameRef synced and update 3D layers when style or properties change
+    useEffect(() => {
+        activeStyleNameRef.current = activeStyleName;
+        if (map.current && mapLoaded) {
+            apply3DBuildingLayers(map.current, displayProperties, activeStyleName === 'pulse-satellite');
+        }
+    }, [activeStyleName, displayProperties, mapLoaded, apply3DBuildingLayers]);
+
+    // Initialize Map with 3D perspective
     useEffect(() => {
         if (map.current || !mapContainer.current) return;
 
@@ -361,9 +761,10 @@ export default function PulseMapbox({
         const defaultCenter: [number, number] = center || [4.2667, 8.1333];
         const defaultZoom = zoom || 14.2;
 
-        const initialStyle = hasMapboxToken ? SNAP_NIGHT_STYLE : ESRI_DARK_CANVAS_STYLE;
+        const initialStyle = hasMapboxToken ? PULSE_NIGHT_STYLE : ESRI_DARK_CANVAS_STYLE;
         if (!hasMapboxToken) {
             setActiveStyleName('midnight-base');
+            activeStyleNameRef.current = 'midnight-base';
         }
 
         let newMap: mapboxgl.Map;
@@ -373,7 +774,7 @@ export default function PulseMapbox({
                 style: initialStyle,
                 center: defaultCenter,
                 zoom: defaultZoom,
-                pitch: 45, // Signature Snapchat Map 3D tilt
+                pitch: 48, // Signature Campus Pulse 3D tilt
                 bearing: -10,
                 attributionControl: false // Handled natively in HUD
             });
@@ -385,11 +786,12 @@ export default function PulseMapbox({
                     style: ESRI_DARK_CANVAS_STYLE,
                     center: defaultCenter,
                     zoom: defaultZoom,
-                    pitch: 45,
+                    pitch: 48,
                     bearing: -10,
                     attributionControl: false
                 });
                 setActiveStyleName('midnight-base');
+                activeStyleNameRef.current = 'midnight-base';
                 fallbackRef.current = true;
             } catch (fallbackErr) {
                 console.error('[PulseMapbox] Critical map error:', fallbackErr);
@@ -409,18 +811,24 @@ export default function PulseMapbox({
             // Only fallback on hard token/auth failures
             if ((status === 401 || status === 403 || message.includes('unauthorized') || message.includes('forbidden')) && !fallbackRef.current) {
                 fallbackRef.current = true;
-                console.warn('[PulseMapbox] Token authorization failed. Activating zero-token Midnight Base Canvas.');
+                console.warn('[PulseMapbox] Token authorization failed. Activating zero-token fallback.');
                 try {
-                    newMap.setStyle(ESRI_DARK_CANVAS_STYLE);
-                    setActiveStyleName('midnight-base');
+                    if (activeStyleNameRef.current === 'pulse-satellite') {
+                        newMap.setStyle(ESRI_SATELLITE_STYLE);
+                    } else {
+                        newMap.setStyle(ESRI_DARK_CANVAS_STYLE);
+                        setActiveStyleName('midnight-base');
+                        activeStyleNameRef.current = 'midnight-base';
+                    }
                 } catch (sErr) {
-                    console.error('[PulseMapbox] Failed to apply midnight fallback:', sErr);
+                    console.error('[PulseMapbox] Failed to apply fallback:', sErr);
                 }
             }
         });
 
         const handleMapReady = () => {
             setMapLoaded(true);
+            apply3DBuildingLayers(newMap, displayPropertiesRef.current, activeStyleNameRef.current === 'pulse-satellite');
             newMap.resize();
         };
 
@@ -472,9 +880,9 @@ export default function PulseMapbox({
         }
     }, [flyToLocation]);
 
-    // Live Supabase query for Snap Mode
+    // Live Supabase query for Pulse Mode
     useEffect(() => {
-        if (!snapMode) return;
+        if (!isPulseActive) return;
 
         async function fetchLiveMapData() {
             try {
@@ -497,9 +905,9 @@ export default function PulseMapbox({
         }
 
         fetchLiveMapData();
-    }, [snapMode, supabase]);
+    }, [isPulseActive, supabase]);
 
-    // Render Markers with Snapchat Bitmoji / Heatmap / Price aesthetics
+    // Render Markers with Campus Pulse Avatar / Heatmap / Price aesthetics
     useEffect(() => {
         if (!map.current || !mapLoaded) return;
 
@@ -507,13 +915,9 @@ export default function PulseMapbox({
         markersRef.current.forEach(m => m.remove());
         markersRef.current = [];
 
-        const displayProperties = snapMode 
-            ? (liveProperties.length > 0 ? liveProperties : properties) 
-            : properties;
-
-        // 1. Render Snapchat-style Campus Activity Hotspots
+        // 1. Render Campus Activity Hotspots
         if (showLandmarks && (activeCategory === 'all' || activeCategory === 'hotspots' || activeCategory === 'markets' || activeCategory === 'transport' || activeCategory === 'cafes' || activeCategory === 'library')) {
-            const filteredHotspots = SNAP_HOTSPOTS.filter(h => {
+            const filteredHotspots = PULSE_HOTSPOTS.filter(h => {
                 if (activeCategory === 'all' || activeCategory === 'hotspots') return true;
                 if (activeCategory === 'markets') return h.category === 'market';
                 if (activeCategory === 'transport') return h.category === 'transit';
@@ -523,9 +927,8 @@ export default function PulseMapbox({
             });
 
             filteredHotspots.forEach(hotspot => {
-                // Wrapper element
                 const wrapper = document.createElement('div');
-                wrapper.className = 'snap-hotspot-container cursor-pointer select-none group';
+                wrapper.className = 'pulse-hotspot-container cursor-pointer select-none group';
                 wrapper.style.display = 'flex';
                 wrapper.style.flexDirection = 'column';
                 wrapper.style.alignItems = 'center';
@@ -533,7 +936,7 @@ export default function PulseMapbox({
 
                 wrapper.innerHTML = `
                     <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-                        <!-- Pulsing Snapchat Heatmap Halo -->
+                        <!-- Pulsing Heatmap Halo -->
                         <div style="
                             position: absolute;
                             width: 68px;
@@ -593,8 +996,8 @@ export default function PulseMapbox({
             });
         }
 
-        // 2. Render Snapchat Bitmoji / Roommate Avatars
-        if (snapMode && (activeCategory === 'all' || activeCategory === 'roommates')) {
+        // 2. Render Roommate Avatars
+        if (isPulseActive && (activeCategory === 'all' || activeCategory === 'roommates')) {
             const roommatesToRender = liveRoommates.length > 0 ? liveRoommates : [
                 {
                     id: 'rm-julius',
@@ -629,7 +1032,7 @@ export default function PulseMapbox({
             ];
 
             roommatesToRender.forEach(rm => {
-                const zoneMatch = SNAP_HOTSPOTS.find(h => h.name.toLowerCase().includes(rm.preferred_zone?.toLowerCase() || '')) || SNAP_HOTSPOTS[0];
+                const zoneMatch = PULSE_HOTSPOTS.find(h => h.name.toLowerCase().includes(rm.preferred_zone?.toLowerCase() || '')) || PULSE_HOTSPOTS[0];
                 const hash = (rm.id || rm.full_name).split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
                 const fuzzedLng = zoneMatch.lng + (((hash % 100) - 50) * 0.00028);
                 const fuzzedLat = zoneMatch.lat + ((((hash * 3) % 100) - 50) * 0.00028);
@@ -639,14 +1042,14 @@ export default function PulseMapbox({
                 const initials = (rm.full_name || 'U').substring(0, 2).toUpperCase();
 
                 const el = document.createElement('div');
-                el.className = 'snap-avatar-marker cursor-pointer select-none group';
+                el.className = 'pulse-avatar-marker cursor-pointer select-none group';
                 el.style.display = 'flex';
                 el.style.flexDirection = 'column';
                 el.style.alignItems = 'center';
                 el.style.transform = 'translate(-50%, -100%)';
 
                 el.innerHTML = `
-                    <!-- Floating Snap Speech Bubble -->
+                    <!-- Floating Speech Bubble -->
                     <div style="
                         position: relative;
                         margin-bottom: 5px;
@@ -666,7 +1069,7 @@ export default function PulseMapbox({
                         <span style="width: 6px; height: 6px; border-radius: 9999px; background: #22c55e;"></span>
                     </div>
 
-                    <!-- Bitmoji Circular Avatar with Radar Aura -->
+                    <!-- Circular Avatar with Radar Aura -->
                     <div style="position: relative; width: 44px; height: 44px;">
                         <!-- Animated radar ring -->
                         <div style="
@@ -745,7 +1148,7 @@ export default function PulseMapbox({
             });
         }
 
-        // 3. Render Sleek Snap Hostel Price Tags
+        // 3. Render Sleek Hostel Price Tags
         if (activeCategory === 'all' || activeCategory === 'hostels') {
             displayProperties.forEach(p => {
                 const coords = getPropertyCoordinates(p);
@@ -753,7 +1156,7 @@ export default function PulseMapbox({
                 const priceFormatted = priceNum > 1000 ? `${(priceNum / 1000).toFixed(0)}k` : priceNum;
 
                 const el = document.createElement('div');
-                el.className = 'snap-hostel-pill cursor-pointer select-none';
+                el.className = 'pulse-hostel-pill cursor-pointer select-none';
                 el.style.transform = 'translate(-50%, -50%)';
 
                 el.innerHTML = `
@@ -796,7 +1199,7 @@ export default function PulseMapbox({
             });
         }
 
-    }, [properties, liveProperties, liveRoommates, snapMode, showLandmarks, mapLoaded, activeCategory]);
+    }, [properties, liveProperties, liveRoommates, isPulseActive, showLandmarks, mapLoaded, activeCategory, displayProperties]);
 
     return (
         <div className="w-full min-h-[500px] h-[540px] md:h-[640px] rounded-[2rem] overflow-hidden relative shadow-2xl border border-white/10 bg-[#090d16] font-sans">
@@ -807,7 +1210,7 @@ export default function PulseMapbox({
                 style={{ width: '100%', height: '100%', minHeight: '480px' }} 
             />
 
-            {/* Top Snapchat Live Radar HUD */}
+            {/* Top Campus Pulse Live Radar HUD */}
             <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
                 {/* Left Live Campus Radar Badge */}
                 <div className="pointer-events-auto flex items-center gap-2 bg-neutral-950/85 backdrop-blur-xl px-4 py-2 rounded-full border border-white/15 shadow-2xl">
@@ -816,7 +1219,7 @@ export default function PulseMapbox({
                         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#BEF264]"></span>
                     </span>
                     <span className="text-[11px] font-black uppercase tracking-wider text-white">
-                        LAUTECH SNAP RADAR
+                        LAUTECH PULSE RADAR
                     </span>
                     <span className="hidden sm:inline-block text-[10px] font-extrabold uppercase text-[#BEF264] bg-[#BEF264]/10 px-2 py-0.5 rounded-full border border-[#BEF264]/20">
                         140+ ACTIVE
@@ -825,7 +1228,7 @@ export default function PulseMapbox({
 
                 {/* Right Camera & Theme Controls */}
                 <div className="pointer-events-auto flex items-center gap-2">
-                    {/* 3D / 2D Perspective Toggle */}
+                    {/* Compass / 3D Tilt Toggle */}
                     <button
                         type="button"
                         onClick={toggle3D}
@@ -846,7 +1249,7 @@ export default function PulseMapbox({
                         <Navigation className="w-3.5 h-3.5" />
                     </button>
 
-                    {/* Theme Switcher */}
+                    {/* Theme Switcher Dropdown */}
                     <div className="relative group">
                         <button
                             type="button"
@@ -854,34 +1257,72 @@ export default function PulseMapbox({
                         >
                             <Layers className="w-3.5 h-3.5 text-[#BEF264]" />
                             <span className="hidden sm:inline-block">
-                                {activeStyleName === 'snap-night' ? 'Night' : activeStyleName === 'snap-dark' ? 'Dark' : 'Base'}
+                                {activeStyleName === 'pulse-night' ? 'Night' : activeStyleName === 'pulse-dark' ? 'Dark' : activeStyleName === 'pulse-satellite' ? 'Satellite' : 'Base'}
                             </span>
                         </button>
-                        <div className="absolute right-0 top-full mt-1.5 hidden group-hover:flex flex-col bg-neutral-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl p-1.5 shadow-2xl min-w-[130px] z-30">
+                        <div className="absolute right-0 top-full mt-1.5 hidden group-hover:flex flex-col bg-neutral-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl p-1.5 shadow-2xl min-w-[145px] z-30">
                             <button
-                                onClick={() => switchStyle('snap-night')}
-                                className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'snap-night' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
+                                onClick={() => switchStyle('pulse-night')}
+                                className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'pulse-night' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
                             >
-                                🌙 Snap Night
+                                🌙 Pulse Night
                             </button>
                             <button
-                                onClick={() => switchStyle('snap-dark')}
-                                className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'snap-dark' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
+                                onClick={() => switchStyle('pulse-dark')}
+                                className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'pulse-dark' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
                             >
-                                🌑 Snap Dark
+                                🌑 Pulse Dark
+                            </button>
+                            <button
+                                onClick={() => switchStyle('pulse-satellite')}
+                                className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'pulse-satellite' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
+                            >
+                                🛰️ Pulse Satellite
                             </button>
                             <button
                                 onClick={() => switchStyle('midnight-base')}
                                 className={`text-left px-3 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${activeStyleName === 'midnight-base' ? 'bg-[#BEF264] text-black font-extrabold' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
                             >
-                                🌌 Midnight Base
+                                🌌 Pulse Base
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Interactive Snapchat Roommate Profile Sheet */}
+            {/* Floating 🛰️ / 3D Mode Toggle Pill (Matching reference UI) */}
+            <div className="absolute top-16 right-4 z-20 pointer-events-auto">
+                <div className="flex items-center bg-neutral-950/90 backdrop-blur-xl border border-white/20 p-1 rounded-full shadow-2xl">
+                    <button
+                        type="button"
+                        onClick={handleToggleSatellite}
+                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all shadow-sm ${
+                            isSatelliteActive
+                                ? 'bg-[#BEF264] text-black shadow-lg shadow-[#BEF264]/25 scale-105'
+                                : 'text-gray-300 hover:text-white hover:bg-white/10'
+                        }`}
+                        title="High-Resolution Satellite Aerial View"
+                    >
+                        <span className="text-sm">🛰️</span>
+                        <span className="text-[11px]">Satellite</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleToggle3D}
+                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all shadow-sm ${
+                            !isSatelliteActive
+                                ? 'bg-[#BEF264] text-black shadow-lg shadow-[#BEF264]/25 scale-105'
+                                : 'text-gray-300 hover:text-white hover:bg-white/10'
+                        }`}
+                        title="3D Building Extrusions View"
+                    >
+                        <span className="text-sm">🏙️</span>
+                        <span className="text-[11px]">3D</span>
+                    </button>
+                </div>
+            </div>
+
+            {/* Interactive Roommate Profile Sheet */}
             {selectedRoommate && (
                 <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:bottom-4 md:w-96 z-30 animate-in fade-in slide-in-from-bottom-6 duration-300">
                     <div className="bg-neutral-950/90 backdrop-blur-2xl border border-white/15 rounded-3xl p-5 shadow-2xl text-white relative">
@@ -902,7 +1343,10 @@ export default function PulseMapbox({
                                             src={selectedRoommate.avatar_url || selectedRoommate.logo_url} 
                                             alt={selectedRoommate.full_name} 
                                             className="w-full h-full object-cover"
-                                            onError={(e: any) => { e.currentTarget.style.display = 'none'; }}
+                                            onError={(e: any) => { 
+                                                e.currentTarget.onerror = null; 
+                                                e.currentTarget.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(selectedRoommate.full_name || 'User')}`; 
+                                            }}
                                         />
                                     ) : (
                                         selectedRoommate.full_name.substring(0, 2).toUpperCase()
@@ -962,7 +1406,7 @@ export default function PulseMapbox({
                 </div>
             )}
 
-            {/* Interactive Snapchat Hotspot Details Sheet */}
+            {/* Interactive Hotspot Details Sheet */}
             {selectedHotspot && (
                 <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:bottom-4 md:w-96 z-30 animate-in fade-in slide-in-from-bottom-6 duration-300">
                     <div className="bg-neutral-950/90 backdrop-blur-2xl border border-white/15 rounded-3xl p-5 shadow-2xl text-white relative">
@@ -999,7 +1443,7 @@ export default function PulseMapbox({
 
                         <div className="flex items-center gap-2">
                             <a
-                                href={`/rent?search=${encodeURIComponent(selectedHotspot.name)}`}
+                                href={`/dashboard/student?tab=find-hostel&search=${encodeURIComponent(selectedHotspot.name)}`}
                                 className="flex-1 flex items-center justify-center gap-2 bg-[#BEF264] hover:bg-[#a6d456] text-black font-black uppercase text-xs tracking-wider py-2.5 rounded-xl transition-all shadow-lg"
                             >
                                 <Home className="w-4 h-4" />
@@ -1052,11 +1496,11 @@ export default function PulseMapbox({
                 </div>
             )}
 
-            {/* Bottom Snapchat Quick Hub Carousel */}
+            {/* Bottom Campus Pulse Quick Hub Carousel */}
             {!selectedRoommate && !selectedHotspot && !selectedProperty && (
                 <div className="absolute bottom-4 left-4 right-4 z-20 pointer-events-none">
                     <div className="pointer-events-auto flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-                        {SNAP_HOTSPOTS.map(h => (
+                        {PULSE_HOTSPOTS.map(h => (
                             <button
                                 key={h.id}
                                 type="button"
