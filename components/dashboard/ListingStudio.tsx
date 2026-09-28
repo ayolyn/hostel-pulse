@@ -8,6 +8,7 @@ import { LocationCombobox } from '@/components/ui/LocationCombobox';
 import toast from 'react-hot-toast';
 import { computeImageHashBrowser } from '@/lib/phash';
 import { checkAndRecordListingDuplicates } from '@/app/actions/duplicateModeration';
+import { PropertyLocationPicker } from '@/components/map/PropertyLocationPicker';
 
 type Category = 'Hostel' | 'Shop' | 'House' | 'Hotel' | 'Land';
 
@@ -73,6 +74,8 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     description: '',
                     available_from: '',
                     location: 'Under-G Area',
+                    latitude: 8.1393,
+                    longitude: 4.2691,
                     bedrooms: '1',
                     bathrooms: '1',
                     toilets: '1',
@@ -139,7 +142,9 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     gate_distance: data.gate_distance || '~15 mins walk',
                     listing_type: data.listing_type || 'rent',
                     available_units: data.available_units?.toString() || '1',
-                    road_access: data.features?.find((f: string) => f.startsWith('Road Access:'))?.replace('Road Access: ', '') || 'Tarred'
+                    road_access: data.features?.find((f: string) => f.startsWith('Road Access:'))?.replace('Road Access: ', '') || 'Tarred',
+                    latitude: data.latitude != null ? Number(data.latitude) : 8.1393,
+                    longitude: data.longitude != null ? Number(data.longitude) : 4.2691,
                 });
                 setUploadedImageUrls(data.images || []);
                 setStep(3); // Skip to details
@@ -164,6 +169,8 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         description: '',
         available_from: '',
         location: 'Under-G Area',
+        latitude: 8.1393,
+        longitude: 4.2691,
         bedrooms: '1',
         bathrooms: '1',
         toilets: '1',
@@ -293,6 +300,8 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             title: form.title || `${category} in ${form.location}`,
             description: form.description || `A premium ${subCat || category} located in ${form.location}, Ogbomoso.`,
             location: form.location,
+            latitude: form.latitude ?? 8.1393,
+            longitude: form.longitude ?? 4.2691,
             price: priceNum,
             category: category,
             listing_type: form.listing_type || getListingType(category),
@@ -903,13 +912,31 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 </div>
             </div>
 
-            {/* Location */}
-            <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Location Zone</label>
-                <LocationCombobox
-                    value={form.location}
-                    onChange={(loc) => setForm({ ...form, location: loc })}
-                />
+            {/* Location & Interactive Geolocation Pin */}
+            <div className="space-y-4">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Location Zone</label>
+                    <LocationCombobox
+                        value={form.location}
+                        onChange={(loc) => setForm({ ...form, location: loc })}
+                    />
+                </div>
+
+                <div className="pt-2">
+                    <PropertyLocationPicker
+                        initialLng={form.longitude}
+                        initialLat={form.latitude}
+                        initialAddress={form.location}
+                        onLocationChange={({ lng, lat, address }) => {
+                            setForm(prev => ({
+                                ...prev,
+                                longitude: lng,
+                                latitude: lat,
+                                ...(address && address !== 'Selected Pinpoint' ? { location: address } : {})
+                            }));
+                        }}
+                    />
+                </div>
             </div>
 
             <button onClick={submitListing} disabled={loading || uploadingImages}
@@ -948,7 +975,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     setUploadedImagesWithHashes([]);
                     setIsFlaggedDuplicate(false);
                     setDuplicateScore(0);
-                    setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
+                    setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', latitude: 8.1393, longitude: 4.2691, bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
                         video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); 
                     onComplete(); 
                 }}
@@ -977,7 +1004,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 setUploadedImagesWithHashes([]);
                 setIsFlaggedDuplicate(false);
                 setDuplicateScore(0);
-                setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
+                setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', latitude: 8.1393, longitude: 4.2691, bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
                     video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); 
                 onComplete(); 
             }}

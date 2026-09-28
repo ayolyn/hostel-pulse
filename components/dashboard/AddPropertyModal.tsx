@@ -22,6 +22,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { CAMPUS_ZONES } from '@/lib/constants';
+import { PropertyLocationPicker } from '@/components/map/PropertyLocationPicker';
 
 interface AddPropertyModalProps {
     userId: string;
@@ -64,6 +65,9 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
         price: '',
         category: 'Hostel',
         zone: CAMPUS_ZONES[0],
+        latitude: 8.1393,
+        longitude: 4.2691,
+        address: '',
         description: '',
         amenities: [] as string[]
     });
@@ -132,7 +136,9 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                 category: form.category,
                 listing_type: getListingType(form.category),
                 zone: form.zone,
-                location: `${form.zone} Area, Ogbomoso`,
+                location: form.address || `${form.zone} Area, Ogbomoso`,
+                latitude: form.latitude ?? 8.1393,
+                longitude: form.longitude ?? 4.2691,
                 description: form.description,
                 features: form.amenities,
                 video_url: videoUrl,
@@ -251,21 +257,39 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div className="space-y-4">
                 <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Ogbomoso Operating Zone</label>
-                <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                     {CAMPUS_ZONES.map(zone => (
                         <button 
                             key={zone}
+                            type="button"
                             onClick={() => setForm(prev => ({ ...prev, zone }))}
-                            className={`flex items-center justify-between p-6 rounded-2xl border-2 transition-all ${form.zone === zone ? 'border-[#BEF264] bg-[#BEF264]/5' : 'border-neutral-100 dark:border-white/5 hover:border-[#BEF264]/30'}`}
+                            className={`flex items-center justify-between p-3.5 rounded-xl border-2 transition-all ${form.zone === zone ? 'border-[#BEF264] bg-[#BEF264]/5' : 'border-neutral-100 dark:border-white/5 hover:border-[#BEF264]/30'}`}
                         >
-                            <div className="flex items-center gap-4">
-                                <MapPin className={form.zone === zone ? 'text-[#BEF264]' : 'text-neutral-500'} />
-                                <span className={`font-black uppercase tracking-widest text-xs ${form.zone === zone ? 'text-[#BEF264]' : 'text-gray-500'}`}>{zone}</span>
+                            <div className="flex items-center gap-2">
+                                <MapPin className={`w-4 h-4 ${form.zone === zone ? 'text-[#BEF264]' : 'text-neutral-500'}`} />
+                                <span className={`font-black uppercase tracking-widest text-[11px] ${form.zone === zone ? 'text-[#BEF264]' : 'text-gray-500'}`}>{zone}</span>
                             </div>
-                            {form.zone === zone && <CheckCircle2 className="w-5 h-5 text-[#BEF264]" />}
+                            {form.zone === zone && <CheckCircle2 className="w-4 h-4 text-[#BEF264]" />}
                         </button>
                     ))}
                 </div>
+            </div>
+
+            <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Rooftop Exact Pinpoint</label>
+                <PropertyLocationPicker
+                    initialLng={form.longitude}
+                    initialLat={form.latitude}
+                    initialAddress={form.address || `${form.zone} Area, Ogbomoso`}
+                    onLocationChange={({ lng, lat, address }) => {
+                        setForm(prev => ({
+                            ...prev,
+                            longitude: lng,
+                            latitude: lat,
+                            ...(address && address !== 'Selected Pinpoint' ? { address } : {})
+                        }));
+                    }}
+                />
             </div>
         </div>
     );

@@ -79,14 +79,66 @@ interface PulseMapboxProps {
     flyToLocation?: [number, number] | null;
 }
 
-// Iconic Campus Activity Hotspots in Ogbomoso
+// Highly accurate key locations for Ogbomoso & LAUTECH
+export const KEY_LOCATIONS = [
+    { 
+        name: 'LAUTECH Main Gate', 
+        coordinates: [4.2691, 8.1393] as [number, number], 
+        lng: 4.2691, 
+        lat: 8.1393, 
+        type: 'Landmark', 
+        color: 'text-emerald-500', 
+        bg: 'bg-emerald-50 dark:bg-emerald-900/20' 
+    },
+    { 
+        name: 'Under-G Market', 
+        coordinates: [4.2635, 8.1360] as [number, number], 
+        lng: 4.2635, 
+        lat: 8.1360, 
+        type: 'Market', 
+        color: 'text-yellow-600', 
+        bg: 'bg-yellow-50 dark:bg-yellow-900/20' 
+    },
+    { 
+        name: 'Adenike Transit Hub', 
+        coordinates: [4.2730, 8.1430] as [number, number], 
+        lng: 4.2730, 
+        lat: 8.1430, 
+        type: 'Transport', 
+        color: 'text-blue-500', 
+        bg: 'bg-blue-50 dark:bg-blue-900/20' 
+    },
+    { 
+        name: 'Takie Zone', 
+        coordinates: [4.2490, 8.1250] as [number, number], 
+        lng: 4.2490, 
+        lat: 8.1250, 
+        type: 'Residential', 
+        color: 'text-rose-500', 
+        bg: 'bg-rose-50 dark:bg-rose-900/20' 
+    },
+    { 
+        name: 'Ogbomoso General (Map Center)', 
+        coordinates: [4.2600, 8.1350] as [number, number], 
+        lng: 4.2600, 
+        lat: 8.1350, 
+        type: 'Center', 
+        color: 'text-purple-500', 
+        bg: 'bg-purple-50 dark:bg-purple-900/20' 
+    }
+];
+
+export const OGBOMOSO_MAP_CENTER: [number, number] = [4.2600, 8.1350];
+export const OGBOMOSO_BBOX: [number, number, number, number] = [4.1800, 8.0800, 4.3200, 8.2000];
+
+// Iconic Campus Activity Hotspots in Ogbomoso with exact GIS coordinates
 export const PULSE_HOTSPOTS: Hotspot[] = [
     {
         id: 'under-g-strip',
         name: 'Under-G Food & Hub',
         tagline: 'Student Food Strip, Groceries & Cyber Hub',
-        lng: 4.258,
-        lat: 8.136,
+        lng: 4.2635,
+        lat: 8.1360,
         category: 'food',
         icon: '🔥',
         activeCount: 52,
@@ -99,8 +151,8 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
         id: 'lautech-main-gate',
         name: 'LAUTECH Main Gate',
         tagline: 'Campus Entry, Transit Terminal & Security Hub',
-        lng: 4.267,
-        lat: 8.135,
+        lng: 4.2691,
+        lat: 8.1393,
         category: 'campus',
         icon: '⚡',
         activeCount: 84,
@@ -113,8 +165,8 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
         id: 'adenike-park',
         name: 'Adenike Transit Hub',
         tagline: 'Hostel District & Campus Shuttle Junction',
-        lng: 4.262,
-        lat: 8.140,
+        lng: 4.2730,
+        lat: 8.1430,
         category: 'transit',
         icon: '🚌',
         activeCount: 38,
@@ -127,8 +179,8 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
         id: 'takie-square',
         name: 'Takie Commercial Hub',
         tagline: 'Central Shopping Plazas, Banks & Town Center',
-        lng: 4.2435,
-        lat: 8.1338,
+        lng: 4.2490,
+        lat: 8.1250,
         category: 'market',
         icon: '🛍️',
         activeCount: 31,
@@ -141,8 +193,8 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
         id: 'senate-library',
         name: 'Senate & ICT Library',
         tagline: 'Central Academic Complex & Study Zone',
-        lng: 4.272,
-        lat: 8.138,
+        lng: 4.2725,
+        lat: 8.1378,
         category: 'study',
         icon: '📚',
         activeCount: 26,
@@ -291,24 +343,27 @@ function getPropertyCoordinates(p: Property): [number, number] {
     const jitterLat = (((hash * 7) % 100) - 50) * 0.00018;
 
     if (loc.includes('under-g') || loc.includes('under g') || loc.includes('underg')) {
-        return [4.258 + jitterLng, 8.136 + jitterLat];
+        return [4.2635 + jitterLng, 8.1360 + jitterLat];
     }
     if (loc.includes('adenike')) {
-        return [4.262 + jitterLng, 8.140 + jitterLat];
+        return [4.2730 + jitterLng, 8.1430 + jitterLat];
+    }
+    if (loc.includes('gate') || loc.includes('campus') || loc.includes('lautech')) {
+        return [4.2691 + jitterLng, 8.1393 + jitterLat];
     }
     if (loc.includes('aroje')) {
-        return [4.270 + jitterLng, 8.150 + jitterLat];
+        return [4.2700 + jitterLng, 8.1500 + jitterLat];
     }
     if (loc.includes('takie')) {
-        return [4.2435 + jitterLng, 8.1338 + jitterLat];
+        return [4.2490 + jitterLng, 8.1250 + jitterLat];
     }
     if (loc.includes('general')) {
-        return [4.255 + jitterLng, 8.130 + jitterLat];
+        return [4.2600 + jitterLng, 8.1350 + jitterLat];
     }
     if (loc.includes('stadium') || loc.includes('isale')) {
-        return [4.252 + jitterLng, 8.138 + jitterLat];
+        return [4.2520 + jitterLng, 8.1380 + jitterLat];
     }
-    return [4.2667 + jitterLng, 8.1333 + jitterLat];
+    return [4.2600 + jitterLng, 8.1350 + jitterLat];
 }
 
 /**
@@ -501,7 +556,7 @@ function generateCampus3DBuildingsGeoJSON(extraProperties: Property[] = []): any
 
 export default function PulseMapbox({ 
     properties = [], 
-    center = [4.2667, 8.1333], // Default center around LAUTECH Main Gate
+    center = OGBOMOSO_MAP_CENTER, // Default Ogbomoso Center [4.2600, 8.1350]
     zoom = 14.2,
     showLandmarks = true,
     pulseMode = true,
@@ -711,8 +766,8 @@ export default function PulseMapbox({
     const recenterToCampus = useCallback(() => {
         if (!map.current) return;
         map.current.flyTo({
-            center: [4.2667, 8.1333],
-            zoom: 14.5,
+            center: [4.2691, 8.1393], // LAUTECH Main Gate
+            zoom: 15,
             pitch: mapStyleRef.current === '3d' ? 48 : 0,
             bearing: mapStyleRef.current === '3d' ? -10 : 0,
             duration: 1200,
@@ -737,7 +792,7 @@ export default function PulseMapbox({
             console.warn('[PulseMapbox] WebGL not supported on this device/browser.');
         }
 
-        const defaultCenter: [number, number] = center || [4.2667, 8.1333];
+        const defaultCenter: [number, number] = center || OGBOMOSO_MAP_CENTER;
         const defaultZoom = zoom || 14.2;
 
         const initialStyle = hasMapboxToken ? PULSE_DARK_STYLE : ESRI_DARK_CANVAS_STYLE;

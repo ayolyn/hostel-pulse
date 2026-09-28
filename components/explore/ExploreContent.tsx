@@ -31,11 +31,11 @@ const categories = [
 ];
 
 const nearbySpots = [
-    { name: 'LAUTECH Main Gate', type: 'Landmark', color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20', lng: 4.2666, lat: 8.1333 },
-    { name: 'Under-G Market', type: 'Market', color: 'text-yellow-600', bg: 'bg-yellow-50 dark:bg-yellow-900/20', lng: 4.2600, lat: 8.1400 },
-    { name: 'Adenike Bus Stop', type: 'Transport', color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20', lng: 4.2690, lat: 8.1450 },
-    { name: 'Takie Zone', type: 'Residential', color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-900/20', lng: 4.2435, lat: 8.1338 },
-    { name: 'General Area', type: 'Residential', color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/20', lng: 4.2500, lat: 8.1400 },
+    { name: 'LAUTECH Main Gate', type: 'Landmark', color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20', lng: 4.2691, lat: 8.1393 },
+    { name: 'Under-G Market', type: 'Market', color: 'text-yellow-600', bg: 'bg-yellow-50 dark:bg-yellow-900/20', lng: 4.2635, lat: 8.1360 },
+    { name: 'Adenike Bus Stop', type: 'Transport', color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20', lng: 4.2730, lat: 8.1430 },
+    { name: 'Takie Zone', type: 'Residential', color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-900/20', lng: 4.2490, lat: 8.1250 },
+    { name: 'General Area', type: 'Residential', color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/20', lng: 4.2600, lat: 8.1350 },
 ];
 
 function getWalkingTime(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -155,7 +155,7 @@ export function ExploreContent({ isEmbedded = false }: { isEmbedded?: boolean })
                         </p>
                         <div className="space-y-3">
                             {nearbySpots.map((spot, i) => {
-                                const distString = getWalkingTime(8.1333, 4.2666, spot.lat, spot.lng);
+                                const distString = getWalkingTime(8.1393, 4.2691, spot.lat, spot.lng);
                                 return (
                                     <div
                                         key={i}
