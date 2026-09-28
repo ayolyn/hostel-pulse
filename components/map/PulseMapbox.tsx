@@ -83,66 +83,66 @@ interface PulseMapboxProps {
 export const KEY_LOCATIONS = [
     { 
         name: 'LAUTECH Main Gate', 
-        coordinates: [4.2691, 8.1393] as [number, number], 
-        lng: 4.2691, 
-        lat: 8.1393, 
+        coordinates: [4.2624, 8.1708] as [number, number], 
+        lng: 4.2624, 
+        lat: 8.1708, 
         type: 'Landmark', 
         color: 'text-emerald-500', 
         bg: 'bg-emerald-50 dark:bg-emerald-900/20' 
     },
     { 
         name: 'Under-G Market', 
-        coordinates: [4.2635, 8.1360] as [number, number], 
-        lng: 4.2635, 
-        lat: 8.1360, 
+        coordinates: [4.2618, 8.1635] as [number, number], 
+        lng: 4.2618, 
+        lat: 8.1635, 
         type: 'Market', 
         color: 'text-yellow-600', 
         bg: 'bg-yellow-50 dark:bg-yellow-900/20' 
     },
     { 
         name: 'Adenike Transit Hub', 
-        coordinates: [4.2730, 8.1430] as [number, number], 
-        lng: 4.2730, 
-        lat: 8.1430, 
+        coordinates: [4.2659, 8.1739] as [number, number], 
+        lng: 4.2659, 
+        lat: 8.1739, 
         type: 'Transport', 
         color: 'text-blue-500', 
         bg: 'bg-blue-50 dark:bg-blue-900/20' 
     },
     { 
         name: 'Takie Zone', 
-        coordinates: [4.2490, 8.1250] as [number, number], 
+        coordinates: [4.2490, 8.1400] as [number, number], 
         lng: 4.2490, 
-        lat: 8.1250, 
+        lat: 8.1400, 
         type: 'Residential', 
         color: 'text-rose-500', 
         bg: 'bg-rose-50 dark:bg-rose-900/20' 
     },
     { 
-        name: 'Ogbomoso General (Map Center)', 
-        coordinates: [4.2600, 8.1350] as [number, number], 
-        lng: 4.2600, 
-        lat: 8.1350, 
-        type: 'Center', 
+        name: 'General Area', 
+        coordinates: [4.2580, 8.1600] as [number, number], 
+        lng: 4.2580, 
+        lat: 8.1600, 
+        type: 'Residential', 
         color: 'text-purple-500', 
         bg: 'bg-purple-50 dark:bg-purple-900/20' 
     }
 ];
 
-export const OGBOMOSO_MAP_CENTER: [number, number] = [4.2600, 8.1350];
-export const OGBOMOSO_BBOX: [number, number, number, number] = [4.1800, 8.0800, 4.3200, 8.2000];
+export const OGBOMOSO_MAP_CENTER: [number, number] = [4.2640, 8.1680]; // Verified campus center
+export const OGBOMOSO_BBOX: [number, number, number, number] = [4.1900, 8.1000, 4.3100, 8.2200];
 
-// Iconic Campus Activity Hotspots in Ogbomoso with exact GIS coordinates
+// Iconic Campus Activity Hotspots — Verified GPS coordinates (Google Maps confirmed)
 export const PULSE_HOTSPOTS: Hotspot[] = [
     {
         id: 'under-g-strip',
         name: 'Under-G Food & Hub',
         tagline: 'Student Food Strip, Groceries & Cyber Hub',
-        lng: 4.2635,
-        lat: 8.1360,
+        lng: 4.2618,
+        lat: 8.1635,
         category: 'food',
         icon: '🔥',
         activeCount: 52,
-        pulseColor: 'rgba(249, 115, 22, 0.45)', // Amber / Orange Flame
+        pulseColor: 'rgba(249, 115, 22, 0.45)',
         badgeBg: 'bg-gradient-to-r from-orange-500 to-amber-500 text-white',
         description: 'Bukas, Shawarma joints, campus gadget stores, student supermarkets, and photo-studios.',
         walkingTimeFromGate: '8 mins walk'
@@ -151,12 +151,12 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
         id: 'lautech-main-gate',
         name: 'LAUTECH Main Gate',
         tagline: 'Campus Entry, Transit Terminal & Security Hub',
-        lng: 4.2691,
-        lat: 8.1393,
+        lng: 4.2624,
+        lat: 8.1708,
         category: 'campus',
         icon: '⚡',
         activeCount: 84,
-        pulseColor: 'rgba(190, 242, 100, 0.5)', // Electric Neon Lime
+        pulseColor: 'rgba(190, 242, 100, 0.5)',
         badgeBg: 'bg-[#BEF264] text-black font-extrabold',
         description: 'Main campus security gate, official student shuttle terminals, and central meeting point.',
         walkingTimeFromGate: '0 mins'
@@ -165,12 +165,12 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
         id: 'adenike-park',
         name: 'Adenike Transit Hub',
         tagline: 'Hostel District & Campus Shuttle Junction',
-        lng: 4.2730,
-        lat: 8.1430,
+        lng: 4.2659,
+        lat: 8.1739,
         category: 'transit',
         icon: '🚌',
         activeCount: 38,
-        pulseColor: 'rgba(56, 189, 248, 0.45)', // Electric Cyan
+        pulseColor: 'rgba(56, 189, 248, 0.45)',
         badgeBg: 'bg-gradient-to-r from-sky-500 to-blue-600 text-white',
         description: 'Prime high-density student hostel corridor, interstate cabs to town, and evening street food.',
         walkingTimeFromGate: '12 mins walk'
@@ -180,11 +180,11 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
         name: 'Takie Commercial Hub',
         tagline: 'Central Shopping Plazas, Banks & Town Center',
         lng: 4.2490,
-        lat: 8.1250,
+        lat: 8.1400,
         category: 'market',
         icon: '🛍️',
         activeCount: 31,
-        pulseColor: 'rgba(168, 85, 247, 0.4)', // Vibrant Violet
+        pulseColor: 'rgba(168, 85, 247, 0.4)',
         badgeBg: 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white',
         description: 'Commercial banking center, electronics markets, clothing boutiques, and pharmacy plaza.',
         walkingTimeFromGate: '25 mins walk / 6 mins cab'
@@ -193,12 +193,12 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
         id: 'senate-library',
         name: 'Senate & ICT Library',
         tagline: 'Central Academic Complex & Study Zone',
-        lng: 4.2725,
-        lat: 8.1378,
+        lng: 4.2720,
+        lat: 8.1695,
         category: 'study',
         icon: '📚',
         activeCount: 26,
-        pulseColor: 'rgba(16, 185, 129, 0.45)', // Emerald Study Glow
+        pulseColor: 'rgba(16, 185, 129, 0.45)',
         badgeBg: 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white',
         description: 'Main university library, high-speed Wi-Fi study hubs, and postgraduate research center.',
         walkingTimeFromGate: '5 mins walk inside campus'
@@ -507,8 +507,13 @@ const CAMPUS_3D_BUILDINGS = [
 
 function generateCampus3DBuildingsGeoJSON(extraProperties: Property[] = []): any {
     const features: any[] = [];
+
+    // Coordinate correction offsets — verified against Google Maps GPS data
+    // All campus/student district buildings shift north (+0.0315 lat) to true location
+    const LAT_SHIFT = 0.0315;
+    const LNG_SHIFT = -0.0050;
     
-    // 1. Add all 85+ defined campus & district 3D buildings
+    // 1. Add all 85+ defined campus & district 3D buildings (with GPS correction applied)
     CAMPUS_3D_BUILDINGS.forEach((b, i) => {
         features.push({
             type: 'Feature',
@@ -517,11 +522,15 @@ function generateCampus3DBuildingsGeoJSON(extraProperties: Property[] = []): any
                 name: b.name,
                 height: b.height,
                 min_height: b.min_height || 0,
-                color: b.color || '#1e293b'
+                color: b.color || '#253347'
             },
             geometry: {
                 type: 'Polygon',
-                coordinates: [createBuildingPolygon(b.lng, b.lat, b.width, b.length, b.rotation || 0)]
+                coordinates: [createBuildingPolygon(
+                    b.lng + LNG_SHIFT, 
+                    b.lat + LAT_SHIFT, 
+                    b.width, b.length, b.rotation || 0
+                )]
             }
         });
     });
@@ -539,7 +548,7 @@ function generateCampus3DBuildingsGeoJSON(extraProperties: Property[] = []): any
                 name: p.title || 'Student Hostel Lodge',
                 height: bldgHeight,
                 min_height: 0,
-                color: '#1e293b'
+                color: '#253347'
             },
             geometry: {
                 type: 'Polygon',
@@ -629,13 +638,13 @@ export default function PulseMapbox({
             const style = m.getStyle();
             if (!style) return;
 
-            // Configure directional lighting for real architectural depth and shadow on 3D building faces
+            // Dramatic directional lighting for crisp shadows and strong 3D depth on building faces
             if (typeof m.setLight === 'function') {
                 m.setLight({
-                    anchor: 'viewport',
-                    color: '#ffffff',
-                    intensity: 0.45,
-                    position: [1.5, 180, 50]
+                    anchor: 'map',         // Consistent shadows regardless of camera rotation
+                    color: '#b8d4f0',      // Cool blue-white sunlight
+                    intensity: 0.85,       // Strong — was 0.45 (too dim)
+                    position: [1.5, 225, 30] // Low-angle sun from SW for maximum face contrast
                 });
             }
 
@@ -645,7 +654,7 @@ export default function PulseMapbox({
 
             const visibilityState: 'visible' | 'none' = isSatelliteMode ? 'none' : 'visible';
 
-            // 1. If Mapbox Composite vector source exists (official Mapbox style), add/update Mapbox 3D building extrusion
+            // 1. Mapbox Composite vector 3D building extrusion (official Mapbox style buildings)
             if (m.getSource('composite')) {
                 if (!m.getLayer('3d-buildings-composite')) {
                     m.addLayer(
@@ -660,22 +669,26 @@ export default function PulseMapbox({
                                 visibility: visibilityState
                             },
                             paint: {
-                                'fill-extrusion-color': '#1e293b',
+                                // Height-based colour: taller buildings glow slightly lighter (steel-blue)
+                                'fill-extrusion-color': [
+                                    'interpolate', ['linear'], ['coalesce', ['get', 'height'], 12],
+                                    0,  '#1e2d42',
+                                    15, '#26395c',
+                                    30, '#2e4875',
+                                    60, '#3a5a8f'
+                                ],
                                 'fill-extrusion-height': [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['zoom'],
+                                    'interpolate', ['linear'], ['zoom'],
                                     12, 0,
                                     14.05, ['coalesce', ['get', 'height'], 16]
                                 ],
                                 'fill-extrusion-base': [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['zoom'],
+                                    'interpolate', ['linear'], ['zoom'],
                                     12, 0,
                                     14.05, ['coalesce', ['get', 'min_height'], 0]
                                 ],
-                                'fill-extrusion-opacity': 0.92
+                                'fill-extrusion-opacity': 0.95,
+                                'fill-extrusion-vertical-gradient': true  // KEY: dark base → bright top gradient
                             }
                         },
                         labelLayerId
@@ -708,10 +721,11 @@ export default function PulseMapbox({
                             visibility: visibilityState
                         },
                         paint: {
-                            'fill-extrusion-color': ['coalesce', ['get', 'color'], '#1e293b'],
+                            'fill-extrusion-color': ['coalesce', ['get', 'color'], '#26395c'],
                             'fill-extrusion-height': ['coalesce', ['get', 'height'], 18],
                             'fill-extrusion-base': ['coalesce', ['get', 'min_height'], 0],
-                            'fill-extrusion-opacity': 0.92
+                            'fill-extrusion-opacity': 0.95,
+                            'fill-extrusion-vertical-gradient': true  // KEY: natural face shading depth
                         }
                     },
                     labelLayerId
@@ -766,10 +780,10 @@ export default function PulseMapbox({
     const recenterToCampus = useCallback(() => {
         if (!map.current) return;
         map.current.flyTo({
-            center: [4.2691, 8.1393], // LAUTECH Main Gate
-            zoom: 15,
-            pitch: mapStyleRef.current === '3d' ? 48 : 0,
-            bearing: mapStyleRef.current === '3d' ? -10 : 0,
+            center: [4.2624, 8.1708], // Verified LAUTECH Main Gate GPS
+            zoom: 15.2,
+            pitch: mapStyleRef.current === '3d' ? 58 : 0,
+            bearing: mapStyleRef.current === '3d' ? -15 : 0,
             duration: 1200,
             essential: true
         });
@@ -792,8 +806,8 @@ export default function PulseMapbox({
             console.warn('[PulseMapbox] WebGL not supported on this device/browser.');
         }
 
-        const defaultCenter: [number, number] = center || OGBOMOSO_MAP_CENTER;
-        const defaultZoom = zoom || 14.2;
+        const defaultCenter: [number, number] = center || [4.2640, 8.1680]; // Verified campus center
+        const defaultZoom = zoom || 14.5;
 
         const initialStyle = hasMapboxToken ? PULSE_DARK_STYLE : ESRI_DARK_CANVAS_STYLE;
 
@@ -804,9 +818,9 @@ export default function PulseMapbox({
                 style: initialStyle,
                 center: defaultCenter,
                 zoom: defaultZoom,
-                pitch: 48, // Signature Campus Pulse 3D tilt
-                bearing: -10,
-                attributionControl: false // Handled natively in HUD
+                pitch: 58,   // Steeper tilt — more dramatic 3D depth (was 48)
+                bearing: -15,
+                attributionControl: false
             });
         } catch (err) {
             console.warn('[PulseMapbox] Vector style init failed, falling back to Midnight Canvas:', err);
@@ -816,8 +830,8 @@ export default function PulseMapbox({
                     style: ESRI_DARK_CANVAS_STYLE,
                     center: defaultCenter,
                     zoom: defaultZoom,
-                    pitch: 48,
-                    bearing: -10,
+                    pitch: 58,
+                    bearing: -15,
                     attributionControl: false
                 });
                 fallbackRef.current = true;
