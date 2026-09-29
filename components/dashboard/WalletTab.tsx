@@ -5,7 +5,6 @@ import { createClient } from '@/lib/supabase/client';
 import { WalletOverviewCards } from '@/components/shared/WalletOverviewCards';
 import { WithdrawalModal } from '@/components/dashboard/WithdrawalModal';
 import { FundWalletModal } from '@/components/dashboard/FundWalletModal';
-import { TransactionHistoryTable } from '@/components/dashboard/TransactionHistoryTable';
 import { 
     Wallet, 
     ArrowUpRight, 
@@ -46,7 +45,6 @@ interface WalletTabProps {
 export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
     const supabase = createClient();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [withdrawals, setWithdrawals] = useState<any[]>([]);
     const [localBalance, setLocalBalance] = useState(Number(agentAccount?.wallet_balance || 0));
     const [loading, setLoading] = useState(true);
     const [showWithdrawModal, setShowWithdrawModal] = useState(false);
@@ -78,7 +76,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                     console.warn("Unexpected error fetching wallet balance:", e);
                 }
 
-                const [escrowRes, withdrawRes] = await Promise.all([
+                const [escrowRes] = await Promise.all([
                     supabase
                         .from('escrow_transactions')
                         .select(`
@@ -86,19 +84,11 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                             profiles!payer_id (full_name)
                         `)
                         .eq('payee_id', userId)
-                        .order('created_at', { ascending: false }),
-                    supabase
-                        .from('payout_requests')
-                        .select('*')
-                        .eq('user_id', userId)
                         .order('created_at', { ascending: false })
                 ]);
 
                 if (escrowRes.error) {
                     console.error("Escrow transactions fetch error:", escrowRes.error);
-                }
-                if (withdrawRes.error) {
-                    console.error("Payout requests fetch error:", withdrawRes.error);
                 }
 
                 const escrowData = escrowRes.data || [];
@@ -115,26 +105,7 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                     buyer_id: t.payer_id
                 }));
 
-                const withdrawData = withdrawRes.data || [];
-                const formattedWithdrawals = withdrawData.map((w: any) => ({
-                    id: w.id,
-                    amount: -Number(w.amount), // Negative to indicate withdrawal
-                    agency_fee: 0,
-                    inspection_fee: 0,
-                    status: w.status,
-                    created_at: w.created_at,
-                    type: 'Withdrawal',
-                    student_name: w.account_name || 'Bank Payout',
-                    bank_name: w.bank_name || '',
-                    failure_reason: w.failure_reason || ''
-                }));
-
-                const combined = [...formattedEscrow].sort((a, b) => 
-                    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-                );
-
-                setTransactions(combined);
-                setWithdrawals(formattedWithdrawals);
+                setTransactions(formattedEscrow);
             } catch (err) {
                 console.error("Unexpected error fetching wallet data:", err);
             } finally {
@@ -262,16 +233,6 @@ export default function WalletTab({ userId, agentAccount }: WalletTabProps) {
                     </div>
                 )}
             </section>
-
-            <TransactionHistoryTable transactions={withdrawals.map(w => ({
-                id: w.id,
-                amount: Math.abs(w.amount),
-                status: w.status,
-                created_at: w.created_at,
-                account_name: w.student_name,
-                bank_name: w.bank_name,
-                failure_reason: w.failure_reason
-            }))} />
 
             {/* Payout Modal */}
             {showWithdrawModal && (

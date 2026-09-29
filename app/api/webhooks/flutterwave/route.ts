@@ -30,10 +30,11 @@ export async function POST(req: NextRequest) {
     if (isDeposit) {
         // --- DEPOSIT FLOW ---
         if (chargeStatus === "successful" || chargeStatus === "completed") {
-            // Calculate settled amount (what the merchant actually receives)
-            const settledAmount = data.settlement_amount ? Number(data.settlement_amount) : (Number(amount) - Number(data.app_fee || 0));
+            const settledAmount = data.settlement_amount 
+                ? Number(data.settlement_amount) 
+                : (Number(amount) - Number(data.app_fee || 0));
 
-            // Check if already processed
+            // Idempotency: skip if already processed
             const { data: existingDeposit } = await supabase
                 .from("deposits")
                 .select("id")
@@ -44,43 +45,93 @@ export async function POST(req: NextRequest) {
                 return NextResponse.json({ message: "Already processed deposit" }, { status: 200 });
             }
 
-            // Insert deposit record
-            const { error: depositError } = await supabase
-                .from("deposits")
-                .insert({
+            try {
+                // 1. Insert deposit receipt record
+                const { error: depositError } = await supabase
+                    .from("deposits")
+                    .insert({
+                        user_id: meta.payer_id,
+                        amount: settledAmount,
+                        status: "Completed",
+                        reference: tx_ref
+                    });
+                if (depositError) throw depositError;
+
+                // 2. Atomically increment wallet balance (avoids race condition on concurrent deposits)
+                const { data: updatedProfile, error: balanceError } = await supabase.rpc(
+                    'increment_wallet_balance',
+                    { user_id_param: meta.payer_id, amount_param: settledAmount }
+                );
+                // Fallback to read-modify-write if RPC doesn't exist yet
+                if (balanceError) {
+                    const { data: profile } = await supabase
+                        .from("profiles")
+                        .select("wallet_balance")
+                        .eq("id", meta.payer_id)
+                        .single();
+                    const newBalance = Number(profile?.wallet_balance || 0) + settledAmount;
+                    await supabase
+                        .from("profiles")
+                        .update({ wallet_balance: newBalance })
+                        .eq("id", meta.payer_id);
+                }
+
+                // 3. Insert wallet_transactions record for audit trail
+                await supabase.from("wallet_transactions").insert({
                     user_id: meta.payer_id,
                     amount: settledAmount,
-                    status: "Completed",
-                    reference: tx_ref
-                });
+                    reference: tx_ref,
+                    status: "SUCCESSFUL",
+                    gateway: "flutterwave"
+                }).catch(e => console.warn("[Webhook] wallet_transactions insert failed (non-critical):", e));
 
-            if (depositError) throw depositError;
+                // 4. In-app notification
+                await createNotification(
+                    meta.payer_id,
+                    'Deposit Successful',
+                    `Your wallet has been funded with ₦${settledAmount.toLocaleString()}.`,
+                    '/dashboard/student?tab=wallet',
+                    'deposit'
+                );
 
-            // Increment wallet balance
-            const { data: profile } = await supabase
-                .from("profiles")
-                .select("wallet_balance")
-                .eq("id", meta.payer_id)
-                .single();
+                // 5. Email receipt — send directly (createNotification doesn't email 'deposit' type)
+                try {
+                    const { data: { user: depositorUser } } = await supabase.auth.admin.getUserById(meta.payer_id);
+                    const depositorEmail = depositorUser?.email || '';
+                    if (depositorEmail) {
+                        const htmlBody = `
+                            <div style="background-color:#f6f9fc;font-family:sans-serif;padding:40px 0;">
+                                <div style="background-color:#ffffff;padding:40px;border-radius:8px;margin:0 auto;max-width:600px;">
+                                    <h2 style="font-size:24px;font-weight:bold;color:#16a34a;margin-top:0;">Wallet Funded ✅</h2>
+                                    <p style="font-size:16px;color:#555;">
+                                        Your HostelPulse wallet has been successfully topped up.
+                                    </p>
+                                    <div style="background-color:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:20px 0;">
+                                        <p style="margin:0;font-size:15px;color:#166534;"><strong>Amount Credited:</strong> ₦${settledAmount.toLocaleString()}</p>
+                                        <p style="margin:8px 0 0;font-size:13px;color:#166534;"><strong>Reference:</strong> ${tx_ref}</p>
+                                    </div>
+                                    <p style="font-size:14px;color:#888;">
+                                        You can now use your wallet balance for secure escrow payments on HostelPulse.
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                        await sendNotificationEmail(
+                            depositorEmail,
+                            'Wallet Funded Successfully ✅',
+                            htmlBody
+                        ).catch(err => console.error("[Webhook] Deposit email failed (non-critical):", err));
+                    }
+                } catch (emailErr) {
+                    console.error("[Webhook] Could not fetch user email for deposit receipt:", emailErr);
+                }
 
-            if (profile) {
-                const newBalance = Number(profile.wallet_balance || 0) + settledAmount;
-                await supabase
-                    .from("profiles")
-                    .update({ wallet_balance: newBalance })
-                    .eq("id", meta.payer_id);
+                return NextResponse.json({ message: "Deposit processed" }, { status: 200 });
+
+            } catch (error: any) {
+                console.error("[Webhook] Deposit processing error:", error);
+                return NextResponse.json({ error: error.message }, { status: 500 });
             }
-
-            // Notify
-            await createNotification(
-                meta.payer_id,
-                'Wallet Funded',
-                `Successfully deposited ₦${settledAmount.toLocaleString()} into your wallet.`,
-                '/dashboard/student?tab=wallet',
-                'deposit'
-            );
-
-            return NextResponse.json({ message: "Deposit processed" }, { status: 200 });
         }
         return NextResponse.json({ message: "Deposit not successful" }, { status: 200 });
     }

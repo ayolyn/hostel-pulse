@@ -120,36 +120,40 @@ export const useFlutterwave = () => {
                 }) => {
                     if (data.status === "successful" || data.status === "completed") {
                         try {
-                            // Client-side safety net: upsert the escrow record.
-                            // The webhook will also do this — the onConflict: 'tx_ref'
-                            // makes this idempotent (no duplicate records).
-                            await supabase.from("escrow_transactions").upsert(
-                                {
-                                    tx_ref,
-                                    flw_id: String(data.transaction_id),
-                                    status: "Held",
-                                    amount: config.amount,
-                                    property_id: config.meta.property_id ?? null,
-                                    payer_id: config.meta.payer_id,
-                                    agent_id: config.meta.agent_id ?? null,
-                                    landlord_id: config.meta.landlord_id ?? null,
-                                    legal_fee: config.meta.legal_fee ?? 0,
-                                    service_fee: config.meta.protection_fee ?? 0,
-                                    payer_type:
-                                        config.meta.type === "market"
-                                            ? "buyer"
-                                            : "student",
-                                    created_at: new Date().toISOString(),
-                                },
-                                { onConflict: "tx_ref" }
-                            );
+                            // Only create escrow records for non-deposit payment types.
+                            // Deposits are handled entirely by the server-side webhook — no escrow record needed.
+                            if (config.meta.type !== 'deposit') {
+                                // Client-side safety net: upsert the escrow record.
+                                // The webhook will also do this — the onConflict: 'tx_ref'
+                                // makes this idempotent (no duplicate records).
+                                await supabase.from("escrow_transactions").upsert(
+                                    {
+                                        tx_ref,
+                                        flw_id: String(data.transaction_id),
+                                        status: "Held",
+                                        amount: config.amount,
+                                        property_id: config.meta.property_id ?? null,
+                                        payer_id: config.meta.payer_id,
+                                        agent_id: config.meta.agent_id ?? null,
+                                        landlord_id: config.meta.landlord_id ?? null,
+                                        legal_fee: config.meta.legal_fee ?? 0,
+                                        service_fee: config.meta.protection_fee ?? 0,
+                                        payer_type:
+                                            config.meta.type === "market"
+                                                ? "buyer"
+                                                : "student",
+                                        created_at: new Date().toISOString(),
+                                    },
+                                    { onConflict: "tx_ref" }
+                                );
 
-                            // If a booking_id was provided, mark it CONFIRMED
-                            if (config.meta.booking_id) {
-                                await supabase
-                                    .from("bookings")
-                                    .update({ status: "CONFIRMED", payment_status: "PAID" })
-                                    .eq("id", config.meta.booking_id);
+                                // If a booking_id was provided, mark it CONFIRMED
+                                if (config.meta.booking_id) {
+                                    await supabase
+                                        .from("bookings")
+                                        .update({ status: "CONFIRMED", payment_status: "PAID" })
+                                        .eq("id", config.meta.booking_id);
+                                }
                             }
 
                             config.onSuccess(tx_ref, config.amount);
