@@ -77,13 +77,17 @@ export async function POST(req: NextRequest) {
                 }
 
                 // 3. Insert wallet_transactions record for audit trail
-                await supabase.from("wallet_transactions").insert({
-                    user_id: meta.payer_id,
-                    amount: settledAmount,
-                    reference: tx_ref,
-                    status: "SUCCESSFUL",
-                    gateway: "flutterwave"
-                }).catch(e => console.warn("[Webhook] wallet_transactions insert failed (non-critical):", e));
+                try {
+                    await supabase.from("wallet_transactions").insert({
+                        user_id: meta.payer_id,
+                        amount: settledAmount,
+                        reference: tx_ref,
+                        status: "SUCCESSFUL",
+                        gateway: "flutterwave"
+                    });
+                } catch (e) {
+                    console.warn("[Webhook] wallet_transactions insert failed (non-critical):", e);
+                }
 
                 // 4. In-app notification
                 await createNotification(

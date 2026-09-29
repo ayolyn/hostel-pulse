@@ -72,23 +72,19 @@ export async function GET(request: NextRequest) {
                 // Call email action
                 if (data.user.email) {
                     try {
-                        const emailRes = await fetch('https://api.resend.com/emails', {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                from: 'Hostel Pulse <hello@hostel-pulse.com>',
-                                to: [data.user.email],
-                                subject: 'Welcome to Hostel Pulse! ',
-                                html: getEmailTemplate({
-                                    title: 'Welcome!',
-                                    body: 'Hey babe! Welcome to the coolest housing platform in Ogbomoso. Make sure to complete your profile to get started!'
-                                })
-                            })
+                        const { sendNotificationEmail } = await import('@/lib/email/resend');
+                        const html = getEmailTemplate({
+                            subHeading: 'WELCOME TO HOSTEL PULSE',
+                            title: 'Welcome to Hostel Pulse! 🚀',
+                            body: 'Welcome to the coolest student housing platform in Ogbomoso. Make sure to complete your profile to find your dream hostel or list your properties.',
+                            buttonText: 'Complete Profile',
+                            buttonLink: `${PRODUCTION_ORIGIN}/dashboard`,
+                            showFallbackLink: false
                         });
-                    } catch(e) {}
+                        await sendNotificationEmail(data.user.email, 'Welcome to Hostel Pulse! 🚀', html);
+                    } catch (e) {
+                        console.warn('[auth/callback] Onboarding email failed (non-critical):', e);
+                    }
                 }
             }
 

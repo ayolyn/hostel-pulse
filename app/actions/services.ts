@@ -73,13 +73,13 @@ export async function bookStudentService(payload: {
         // We assume admin checks their dashboard, but we can send a system notification if we have an admin role
         
         // 7. Send Notification to User
-        await supabase.from("notifications").insert({
-            user_id: user.id,
-            title: "Service Booked",
-            body: `Your request for ${payload.serviceType} has been received. ₦${payload.totalCost.toLocaleString()} has been escrowed.`,
-            type: "alert",
-            is_read: false
-        });
+        await createNotification(
+            user.id,
+            "Service Booked",
+            `Your request for ${payload.serviceType} has been received. ₦${payload.totalCost.toLocaleString()} has been escrowed.`,
+            "/dashboard/student?tab=wallet",
+            "service_booked"
+        );
 
         // 8. Revalidate dashboard
         revalidatePath("/services");
@@ -130,29 +130,29 @@ export async function updateServiceStatus(serviceId: string, newStatus: string, 
             }
             
             // Notify user of cancellation & refund
-            await supabase.from("notifications").insert({
-                user_id: studentId,
-                title: "Service Cancelled",
-                body: `Your service request was cancelled. ₦${totalCost.toLocaleString()} has been refunded to your wallet.`,
-                type: "alert",
-                is_read: false
-            });
+            await createNotification(
+                studentId,
+                "Service Cancelled",
+                `Your service request was cancelled. ₦${totalCost.toLocaleString()} has been refunded to your wallet.`,
+                "/dashboard/student?tab=wallet",
+                "service_cancelled"
+            );
         } else if (newStatus === "ACCEPTED") {
-            await supabase.from("notifications").insert({
-                user_id: studentId,
-                title: "Service Accepted",
-                body: `Your service request is now being processed by a provider.`,
-                type: "alert",
-                is_read: false
-            });
+            await createNotification(
+                studentId,
+                "Service Accepted",
+                "Your service request is now being processed by a provider.",
+                "/dashboard/student",
+                "service_accepted"
+            );
         } else if (newStatus === "COMPLETED") {
-            await supabase.from("notifications").insert({
-                user_id: studentId,
-                title: "Service Completed",
-                body: `Your service request has been completed successfully!`,
-                type: "alert",
-                is_read: false
-            });
+            await createNotification(
+                studentId,
+                "Service Completed",
+                "Your service request has been completed successfully!",
+                "/dashboard/student",
+                "service_completed"
+            );
         }
 
         revalidatePath("/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c");

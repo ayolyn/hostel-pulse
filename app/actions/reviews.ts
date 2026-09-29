@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { sendNotificationEmail } from '@/lib/email/resend';
+import { createNotification } from '@/lib/notifications';
 
 export async function submitProviderReview(payload: {
     providerId: string;
@@ -83,13 +84,13 @@ export async function submitProviderReview(payload: {
         }
 
         // 5.5 Insert Notification to Provider
-        await supabase.from("notifications").insert({
-            user_id: payload.providerId,
-            title: `New ${payload.rating}-Star Review!`,
-            body: `You received a ${payload.rating}-star review from a student!`,
-            type: "alert",
-            is_read: false
-        });
+        await createNotification(
+            payload.providerId,
+            `New ${payload.rating}-Star Review! ⭐`,
+            `You received a ${payload.rating}-star review from a student!`,
+            '/dashboard/agent?tab=reviews',
+            'review'
+        );
 
         // 6. Revalidate cache
         revalidatePath("/providers");

@@ -71,7 +71,7 @@ export async function POST(req: Request) {
 
         if (withdrawError) {
             // Rollback: use atomic increment to avoid overwriting any concurrent deposits
-            await supabaseAdmin.rpc('increment_wallet_balance', { payee_id_param: user.id, amount_param: withdrawAmount });
+            await supabaseAdmin.rpc('increment_wallet_balance', { user_id_param: user.id, amount_param: withdrawAmount });
             throw withdrawError;
         }
 

@@ -9,6 +9,11 @@ import { getEmailTemplate } from '@/app/actions/emailTemplates';
 
 export async function sendNotificationEmail(to: string, subject: string, htmlTemplate: string) {
     try {
+        if (!to || typeof to !== 'string' || !to.includes('@')) {
+            console.warn(`[sendNotificationEmail] Invalid or missing recipient email: "${to}"`);
+            return { success: false, error: 'Invalid recipient email' };
+        }
+
         if (!process.env.RESEND_API_KEY) {
             console.warn('RESEND_API_KEY is not defined. Email will not be sent.');
             return { success: false, error: 'Missing RESEND_API_KEY' };
@@ -18,6 +23,8 @@ export async function sendNotificationEmail(to: string, subject: string, htmlTem
             ? htmlTemplate 
             : getEmailTemplate({ title: subject, body: htmlTemplate });
 
+        const fromAddress = process.env.RESEND_FROM_EMAIL || 'Hostel Pulse <info@hostelpulse.app>';
+
         const res = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
@@ -25,8 +32,8 @@ export async function sendNotificationEmail(to: string, subject: string, htmlTem
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                from: 'Hostel Pulse <info@hostelpulse.app>',
-                to: [to],
+                from: fromAddress,
+                to: [to.trim()],
                 subject: subject,
                 html: finalHtml,
             })
