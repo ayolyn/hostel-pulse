@@ -5,6 +5,7 @@ import { XCircle, Wallet } from "lucide-react";
 import toast from "react-hot-toast";
 import { createClient } from "@/lib/supabase/client";
 import FlutterwaveButton from "@/components/ui/FlutterwaveButton";
+import { confirmDeposit } from "@/app/actions/deposit";
 
 interface FundWalletModalProps {
     userId: string;
@@ -83,9 +84,23 @@ export function FundWalletModal({ userId, onClose }: FundWalletModalProps) {
                                 type: 'deposit',
                                 payer_id: userId
                             }}
-                            onSuccess={() => {
-                                toast.success('Deposit successful!');
-                                onClose();
+                            onSuccess={async (tx_ref, paidAmount) => {
+                                const loadId = toast.loading('Crediting your wallet...');
+                                try {
+                                    const res = await confirmDeposit({
+                                        tx_ref,
+                                        amount: paidAmount || Number(amount),
+                                        payer_id: userId,
+                                    });
+                                    if (res.error) {
+                                        toast.error(`Deposit issue: ${res.error}`, { id: loadId });
+                                    } else {
+                                        toast.success('Wallet funded successfully! ✅', { id: loadId });
+                                        onClose();
+                                    }
+                                } catch (e: any) {
+                                    toast.error('Could not verify deposit. Contact support.', { id: loadId });
+                                }
                             }}
                             label="Proceed to Pay"
                             className="w-full bg-[#BEF264] text-black py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#a6d456] active:scale-[0.98] transition-all shadow-xl"

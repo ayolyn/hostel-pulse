@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { X, Wallet } from 'lucide-react';
 import toast from 'react-hot-toast';
 import FlutterwaveButton from '@/components/ui/FlutterwaveButton';
+import { confirmDeposit } from '@/app/actions/deposit';
 
 interface DepositModalProps {
     userId: string;
@@ -89,11 +90,24 @@ export function DepositModal({ userId, onClose, onSuccess }: DepositModalProps) 
                                 type: 'deposit',
                                 payer_id: userId
                             }}
-                            onSuccess={() => {
-                                toast.success('Deposit successful!');
-                                // Fake optimistic update, actual update is via Webhook
-                                onSuccess((Number(userProfile?.wallet_balance) || 0) + Number(amount));
-                                onClose();
+                            onSuccess={async (tx_ref, paidAmount) => {
+                                const loadId = toast.loading('Crediting your wallet...');
+                                try {
+                                    const res = await confirmDeposit({
+                                        tx_ref,
+                                        amount: paidAmount || Number(amount),
+                                        payer_id: userId,
+                                    });
+                                    if (res.error) {
+                                        toast.error(`Deposit issue: ${res.error}`, { id: loadId });
+                                    } else {
+                                        toast.success('Wallet funded successfully! ✅', { id: loadId });
+                                        onSuccess(res.newBalance ?? ((Number(userProfile?.wallet_balance) || 0) + Number(amount)));
+                                        onClose();
+                                    }
+                                } catch (e: any) {
+                                    toast.error('Could not verify deposit. Contact support.', { id: loadId });
+                                }
                             }}
                             label="Proceed to Pay"
                             className="w-full bg-[#BEF264] text-black py-3 sm:py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs hover:bg-[#a6d456] active:scale-[0.98] transition-all shadow-xl"
