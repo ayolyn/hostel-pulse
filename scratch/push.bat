@@ -1,3 +1,14 @@
-git add app/actions/email.ts app/actions/reviews.ts app/actions/services.ts app/api/wallet/withdraw/route.ts app/api/webhooks/flutterwave/route.ts app/auth/callback/route.ts lib/email/resend.ts lib/notifications.ts
-git commit -m "fix: audit and harden notification and email pipeline"
+@echo off
+cd /d "%~dp0\.."
+echo ==================================================
+echo Pushing latest HostelPulse audited commits to GitHub...
+echo ==================================================
 git push origin main
+if %ERRORLEVEL% EQU 0 (
+    echo.
+    echo [SUCCESS] Pushed to GitHub! Cloudflare Pages build triggered automatically.
+) else (
+    echo.
+    echo [FAILED] If prompted for GitHub login in your browser, please approve it.
+)
+pause
