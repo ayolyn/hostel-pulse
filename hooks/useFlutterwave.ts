@@ -30,7 +30,7 @@ export interface FlutterwavePaymentConfig {
     /** Display title in the Flutterwave modal */
     title?: string;
     description?: string;
-    onSuccess: (tx_ref: string, amount: number) => void;
+    onSuccess: (tx_ref: string, amount: number, flw_id?: number) => void;
     onClose?: () => void;
     onError?: (error: string) => void;
 }
@@ -156,7 +156,7 @@ export const useFlutterwave = () => {
                                 }
                             }
 
-                            config.onSuccess(tx_ref, config.amount);
+                            config.onSuccess(tx_ref, config.amount, data.transaction_id);
                             resolve();
                         } catch (err: unknown) {
                             const msg =

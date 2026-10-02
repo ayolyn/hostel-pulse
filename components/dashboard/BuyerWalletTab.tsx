@@ -229,7 +229,7 @@ export default function BuyerWalletTab({ userId }: { userId: string }) {
         .filter(t => {
             const status = t.status?.toUpperCase();
             const isPurchase = t.type !== 'Deposit' && t.type !== 'Withdrawal' && t.amount < 0;
-            return (status === 'RELEASED' || status === 'COMPLETED' || status === 'HELD') && isPurchase;
+            return (status === 'RELEASED' || status === 'COMPLETED') && isPurchase;
         })
         .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
 

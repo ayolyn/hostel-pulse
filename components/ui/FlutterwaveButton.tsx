@@ -20,7 +20,7 @@ interface FlutterwaveButtonProps {
     bookingId?: string;
     meta: Omit<FlutterwavePaymentConfig["meta"], "payer_id"> & { payer_id: string };
     /** Called after a confirmed successful payment */
-    onSuccess?: (tx_ref: string, amount: number) => void;
+    onSuccess?: (tx_ref: string, amount: number, flw_id?: number) => void;
     /** Optional: override what happens on success (e.g. redirect) */
     onSuccessRedirect?: string;
     /** Label shown on the button */
@@ -66,12 +66,12 @@ export default function FlutterwaveButton({
                 meta: { ...meta, booking_id: bookingId },
                 title: "HostelPulse Escrow",
                 description: `Secure escrow payment for ${hostelName}`,
-                onSuccess: (tx_ref, paidAmount) => {
-                    toast.success("Payment confirmed! Funds held in escrow 🔒", {
+                onSuccess: (tx_ref, paidAmount, flw_id) => {
+                    toast.success("Payment confirmed! 🔒", {
                         id: toastId,
                         duration: 4000,
                     });
-                    onSuccess?.(tx_ref, paidAmount);
+                    onSuccess?.(tx_ref, paidAmount, flw_id);
                     if (onSuccessRedirect) {
                         // Small delay so the toast is visible before navigating
                         setTimeout(() => {

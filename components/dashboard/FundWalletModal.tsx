@@ -84,13 +84,14 @@ export function FundWalletModal({ userId, onClose }: FundWalletModalProps) {
                                 type: 'deposit',
                                 payer_id: userId
                             }}
-                            onSuccess={async (tx_ref, paidAmount) => {
+                            onSuccess={async (tx_ref, paidAmount, flw_id) => {
                                 const loadId = toast.loading('Crediting your wallet...');
                                 try {
                                     const res = await confirmDeposit({
                                         tx_ref,
                                         amount: paidAmount || Number(amount),
                                         payer_id: userId,
+                                        flw_id,
                                     });
                                     if (res.error) {
                                         toast.error(`Deposit issue: ${res.error}`, { id: loadId });

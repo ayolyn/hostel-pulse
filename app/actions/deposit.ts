@@ -13,7 +13,7 @@ function getAdminClient() {
 
 /**
  * Called directly from the client after Flutterwave onSuccess fires.
- * This is the PRIMARY credit path — the webhook is a secondary safety net.
+ * This is the PRIMARY credit path — the webhook acts as a secondary safety net.
  * 
  * Idempotent: if the reference was already processed (by a previous call or
  * the webhook), it returns success without double-crediting.
@@ -22,10 +22,12 @@ export async function confirmDeposit({
     tx_ref,
     amount,
     payer_id,
+    flw_id,
 }: {
     tx_ref: string;
     amount: number;
     payer_id: string;
+    flw_id?: number | string;
 }) {
     if (!tx_ref || !payer_id || !amount || amount <= 0) {
         return { error: 'Invalid deposit parameters' };
@@ -42,73 +44,142 @@ export async function confirmDeposit({
         .maybeSingle();
 
     if (existing && existing.status === 'Completed') {
-        return { success: true, message: 'Already processed' };
+        const { data: profile } = await db
+            .from('profiles')
+            .select('wallet_balance')
+            .eq('id', payer_id)
+            .single();
+
+        return { 
+            success: true, 
+            message: 'Already processed', 
+            newBalance: Number(profile?.wallet_balance || 0) 
+        };
     }
 
     try {
-        // Verify the transaction with Flutterwave using tx_ref search
-        // (prevents replay attacks / crediting fake payments)
-        const verifyRes = await fetch(
-            `https://api.flutterwave.com/v3/transactions?tx_ref=${encodeURIComponent(tx_ref)}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+        let verifyData: any = null;
 
-        const verifyData = await verifyRes.json();
-        const txData = verifyData?.data?.[0];
+        // 1. Try verify by Flutterwave transaction ID if present
+        if (flw_id && Number(flw_id) > 0) {
+            try {
+                const res = await fetch(
+                    `https://api.flutterwave.com/v3/transactions/${flw_id}/verify`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+                if (res.ok) {
+                    verifyData = await res.json();
+                }
+            } catch (err) {
+                console.warn('[confirmDeposit] Verify by ID failed, trying reference:', err);
+            }
+        }
+
+        // 2. Try verify by reference if not yet verified
+        if (!verifyData || verifyData.status !== 'success') {
+            try {
+                const res = await fetch(
+                    `https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=${encodeURIComponent(tx_ref)}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+                if (res.ok) {
+                    verifyData = await res.json();
+                }
+            } catch (err) {
+                console.warn('[confirmDeposit] Verify by reference failed, trying list:', err);
+            }
+        }
+
+        // 3. Fallback to transactions query endpoint
+        if (!verifyData || verifyData.status !== 'success') {
+            try {
+                const res = await fetch(
+                    `https://api.flutterwave.com/v3/transactions?tx_ref=${encodeURIComponent(tx_ref)}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+                if (res.ok) {
+                    verifyData = await res.json();
+                }
+            } catch (err) {
+                console.warn('[confirmDeposit] Transactions search failed:', err);
+            }
+        }
+
+        // Extract transaction record safely (handles both object and array response)
+        const txData = Array.isArray(verifyData?.data) ? verifyData.data[0] : verifyData?.data;
 
         if (
             !txData ||
-            verifyData.status !== 'success' ||
-            txData.status !== 'successful' ||
-            txData.tx_ref !== tx_ref ||
-            txData.currency !== 'NGN'
+            verifyData?.status !== 'success' ||
+            (txData.status !== 'successful' && txData.status !== 'completed') ||
+            (txData.tx_ref && txData.tx_ref !== tx_ref)
         ) {
-            return { error: 'Payment verification failed. Please contact support if funds were deducted.' };
+            return { error: 'Payment verification failed with payment gateway. Please contact support.' };
         }
 
-        // Use the settled amount from Flutterwave (after their fees)
-        const settledAmount = txData.amount_settled
-            ? Number(txData.amount_settled)
-            : (Number(txData.amount) - Number(txData.app_fee || 0));
+        // Credit the nominal amount deposited (e.g. ₦300 or ₦10,000)
+        const creditAmount = Number(txData.amount || amount);
 
         // --- INSERT OR UPDATE DEPOSIT RECORD ---
         if (existing) {
-            // Record exists but was 'Refunded' or another state — update it
             await db
                 .from('deposits')
-                .update({ status: 'Completed', amount: settledAmount })
+                .update({ status: 'Completed', amount: creditAmount })
                 .eq('reference', tx_ref);
         } else {
             const { error: insertErr } = await db
                 .from('deposits')
                 .insert({
                     user_id: payer_id,
-                    amount: settledAmount,
+                    amount: creditAmount,
                     status: 'Completed',
                     reference: tx_ref,
                 });
             if (insertErr) throw insertErr;
         }
 
-        // --- CREDIT WALLET (atomic RPC) ---
+        // --- AUDIT TRAIL in wallet_transactions ---
+        try {
+            await db.from('wallet_transactions').insert({
+                user_id: payer_id,
+                amount: creditAmount,
+                reference: tx_ref,
+                status: 'SUCCESSFUL',
+                gateway: 'flutterwave',
+            });
+        } catch (auditErr) {
+            console.warn('[confirmDeposit] Non-critical audit log error:', auditErr);
+        }
+
+        // --- ATOMICALLY CREDIT WALLET ---
         const { error: rpcErr } = await db.rpc('increment_wallet_balance', {
             user_id_param: payer_id,
-            amount_param: settledAmount,
+            amount_param: creditAmount,
         });
 
         if (rpcErr) {
-            // Fallback read-modify-write
+            console.warn('[confirmDeposit] RPC error, using fallback:', rpcErr);
             const { data: profile } = await db
                 .from('profiles')
                 .select('wallet_balance')
                 .eq('id', payer_id)
                 .single();
-            const newBalance = Number(profile?.wallet_balance || 0) + settledAmount;
+            const newBalance = Number(profile?.wallet_balance || 0) + creditAmount;
             await db
                 .from('profiles')
                 .update({ wallet_balance: newBalance })
@@ -118,13 +189,13 @@ export async function confirmDeposit({
         // --- IN-APP NOTIFICATION ---
         await createNotification(
             payer_id,
-            'Deposit Successful',
-            `Your wallet has been funded with ₦${settledAmount.toLocaleString()}.`,
+            'Deposit Successful ✅',
+            `Your wallet has been funded with ₦${creditAmount.toLocaleString()}.`,
             '/dashboard/student?tab=wallet',
             'deposit'
         );
 
-        // Fetch new balance to return to client
+        // Fetch updated balance to return to client
         const { data: updated } = await db
             .from('profiles')
             .select('wallet_balance')
@@ -134,7 +205,7 @@ export async function confirmDeposit({
         return {
             success: true,
             newBalance: Number(updated?.wallet_balance || 0),
-            settledAmount,
+            creditAmount,
         };
     } catch (err: any) {
         console.error('[confirmDeposit] Error:', err);

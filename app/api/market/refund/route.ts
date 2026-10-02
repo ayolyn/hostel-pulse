@@ -56,7 +56,7 @@ export async function POST(req: Request) {
 
         // 5. Refund the buyer's wallet (increment_wallet_balance RPC)
         const { error: refundError } = await supabaseAdmin.rpc('increment_wallet_balance', {
-            payee_id_param: tx.payer_id,
+            user_id_param: tx.payer_id,
             amount_param: tx.amount
         });
 

@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
@@ -53,7 +53,7 @@ export async function requestPayout(payload: {
         const { error: withdrawalError } = await adminClient
             .from("withdrawals")
             .insert({
-                seller_id: user.id,
+                user_id: user.id,
                 amount: payload.amount,
                 status: "pending", // Flutterwave transfers take a little time; webhook will mark completed
                 bank_name: payload.bankName,
@@ -68,7 +68,7 @@ export async function requestPayout(payload: {
         // 6. Deduct from wallet balance atomically
         const { error: updateError } = await adminClient.rpc(
             "increment_wallet_balance",
-            { payee_id_param: user.id, amount_param: -payload.amount }
+            { user_id_param: user.id, amount_param: -payload.amount }
         );
 
         if (updateError) {

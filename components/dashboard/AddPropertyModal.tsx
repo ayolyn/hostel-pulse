@@ -147,8 +147,8 @@ export default function AddPropertyModal({ userId, userRole, onClose, onSuccess 
                 status: 'active',
                 price_label: 'per year',
                 state: 'Oyo',
-                agent_id: userRole === 'agent' ? userId : null,
-                landlord_id: userRole === 'landlord' ? userId : null
+                agent_id: userRole?.toLowerCase() === 'agent' ? userId : null,
+                landlord_id: userRole?.toLowerCase() === 'landlord' ? userId : null
             };
 
             const { error: dbError } = await supabase
