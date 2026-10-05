@@ -26,10 +26,10 @@ export async function POST(req: Request) {
       // Fallback check in profiles table
       const { data: profile } = await supabase
         .from('profiles')
-        .select('email, contact_email')
+        .select('contact_email')
         .eq('id', userId)
-        .single();
-      email = profile?.contact_email || profile?.email;
+        .maybeSingle();
+      email = profile?.contact_email;
     }
 
     if (!email) {

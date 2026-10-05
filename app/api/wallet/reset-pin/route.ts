@@ -58,6 +58,30 @@ export async function POST(req: Request) {
       throw updateError;
     }
 
+    // Send confirmation email
+    try {
+      const { data: userData } = await supabase.auth.admin.getUserById(userId);
+      let userEmail = userData?.user?.email;
+      if (!userEmail) {
+        const { data: prof } = await supabase.from('profiles').select('contact_email').eq('id', userId).maybeSingle();
+        userEmail = prof?.contact_email;
+      }
+      if (userEmail) {
+        const { sendNotificationEmail } = await import('@/lib/email/resend');
+        await sendNotificationEmail(
+          userEmail,
+          'Security Alert: Payout PIN Updated 🔒',
+          `<div style="font-family:sans-serif;color:#ffffff;line-height:1.6;">
+            <p>Hello,</p>
+            <p>Your 4-digit Hostel Pulse Transaction Security PIN was just updated successfully.</p>
+            <p style="color:#94A3B8;font-size:13px;">If you did not authorize this change, please contact our support team immediately at info@hostelpulse.app to secure your account.</p>
+          </div>`
+        );
+      }
+    } catch (e) {
+      console.warn('Failed to send pin reset alert email:', e);
+    }
+
     return NextResponse.json({ success: true, message: 'PIN reset successfully' });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
