@@ -759,7 +759,7 @@ export async function getPayoutRequests(filterStatus?: string) {
     const userIds = Array.from(new Set(requests.map(r => r.user_id)));
     const { data: profiles } = await db
         .from('profiles')
-        .select('id, full_name, first_name, last_name, email, contact_email, phone, phone_number, role, avatar_url')
+        .select('id, full_name, contact_email, phone, role, avatar_url')
         .in('id', userIds);
 
     const mergedData = requests.map(r => {
@@ -827,12 +827,16 @@ export async function approveWithdrawal(id: string, adminNotes?: string) {
     // 4. Fetch user profile for notifications & email
     const { data: profile } = await db
         .from('profiles')
-        .select('id, full_name, first_name, last_name, email, contact_email, role')
+        .select('id, full_name, contact_email, role')
         .eq('id', payout.user_id)
-        .single();
+        .maybeSingle();
 
-    const userName = profile?.full_name || (profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : payout.account_name) || 'HostelPulse Member';
-    const recipientEmail = profile?.contact_email || profile?.email;
+    let recipientEmail = profile?.contact_email || '';
+    if (!recipientEmail) {
+        const { data: authUser } = await db.auth.admin.getUserById(payout.user_id);
+        if (authUser?.user?.email) recipientEmail = authUser.user.email;
+    }
+    const userName = profile?.full_name || payout.account_name || 'HostelPulse Member';
     const userRole = (profile?.role || 'student').toLowerCase();
     const dashboardLink = userRole === 'agent' 
         ? 'https://hostelpulse.app/dashboard/agent?tab=wallet' 
@@ -938,12 +942,16 @@ export async function rejectWithdrawal(id: string, reason: string) {
     // 4. Fetch user profile for notifications & email
     const { data: profile } = await db
         .from('profiles')
-        .select('id, full_name, first_name, last_name, email, contact_email, role')
+        .select('id, full_name, contact_email, role')
         .eq('id', payout.user_id)
-        .single();
+        .maybeSingle();
 
-    const userName = profile?.full_name || (profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : payout.account_name) || 'HostelPulse Member';
-    const recipientEmail = profile?.contact_email || profile?.email;
+    let recipientEmail = profile?.contact_email || '';
+    if (!recipientEmail) {
+        const { data: authUser } = await db.auth.admin.getUserById(payout.user_id);
+        if (authUser?.user?.email) recipientEmail = authUser.user.email;
+    }
+    const userName = profile?.full_name || payout.account_name || 'HostelPulse Member';
     const userRole = (profile?.role || 'student').toLowerCase();
     const dashboardLink = userRole === 'agent' 
         ? 'https://hostelpulse.app/dashboard/agent?tab=wallet' 
