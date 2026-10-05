@@ -509,20 +509,24 @@ export async function revokeVerification(id: string, tableName: string) {
         
         await createNotification(id, 'Verification Revoked', 'Your verification status has been revoked. Please contact support.', '/dashboard', 'warning');
         
-        const { data: profileForEmail } = await db.from('profiles').select('contact_email, email').eq('id', id).single();
-        if (profileForEmail) {
-            const emailToUse = profileForEmail.contact_email || profileForEmail.email;
-            if (emailToUse) {
-                const html = getEmailTemplate({
-                    subHeading: 'ACCOUNT UPDATE',
-                    title: 'Verification Revoked',
-                    body: 'Your account verification has been revoked by our compliance team. You may need to re-upload clear and valid documents to regain access to full platform features.',
-                    buttonText: 'Update Documents',
-                    buttonLink: 'https://hostel-pulse.pages.dev/dashboard/agent',
-                    showFallbackLink: false
-                });
-                await sendNotificationEmail(emailToUse, 'Action Required: Verification Revoked', html);
-            }
+        let emailToUse = '';
+        const { data: profileForEmail } = await db.from('profiles').select('contact_email').eq('id', id).maybeSingle();
+        if (profileForEmail?.contact_email) {
+            emailToUse = profileForEmail.contact_email;
+        } else {
+            const { data: authData } = await db.auth.admin.getUserById(id);
+            if (authData?.user?.email) emailToUse = authData.user.email;
+        }
+        if (emailToUse) {
+            const html = getEmailTemplate({
+                subHeading: 'ACCOUNT UPDATE',
+                title: 'Verification Revoked',
+                body: 'Your account verification has been revoked by our compliance team. You may need to re-upload clear and valid documents to regain access to full platform features.',
+                buttonText: 'Update Documents',
+                buttonLink: 'https://hostel-pulse.pages.dev/dashboard/agent',
+                showFallbackLink: false
+            });
+            await sendNotificationEmail(emailToUse, 'Action Required: Verification Revoked', html);
         }
 
         if (error) return { error: error.message };
@@ -532,20 +536,24 @@ export async function revokeVerification(id: string, tableName: string) {
     
     await createNotification(id, 'Verification Revoked', 'Your verification status has been revoked. Please contact support.', '/dashboard', 'warning');
         
-        const { data: profileForEmail } = await db.from('profiles').select('contact_email, email').eq('id', id).single();
-        if (profileForEmail) {
-            const emailToUse = profileForEmail.contact_email || profileForEmail.email;
-            if (emailToUse) {
-                const html = getEmailTemplate({
-                    subHeading: 'ACCOUNT UPDATE',
-                    title: 'Verification Revoked',
-                    body: 'Your account verification has been revoked by our compliance team. You may need to re-upload clear and valid documents to regain access to full platform features.',
-                    buttonText: 'Update Documents',
-                    buttonLink: 'https://hostel-pulse.pages.dev/dashboard/agent',
-                    showFallbackLink: false
-                });
-                await sendNotificationEmail(emailToUse, 'Action Required: Verification Revoked', html);
-            }
+        let emailToUse = '';
+        const { data: profileForEmail } = await db.from('profiles').select('contact_email').eq('id', id).maybeSingle();
+        if (profileForEmail?.contact_email) {
+            emailToUse = profileForEmail.contact_email;
+        } else {
+            const { data: authData } = await db.auth.admin.getUserById(id);
+            if (authData?.user?.email) emailToUse = authData.user.email;
+        }
+        if (emailToUse) {
+            const html = getEmailTemplate({
+                subHeading: 'ACCOUNT UPDATE',
+                title: 'Verification Revoked',
+                body: 'Your account verification has been revoked by our compliance team. You may need to re-upload clear and valid documents to regain access to full platform features.',
+                buttonText: 'Update Documents',
+                buttonLink: 'https://hostel-pulse.pages.dev/dashboard/agent',
+                showFallbackLink: false
+            });
+            await sendNotificationEmail(emailToUse, 'Action Required: Verification Revoked', html);
         }
 
     if (error) return { error: error.message };
@@ -896,6 +904,18 @@ export async function rejectWithdrawal(id: string, reason: string) {
     if (rpcErr) {
         console.error('RPC Error process_withdrawal_refund:', rpcErr);
         return { error: rpcErr.message || 'Failed to refund locked funds back to wallet.' };
+    }
+
+    // 2b. Also refund profiles.wallet_balance to ensure full wallet balance parity
+    try {
+        const feeMatch = payout.admin_notes?.match(/Total Deducted: ₦([\d,]+)/);
+        const refundAmt = feeMatch ? Number(feeMatch[1].replace(/,/g, '')) : (Number(payout.amount) + 50);
+        await db.rpc('increment_wallet_balance', {
+            user_id_param: payout.user_id,
+            amount_param: refundAmt
+        });
+    } catch (profErr) {
+        console.warn('Failed to increment profiles.wallet_balance on rejection:', profErr);
     }
 
     // 3. Mark payout request as REJECTED

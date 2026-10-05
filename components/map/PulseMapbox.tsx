@@ -207,7 +207,7 @@ export const PULSE_HOTSPOTS: Hotspot[] = [
 
 // Mapbox Vector Styles
 const PULSE_DARK_STYLE = 'mapbox://styles/mapbox/dark-v11';
-const PULSE_SATELLITE_STYLE = 'mapbox://styles/mapbox/satellite-v9';
+const PULSE_SATELLITE_STYLE = 'mapbox://styles/mapbox/satellite-streets-v12';
 
 // 100% Zero-Token Sleek Dark Raster Base (Esri Dark Gray Canvas - No watermark, no API key needed)
 export const ESRI_DARK_CANVAS_STYLE: any = {
@@ -255,25 +255,27 @@ export const ESRI_DARK_CANVAS_STYLE: any = {
     ]
 };
 
-// High-Resolution Aerial Satellite Fallback Style (Esri World Imagery + Reference labels)
+// Ultra-High Resolution Aerial Satellite Style (Esri World Imagery + Enhanced micro-contrast)
 export const ESRI_SATELLITE_STYLE: any = {
     version: 8,
-    name: 'Pulse Satellite Aerial',
+    name: 'Pulse Satellite Aerial Ultra-HD',
     sources: {
         'esri-satellite': {
             type: 'raster',
             tiles: [
-                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
             ],
             tileSize: 256,
+            maxzoom: 21,
             attribution: '&copy; Esri, Maxar, Earthstar Geographics'
         },
         'esri-satellite-labels': {
             type: 'raster',
             tiles: [
-                'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+                'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
             ],
-            tileSize: 256
+            tileSize: 256,
+            maxzoom: 21
         }
     },
     layers: [
@@ -289,14 +291,21 @@ export const ESRI_SATELLITE_STYLE: any = {
             type: 'raster',
             source: 'esri-satellite',
             minzoom: 0,
-            maxzoom: 19
+            maxzoom: 21,
+            paint: {
+                'raster-contrast': 0.22,
+                'raster-saturation': 0.22,
+                'raster-brightness-min': 0.02,
+                'raster-brightness-max': 0.98,
+                'raster-resampling': 'linear'
+            }
         },
         {
             id: 'esri-satellite-labels-layer',
             type: 'raster',
             source: 'esri-satellite-labels',
             minzoom: 0,
-            maxzoom: 19
+            maxzoom: 21
         }
     ]
 };
@@ -630,6 +639,39 @@ export default function PulseMapbox({
     }, []);
 
     /**
+     * Boost satellite aerial clarity: micro-contrast, vibrant greens/roofs, eliminate hazy smog
+     */
+    const enhanceSatelliteClarity = useCallback((m: mapboxgl.Map) => {
+        try {
+            // Mapbox satellite-streets-v12 raster layer
+            if (m.getLayer('satellite')) {
+                m.setPaintProperty('satellite', 'raster-contrast', 0.18);
+                m.setPaintProperty('satellite', 'raster-saturation', 0.22);
+                m.setPaintProperty('satellite', 'raster-brightness-min', 0.02);
+                m.setPaintProperty('satellite', 'raster-brightness-max', 0.98);
+                m.setPaintProperty('satellite', 'raster-resampling', 'linear');
+            }
+            // Esri zero-token fallback layer
+            if (m.getLayer('esri-satellite-layer')) {
+                m.setPaintProperty('esri-satellite-layer', 'raster-contrast', 0.22);
+                m.setPaintProperty('esri-satellite-layer', 'raster-saturation', 0.22);
+                m.setPaintProperty('esri-satellite-layer', 'raster-brightness-min', 0.02);
+                m.setPaintProperty('esri-satellite-layer', 'raster-brightness-max', 0.98);
+            }
+            // Add subtle atmospheric sky depth if supported
+            if (typeof (m as any).setFog === 'function') {
+                (m as any).setFog({
+                    range: [0.5, 10],
+                    color: '#050b14',
+                    'horizon-blend': 0.08
+                });
+            }
+        } catch (e) {
+            // Safe ignore
+        }
+    }, []);
+
+    /**
      * Add Mapbox composite fill-extrusion 3D layer and procedural GeoJSON building blocks
      * If in satellite mode, hides 3D solid extrusions so high-resolution rooftops are visible
      */
@@ -793,9 +835,12 @@ export default function PulseMapbox({
     useEffect(() => {
         if (map.current && mapLoaded) {
             stripPoiLabels(map.current);
+            if (mapStyle === 'satellite') {
+                enhanceSatelliteClarity(map.current);
+            }
             apply3DBuildingLayers(map.current, displayProperties, mapStyle === 'satellite');
         }
-    }, [mapStyle, displayProperties, mapLoaded, apply3DBuildingLayers, stripPoiLabels]);
+    }, [mapStyle, displayProperties, mapLoaded, apply3DBuildingLayers, stripPoiLabels, enhanceSatelliteClarity]);
 
     // Initialize Map with 3D perspective
     useEffect(() => {
@@ -869,6 +914,9 @@ export default function PulseMapbox({
         const handleMapReady = () => {
             setMapLoaded(true);
             stripPoiLabels(newMap);
+            if (mapStyleRef.current === 'satellite') {
+                enhanceSatelliteClarity(newMap);
+            }
             apply3DBuildingLayers(newMap, displayPropertiesRef.current, mapStyleRef.current === 'satellite');
             newMap.resize();
         };

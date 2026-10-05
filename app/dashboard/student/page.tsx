@@ -181,7 +181,7 @@ function StudentDashboardContent() {
             setActiveTab('Shortlet');
         } else if (tab === 'buy') {
             setActiveTab('Buy');
-        } else if (tab === 'profile') {
+        } else if (tab === 'profile' || tab === 'settings') {
             setActiveTab('Profile');
         } else if (tab === 'market') {
             setActiveTab('Market');

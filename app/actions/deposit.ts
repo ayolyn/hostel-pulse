@@ -2,6 +2,8 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { createNotification } from '@/lib/notifications';
+import { sendNotificationEmail } from '@/lib/email/resend';
+import { getEmailTemplate } from '@/app/actions/emailTemplates';
 
 function getAdminClient() {
     return createClient(
@@ -186,6 +188,25 @@ export async function confirmDeposit({
                 .eq('id', payer_id);
         }
 
+        // --- SYNC WALLETS TABLE ---
+        try {
+            const { data: wRow } = await db.from('wallets').select('balance').eq('user_id', payer_id).maybeSingle();
+            if (wRow) {
+                await db.from('wallets').update({
+                    balance: Number(wRow.balance || 0) + creditAmount,
+                    updated_at: new Date().toISOString()
+                }).eq('user_id', payer_id);
+            } else {
+                await db.from('wallets').insert({
+                    user_id: payer_id,
+                    balance: creditAmount,
+                    currency: 'NGN'
+                });
+            }
+        } catch (wErr) {
+            console.warn('[confirmDeposit] wallets table sync error (non-critical):', wErr);
+        }
+
         // --- IN-APP NOTIFICATION ---
         await createNotification(
             payer_id,
@@ -194,6 +215,66 @@ export async function confirmDeposit({
             '/dashboard/student?tab=wallet',
             'deposit'
         );
+
+        // --- TRANSACTIONAL EMAIL RECEIPT ---
+        try {
+            let depositorEmail = '';
+            let depositorName = 'Hostel Pulse Member';
+
+            const { data: profile } = await db
+                .from('profiles')
+                .select('contact_email, full_name')
+                .eq('id', payer_id)
+                .maybeSingle();
+
+            if (profile?.contact_email) {
+                depositorEmail = profile.contact_email;
+            } else {
+                const { data: authData } = await db.auth.admin.getUserById(payer_id);
+                if (authData?.user?.email) {
+                    depositorEmail = authData.user.email;
+                }
+            }
+
+            if (profile?.full_name) {
+                depositorName = profile.full_name;
+            }
+
+            if (depositorEmail && depositorEmail.includes('@')) {
+                const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hostelpulse.app';
+                const emailHtml = getEmailTemplate({
+                    subHeading: 'WALLET TOP-UP CONFIRMED',
+                    title: 'Deposit Successful ✅',
+                    body: `
+                        <p style="font-size:15px;line-height:1.6;margin:0 0 16px 0;">Hello ${depositorName},</p>
+                        <p style="font-size:15px;line-height:1.6;margin:0 0 20px 0;">
+                            Your deposit has been successfully confirmed and your Hostel Pulse wallet has been credited.
+                        </p>
+                        <div style="background-color:rgba(190,242,100,0.1);border:1px solid #BEF264;border-radius:16px;padding:20px;margin:24px 0;">
+                            <p style="margin:0 0 8px 0;font-size:14px;color:#BEF264;text-transform:uppercase;letter-spacing:1px;font-weight:900;">Amount Credited</p>
+                            <p style="margin:0;font-size:28px;font-weight:900;color:#ffffff;">₦${creditAmount.toLocaleString()}</p>
+                            <div style="margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);font-size:12px;color:#94A3B8;">
+                                <span>Reference: <code>${tx_ref}</code></span>
+                            </div>
+                        </div>
+                        <p style="font-size:14px;color:#94A3B8;line-height:1.6;margin:0;">
+                            You can now use your wallet balance for instant bookings, rent escrow, and student market deals on Hostel Pulse.
+                        </p>
+                    `,
+                    buttonText: 'View Wallet in Dashboard',
+                    buttonLink: `${appUrl}/dashboard/student?tab=wallet`,
+                    showFallbackLink: false,
+                });
+
+                await sendNotificationEmail(
+                    depositorEmail,
+                    'Deposit Successful ✅ - Wallet Funded',
+                    emailHtml
+                ).catch(err => console.error('[confirmDeposit] sendNotificationEmail catch:', err));
+            }
+        } catch (emailErr) {
+            console.error('[confirmDeposit] Failed to send deposit receipt email (non-critical):', emailErr);
+        }
 
         // Fetch updated balance to return to client
         const { data: updated } = await db

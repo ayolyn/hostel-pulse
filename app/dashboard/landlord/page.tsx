@@ -77,7 +77,8 @@ const inspStyle: Record<string, { color: string; bg: string; icon: typeof CheckC
 function DashboardContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const activeTab = searchParams.get('tab') || 'overview';
+    const tabParam = searchParams.get('tab') || 'overview';
+    const activeTab = tabParam === 'settings' ? 'profile' : tabParam;
 
     const handleTabChange = (tab: string) => {
         if (tab === 'listings') {

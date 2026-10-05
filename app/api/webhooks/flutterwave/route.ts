@@ -76,6 +76,25 @@ export async function POST(req: NextRequest) {
                         .eq("id", meta.payer_id);
                 }
 
+                // 2b. Sync wallets table for withdrawal compatibility
+                try {
+                    const { data: wRow } = await supabase.from('wallets').select('balance').eq('user_id', meta.payer_id).maybeSingle();
+                    if (wRow) {
+                        await supabase.from('wallets').update({
+                            balance: Number(wRow.balance || 0) + settledAmount,
+                            updated_at: new Date().toISOString()
+                        }).eq('user_id', meta.payer_id);
+                    } else {
+                        await supabase.from('wallets').insert({
+                            user_id: meta.payer_id,
+                            balance: settledAmount,
+                            currency: 'NGN'
+                        });
+                    }
+                } catch (wErr) {
+                    console.warn('[Webhook] wallets table sync failed (non-critical):', wErr);
+                }
+
                 // 3. Insert wallet_transactions record for audit trail
                 try {
                     await supabase.from("wallet_transactions").insert({
@@ -100,8 +119,14 @@ export async function POST(req: NextRequest) {
 
                 // 5. Email receipt — send directly (createNotification doesn't email 'deposit' type)
                 try {
+                    let depositorEmail = '';
                     const { data: { user: depositorUser } } = await supabase.auth.admin.getUserById(meta.payer_id);
-                    const depositorEmail = depositorUser?.email || '';
+                    if (depositorUser?.email) {
+                        depositorEmail = depositorUser.email;
+                    } else {
+                        const { data: prof } = await supabase.from('profiles').select('contact_email').eq('id', meta.payer_id).maybeSingle();
+                        if (prof?.contact_email) depositorEmail = prof.contact_email;
+                    }
                     if (depositorEmail) {
                         const htmlBody = `
                             <div style="background-color:#f6f9fc;font-family:sans-serif;padding:40px 0;">

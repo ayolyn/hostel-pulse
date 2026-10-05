@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { KeyRound, ShieldCheck, Loader2, Lock, Edit3, Mail, CheckCircle2, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { createClient } from "@/lib/supabase/client";
@@ -12,6 +13,8 @@ interface SecuritySettingsCardProps {
 
 export function SecuritySettingsCard({ userId: propUserId }: SecuritySettingsCardProps) {
     const supabase = createClient();
+    const searchParams = useSearchParams();
+    const hasAutoTriggeredRef = useRef(false);
     
     const [loadingInitial, setLoadingInitial] = useState(true);
     const [hasPinSet, setHasPinSet] = useState(false);
@@ -226,6 +229,14 @@ export function SecuritySettingsCard({ userId: propUserId }: SecuritySettingsCar
             setSendingForgotPin(false);
         }
     };
+
+    useEffect(() => {
+        const action = searchParams?.get('action');
+        if (action === 'forgot-pin' && !hasAutoTriggeredRef.current && (activeUserId || propUserId)) {
+            hasAutoTriggeredRef.current = true;
+            handleTriggerForgotPin();
+        }
+    }, [searchParams, activeUserId, propUserId]);
 
     const handleResetPinSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

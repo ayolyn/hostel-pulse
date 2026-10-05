@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/components/providers/AuthProvider';
 import { User, Shield, Heart, Star, AlertTriangle, LogOut, ChevronRight, CheckCircle2, Lock, FileText, HelpCircle, AlertCircle, Download, CreditCard, Loader2, Smartphone, MapPin, X, Receipt, MessageCircle, Building2, ArrowUpRight, ArrowDownLeft, PlusCircle, Package, Home, BarChart3, LifeBuoy, Wallet } from 'lucide-react';
@@ -15,7 +16,23 @@ import { SecuritySettingsCard } from './SecuritySettingsCard';
 export function ProfileSettingsHub({ accountData, onUpdate }: { accountData: any, onUpdate: () => void }) {
     const { user, signOut } = useAuth();
     const supabase = createClient();
+    const searchParams = useSearchParams();
     const [activeSection, setActiveSection] = useState('menu');
+
+    useEffect(() => {
+        const sub = searchParams?.get('sub');
+        if (sub === 'security') {
+            setActiveSection('Security');
+        } else if (sub === 'saved') {
+            setActiveSection('Saved Hostels');
+        } else if (sub === 'reviews') {
+            setActiveSection('My Reviews');
+        } else if (sub === 'transactions') {
+            setActiveSection('My Transactions');
+        } else if (sub === 'edit' || sub === 'profile') {
+            setActiveSection('Edit Profile');
+        }
+    }, [searchParams]);
     
     const [reviews, setReviews] = useState<any[]>([]);
     const [disputes, setDisputes] = useState<any[]>([]);

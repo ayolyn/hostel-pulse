@@ -57,7 +57,8 @@ function AgentDashboardContent() {
     const supabase = createClient();
     const searchParams = useSearchParams();
     const router = useRouter();
-    const activeTab = searchParams.get('tab') || 'overview';
+    const tabParam = searchParams.get('tab') || 'overview';
+    const activeTab = tabParam === 'settings' ? 'profile' : tabParam;
     const [account, setAccount] = useState<AgentAccount | null>(null);
     const [inspections, setInspections] = useState<Inspection[]>([]);
     const [loading, setLoading] = useState(true);

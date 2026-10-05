@@ -21,11 +21,11 @@ if (hasMapboxToken) {
 }
 
 const DARK_STYLE = 'mapbox://styles/mapbox/dark-v11';
-const SATELLITE_STYLE = 'mapbox://styles/mapbox/satellite-v9';
+const SATELLITE_STYLE = 'mapbox://styles/mapbox/satellite-streets-v12';
 
 // Zero-token fallbacks
 const FALLBACK_DARK = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-const FALLBACK_SATELLITE = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+const FALLBACK_SATELLITE = 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 
 interface PropertyLocationPickerProps {
     initialLng?: number | null;
@@ -108,7 +108,25 @@ export function PropertyLocationPicker({
 
         newMap.addControl(new mapboxgl.NavigationControl({ showCompass: true }), 'bottom-right');
 
+        const enhancePickerClarity = (m: mapboxgl.Map) => {
+            try {
+                if (m.getLayer('satellite')) {
+                    m.setPaintProperty('satellite', 'raster-contrast', 0.18);
+                    m.setPaintProperty('satellite', 'raster-saturation', 0.22);
+                    m.setPaintProperty('satellite', 'raster-brightness-min', 0.02);
+                    m.setPaintProperty('satellite', 'raster-brightness-max', 0.98);
+                }
+                if (m.getLayer('satellite-fallback-layer')) {
+                    m.setPaintProperty('satellite-fallback-layer', 'raster-contrast', 0.22);
+                    m.setPaintProperty('satellite-fallback-layer', 'raster-saturation', 0.22);
+                }
+            } catch (e) {
+                // Safe ignore
+            }
+        };
+
         newMap.on('load', () => {
+            enhancePickerClarity(newMap);
             // Highly visible draggable marker as requested: new mapboxgl.Marker({ draggable: true, color: '#22c55e' })
             const newMarker = new mapboxgl.Marker({ 
                 draggable: true, 
@@ -168,10 +186,22 @@ export function PropertyLocationPicker({
             } as any);
         }
 
-        // Re-attach marker after style reload
+        // Re-attach marker and enhance clarity after style reload
         map.current.once('style.load', () => {
             if (marker.current && map.current) {
                 marker.current.addTo(map.current);
+            }
+            if (toSatellite && map.current) {
+                try {
+                    if (map.current.getLayer('satellite')) {
+                        map.current.setPaintProperty('satellite', 'raster-contrast', 0.18);
+                        map.current.setPaintProperty('satellite', 'raster-saturation', 0.22);
+                    }
+                    if (map.current.getLayer('tile-layer')) {
+                        map.current.setPaintProperty('tile-layer', 'raster-contrast', 0.22);
+                        map.current.setPaintProperty('tile-layer', 'raster-saturation', 0.20);
+                    }
+                } catch (e) {}
             }
         });
     };

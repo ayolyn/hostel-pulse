@@ -10,10 +10,11 @@ interface PinKeypadModalProps {
     onSubmit: (pin: string) => Promise<void>;
     onForgotPin?: () => void;
     title?: string;
+    subtitle?: string;
     loading?: boolean;
 }
 
-export function PinKeypadModal({ isOpen, onClose, onSubmit, onForgotPin, title = "Enter Payout PIN", loading = false }: PinKeypadModalProps) {
+export function PinKeypadModal({ isOpen, onClose, onSubmit, onForgotPin, title = "Enter Payout PIN", subtitle, loading = false }: PinKeypadModalProps) {
     const [pin, setPin] = useState<string>("");
     const [shake, setShake] = useState(false);
     const [maskedDigits, setMaskedDigits] = useState<boolean[]>([false, false, false, false]);
@@ -98,7 +99,7 @@ export function PinKeypadModal({ isOpen, onClose, onSubmit, onForgotPin, title =
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center sm:p-4">
+                <div className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center p-0 sm:p-4">
                     <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -111,25 +112,32 @@ export function PinKeypadModal({ isOpen, onClose, onSubmit, onForgotPin, title =
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="bg-white dark:bg-[#0F172A] w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl relative z-10 flex flex-col"
+                        className="bg-white dark:bg-[#0F172A] w-full max-w-sm sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl relative z-10 flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
                     >
-                        <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
-                            <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
-                                {title}
-                            </h3>
+                        <div className="flex items-center justify-between px-5 py-3.5 sm:px-6 sm:py-4 border-b border-gray-100 dark:border-white/5">
+                            <div className="min-w-0 pr-2">
+                                <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">
+                                    {title}
+                                </h3>
+                                {subtitle && (
+                                    <p className="text-[11px] sm:text-xs font-semibold text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                                        {subtitle}
+                                    </p>
+                                )}
+                            </div>
                             <button 
                                 onClick={onClose}
-                                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-black dark:hover:text-white transition-colors"
+                                className="w-8 h-8 shrink-0 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-black dark:hover:text-white transition-colors"
                             >
-                                <X className="w-5 h-5" />
+                                <X className="w-4 h-4 sm:w-5 sm:h-5" />
                             </button>
                         </div>
 
-                        <div className="p-8 flex flex-col items-center flex-1">
+                        <div className="p-4 sm:p-6 flex flex-col items-center flex-1 overflow-y-auto">
                             <motion.div 
                                 animate={shake ? { x: [-10, 10, -10, 10, 0] } : {}}
                                 transition={{ duration: 0.4 }}
-                                className="flex gap-4 mb-6"
+                                className="flex gap-2.5 sm:gap-4 mb-3 sm:mb-4"
                             >
                                 {[0, 1, 2, 3].map((index) => {
                                     const isActive = pin.length === index;
@@ -139,7 +147,7 @@ export function PinKeypadModal({ isOpen, onClose, onSubmit, onForgotPin, title =
                                     return (
                                         <div 
                                             key={index}
-                                            className={`w-14 h-16 rounded-2xl flex items-center justify-center text-2xl font-black transition-all ${
+                                            className={`w-11 h-13 sm:w-14 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-black transition-all ${
                                                 isActive 
                                                     ? 'border-2 border-[#BEF264] bg-[#BEF264]/10 text-gray-900 dark:text-white' 
                                                     : hasValue 
@@ -159,43 +167,44 @@ export function PinKeypadModal({ isOpen, onClose, onSubmit, onForgotPin, title =
                                     if (onForgotPin) {
                                         onForgotPin();
                                     } else {
-                                        window.location.href = '?tab=profile';
+                                        const basePath = typeof window !== 'undefined' && window.location.pathname.includes('/dashboard') ? window.location.pathname : '/dashboard/student';
+                                        window.location.href = `${basePath}?tab=settings&sub=security&action=forgot-pin`;
                                     }
                                 }}
-                                className="text-sm font-bold text-[#BEF264] hover:text-[#a6d456] transition-colors mb-8"
+                                className="text-xs sm:text-sm font-bold text-[#BEF264] hover:text-[#a6d456] transition-colors mb-3 sm:mb-4"
                             >
                                 Forgot PIN?
                             </button>
 
-                            <div className="grid grid-cols-3 gap-y-6 gap-x-12 w-full max-w-[280px] mx-auto mt-auto">
+                            <div className="grid grid-cols-3 gap-y-2 sm:gap-y-3.5 gap-x-6 sm:gap-x-10 w-full max-w-[240px] sm:max-w-[270px] mx-auto">
                                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                                     <button
                                         key={num}
                                         onClick={() => handleKeyPress(num.toString())}
-                                        className="w-16 h-16 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 active:bg-gray-200 dark:active:bg-white/20 text-2xl font-black text-gray-900 dark:text-white transition-colors"
+                                        className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 active:bg-gray-200 dark:active:bg-white/20 text-xl sm:text-2xl font-black text-gray-900 dark:text-white transition-colors"
                                     >
                                         {num}
                                     </button>
                                 ))}
-                                <div className="w-16 h-16"></div>
+                                <div className="w-12 h-12 sm:w-14 sm:h-14"></div>
                                 <button
                                     onClick={() => handleKeyPress("0")}
-                                    className="w-16 h-16 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 active:bg-gray-200 dark:active:bg-white/20 text-2xl font-black text-gray-900 dark:text-white transition-colors"
+                                    className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 active:bg-gray-200 dark:active:bg-white/20 text-xl sm:text-2xl font-black text-gray-900 dark:text-white transition-colors"
                                 >
                                     0
                                 </button>
                                 <button
                                     onClick={() => handleKeyPress("Backspace")}
-                                    className="w-16 h-16 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 active:bg-gray-200 dark:active:bg-white/20 text-gray-500 dark:text-gray-400 transition-colors"
+                                    className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 active:bg-gray-200 dark:active:bg-white/20 text-gray-500 dark:text-gray-400 transition-colors"
                                 >
-                                    <Delete className="w-8 h-8" />
+                                    <Delete className="w-5 h-5 sm:w-6 sm:h-6" />
                                 </button>
                             </div>
                             
                             {loading && (
-                                <div className="mt-6 flex items-center gap-2 text-[#BEF264]">
-                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                    <span className="font-bold">Processing...</span>
+                                <div className="mt-3 sm:mt-4 flex items-center gap-2 text-[#BEF264]">
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <span className="text-xs sm:text-sm font-bold">Processing...</span>
                                 </div>
                             )}
                         </div>

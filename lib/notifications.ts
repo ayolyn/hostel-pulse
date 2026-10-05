@@ -60,6 +60,10 @@ export async function createNotification(userId: string, title: string, message:
             'new_sale',
             'new_purchase',
             'order_cancelled',
+            'deposit',
+            'withdrawal_queued',
+            'withdrawal_approved',
+            'payout_processed',
         ];
 
         const normalizedType = (type || '').toLowerCase();
