@@ -8,6 +8,7 @@ import {
     OGBOMOSO_BBOX, 
     LAUTECH_MAIN_GATE, 
     KEY_LOCATIONS,
+    matchOgbomosoLocation,
     searchOgbomosoPlaces, 
     reverseGeocodeOgbomoso,
     GeocodeResult 
@@ -60,6 +61,7 @@ export function PropertyLocationPicker({
     const [showResults, setShowResults] = useState(false);
 
     const searchDebounce = useRef<NodeJS.Timeout | null>(null);
+    const lastTapTimeRef = useRef<number>(0);
 
     // Synchronize drag end coordinate extraction & reverse geocoding
     const handleCoordinateUpdate = useCallback(async (lng: number, lat: number) => {
@@ -195,6 +197,7 @@ export function PropertyLocationPicker({
                     const dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
                     const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
                     if (dx < 12 && dy < 12) {
+                        lastTapTimeRef.current = Date.now();
                         const rect = canvas.getBoundingClientRect();
                         const point: [number, number] = [
                             e.changedTouches[0].clientX - rect.left,
@@ -213,8 +216,9 @@ export function PropertyLocationPicker({
             canvas.addEventListener('touchend', onTouchEndHandler, { passive: true });
         });
 
-        // Click anywhere to quickly move the pin
+        // Click anywhere to quickly move the pin (skips if touch tap just handled)
         newMap.on('click', (e) => {
+            if (Date.now() - lastTapTimeRef.current < 450) return;
             if (marker.current) {
                 marker.current.setLngLat([e.lngLat.lng, e.lngLat.lat]);
                 handleCoordinateUpdate(e.lngLat.lng, e.lngLat.lat);
@@ -340,17 +344,31 @@ export function PropertyLocationPicker({
     // Sync with external initialAddress changes (e.g. user selects "Takie Market Area" from LocationCombobox)
     useEffect(() => {
         if (!initialAddress || !map.current || !marker.current) return;
-        const lower = initialAddress.toLowerCase();
-        const match = KEY_LOCATIONS.find(l => 
-            lower.includes(l.name.toLowerCase()) || l.name.toLowerCase().includes(lower)
-        );
+        
+        // 1. Direct or fuzzy match with enriched key locations
+        const match = matchOgbomosoLocation(initialAddress);
         if (match) {
             map.current.flyTo({ center: match.coordinates, zoom: 16.5, duration: 800 });
             marker.current.setLngLat(match.coordinates);
             setCoordinates(match.coordinates);
             setAddress(initialAddress);
             onLocationChange({ lng: match.coordinates[0], lat: match.coordinates[1], address: initialAddress });
+            return;
         }
+
+        // 2. Dynamic geocoding fallback for custom addresses
+        let cancelled = false;
+        searchOgbomosoPlaces(initialAddress).then((results) => {
+            if (cancelled || !results || results.length === 0 || !map.current || !marker.current) return;
+            const top = results[0];
+            map.current.flyTo({ center: top.center, zoom: 16.5, duration: 800 });
+            marker.current.setLngLat(top.center);
+            setCoordinates(top.center);
+            setAddress(top.place_name || initialAddress);
+            onLocationChange({ lng: top.center[0], lat: top.center[1], address: initialAddress });
+        }).catch(() => {});
+
+        return () => { cancelled = true; };
     }, [initialAddress]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Sync if edit coordinates are updated
@@ -366,13 +384,40 @@ export function PropertyLocationPicker({
         }
     }, [initialLng, initialLat]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    const executeSearch = (queryText: string) => {
+        const text = queryText.trim();
+        if (text.length < 2) return;
+        
+        const match = matchOgbomosoLocation(text);
+        if (match && map.current && marker.current) {
+            map.current.flyTo({ center: match.coordinates, zoom: 16.5, duration: 800 });
+            marker.current.setLngLat(match.coordinates);
+            handleCoordinateUpdate(match.coordinates[0], match.coordinates[1]);
+            setShowResults(false);
+            return;
+        }
+
+        searchOgbomosoPlaces(text).then(results => {
+            if (results.length > 0) {
+                handleSelectSearchResult(results[0]);
+            }
+        });
+    };
+
     return (
-        <div className="flex flex-col gap-2.5 w-full">
+        <div className="flex flex-col gap-2 w-full">
             {/* Top Helper Bar & Address Input */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <div className="relative flex-1">
-                    <div className="flex items-center gap-2.5 bg-neutral-900 border border-neutral-700/80 rounded-xl sm:rounded-2xl px-3.5 py-2.5 focus-within:border-[#BEF264] transition-colors shadow-md">
-                        <Search className="w-4 h-4 text-gray-400 shrink-0" />
+                    <div className="flex items-center gap-2 bg-neutral-900 border border-neutral-700/80 rounded-xl sm:rounded-2xl px-3 py-2 sm:py-2.5 focus-within:border-[#BEF264] transition-colors shadow-md">
+                        <button
+                            type="button"
+                            onClick={() => executeSearch(searchQuery)}
+                            className="p-0.5 text-gray-400 hover:text-[#BEF264] transition-colors"
+                            title="Execute search"
+                        >
+                            <Search className="w-4 h-4 shrink-0" />
+                        </button>
                         <input
                             type="text"
                             value={searchQuery}
@@ -381,19 +426,23 @@ export function PropertyLocationPicker({
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     e.preventDefault();
-                                    if (searchResults.length > 0) {
-                                        handleSelectSearchResult(searchResults[0]);
-                                    } else if (searchQuery.trim().length >= 2) {
-                                        searchOgbomosoPlaces(searchQuery).then(results => {
-                                            if (results.length > 0) handleSelectSearchResult(results[0]);
-                                        });
-                                    }
+                                    executeSearch(searchQuery);
                                 }
                             }}
                             placeholder="Search Ogbomoso area (Under-G, Adenike, Takie)..."
                             className="bg-transparent outline-none text-xs sm:text-sm font-medium text-white w-full placeholder:font-normal placeholder:text-gray-500"
                         />
-                        {isSearching && <Loader2 className="w-4 h-4 text-[#BEF264] animate-spin shrink-0" />}
+                        {isSearching ? (
+                            <Loader2 className="w-4 h-4 text-[#BEF264] animate-spin shrink-0" />
+                        ) : searchQuery.trim().length >= 2 ? (
+                            <button
+                                type="button"
+                                onClick={() => executeSearch(searchQuery)}
+                                className="px-2 py-0.5 bg-[#BEF264] text-black text-[10px] font-bold rounded uppercase shrink-0 hover:bg-[#aee64b] transition-colors"
+                            >
+                                Find
+                            </button>
+                        ) : null}
                     </div>
 
                     {/* Auto-suggest dropdown locked to Ogbomoso bbox */}
@@ -443,9 +492,37 @@ export function PropertyLocationPicker({
                 </div>
             </div>
 
+            {/* Quick Landmark Jump Strip */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-neutral-500 shrink-0">Jump:</span>
+                {[
+                    { label: 'Takie', query: 'Takie Market Area' },
+                    { label: 'Under-G', query: 'Under-G Area' },
+                    { label: 'Adenike', query: 'Adenike Area' },
+                    { label: 'Aroje', query: 'Aroje Area' },
+                    { label: 'Stadium', query: 'Stadium Area' },
+                ].map((item) => (
+                    <button
+                        key={item.label}
+                        type="button"
+                        onClick={() => {
+                            const match = matchOgbomosoLocation(item.query);
+                            if (match && map.current && marker.current) {
+                                map.current.flyTo({ center: match.coordinates, zoom: 16.5, duration: 800 });
+                                marker.current.setLngLat(match.coordinates);
+                                handleCoordinateUpdate(match.coordinates[0], match.coordinates[1]);
+                            }
+                        }}
+                        className="px-2 py-0.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700/70 hover:border-[#BEF264] rounded-md text-[10px] font-medium text-gray-300 hover:text-white shrink-0 transition-colors"
+                    >
+                        {item.label}
+                    </button>
+                ))}
+            </div>
+
             {/* Interactive Mapbox Canvas */}
             <div className="w-full h-[320px] sm:h-[380px] rounded-2xl sm:rounded-3xl overflow-hidden relative border border-neutral-800 bg-neutral-950 shadow-xl group">
-                <div ref={mapContainer} className="w-full h-full" style={{ touchAction: 'pan-x pan-y' }} />
+                <div ref={mapContainer} className="w-full h-full" />
 
                 {/* Floating Guide Instructions Pill */}
                 <div className="absolute top-2.5 left-2.5 right-20 sm:right-auto pointer-events-none z-10">

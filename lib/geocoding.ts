@@ -52,6 +52,76 @@ export const KEY_LOCATIONS = [
         description: 'Commercial town centre, banking sector and main shopping plaza.'
     },
     { 
+        name: 'Under-G Area', 
+        coordinates: [4.2618, 8.1635] as [number, number], 
+        lng: 4.2618, 
+        lat: 8.1635, 
+        type: 'Student Hub', 
+        color: 'text-yellow-600', 
+        bg: 'bg-yellow-50 dark:bg-yellow-900/20',
+        description: 'Prime student residential belt right beside LAUTECH gate.'
+    },
+    { 
+        name: 'Adenike Area', 
+        coordinates: [4.2659, 8.1739] as [number, number], 
+        lng: 4.2659, 
+        lat: 8.1739, 
+        type: 'Student Hub', 
+        color: 'text-blue-500', 
+        bg: 'bg-blue-50 dark:bg-blue-900/20',
+        description: 'Major student hostel area with shops and transit links.'
+    },
+    { 
+        name: 'Takie Market Area', 
+        coordinates: [4.2490, 8.1400] as [number, number], 
+        lng: 4.2490, 
+        lat: 8.1400, 
+        type: 'Commercial', 
+        color: 'text-rose-500', 
+        bg: 'bg-rose-50 dark:bg-rose-900/20',
+        description: 'Central town commercial plaza and banking district.'
+    },
+    { 
+        name: 'Aroje Area', 
+        coordinates: [4.2720, 8.1820] as [number, number], 
+        lng: 4.2720, 
+        lat: 8.1820, 
+        type: 'Residential', 
+        color: 'text-cyan-500', 
+        bg: 'bg-cyan-50 dark:bg-cyan-900/20',
+        description: 'Growing student and residential zone along Old Ilorin Road.'
+    },
+    { 
+        name: 'Stadium Area', 
+        coordinates: [4.2680, 8.1520] as [number, number], 
+        lng: 4.2680, 
+        lat: 8.1520, 
+        type: 'Recreation', 
+        color: 'text-emerald-600', 
+        bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+        description: 'Township stadium vicinity with modern apartments.'
+    },
+    { 
+        name: 'Care Taker Area', 
+        coordinates: [4.2530, 8.1320] as [number, number], 
+        lng: 4.2530, 
+        lat: 8.1320, 
+        type: 'Residential', 
+        color: 'text-indigo-500', 
+        bg: 'bg-indigo-50 dark:bg-indigo-900/20',
+        description: 'Quiet residential neighborhood connected to town centre.'
+    },
+    { 
+        name: 'Randa Area', 
+        coordinates: [4.2420, 8.1250] as [number, number], 
+        lng: 4.2420, 
+        lat: 8.1250, 
+        type: 'Residential', 
+        color: 'text-orange-500', 
+        bg: 'bg-orange-50 dark:bg-orange-900/20',
+        description: 'Southwestern commercial and residential junction.'
+    },
+    { 
         name: 'General Area', 
         coordinates: [4.2580, 8.1600] as [number, number], 
         lng: 4.2580, 
@@ -59,7 +129,17 @@ export const KEY_LOCATIONS = [
         type: 'Residential', 
         color: 'text-purple-500', 
         bg: 'bg-purple-50 dark:bg-purple-900/20',
-        description: 'General residential quarters around the campus vicinity.'
+        description: 'General residential quarters around hospital and campus.'
+    },
+    { 
+        name: 'Alata Area', 
+        coordinates: [4.2660, 8.1650] as [number, number], 
+        lng: 4.2660, 
+        lat: 8.1650, 
+        type: 'Student Hub', 
+        color: 'text-teal-500', 
+        bg: 'bg-teal-50 dark:bg-teal-900/20',
+        description: 'Quiet enclave adjacent to Under-G and campus fence.'
     },
     { 
         name: 'Ogbomoso General (Map Center)', 
@@ -72,6 +152,43 @@ export const KEY_LOCATIONS = [
         description: 'Ogbomoso-LAUTECH central reference point.'
     }
 ];
+
+/**
+ * Robust matcher for Ogbomoso location strings to key coordinates
+ */
+export function matchOgbomosoLocation(query: string): typeof KEY_LOCATIONS[0] | null {
+    if (!query || typeof query !== 'string') return null;
+    const clean = query.toLowerCase().trim();
+
+    // 1. Direct or substring check
+    for (const loc of KEY_LOCATIONS) {
+        const locLower = loc.name.toLowerCase();
+        if (clean === locLower || clean.includes(locLower) || locLower.includes(clean)) {
+            return loc;
+        }
+    }
+
+    // 2. Token overlap check (ignoring generic stop words like 'area', 'market', 'zone')
+    const stopWords = new Set(['area', 'market', 'zone', 'hub', 'vicinity', 'road', 'street']);
+    const tokens = clean
+        .split(/[\s,./-]+/)
+        .map(t => t.trim())
+        .filter(t => t.length >= 3 && !stopWords.has(t));
+
+    for (const token of tokens) {
+        for (const loc of KEY_LOCATIONS) {
+            const locTokens = loc.name
+                .toLowerCase()
+                .split(/[\s,./-]+/)
+                .filter(t => !stopWords.has(t));
+            if (locTokens.some(lt => lt.includes(token) || token.includes(lt))) {
+                return loc;
+            }
+        }
+    }
+
+    return null;
+}
 
 export interface GeocodeResult {
     id: string;

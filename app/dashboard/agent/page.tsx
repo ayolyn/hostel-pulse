@@ -74,6 +74,17 @@ function AgentDashboardContent() {
     }, []);
 
     useEffect(() => {
+        if (isAddModalOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isAddModalOpen]);
+
+    useEffect(() => {
         async function loadData() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) { router.push('/join'); return; }

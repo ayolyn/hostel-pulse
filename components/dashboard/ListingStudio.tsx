@@ -647,15 +647,26 @@ export function ListingStudio({
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white">{category} Type</h3>
+                    <h3 className="text-base sm:text-lg font-bold tracking-tight text-gray-900 dark:text-white">{category} Type</h3>
                     <p className="text-xs font-normal text-gray-500 dark:text-neutral-400">Select specific property subtype</p>
                 </div>
-                <button 
-                    onClick={() => setStep(1)} 
-                    className="text-xs font-semibold text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-all flex items-center gap-1"
-                >
-                    ← Back to Category
-                </button>
+                <div className="flex items-center gap-3">
+                    <button 
+                        onClick={() => setStep(1)} 
+                        className="text-xs font-semibold text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-all flex items-center gap-1"
+                    >
+                        ← Back
+                    </button>
+                    {onCancel && (
+                        <button 
+                            type="button" 
+                            onClick={onCancel}
+                            className="text-xs font-semibold text-gray-400 hover:text-rose-500 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                    )}
+                </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 {subOptions[category].map((type) => (
@@ -676,20 +687,39 @@ export function ListingStudio({
 
     // ─── STEP 3: Listing Details ─────────────────────────────────────────────
     if (step === 3) return (
-        <div className="space-y-6 sm:space-y-8 pb-12 sm:pb-6 animate-in fade-in slide-in-from-bottom-4">
-            <div className="flex items-center gap-3 sm:gap-4 pr-12 sm:pr-14">
-                <button 
-                    type="button"
-                    onClick={() => setStep(2)} 
-                    className="p-2 sm:p-2.5 bg-gray-100 dark:bg-neutral-900 rounded-xl text-gray-500 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-neutral-800 transition-all shrink-0"
-                    aria-label="Back to sub-categories"
-                >
-                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                </button>
-                <div className="min-w-0">
-                    <h2 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white truncate">Listing Details</h2>
-                    <p className="text-xs font-normal text-gray-500 dark:text-neutral-400 truncate">Fill in accurate information for your listing</p>
+        <div className="space-y-5 sm:space-y-6 pb-12 sm:pb-6 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex items-center justify-between gap-3 pr-14 sm:pr-16">
+                <div className="flex items-center gap-3 min-w-0">
+                    <button 
+                        type="button"
+                        onClick={() => {
+                            if (editId && onCancel) {
+                                onCancel();
+                            } else {
+                                setStep(2);
+                            }
+                        }} 
+                        className="p-2 sm:p-2.5 bg-gray-100 dark:bg-neutral-900 rounded-xl text-gray-500 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-neutral-800 transition-all shrink-0"
+                        aria-label={editId ? "Cancel editing" : "Back to sub-categories"}
+                    >
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    </button>
+                    <div className="min-w-0">
+                        <h2 className="text-base sm:text-lg font-bold tracking-tight text-gray-900 dark:text-white truncate">
+                            {editId ? 'Edit Listing Details' : 'Listing Details'}
+                        </h2>
+                        <p className="text-xs font-normal text-gray-500 dark:text-neutral-400 truncate">Fill in accurate information for your listing</p>
+                    </div>
                 </div>
+                {onCancel && (
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="text-xs font-semibold text-gray-400 hover:text-rose-500 shrink-0 transition-colors hidden sm:block"
+                    >
+                        Cancel
+                    </button>
+                )}
             </div>
 
             {error && (
@@ -699,100 +729,106 @@ export function ListingStudio({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                 {/* Title */}
                 <div className="space-y-1.5 md:col-span-2">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Listing Title <span className="text-rose-500">*</span></label>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">
+                        Listing Title <span className="text-rose-500">*</span>
+                    </label>
                     <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })}
                         placeholder={`e.g. ${subCat || category} in Under-G`}
-                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] dark:focus:border-[#BEF264] focus:ring-2 focus:ring-[#BEF264]/20 outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                        className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] dark:focus:border-[#BEF264] focus:ring-2 focus:ring-[#BEF264]/20 outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                 </div>
 
                 {/* Price */}
                 <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Price (₦) - Annual / Subsequent Payment <span className="text-rose-500">*</span></label>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">
+                        Price (₦) - Annual / Subsequent <span className="text-rose-500">*</span>
+                    </label>
                     <input type="text" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })}
                         placeholder="e.g. 350000"
-                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] dark:focus:border-[#BEF264] focus:ring-2 focus:ring-[#BEF264]/20 outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                        className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] dark:focus:border-[#BEF264] focus:ring-2 focus:ring-[#BEF264]/20 outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                 </div>
 
                 {/* Available Units */}
-                <div className="space-y-1.5 p-3 sm:p-4 bg-[#BEF264]/10 border border-[#BEF264]/40 dark:border-[#BEF264]/30 rounded-xl sm:rounded-2xl">
-                    <label className="text-xs font-bold text-gray-900 dark:text-[#BEF264] px-1">Available Units <span className="text-rose-500">*</span></label>
+                <div className="space-y-1.5 p-3 sm:p-3.5 bg-[#BEF264]/10 border border-[#BEF264]/40 dark:border-[#BEF264]/30 rounded-xl sm:rounded-2xl">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-800 dark:text-[#BEF264] px-1">
+                        Available Units <span className="text-rose-500">*</span>
+                    </label>
                     <input type="number" min="1" value={form.available_units} onChange={e => setForm({ ...form, available_units: e.target.value })}
                         placeholder="e.g. 1"
-                        className="w-full px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-semibold text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 transition-all" />
+                        className="w-full px-3.5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-semibold text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 transition-all" />
                 </div>
 
                 {/* Additional Fees */}
                 {category !== 'Hotel' && (
                     <>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Agent Fee (₦)</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Agent Fee (₦)</label>
                             <input type="text" value={form.agent_fee} onChange={e => setForm({ ...form, agent_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Agreement Fee (₦)</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Agreement Fee (₦)</label>
                             <input type="text" value={form.agreement_fee} onChange={e => setForm({ ...form, agreement_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Caution Fee (₦)</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Caution Fee (₦)</label>
                             <input type="text" value={form.caution_fee} onChange={e => setForm({ ...form, caution_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Service Charge (₦)</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Service Charge (₦)</label>
                             <input type="text" value={form.service_charge} onChange={e => setForm({ ...form, service_charge: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Inspection Fee (₦)</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Inspection Fee (₦)</label>
                             <input type="text" value={form.inspection_fee} onChange={e => setForm({ ...form, inspection_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Other Fee (₦)</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Other Fee (₦)</label>
                             <input type="text" value={form.other_fee} onChange={e => setForm({ ...form, other_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
                         <div className="space-y-1.5 md:col-span-2">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Other Fee Description</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Other Fee Description</label>
                             <input type="text" value={form.other_fee_description} onChange={e => setForm({ ...form, other_fee_description: e.target.value })}
                                 placeholder="e.g. Garbage Disposal (Optional)"
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
                         <div className="space-y-1.5 md:col-span-2">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Total Move-In Cost (₦)</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Total Move-In Cost (₦)</label>
                             <input type="text" value={form.total_move_in_cost} onChange={e => setForm({ ...form, total_move_in_cost: e.target.value })}
                                 placeholder="Optional (if different from annual rent)"
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
                     </>
                 )}
 
                 {/* Description and Availability */}
                 <div className="space-y-1.5 md:col-span-2">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Description</label>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Description</label>
                     <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
                         placeholder={`Tell us about this ${subCat || category}...`}
                         rows={3}
-                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-normal text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all resize-none" />
+                        className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-normal text-sm text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all resize-none" />
                 </div>
                 <div className="space-y-1.5 md:col-span-2">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Available From</label>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Available From</label>
                     <input type="date" value={form.available_from} onChange={e => setForm({ ...form, available_from: e.target.value })}
-                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
+                        className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white transition-all" />
                 </div>
 
                 {/* Listing Type Toggle (For House and Shop) */}
                 {(category === 'House' || category === 'Shop') && (
                     <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Listing Type</label>
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Listing Type</label>
                         <div className="flex gap-2 p-1 bg-gray-50 dark:bg-neutral-900 rounded-xl sm:rounded-2xl border border-gray-200 dark:border-white/10">
                             {['rent', 'buy'].map((type) => (
                                 <button
@@ -812,28 +848,28 @@ export function ListingStudio({
                 {category !== 'Land' && category !== 'Shop' && (
                     <>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Bedrooms</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Bedrooms</label>
                             <input type="number" min="1" value={form.bedrooms} onChange={e => setForm({ ...form, bedrooms: e.target.value })}
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white transition-all" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Bathrooms</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Bathrooms</label>
                             <input type="number" min="1" value={form.bathrooms} onChange={e => setForm({ ...form, bathrooms: e.target.value })}
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white transition-all" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Toilets</label>
+                            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Toilets</label>
                             <input type="number" min="1" value={form.toilets} onChange={e => setForm({ ...form, toilets: e.target.value })}
-                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white transition-all" />
                         </div>
                     </>
                 )}
 
                 {/* Area Size */}
                 <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Area Size (SQM)</label>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Area Size (SQM)</label>
                     <input type="number" min="1" value={form.area_size} onChange={e => setForm({ ...form, area_size: e.target.value })}
-                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
+                        className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white transition-all" />
                 </div>
             </div>
 
@@ -841,18 +877,18 @@ export function ListingStudio({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
                 {category !== 'Land' && (
                     <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Light Score (1-10)</label>
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Light Score (1-10)</label>
                         <input type="number" min="1" max="10" value={form.light_score} onChange={e => setForm({ ...form, light_score: Number(e.target.value) })}
-                            className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
+                            className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white transition-all" />
                     </div>
                 )}
                 <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">
                         {category === 'Land' ? 'Land Type' : 'Water Source'}
                     </label>
                     {category === 'Land' ? (
                         <select value={form.water_source} onChange={e => setForm({ ...form, water_source: e.target.value })}
-                            className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white appearance-none cursor-pointer">
+                            className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white appearance-none cursor-pointer">
                             <option>Dry Land</option>
                             <option>Swampy</option>
                             <option>Level</option>
@@ -860,7 +896,7 @@ export function ListingStudio({
                         </select>
                     ) : (
                         <select value={form.water_source} onChange={e => setForm({ ...form, water_source: e.target.value })}
-                            className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white appearance-none cursor-pointer">
+                            className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white appearance-none cursor-pointer">
                             <option>Borehole</option>
                             <option>Well Water</option>
                             <option>Public Supply</option>
@@ -871,9 +907,9 @@ export function ListingStudio({
                 
                 {category === 'Land' && (
                     <div className="space-y-1.5">
-                        <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Road Access</label>
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Road Access</label>
                         <select value={form.road_access} onChange={e => setForm({ ...form, road_access: e.target.value })}
-                            className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white appearance-none cursor-pointer">
+                            className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white appearance-none cursor-pointer">
                             <option>Tarred</option>
                             <option>Graded</option>
                             <option>Unimproved</option>
@@ -882,19 +918,19 @@ export function ListingStudio({
                 )}
 
                 <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">
                         {category === 'Land' ? 'Proximity to Landmark' : 'Distance to Gate'}
                     </label>
                     <input type="text" value={form.gate_distance} onChange={e => setForm({ ...form, gate_distance: e.target.value })}
                         placeholder={category === 'Land' ? "e.g. 5 mins from LAUTECH Main Gate" : "e.g. ~5 mins walk"}
-                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
+                        className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white transition-all" />
                 </div>
             </div>
 
             {/* Features */}
             {category !== 'Land' && (
                 <div className="space-y-2">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Amenities & Features</label>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Amenities & Features</label>
                     <div className="flex flex-wrap gap-2">
                         {['Constant Power', 'Running Water', 'Security', 'Fenced', 'Tiles', 'Wardrobe', 'Kitchen Cabinet', 'POP Ceiling', 'Balcony', 'Wifi'].map((feat) => (
                             <button
@@ -913,7 +949,7 @@ export function ListingStudio({
             {/* Media Upload */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                 <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Photos (Up to 5)</label>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Photos (Up to 5)</label>
                     <div className="flex flex-col gap-2.5">
                         <input type="file" multiple accept="image/*" className="hidden" ref={fileInputRef} onChange={(e) => {
                             if (e.target.files) handleImageUpload(e.target.files);
@@ -939,7 +975,7 @@ export function ListingStudio({
                 </div>
 
                 <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Walkthrough Video (Max 25MB)</label>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Walkthrough Video (Max 25MB)</label>
                     <div className="flex flex-col gap-2.5">
                         <input type="file" accept="video/*" className="hidden" id="videoUpload" onChange={(e) => {
                             if (e.target.files?.[0]) handleVideoUpload(e.target.files[0]);
@@ -961,7 +997,7 @@ export function ListingStudio({
             {/* Location & Interactive Geolocation Pin */}
             <div className="space-y-3">
                 <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Location Zone</label>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 px-1">Location Zone</label>
                     <LocationCombobox
                         value={form.location}
                         onChange={(loc) => setForm({ ...form, location: loc })}
@@ -1015,19 +1051,27 @@ export function ListingStudio({
                         </p>
                     )}
                 </div>
-                <button onClick={() => { 
-                    setStep(1); 
-                    setUploadedImageUrls([]); 
-                    setUploadedImagesWithHashes([]);
-                    setIsFlaggedDuplicate(false);
-                    setDuplicateScore(0);
-                    setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', latitude: 8.1393, longitude: 4.2691, bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
-                        video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); 
-                    onComplete(); 
-                }}
-                    className="mt-8 text-black dark:text-white font-black uppercase tracking-widest text-[10px] underline underline-offset-8">
-                    Add Another Listing
-                </button>
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <button 
+                        onClick={onComplete}
+                        className="w-full sm:w-auto px-6 py-3 bg-[#BEF264] text-black font-bold rounded-xl text-xs sm:text-sm uppercase tracking-wider hover:brightness-105 active:scale-95 transition-all shadow-md shadow-[#BEF264]/20"
+                    >
+                        Done • View Listings
+                    </button>
+                    <button onClick={() => { 
+                        setStep(1); 
+                        setUploadedImageUrls([]); 
+                        setUploadedImagesWithHashes([]);
+                        setIsFlaggedDuplicate(false);
+                        setDuplicateScore(0);
+                        setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', latitude: 8.1393, longitude: 4.2691, bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
+                            video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); 
+                        onComplete(); 
+                    }}
+                        className="w-full sm:w-auto px-5 py-3 text-gray-600 dark:text-neutral-400 hover:text-black dark:hover:text-white font-bold uppercase tracking-wider text-xs transition-colors">
+                        Add Another Listing
+                    </button>
+                </div>
             </div>
         );
     }
@@ -1044,19 +1088,27 @@ export function ListingStudio({
                     <p className="text-xs text-[#BEF264] font-black uppercase tracking-widest mt-3">✓ {uploadedImageUrls.length} photo{uploadedImageUrls.length > 1 ? 's' : ''} uploaded</p>
                 )}
             </div>
-            <button onClick={() => { 
-                setStep(1); 
-                setUploadedImageUrls([]); 
-                setUploadedImagesWithHashes([]);
-                setIsFlaggedDuplicate(false);
-                setDuplicateScore(0);
-                setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', latitude: 8.1393, longitude: 4.2691, bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
-                    video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); 
-                onComplete(); 
-            }}
-                className="mt-8 text-black dark:text-white font-black uppercase tracking-widest text-[10px] underline underline-offset-8">
-                Add Another Listing
-            </button>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button 
+                    onClick={onComplete}
+                    className="w-full sm:w-auto px-6 py-3 bg-[#BEF264] text-black font-bold rounded-xl text-xs sm:text-sm uppercase tracking-wider hover:brightness-105 active:scale-95 transition-all shadow-md shadow-[#BEF264]/20"
+                >
+                    Done • View Listings
+                </button>
+                <button onClick={() => { 
+                    setStep(1); 
+                    setUploadedImageUrls([]); 
+                    setUploadedImagesWithHashes([]);
+                    setIsFlaggedDuplicate(false);
+                    setDuplicateScore(0);
+                    setForm({ title: '', price: '', agent_fee: '', agreement_fee: '', caution_fee: '', inspection_fee: '', service_charge: '', other_fee: '', other_fee_description: '', total_move_in_cost: '', description: '', available_from: '', location: 'Under-G Area', latitude: 8.1393, longitude: 4.2691, bedrooms: '1', bathrooms: '1', toilets: '1', area_size: '', is_furnished: false, is_serviced: false, is_newly_built: false,
+                        video_url: '', youtube_video_url: '', instagram_video_url: '', virtual_tour_url: '', features: [], light_score: 7, water_source: 'Borehole', gate_distance: '~15 mins walk', listing_type: 'rent', available_units: '1', road_access: 'Tarred' }); 
+                    onComplete(); 
+                }}
+                    className="w-full sm:w-auto px-5 py-3 text-gray-600 dark:text-neutral-400 hover:text-black dark:hover:text-white font-bold uppercase tracking-wider text-xs transition-colors">
+                    Add Another Listing
+                </button>
+            </div>
         </div>
     );
 }

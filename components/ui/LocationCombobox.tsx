@@ -23,12 +23,44 @@ export function LocationCombobox({ value, onChange, placeholder = 'Select a loca
 
     useEffect(() => {
         async function fetchLocations() {
-            const { data } = await supabase
-                .from('locations')
-                .select('name')
-                .order('name', { ascending: true });
-            setLocations(data?.map((l: any) => l.name) ?? []);
-            setLoading(false);
+            try {
+                const { data } = await supabase
+                    .from('locations')
+                    .select('name')
+                    .order('name', { ascending: true });
+                const fetched = (data?.map((l: any) => l.name) ?? []).filter(Boolean);
+                if (fetched.length > 0) {
+                    setLocations(fetched);
+                } else {
+                    setLocations([
+                        'Under-G Area',
+                        'Adenike Area',
+                        'Takie Market Area',
+                        'Aroje Area',
+                        'Stadium Area',
+                        'Care Taker Area',
+                        'Randa Area',
+                        'General Area',
+                        'Alata Area',
+                        'LAUTECH Main Gate'
+                    ]);
+                }
+            } catch (err) {
+                setLocations([
+                    'Under-G Area',
+                    'Adenike Area',
+                    'Takie Market Area',
+                    'Aroje Area',
+                    'Stadium Area',
+                    'Care Taker Area',
+                    'Randa Area',
+                    'General Area',
+                    'Alata Area',
+                    'LAUTECH Main Gate'
+                ]);
+            } finally {
+                setLoading(false);
+            }
         }
         fetchLocations();
     }, []);
