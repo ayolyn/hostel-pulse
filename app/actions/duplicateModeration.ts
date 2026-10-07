@@ -20,13 +20,7 @@ async function requireSuperAdmin() {
 
     const isSuperAdminEmail = user.email?.toLowerCase() === 'juliusayolyn148@gmail.com';
 
-    const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-    if (!isSuperAdminEmail && roleData?.role?.toLowerCase() !== 'super_admin') {
+    if (!isSuperAdminEmail) {
         throw new Error("Forbidden: Super Admin required.");
     }
     return user.id;

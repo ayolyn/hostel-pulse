@@ -10,7 +10,7 @@ export function UserProfileDropdown() {
     const { user, signOut, role } = useAuth();
     const supabase = createClient();
     const [isOpen, setIsOpen] = useState(false);
-    const [profile, setProfile] = useState<{ full_name?: string; avatar_url?: string } | null>(null);
+    const [profile, setProfile] = useState<{ full_name?: string; avatar_url?: string; logo_url?: string } | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export function UserProfileDropdown() {
         const fetchProfile = async () => {
             const { data } = await supabase
                 .from('profiles')
-                .select('full_name, avatar_url')
+                .select('full_name, avatar_url, logo_url')
                 .eq('id', user.id)
                 .single();
             if (data) setProfile(data);
@@ -38,8 +38,12 @@ export function UserProfileDropdown() {
 
     if (!user) return null;
 
-    const initial = profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : 'U';
     const fallbackAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile?.full_name || 'User')}&backgroundColor=e5e5e5`;
+    const avatarSrc = (profile?.avatar_url && profile.avatar_url !== 'null' && profile.avatar_url.trim() !== '')
+        ? profile.avatar_url
+        : (profile?.logo_url && profile.logo_url !== 'null' && profile.logo_url.trim() !== '')
+            ? profile.logo_url
+            : fallbackAvatar;
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -48,11 +52,7 @@ export function UserProfileDropdown() {
                 className="w-10 h-10 rounded-full bg-neutral-200 dark:bg-white/10 border-2 border-transparent hover:border-[#BEF264] transition-all flex items-center justify-center overflow-hidden"
                 aria-label="User Menu"
             >
-                {profile?.avatar_url && profile.avatar_url !== 'null' && profile.avatar_url.trim() !== '' ? (
-                    <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                ) : (
-                    <img src={fallbackAvatar} alt="Avatar" className="w-full h-full object-cover" />
-                )}
+                <img src={avatarSrc} alt="Avatar" className="w-full h-full object-cover" />
             </button>
 
             {isOpen && (
@@ -72,33 +72,21 @@ export function UserProfileDropdown() {
                           The user requested to encapsulate "Sign Out". 
                         */}
                         {(() => {
-                            const isSuperAdminEmail = user?.email?.toLowerCase() === 'juliusayolyn148@gmail.com';
+                            const isSuperAdmin = user?.email?.toLowerCase() === 'juliusayolyn148@gmail.com';
                             const normalizedRole = role?.toLowerCase();
-                            const isSuperAdmin = isSuperAdminEmail || normalizedRole === 'super_admin';
-                            const targetHref = isSuperAdminEmail ? '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c' :
+                            const targetHref = isSuperAdmin ? '/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c' :
                                                normalizedRole === 'landlord' ? '/dashboard/landlord?tab=overview' :
                                                normalizedRole === 'agent' ? '/dashboard/agent' :
                                                normalizedRole === 'non_student' ? '/dashboard/non-student' :
                                                '/dashboard/student?tab=profile';
                             return (
-                                <>
-                                    <Link 
-                                        href={targetHref}
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors text-neutral-700 dark:text-neutral-300 w-full text-left text-sm font-bold"
-                                        onClick={() => setIsOpen(false)}
-                                    >
-                                        <Settings className="w-4 h-4" /> {isSuperAdminEmail ? 'Admin Dashboard' : 'Profile & Settings'}
-                                    </Link>
-                                    {isSuperAdmin && !isSuperAdminEmail && (
-                                        <Link 
-                                            href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c"
-                                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#BEF264]/10 text-emerald-600 dark:text-[#BEF264] transition-colors w-full text-left text-sm font-bold"
-                                            onClick={() => setIsOpen(false)}
-                                        >
-                                            <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-[#BEF264]" /> Admin HQ
-                                        </Link>
-                                    )}
-                                </>
+                                <Link 
+                                    href={targetHref}
+                                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 dark:hover:bg-white/5 transition-colors text-neutral-700 dark:text-neutral-300 w-full text-left text-sm font-bold"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <Settings className="w-4 h-4" /> {isSuperAdmin ? 'Admin Dashboard' : 'Profile & Settings'}
+                                </Link>
                             );
                         })()}
                         <button
