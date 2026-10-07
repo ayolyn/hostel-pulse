@@ -2,6 +2,7 @@
 export const runtime = 'edge';
 
 import { useEffect, useState, Suspense } from 'react';
+import { createPortal } from 'react-dom';
 import { createClient } from '@/lib/supabase/client';
 import { Calendar, Wallet, Trophy, MapPin, CheckCircle2, Clock, AlertCircle, Zap, X } from 'lucide-react';
 import Link from 'next/link';
@@ -66,6 +67,11 @@ function AgentDashboardContent() {
     const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
     const [termsAccepted, setTermsAccepted] = useState(true);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         async function loadData() {
@@ -262,17 +268,23 @@ function AgentDashboardContent() {
                     </div>
                 )}
                 
-                {isAddModalOpen && userId && (
-                    <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-                        <div className="w-full max-w-4xl bg-white dark:bg-neutral-950 rounded-3xl border border-gray-100 dark:border-white/5 shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden">
-                            <div className="absolute top-5 right-8 z-[160]">
-                                <button onClick={() => setIsAddModalOpen(false)} className="p-3 bg-gray-50 dark:bg-neutral-900 rounded-2xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all">
-                                    <X className="w-6 h-6 text-gray-400" />
+                {isAddModalOpen && userId && mounted && createPortal(
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 sm:p-6 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
+                        <div className="w-full h-full sm:h-auto sm:max-h-[92vh] sm:max-w-4xl bg-white dark:bg-neutral-950 sm:rounded-3xl border-0 sm:border border-gray-100 dark:border-white/5 shadow-2xl relative flex flex-col overflow-hidden">
+                            <div className="absolute top-3.5 right-4 sm:top-5 sm:right-6 z-[210]">
+                                <button 
+                                    onClick={() => setIsAddModalOpen(false)} 
+                                    className="p-2 sm:p-2.5 bg-gray-100 dark:bg-neutral-800 rounded-full sm:rounded-xl hover:bg-gray-200 dark:hover:bg-neutral-700 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-all shadow-sm"
+                                    aria-label="Close modal"
+                                >
+                                    <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <div className="flex-1 overflow-y-auto p-6 no-scrollbar">
+                            <div className="flex-1 overflow-y-auto px-4 py-5 sm:p-8 no-scrollbar pb-24 sm:pb-8">
                                 <ListingStudio 
                                     editId={editingPropertyId}
+                                    hasAcceptedTerms={termsAccepted}
+                                    onCancel={() => setIsAddModalOpen(false)}
                                     onComplete={() => {
                                         setIsAddModalOpen(false);
                                         window.location.reload();
@@ -280,7 +292,8 @@ function AgentDashboardContent() {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </div>
             {!loading && userId && (

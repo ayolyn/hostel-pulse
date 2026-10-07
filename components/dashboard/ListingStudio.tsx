@@ -25,7 +25,19 @@ function getPriceLabel(category: Category): string {
     return 'Annual Rent';
 }
 
-export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: () => void, editId?: string | null }) {
+interface ListingStudioProps {
+    onComplete: () => void;
+    editId?: string | null;
+    onCancel?: () => void;
+    hasAcceptedTerms?: boolean;
+}
+
+export function ListingStudio({ 
+    onComplete, 
+    editId: propEditId,
+    onCancel,
+    hasAcceptedTerms: propHasAcceptedTerms
+}: ListingStudioProps) {
     const supabase = createClient();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,8 +49,8 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
     const [uploadingVideo, setUploadingVideo] = useState(false);
     const [error, setError] = useState('');
     const [editId, setEditId] = useState<string | null>(null);
-    const [hasTerms, setHasTerms] = useState(false);
-    const [isCheckingTerms, setIsCheckingTerms] = useState(true);
+    const [hasTerms, setHasTerms] = useState(propHasAcceptedTerms ?? false);
+    const [isCheckingTerms, setIsCheckingTerms] = useState(propHasAcceptedTerms === undefined);
     const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
     const [uploadedImagesWithHashes, setUploadedImagesWithHashes] = useState<{ url: string; phash: string }[]>([]);
     const [isFlaggedDuplicate, setIsFlaggedDuplicate] = useState(false);
@@ -52,10 +64,15 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) { setIsCheckingTerms(false); return; }
 
-            // Check terms
-            const { data: profile } = await supabase.from('profiles').select('terms_accepted_at').eq('id', user.id).single();
-            setHasTerms(!!profile?.terms_accepted_at);
-            setIsCheckingTerms(false);
+            // Check terms if not pre-provided by dashboard shell
+            if (propHasAcceptedTerms === undefined) {
+                const { data: profile } = await supabase.from('profiles').select('terms_accepted_at').eq('id', user.id).single();
+                setHasTerms(!!profile?.terms_accepted_at);
+                setIsCheckingTerms(false);
+            } else {
+                setHasTerms(propHasAcceptedTerms);
+                setIsCheckingTerms(false);
+            }
 
             const id = propEditId || searchParams.get('edit');
             if (!id) {
@@ -292,7 +309,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         const imagesToUse = uploadedImageUrls.length > 0 ? uploadedImageUrls : [FALLBACK_IMAGES[category]];
 
         const { data: userRoles } = await supabase.from('user_roles').select('role').eq('user_id', user.id);
-        const roles = userRoles?.map((r: { role: string }) => r.role) || [];
+        const roles = userRoles?.map((r: { role: string }) => r.role?.toLowerCase()) || [];
         const isAgent = roles.includes('agent');
         const isLandlord = roles.includes('landlord');
 
@@ -517,18 +534,27 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
         setStep(4);
     };
 
-    if (isCheckingTerms) return <div className="p-20 text-center animate-pulse">Checking credentials...</div>;
+    if (isCheckingTerms) {
+        return (
+            <div className="py-16 px-6 flex flex-col items-center justify-center text-center space-y-4 min-h-[320px]">
+                <Loader2 className="w-8 h-8 text-[#BEF264] animate-spin" />
+                <p className="text-xs font-semibold text-gray-500 dark:text-neutral-400 uppercase tracking-widest">
+                    Initializing Listing Studio...
+                </p>
+            </div>
+        );
+    }
 
     if (!hasTerms) {
         return (
-            <div className="p-20 text-center space-y-10 bg-white dark:bg-neutral-950 rounded-[4rem] border border-gray-100 dark:border-white/5 shadow-2xl animate-in zoom-in-95 duration-500">
-                <div className="w-24 h-24 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-2">
-                    <ShieldCheck className="w-12 h-12 text-red-500" />
+            <div className="p-8 sm:p-14 text-center space-y-6 bg-white dark:bg-neutral-950 rounded-3xl border border-gray-100 dark:border-white/5 shadow-2xl animate-in zoom-in-95 duration-300">
+                <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                    <ShieldCheck className="w-8 h-8 text-red-500" />
                 </div>
                 <div className="max-w-md mx-auto">
-                    <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tighter text-gray-900 dark:text-white">Legal Guard Active</h3>
-                    <p className="text-[11px] font-bold text-gray-400 mt-4 uppercase tracking-[0.2em] italic leading-relaxed">
-                        "In Ogbomoso, we keep things professional. You must accept the Professional Terms of Service in your profile before you can list properties."
+                    <h3 className="text-lg sm:text-xl font-bold uppercase tracking-tight text-gray-900 dark:text-white">Legal Guard Active</h3>
+                    <p className="text-xs font-medium text-gray-500 dark:text-neutral-400 mt-2 leading-relaxed">
+                        In Ogbomoso, we keep things professional. You must accept the Professional Terms of Service in your profile before you can list properties.
                     </p>
                 </div>
                 <button 
@@ -536,10 +562,10 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                         const { data: { user } } = await supabase.auth.getUser();
                         if (!user) return;
                         const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id).single();
-                        const target = data?.role === 'landlord' ? '/dashboard/landlord' : '/dashboard/agent';
+                        const target = data?.role?.toLowerCase() === 'landlord' ? '/dashboard/landlord' : '/dashboard/agent';
                         router.push(`${target}?tab=profile`);
                     }}
-                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-6 py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20"
+                    className="bg-black dark:bg-[#BEF264] text-[#BEF264] dark:text-black px-6 py-3.5 rounded-xl font-bold uppercase tracking-wider text-xs hover:scale-105 active:scale-95 transition-all shadow-lg"
                 >
                     Update Official Profile
                 </button>
@@ -549,17 +575,28 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
 
     // ─── STEP 1: Choose Category ────────────────────────────────────────────
     if (step === 1) return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
-            <div className="bg-black p-6 rounded-3xl text-white relative overflow-hidden">
-                <div className="relative z-10">
-                    <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight">Listing Studio</h3>
-                    <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] mt-2">Ogbomoso Master Inventory</p>
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
+            <div className="bg-neutral-900 p-5 sm:p-6 rounded-2xl sm:rounded-3xl text-white relative overflow-hidden">
+                <div className="relative z-10 flex items-center justify-between">
+                    <div>
+                        <h3 className="text-lg sm:text-xl font-bold uppercase tracking-tight">Listing Studio</h3>
+                        <p className="text-gray-400 font-medium text-xs mt-1">Select a category to begin listing</p>
+                    </div>
+                    {onCancel && (
+                        <button 
+                            type="button" 
+                            onClick={onCancel}
+                            className="text-xs font-semibold text-gray-400 hover:text-white transition-colors"
+                        >
+                            Cancel
+                        </button>
+                    )}
                 </div>
-                <div className="absolute top-0 right-0 p-6 opacity-10">
-                    <Building2 className="w-32 h-32" />
+                <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
+                    <Building2 className="w-28 h-28" />
                 </div>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
                 {[
                     { id: 'Hostel', label: 'Hostel', icon: Home, desc: 'Student Rent' },
                     { id: 'Shop', label: 'Shop', icon: Store, desc: 'Commercial' },
@@ -574,13 +611,13 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                             setForm(prev => ({ ...prev, listing_type: getListingType(cat.id as Category) }));
                             setStep(2); 
                         }}
-                        className="p-5 border-[3px] border-gray-50 dark:border-white/10 rounded-3xl text-center hover:border-[#BEF264] dark:hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group relative overflow-hidden bg-white dark:bg-neutral-900"
+                        className="p-4 sm:p-5 border border-gray-200 dark:border-white/10 rounded-2xl text-center hover:border-[#BEF264] dark:hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group relative overflow-hidden bg-white dark:bg-neutral-900 shadow-sm"
                     >
-                        <div className="w-12 h-12 bg-gray-50 dark:bg-neutral-800 dark:text-gray-300 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#BEF264] group-hover:text-black transition-all">
-                            <cat.icon className="w-6 h-6" />
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-gray-50 dark:bg-neutral-800 dark:text-gray-300 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-[#BEF264] group-hover:text-black transition-all">
+                            <cat.icon className="w-5 h-5" />
                         </div>
-                        <p className="font-black text-xl uppercase tracking-tighter group-hover:scale-110 transition-transform text-gray-900 dark:text-white">{cat.label}</p>
-                        <div className="mt-2 text-[8px] font-black uppercase tracking-widest text-gray-400 group-hover:text-[#BEF264]">{cat.desc}</div>
+                        <p className="font-bold text-base sm:text-lg tracking-tight group-hover:scale-105 transition-transform text-gray-900 dark:text-white">{cat.label}</p>
+                        <div className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400 group-hover:text-black dark:group-hover:text-[#BEF264]">{cat.desc}</div>
                     </button>
                 ))}
             </div>
@@ -607,24 +644,29 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
     };
 
     if (step === 2) return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-2xl font-black uppercase tracking-tight text-gray-900">{category} Details</h3>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Select sub-category</p>
+                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white">{category} Type</h3>
+                    <p className="text-xs font-normal text-gray-500 dark:text-neutral-400">Select specific property subtype</p>
                 </div>
-                <button onClick={() => setStep(1)} className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-black transition-all">← Category</button>
+                <button 
+                    onClick={() => setStep(1)} 
+                    className="text-xs font-semibold text-gray-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-all flex items-center gap-1"
+                >
+                    ← Back to Category
+                </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 {subOptions[category].map((type) => (
                     <button key={type.title} onClick={() => { setSubCat(type.title); setStep(3); }}
-                        className="p-6 border-2 border-gray-100 dark:border-white/10 rounded-3xl text-left hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group flex items-center gap-4 bg-white dark:bg-neutral-900">
-                        <div className="w-10 h-10 bg-gray-50 dark:bg-neutral-800 rounded-xl flex items-center justify-center group-hover:bg-[#BEF264] transition-all">
-                            <Building2 className="w-5 h-5 group-hover:text-black dark:text-gray-300" />
+                        className="p-4 sm:p-5 border border-gray-200 dark:border-white/10 rounded-2xl text-left hover:border-[#BEF264] hover:bg-[#BEF264]/5 transition-all group flex items-center gap-3.5 bg-white dark:bg-neutral-900 shadow-sm">
+                        <div className="w-10 h-10 bg-gray-50 dark:bg-neutral-800 rounded-xl flex items-center justify-center group-hover:bg-[#BEF264] transition-all shrink-0">
+                            <Building2 className="w-5 h-5 group-hover:text-black dark:text-gray-300 text-gray-700" />
                         </div>
                         <div>
-                            <p className="font-black text-gray-900 dark:text-white uppercase tracking-tight">{type.title}</p>
-                            <p className="text-[10px] text-gray-500 dark:text-neutral-400 font-bold uppercase tracking-widest">{type.desc}</p>
+                            <p className="font-bold text-sm sm:text-base text-gray-900 dark:text-white">{type.title}</p>
+                            <p className="text-xs text-gray-500 dark:text-neutral-400 font-normal">{type.desc}</p>
                         </div>
                     </button>
                 ))}
@@ -634,179 +676,183 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
 
     // ─── STEP 3: Listing Details ─────────────────────────────────────────────
     if (step === 3) return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
-            <div className="flex items-center gap-4">
-                <button onClick={() => setStep(2)} className="p-2 sm:p-3 bg-gray-50 dark:bg-neutral-900 rounded-2xl text-gray-400 hover:text-black hover:bg-gray-100 dark:hover:bg-neutral-800 transition-all">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+        <div className="space-y-6 sm:space-y-8 pb-12 sm:pb-6 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex items-center gap-3 sm:gap-4 pr-12 sm:pr-14">
+                <button 
+                    type="button"
+                    onClick={() => setStep(2)} 
+                    className="p-2 sm:p-2.5 bg-gray-100 dark:bg-neutral-900 rounded-xl text-gray-500 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-neutral-800 transition-all shrink-0"
+                    aria-label="Back to sub-categories"
+                >
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                 </button>
-                <div>
-                    <h2 className="text-2xl font-black uppercase tracking-tight text-gray-900 dark:text-white">Listing Details</h2>
-                    <p className="text-xs font-bold text-gray-400 dark:text-neutral-500 uppercase tracking-widest">Fill in accurate information</p>
+                <div className="min-w-0">
+                    <h2 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white truncate">Listing Details</h2>
+                    <p className="text-xs font-normal text-gray-500 dark:text-neutral-400 truncate">Fill in accurate information for your listing</p>
                 </div>
             </div>
 
             {error && (
-                <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/20 text-red-600 dark:text-red-400 text-sm font-bold rounded-2xl px-4 py-3">{error}</div>
+                <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/20 text-red-600 dark:text-red-400 text-xs sm:text-sm font-semibold rounded-xl px-4 py-2.5">{error}</div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                 {/* Title */}
-                <div className="space-y-2 md:col-span-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Listing Title *</label>
+                <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Listing Title <span className="text-rose-500">*</span></label>
                     <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })}
-                        placeholder={`e.g. ${subCat} in Under-G`}
-                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        placeholder={`e.g. ${subCat || category} in Under-G`}
+                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] dark:focus:border-[#BEF264] focus:ring-2 focus:ring-[#BEF264]/20 outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                 </div>
 
                 {/* Price */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">PRICE (₦) - ANNUAL / SUBSEQUENT PAYMENT</label>
+                <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Price (₦) - Annual / Subsequent Payment <span className="text-rose-500">*</span></label>
                     <input type="text" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })}
-                        placeholder="350000"
-                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        placeholder="e.g. 350000"
+                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] dark:focus:border-[#BEF264] focus:ring-2 focus:ring-[#BEF264]/20 outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                 </div>
 
                 {/* Available Units */}
-                <div className="space-y-2 p-4 bg-[#BEF264]/10 border-2 border-[#BEF264] rounded-2xl">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] px-2">Available Units *</label>
+                <div className="space-y-1.5 p-3 sm:p-4 bg-[#BEF264]/10 border border-[#BEF264]/40 dark:border-[#BEF264]/30 rounded-xl sm:rounded-2xl">
+                    <label className="text-xs font-bold text-gray-900 dark:text-[#BEF264] px-1">Available Units <span className="text-rose-500">*</span></label>
                     <input type="number" min="1" value={form.available_units} onChange={e => setForm({ ...form, available_units: e.target.value })}
-                        placeholder="e.g. 5"
-                        className="w-full p-4 rounded-xl bg-white dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        placeholder="e.g. 1"
+                        className="w-full px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-semibold text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 transition-all" />
                 </div>
 
                 {/* Additional Fees */}
                 {category !== 'Hotel' && (
                     <>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Agent Fee (₦)</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Agent Fee (₦)</label>
                             <input type="text" value={form.agent_fee} onChange={e => setForm({ ...form, agent_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Agreement Fee (₦)</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Agreement Fee (₦)</label>
                             <input type="text" value={form.agreement_fee} onChange={e => setForm({ ...form, agreement_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Caution Fee (₦)</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Caution Fee (₦)</label>
                             <input type="text" value={form.caution_fee} onChange={e => setForm({ ...form, caution_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Service Charge (₦)</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Service Charge (₦)</label>
                             <input type="text" value={form.service_charge} onChange={e => setForm({ ...form, service_charge: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Inspection Fee (₦)</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Inspection Fee (₦)</label>
                             <input type="text" value={form.inspection_fee} onChange={e => setForm({ ...form, inspection_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Other Fee (₦)</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Other Fee (₦)</label>
                             <input type="text" value={form.other_fee} onChange={e => setForm({ ...form, other_fee: e.target.value })}
                                 placeholder="Optional"
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
-                        <div className="space-y-2 md:col-span-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Other Fee Description</label>
+                        <div className="space-y-1.5 md:col-span-2">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Other Fee Description</label>
                             <input type="text" value={form.other_fee_description} onChange={e => setForm({ ...form, other_fee_description: e.target.value })}
                                 placeholder="e.g. Garbage Disposal (Optional)"
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
-                        <div className="space-y-2 md:col-span-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Total Move-In Cost (₦)</label>
+                        <div className="space-y-1.5 md:col-span-2">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Total Move-In Cost (₦)</label>
                             <input type="text" value={form.total_move_in_cost} onChange={e => setForm({ ...form, total_move_in_cost: e.target.value })}
-                                placeholder="Optional (if different from rent)"
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                placeholder="Optional (if different from annual rent)"
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all" />
                         </div>
                     </>
                 )}
 
                 {/* Description and Availability */}
-                <div className="space-y-2 md:col-span-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Description</label>
+                <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Description</label>
                     <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
                         placeholder={`Tell us about this ${subCat || category}...`}
                         rows={3}
-                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-bold text-gray-900 dark:text-white transition-all resize-none" />
+                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-normal text-sm sm:text-base text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500 transition-all resize-none" />
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Available From</label>
+                <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Available From</label>
                     <input type="date" value={form.available_from} onChange={e => setForm({ ...form, available_from: e.target.value })}
-                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
                 </div>
 
                 {/* Listing Type Toggle (For House and Shop) */}
                 {(category === 'House' || category === 'Shop') && (
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Listing Type</label>
-                        <div className="flex gap-2 p-1 bg-gray-50 dark:bg-neutral-900 rounded-2xl border-2 border-transparent">
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Listing Type</label>
+                        <div className="flex gap-2 p-1 bg-gray-50 dark:bg-neutral-900 rounded-xl sm:rounded-2xl border border-gray-200 dark:border-white/10">
                             {['rent', 'buy'].map((type) => (
                                 <button
                                     key={type}
                                     type="button"
                                     onClick={() => setForm({ ...form, listing_type: type })}
-                                    className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${form.listing_type === type ? 'bg-[#BEF264] text-black shadow-sm' : 'text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:hover:text-neutral-300'}`}
+                                    className={`flex-1 py-2 sm:py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${form.listing_type === type ? 'bg-[#BEF264] text-black shadow-sm font-bold' : 'text-gray-500 dark:text-neutral-400 hover:text-gray-800 dark:hover:text-white'}`}
                                 >
                                     For {type === 'buy' ? 'Sale' : 'Rent'}
                                 </button>
                             ))}
                         </div>
-
                     </div>
                 )}
 
                 {/* Bedrooms, Bathrooms, Toilets & Area Size (not for Land/Shop) */}
                 {category !== 'Land' && category !== 'Shop' && (
                     <>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Bedrooms</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Bedrooms</label>
                             <input type="number" min="1" value={form.bedrooms} onChange={e => setForm({ ...form, bedrooms: e.target.value })}
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Bathrooms</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Bathrooms</label>
                             <input type="number" min="1" value={form.bathrooms} onChange={e => setForm({ ...form, bathrooms: e.target.value })}
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Toilets</label>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Toilets</label>
                             <input type="number" min="1" value={form.toilets} onChange={e => setForm({ ...form, toilets: e.target.value })}
-                                className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                                className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
                         </div>
                     </>
                 )}
 
                 {/* Area Size */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Area Size (SQM)</label>
+                <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Area Size (SQM)</label>
                     <input type="number" min="1" value={form.area_size} onChange={e => setForm({ ...form, area_size: e.target.value })}
-                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
                 </div>
             </div>
 
             {/* Local Intelligence / Land Details */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
                 {category !== 'Land' && (
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Light Score (1-10)</label>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Light Score (1-10)</label>
                         <input type="number" min="1" max="10" value={form.light_score} onChange={e => setForm({ ...form, light_score: Number(e.target.value) })}
-                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                            className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
                     </div>
                 )}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">
+                <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">
                         {category === 'Land' ? 'Land Type' : 'Water Source'}
                     </label>
                     {category === 'Land' ? (
                         <select value={form.water_source} onChange={e => setForm({ ...form, water_source: e.target.value })}
-                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white appearance-none cursor-pointer">
+                            className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white appearance-none cursor-pointer">
                             <option>Dry Land</option>
                             <option>Swampy</option>
                             <option>Level</option>
@@ -814,7 +860,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                         </select>
                     ) : (
                         <select value={form.water_source} onChange={e => setForm({ ...form, water_source: e.target.value })}
-                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white appearance-none cursor-pointer">
+                            className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white appearance-none cursor-pointer">
                             <option>Borehole</option>
                             <option>Well Water</option>
                             <option>Public Supply</option>
@@ -824,10 +870,10 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                 </div>
                 
                 {category === 'Land' && (
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Road Access</label>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Road Access</label>
                         <select value={form.road_access} onChange={e => setForm({ ...form, road_access: e.target.value })}
-                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white appearance-none cursor-pointer">
+                            className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white appearance-none cursor-pointer">
                             <option>Tarred</option>
                             <option>Graded</option>
                             <option>Unimproved</option>
@@ -835,27 +881,27 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     </div>
                 )}
 
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">
+                <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">
                         {category === 'Land' ? 'Proximity to Landmark' : 'Distance to Gate'}
                     </label>
                     <input type="text" value={form.gate_distance} onChange={e => setForm({ ...form, gate_distance: e.target.value })}
                         placeholder={category === 'Land' ? "e.g. 5 mins from LAUTECH Main Gate" : "e.g. ~5 mins walk"}
-                        className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-transparent focus:border-[#BEF264] outline-none font-black text-gray-900 dark:text-white transition-all" />
+                        className="w-full px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 focus:border-[#BEF264] outline-none font-medium text-sm sm:text-base text-gray-900 dark:text-white transition-all" />
                 </div>
             </div>
 
             {/* Features */}
             {category !== 'Land' && (
-                <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Amenities & Features</label>
+                <div className="space-y-2">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Amenities & Features</label>
                     <div className="flex flex-wrap gap-2">
                         {['Constant Power', 'Running Water', 'Security', 'Fenced', 'Tiles', 'Wardrobe', 'Kitchen Cabinet', 'POP Ceiling', 'Balcony', 'Wifi'].map((feat) => (
                             <button
                                 key={feat}
                                 type="button"
                                 onClick={() => toggleFeature(feat)}
-                                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${form.features.includes(feat) ? 'bg-[#BEF264] text-black shadow-sm' : 'bg-gray-50 dark:bg-neutral-900 text-gray-500 hover:bg-gray-100 dark:hover:bg-neutral-800'}`}
+                                className={`px-3 py-1.5 rounded-lg sm:rounded-xl text-xs font-semibold transition-all ${form.features.includes(feat) ? 'bg-[#BEF264] text-black shadow-sm font-bold' : 'bg-gray-100 dark:bg-neutral-900 text-gray-600 dark:text-neutral-400 hover:bg-gray-200 dark:hover:bg-neutral-800'}`}
                             >
                                 {feat}
                             </button>
@@ -865,24 +911,24 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             )}
 
             {/* Media Upload */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Photos (Up to 5)</label>
-                    <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Photos (Up to 5)</label>
+                    <div className="flex flex-col gap-2.5">
                         <input type="file" multiple accept="image/*" className="hidden" ref={fileInputRef} onChange={(e) => {
                             if (e.target.files) handleImageUpload(e.target.files);
                         }} />
                         <button onClick={() => fileInputRef.current?.click()} type="button" disabled={uploadingImages || uploadedImageUrls.length >= 5}
-                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#BEF264] flex items-center justify-center gap-2 text-gray-500 font-bold disabled:opacity-50 transition-all">
-                            {uploadingImages ? <Loader2 className="w-5 h-5 animate-spin" /> : <UploadCloud className="w-5 h-5" />}
+                            className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#BEF264] flex items-center justify-center gap-2 text-gray-600 dark:text-neutral-300 font-medium text-xs sm:text-sm disabled:opacity-50 transition-all">
+                            {uploadingImages ? <Loader2 className="w-4 h-4 animate-spin" /> : <UploadCloud className="w-4 h-4" />}
                             {uploadingImages ? 'Uploading...' : 'Upload Photos'}
                         </button>
                         {uploadedImageUrls.length > 0 && (
                             <div className="flex flex-wrap gap-2">
                                 {uploadedImageUrls.map((url, i) => (
-                                    <div key={i} className="relative w-16 h-16 rounded-xl overflow-hidden group">
+                                    <div key={i} className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden group shadow-sm border border-gray-200 dark:border-white/10">
                                         <img src={url} alt={`upload-${i}`} className="w-full h-full object-cover" />
-                                        <button type="button" onClick={() => removeImage(url)} className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center text-white">
+                                        <button type="button" onClick={() => removeImage(url)} className="absolute inset-0 bg-black/60 hidden group-hover:flex items-center justify-center text-white transition-opacity">
                                             <X className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -892,20 +938,20 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
                     </div>
                 </div>
 
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Walkthrough Video (Max 25MB)</label>
-                    <div className="flex flex-col gap-3">
+                <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Walkthrough Video (Max 25MB)</label>
+                    <div className="flex flex-col gap-2.5">
                         <input type="file" accept="video/*" className="hidden" id="videoUpload" onChange={(e) => {
                             if (e.target.files?.[0]) handleVideoUpload(e.target.files[0]);
                         }} />
                         <button onClick={() => document.getElementById('videoUpload')?.click()} type="button" disabled={uploadingVideo}
-                            className="w-full p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#BEF264] flex items-center justify-center gap-2 text-gray-500 font-bold disabled:opacity-50 transition-all">
-                            {uploadingVideo ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+                            className="w-full p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-[#BEF264] flex items-center justify-center gap-2 text-gray-600 dark:text-neutral-300 font-medium text-xs sm:text-sm disabled:opacity-50 transition-all">
+                            {uploadingVideo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
                             {uploadingVideo ? 'Uploading...' : form.video_url ? 'Replace Video' : 'Upload Video'}
                         </button>
                         {form.video_url && (
-                            <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1">
-                                <CheckCircle2 className="w-3 h-3" /> Video Uploaded
+                            <div className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider flex items-center gap-1 px-1">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> Video Uploaded
                             </div>
                         )}
                     </div>
@@ -913,16 +959,16 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             </div>
 
             {/* Location & Interactive Geolocation Pin */}
-            <div className="space-y-4">
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-neutral-500 px-2">Location Zone</label>
+            <div className="space-y-3">
+                <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-gray-700 dark:text-neutral-300 px-1">Location Zone</label>
                     <LocationCombobox
                         value={form.location}
                         onChange={(loc) => setForm({ ...form, location: loc })}
                     />
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-1">
                     <PropertyLocationPicker
                         initialLng={form.longitude}
                         initialLat={form.latitude}
@@ -940,7 +986,7 @@ export function ListingStudio({ onComplete, editId: propEditId }: { onComplete: 
             </div>
 
             <button onClick={submitListing} disabled={loading || uploadingImages}
-                className="w-full flex items-center justify-center gap-2 bg-[#BEF264] text-black font-black py-6 rounded-[1.8rem] uppercase tracking-widest text-sm shadow-xl shadow-[#BEF264]/10 hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all">
+                className="w-full flex items-center justify-center gap-2 bg-[#BEF264] text-black font-bold py-4 sm:py-5 rounded-xl sm:rounded-2xl uppercase tracking-wider text-xs sm:text-sm shadow-lg shadow-[#BEF264]/15 hover:shadow-[#BEF264]/25 hover:scale-[1.01] active:scale-95 disabled:opacity-50 transition-all">
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : editId ? '💾 Save Changes' : '🚀 Publish Listing Now'}
             </button>
         </div>

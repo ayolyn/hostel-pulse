@@ -452,10 +452,15 @@ function DashboardContent() {
                     
                     {activeTab === 'listings' && (
                         isApproved ? (
-                            <div className="bg-white p-6 sm:p-6 rounded-3xl border border-gray-100 shadow-sm">
+                            <div className="bg-white dark:bg-neutral-900 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
                                 { (isAddingNew || properties.length === 0 || editId) ? (
                                     <ListingStudio 
                                         editId={editId}
+                                        hasAcceptedTerms={true}
+                                        onCancel={() => {
+                                            setIsAddingNew(false);
+                                            setEditId(null);
+                                        }}
                                         onComplete={() => {
                                             setIsAddingNew(false);
                                             setEditId(null);

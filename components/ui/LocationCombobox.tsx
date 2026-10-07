@@ -86,8 +86,8 @@ export function LocationCombobox({ value, onChange, placeholder = 'Select a loca
             <button
                 type="button"
                 onClick={() => setIsOpen(prev => !prev)}
-                className={`w-full p-5 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 transition-all outline-none font-black text-left flex items-center justify-between gap-3
-                    ${isOpen ? 'border-[#BEF264]' : 'border-transparent hover:border-gray-200 dark:hover:border-white/10'}
+                className={`w-full px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border transition-all outline-none font-medium text-sm sm:text-base text-left flex items-center justify-between gap-3
+                    ${isOpen ? 'border-[#BEF264] ring-2 ring-[#BEF264]/20' : 'border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20'}
                     ${isPlaceholder ? 'text-gray-400 dark:text-neutral-500' : 'text-gray-900 dark:text-white'}
                 `}
             >
@@ -111,7 +111,7 @@ export function LocationCombobox({ value, onChange, placeholder = 'Select a loca
                                 value={query}
                                 onChange={e => setQuery(e.target.value)}
                                 placeholder="Type to search areas..."
-                                className="flex-1 bg-transparent outline-none text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-neutral-500"
+                                className="flex-1 bg-transparent outline-none text-xs sm:text-sm font-medium text-gray-900 dark:text-white placeholder:font-normal placeholder:text-gray-400 dark:placeholder:text-neutral-500"
                             />
                         </div>
                     </div>
@@ -119,11 +119,11 @@ export function LocationCombobox({ value, onChange, placeholder = 'Select a loca
                     {/* List */}
                     <ul className="max-h-60 overflow-y-auto py-2">
                         {loading ? (
-                            <li className="px-4 py-3 text-center text-sm text-gray-400 font-bold animate-pulse">
+                            <li className="px-4 py-3 text-center text-xs text-gray-400 font-medium animate-pulse">
                                 Loading areas...
                             </li>
                         ) : filtered.length === 0 ? (
-                            <li className="px-4 py-3 text-center text-sm text-gray-400 font-bold">
+                            <li className="px-4 py-3 text-center text-xs text-gray-400 font-medium">
                                 No areas found for "{query}"
                             </li>
                         ) : (
@@ -132,9 +132,9 @@ export function LocationCombobox({ value, onChange, placeholder = 'Select a loca
                                     <button
                                         type="button"
                                         onClick={() => handleSelect(loc)}
-                                        className={`w-full text-left px-4 py-2.5 text-sm font-bold transition-colors flex items-center gap-2
+                                        className={`w-full text-left px-4 py-2.5 text-xs sm:text-sm font-medium transition-colors flex items-center gap-2
                                             ${value === loc
-                                                ? 'bg-[#BEF264]/10 text-black dark:text-white'
+                                                ? 'bg-[#BEF264]/10 text-black dark:text-white font-semibold'
                                                 : 'text-gray-700 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-800'
                                             }`}
                                     >
@@ -150,7 +150,7 @@ export function LocationCombobox({ value, onChange, placeholder = 'Select a loca
                             <button
                                 type="button"
                                 onClick={() => handleSelect('__other__')}
-                                className="w-full text-left px-4 py-2.5 text-sm font-black text-[#BEF264] dark:text-[#BEF264] hover:bg-[#BEF264]/10 transition-colors flex items-center gap-2"
+                                className="w-full text-left px-4 py-2.5 text-xs sm:text-sm font-semibold text-emerald-600 dark:text-[#BEF264] hover:bg-[#BEF264]/10 transition-colors flex items-center gap-2"
                             >
                                 <Plus className="w-4 h-4" />
                                 Other — type a custom area
@@ -170,12 +170,12 @@ export function LocationCombobox({ value, onChange, placeholder = 'Select a loca
                         onKeyDown={e => e.key === 'Enter' && handleCustomSubmit()}
                         placeholder="Type your area name..."
                         autoFocus
-                        className="flex-1 p-4 rounded-2xl bg-gray-50 dark:bg-neutral-900 border-2 border-[#BEF264] outline-none font-black text-gray-900 dark:text-white"
+                        className="flex-1 px-4 py-2.5 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-neutral-900 border border-[#BEF264] outline-none font-medium text-sm text-gray-900 dark:text-white placeholder:font-normal"
                     />
                     <button
                         type="button"
                         onClick={handleCustomSubmit}
-                        className="px-5 py-2 bg-[#BEF264] text-black font-black rounded-2xl text-xs uppercase tracking-widest hover:bg-[#a6d456] transition-all"
+                        className="px-4 py-2 bg-[#BEF264] text-black font-bold rounded-xl sm:rounded-2xl text-xs uppercase tracking-wider hover:bg-[#a6d456] transition-all"
                     >
                         Set
                     </button>
