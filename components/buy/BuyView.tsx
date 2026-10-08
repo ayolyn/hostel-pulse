@@ -90,9 +90,9 @@ export function BuyView({ isEmbedded = false }: { isEmbedded?: boolean }) {
                     </button>
                 </div>
             )}
-            <div className="mb-12">
-                <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Properties for Sale</h1>
-                <p className="text-gray-500 font-medium">
+            <div className="mb-8 sm:mb-12">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-1">Properties for Sale</h1>
+                <p className="text-gray-500 dark:text-gray-400 font-medium text-xs sm:text-sm">
                     {loading ? 'Refreshing listings...' : `${properties.length} listing${properties.length !== 1 ? 's' : ''} available in Ogbomoso`}
                 </p>
             </div>
@@ -101,14 +101,14 @@ export function BuyView({ isEmbedded = false }: { isEmbedded?: boolean }) {
 
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-32">
-                    <Loader2 className="w-12 h-12 text-[#BEF264] animate-spin" />
+                    <Loader2 className="w-10 h-10 text-[#BEF264] animate-spin" />
                     <p className="mt-4 text-gray-400 font-bold uppercase tracking-widest text-[10px]">Updating Listings...</p>
                 </div>
             ) : properties.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-32 px-4 text-center bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
-                    <Building2 className="w-16 h-16 text-gray-200 mb-4" />
-                    <h3 className="text-xl font-black text-gray-400 uppercase tracking-tight">No matching results</h3>
-                    <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search area.</p>
+                <div className="flex flex-col items-center justify-center py-24 sm:py-32 px-4 text-center bg-white dark:bg-neutral-900 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
+                    <Building2 className="w-12 h-12 sm:w-16 sm:h-16 text-gray-200 dark:text-neutral-800 mb-4" />
+                    <h3 className="text-lg sm:text-xl font-black text-gray-400 dark:text-neutral-600 uppercase tracking-tight">No matching results</h3>
+                    <p className="text-gray-400 dark:text-neutral-600 text-xs sm:text-sm mt-2">Try adjusting your filters or search area.</p>
                 </div>
             ) : view === 'map' ? (
                 <div className="mt-8 pb-20 max-w-[1400px] mx-auto">

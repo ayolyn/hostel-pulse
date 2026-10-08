@@ -58,7 +58,7 @@ export function ReviewModal({ sellerId, itemId, buyerName, onClose, onSuccess }:
                 {!submitted ? (
                     <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="space-y-2">
-                            <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Rate the Seller</h3>
+                            <h3 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Rate the Seller</h3>
                             <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Help others by sharing your experience</p>
                         </div>
 
@@ -99,7 +99,7 @@ export function ReviewModal({ sellerId, itemId, buyerName, onClose, onSuccess }:
                         <div className="w-20 h-20 bg-[#BEF264]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                             <CheckCircle className="w-10 h-10 text-[#BEF264]" />
                         </div>
-                        <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Review Submitted!</h3>
+                        <h3 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Review Submitted!</h3>
                         <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest leading-relaxed">
                             Thank you for helping keep the Ogbomoso Market safe and trusted.
                         </p>

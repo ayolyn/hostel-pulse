@@ -28,7 +28,7 @@ interface ConvRoom {
     context_type: string | null;
     last_message_at: string | null;
     // resolved
-    otherUser: { id: string; full_name: string; avatar_url: string | null; phone: string | null } | null;
+    otherUser: { id: string; full_name: string; avatar_url: string | null; phone: string | null; logo_url?: string | null } | null;
     property: { id: string; title: string; price: number; images: string[] } | null;
     last_message: string | null;
     unread_count?: number;
@@ -587,8 +587,8 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
                                     <ChevronLeft className="w-5 h-5 text-gray-600" />
                                 </button>
                                 <div className="w-10 h-10 bg-gray-100 rounded-full overflow-hidden border border-gray-200 shrink-0">
-                                    {activeRoom.otherUser?.avatar_url ? (
-                                        <img src={activeRoom.otherUser.avatar_url} alt="" className="w-full h-full object-cover" />
+                                    {(activeRoom.otherUser?.avatar_url || activeRoom.otherUser?.logo_url) ? (
+                                        <img src={activeRoom.otherUser.avatar_url || activeRoom.otherUser.logo_url} alt="" className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center font-black text-gray-500 text-sm">
                                             {activeRoom.otherUser?.full_name?.charAt(0) || '?'}
@@ -613,25 +613,25 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="flex gap-2">
+                            <div className="flex items-center gap-1.5 sm:gap-2">
                                 {activeRoom.property && (
                                     <Link
                                         href={`/property/${activeRoom.property.id}`}
                                         target="_blank"
-                                        className="hidden sm:flex items-center gap-2 bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 text-gray-700 dark:text-gray-300 font-black px-4 py-2.5 rounded-xl uppercase tracking-widest text-[9px] transition-all"
+                                        className="flex items-center gap-1.5 sm:gap-2 bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 text-gray-700 dark:text-gray-300 font-black px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl uppercase tracking-widest text-[8px] sm:text-[9px] transition-all shrink-0"
                                     >
-                                        <Building2 className="w-4 h-4" />
-                                        View Property
+                                        <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                        <span className="hidden md:inline">View Property</span>
                                     </Link>
                                 )}
-                                {activeRoom.property && userRole !== 'buyer' && userRole !== 'student' && (
+                                {activeRoom.property && userRole?.toLowerCase() !== 'buyer' && userRole?.toLowerCase() !== 'student' && (
                                     <button
                                         onClick={sendInspectionLink}
                                         disabled={sending}
-                                        className="hidden sm:flex items-center gap-2 bg-[#BEF264] hover:bg-[#a6d456] text-black font-black px-4 py-2.5 rounded-xl uppercase tracking-widest text-[9px] transition-all shadow-md shadow-[#BEF264]/20 active:scale-95 disabled:opacity-50"
+                                        className="flex items-center gap-1.5 sm:gap-2 bg-[#BEF264] hover:bg-[#a6d456] text-black font-black px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl uppercase tracking-widest text-[8px] sm:text-[9px] transition-all shadow-md shadow-[#BEF264]/20 active:scale-95 disabled:opacity-50 shrink-0"
                                     >
-                                        {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Calendar className="w-4 h-4" />}
-                                        Send Inspection Link
+                                        {sending ? <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" /> : <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+                                        <span>Inspection Link</span>
                                     </button>
                                 )}
                             </div>

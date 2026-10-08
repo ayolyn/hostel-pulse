@@ -401,11 +401,13 @@ export async function processCustomOffer(offerId: string, amount: number, seller
     const db = getAdminClient();
 
     // 0. Verify offer has not expired
+    let offerPayload: any = null;
     const { data: msg } = await db.from('messages').select('content').eq('id', offerId).single();
     if (msg && msg.content) {
         const payloadStr = msg.content.replace('[CUSTOM_OFFER_PAYLOAD]:::', '').replace('[OFFER_PAID]:::', '');
         try {
             const payload = JSON.parse(payloadStr);
+            offerPayload = payload;
             if (payload.expiresAt) {
                 const expires = new Date(payload.expiresAt).getTime();
                 if (Date.now() > expires) {
@@ -444,17 +446,33 @@ export async function processCustomOffer(offerId: string, amount: number, seller
         return { error: 'Failed to deduct funds' };
     }
 
-    // 3. Insert into escrow_transactions (omitting property_id and listing_id per instructions)
-    const { error: insertErr } = await db
+    // 3. Insert into escrow_transactions
+    const offerDesc = offerPayload?.description ? `Custom Offer: ${offerPayload.description}` : 'Custom Negotiation Offer';
+    const isMarketOffer = Boolean(offerPayload?.itemId && offerPayload.itemId !== sellerId);
+    const offerType = isMarketOffer ? 'Market Offer' : 'Custom Offer';
+
+    const escrowRecord: any = {
+        payer_id: buyerId,
+        payee_id: sellerId,
+        amount: amount,
+        status: 'Locked',
+        type: offerType,
+        item_name: offerDesc
+    };
+
+    if (isMarketOffer) {
+        escrowRecord.listing_id = offerPayload.itemId;
+    }
+
+    let { error: insertErr } = await db
         .from('escrow_transactions')
-        .insert({
-            payer_id: buyerId,
-            payee_id: sellerId,
-            amount: amount,
-            status: 'Locked',
-            type: 'Roommate Offer',
-            item_name: 'Custom Roommate Agreement'
-        });
+        .insert(escrowRecord);
+
+    if (insertErr && (insertErr.message?.includes('listing_id') || insertErr.message?.toLowerCase().includes('schema cache'))) {
+        delete escrowRecord.listing_id;
+        const retry = await db.from('escrow_transactions').insert(escrowRecord);
+        insertErr = retry.error;
+    }
 
     if (insertErr) {
         console.error("Failed to insert into escrow:", insertErr);
@@ -463,11 +481,15 @@ export async function processCustomOffer(offerId: string, amount: number, seller
         return { error: 'Failed to secure funds in escrow. ' + insertErr.message };
     }
 
+    if (isMarketOffer && offerPayload?.itemId) {
+        await db.from('market_listings').update({ status: 'pending' }).eq('id', offerPayload.itemId);
+    }
+
     // 4. Send Notification to Seller
     await createNotification(
         sellerId,
         'Offer Accepted & Paid',
-        `A custom offer of ₦${amount.toLocaleString()} has been paid and locked in Escrow.`,
+        `A custom offer of ₦${amount.toLocaleString()} for "${offerPayload?.description || 'Custom Offer'}" has been paid and locked in Escrow.`,
         '/dashboard/student?tab=wallet',
         'new_sale'
     );

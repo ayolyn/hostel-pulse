@@ -177,14 +177,14 @@ Note: ${notes}
                         >
                             <div className="flex justify-between items-center mb-6">
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-900">Request Inspection</h3>
-                                    <p className="text-sm text-gray-500 line-clamp-1">for {propertyName}</p>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">Request Inspection</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">for {propertyName}</p>
                                 </div>
                                 <button
                                     onClick={onClose}
-                                    className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors pointer-events-auto"
+                                    className="p-2 bg-gray-100 dark:bg-neutral-800 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors pointer-events-auto"
                                 >
-                                    <X className="w-5 h-5 text-gray-500" />
+                                    <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                                 </button>
                             </div>
 
@@ -192,21 +192,21 @@ Note: ${notes}
                             <div className="py-10 text-center space-y-4">
                                 <CheckCircle2 className="w-16 h-16 text-[#BEF264] mx-auto" />
                                 <div>
-                                    <h4 className="text-xl font-bold text-gray-900">Request Sent!</h4>
-                                    <p className="text-gray-500 mt-1">Check your dashboard for updates. The agent will contact you.</p>
+                                    <h4 className="text-xl font-bold text-gray-900 dark:text-white">Request Sent!</h4>
+                                    <p className="text-gray-500 dark:text-gray-400 mt-1">Check your dashboard for updates. The agent will contact you.</p>
                                 </div>
                             </div>
                         ) : (
                             <form className="space-y-4" onSubmit={handleSubmit}>
                                 {error && (
-                                    <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl border border-red-200 font-bold">
+                                    <div className="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-sm p-3 rounded-xl border border-red-200 dark:border-red-500/20 font-bold">
                                         {error}
                                     </div>
                                 )}
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Preferred Date *</label>
+                                        <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Preferred Date *</label>
                                         <div className="relative">
                                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                             <input
@@ -215,18 +215,18 @@ Note: ${notes}
                                                 min={new Date().toISOString().split('T')[0]}
                                                 value={date}
                                                 onChange={(e) => setDate(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all text-sm"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Time Slot *</label>
+                                        <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Time Slot *</label>
                                         <div className="relative">
                                             <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                             <select
                                                 value={time}
                                                 onChange={(e) => setTime(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all text-sm"
                                             >
                                                 {generateTimeSlots().map((slot) => (
                                                     <option key={slot} value={slot}>{slot}</option>
@@ -236,9 +236,9 @@ Note: ${notes}
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Alt Date (Optional)</label>
+                                        <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Alt Date (Optional)</label>
                                         <div className="relative">
                                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                             <input
@@ -246,18 +246,18 @@ Note: ${notes}
                                                 min={new Date().toISOString().split('T')[0]}
                                                 value={altDate}
                                                 onChange={(e) => setAltDate(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all text-sm"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Alt Time</label>
+                                        <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Alt Time</label>
                                         <div className="relative">
                                             <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                             <select
                                                 value={altTime}
                                                 onChange={(e) => setAltTime(e.target.value)}
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all text-sm"
                                             >
                                                 <option value="">Any time</option>
                                                 {generateTimeSlots().map((slot) => (
@@ -268,9 +268,9 @@ Note: ${notes}
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">Phone Number *</label>
+                                        <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number *</label>
                                         <div className="relative">
                                             <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                             <input
@@ -279,12 +279,12 @@ Note: ${notes}
                                                 value={phone}
                                                 onChange={(e) => setPhone(e.target.value)}
                                                 placeholder="080..."
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all text-sm"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-gray-700">WhatsApp (Optional)</label>
+                                        <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">WhatsApp (Optional)</label>
                                         <div className="relative">
                                             <MessageSquare className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                             <input
@@ -292,20 +292,20 @@ Note: ${notes}
                                                 value={whatsapp}
                                                 onChange={(e) => setWhatsapp(e.target.value)}
                                                 placeholder="080..."
-                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all bg-white"
+                                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all text-sm"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Message (Optional)</label>
+                                    <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">Message (Optional)</label>
                                     <textarea
                                         rows={2}
                                         value={notes}
                                         onChange={(e) => setNotes(e.target.value)}
                                         placeholder="Any specific instructions for the agent?"
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 dark:bg-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all resize-none bg-white"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-neutral-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#BEF264] transition-all resize-none text-sm"
                                     />
                                 </div>
 

@@ -294,7 +294,7 @@ export default function PropertyClientActions({
                     
                     <div className="space-y-3 mb-4">
                         <div className="flex justify-between text-sm">
-                            <span className="text-gray-600 font-medium">Annual Rent</span>
+                            <span className="text-gray-600 font-medium">{listingType === 'buy' ? 'Purchase Price' : 'Annual Rent'}</span>
                             <span className="font-bold text-gray-900">₦{Number(annualRent || 0).toLocaleString()}</span>
                         </div>
                         {!(Number(agentFee) > 0 || Number(agreementFee) > 0 || Number(cautionFee) > 0 || Number(inspectionFee) > 0 || Number(serviceCharge) > 0 || Number(otherFees) > 0) && (
@@ -304,13 +304,13 @@ export default function PropertyClientActions({
                         )}
                         {Number(agentFee) > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600 font-medium">Agent Fee</span>
+                                <span className="text-gray-600 font-medium">{listingType === 'buy' ? 'Agency / Brokerage Fee' : 'Agent Fee'}</span>
                                 <span className="font-bold text-gray-900">₦{Number(agentFee).toLocaleString()}</span>
                             </div>
                         )}
                         {Number(agreementFee) > 0 && (
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600 font-medium">Agreement / Legal</span>
+                                <span className="text-gray-600 font-medium">{listingType === 'buy' ? 'Deed / Legal Conveyance' : 'Agreement / Legal'}</span>
                                 <span className="font-bold text-gray-900">₦{Number(agreementFee).toLocaleString()}</span>
                             </div>
                         )}
@@ -341,7 +341,7 @@ export default function PropertyClientActions({
                     </div>
                     
                     <div className="bg-neutral-50 p-4 rounded-xl border border-neutral-100 flex items-center justify-between">
-                        <span className="font-black text-[10px] uppercase tracking-widest text-gray-500">Total Move-in Cost</span>
+                        <span className="font-black text-[10px] uppercase tracking-widest text-gray-500">{listingType === 'buy' ? 'Total Purchase Cost' : 'Total Move-in Cost'}</span>
                         <span className="text-xl font-black text-[#BEF264] drop-shadow-sm bg-black px-3 py-1 rounded-lg">₦{Number(totalMoveInCost || annualRent).toLocaleString()}</span>
                     </div>
                 </div>
@@ -351,11 +351,8 @@ export default function PropertyClientActions({
                     <div className="mb-6">
                         <button
                             onClick={() => handleProtectedAction(() => {
-                                toast.success('Redirecting to secure payment...', { icon: '🔒' });
-                                const dashboardPath = role === 'non_student' ? '/dashboard/non-student' : 
-                                                      role ? `/dashboard/${role.toLowerCase()}` : 
-                                                      '/dashboard/student';
-                                router.push(`${dashboardPath}?tab=wallet`);
+                                toast.success('Redirecting to secure checkout...', { icon: '🔒' });
+                                router.push(`/book/${propertyId}`);
                             })}
                             disabled={!isActive}
                             className={`w-full font-black uppercase tracking-[0.1em] py-5 rounded-2xl transition-all shadow-lg text-sm flex items-center justify-center gap-2 border-2 ${isActive ? 'bg-[#BEF264] text-black hover:bg-[#a5d953] active:scale-[0.98] border-transparent hover:border-black/5 shadow-[#BEF264]/20' : 'bg-gray-200 text-gray-400 cursor-not-allowed border-transparent'}`}

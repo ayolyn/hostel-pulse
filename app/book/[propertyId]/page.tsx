@@ -66,6 +66,7 @@ export default async function BookPropertyPage({ params }: { params: { propertyI
                     protectionFee={protectionFee}
                     totalAmount={totalAmount}
                     studentId={user.id}
+                    listingType={property.listing_type || 'rent'}
                 />
             </main>
         </div>

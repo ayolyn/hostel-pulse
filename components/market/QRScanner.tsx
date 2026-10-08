@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { Camera, X, ShieldCheck, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { createClient } from '@/lib/supabase/client';
+import { releaseEscrowFunds } from '@/app/actions/escrow';
 
 interface QRScannerProps {
   onSuccess: (transactionId: string) => void;
@@ -14,7 +14,6 @@ interface QRScannerProps {
 export function QRScanner({ onSuccess, onClose }: QRScannerProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const supabase = createClient();
 
   useEffect(() => {
     const scanner = new Html5QrcodeScanner(
@@ -34,14 +33,11 @@ export function QRScanner({ onSuccess, onClose }: QRScannerProps) {
             throw new Error("Invalid QR Code. Please scan the Seller's verification code.");
         }
 
-        // Trigger Escrow Release RPC or Update
-        const { error: updateError } = await supabase
-            .from('escrow_transactions')
-            .update({ status: 'Released' })
-            .eq('id', decodedText)
-            .eq('status', 'Locked');
-
-        if (updateError) throw updateError;
+        // Trigger Escrow Release Server Action (updates escrow and credits seller wallet)
+        const res = await releaseEscrowFunds(decodedText);
+        if (res?.error) {
+            throw new Error(res.error);
+        }
 
         scanner.clear();
         onSuccess(decodedText);
@@ -61,7 +57,7 @@ export function QRScanner({ onSuccess, onClose }: QRScannerProps) {
     return () => {
       scanner.clear().catch(error => console.error("Failed to clear scanner", error));
     };
-  }, [onSuccess, supabase, loading]);
+  }, [onSuccess, loading]);
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">

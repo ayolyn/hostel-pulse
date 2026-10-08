@@ -121,7 +121,7 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
             {/* Header */}
             <div className="p-5 border-b border-neutral-100 dark:border-white/5 flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Sell Something</h2>
+                    <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Sell Something</h2>
                     <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest mt-1">Step {step} of 3 • Marketplace Posting</p>
                 </div>
                 <button onClick={onClose} className="p-2 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
@@ -188,7 +188,7 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                                 />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                                 <div>
                                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 block ml-1">Price (₦)</label>
                                     <input 
@@ -235,6 +235,16 @@ export function PostMarketItem({ onClose, onSuccess }: PostMarketItemProps) {
                                     {CAMPUS_ZONES.map(z => <option key={z}>{z}</option>)}
                                     <option>Other</option>
                                 </select>
+                                {formData.location === 'Other' && (
+                                    <input 
+                                        type="text" 
+                                        required
+                                        placeholder="Specify pickup location or area..."
+                                        className="w-full mt-2 px-5 py-3 bg-gray-50 dark:bg-neutral-800 rounded-2xl outline-none focus:ring-2 focus:ring-[#BEF264] transition-all font-medium text-sm"
+                                        value={formData.custom_location}
+                                        onChange={(e) => setFormData({...formData, custom_location: e.target.value})}
+                                    />
+                                )}
                             </div>
 
                             <div className="mt-4 p-6 border-2 border-dashed border-gray-100 dark:border-white/5 rounded-2xl flex flex-col items-center bg-gray-50/50 dark:bg-neutral-800/50">

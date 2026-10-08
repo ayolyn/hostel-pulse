@@ -168,10 +168,31 @@ export default function InspectionsTab({ userId }: { userId: string }) {
         
         // Handle Refunds for Paid (Confirmed) cancellations
         if (newStatus === 'Cancelled' && item?.status === 'Confirmed') {
-            const { error: refundError } = await supabase.rpc('increment_wallet_balance', {
-                payee_id_param: item.requester_id,
-                amount_param: item.inspection_fee ?? 2000
+            const refundAmount = item.inspection_fee ?? 2000;
+            let refundError: any = null;
+            const { error: rpc1 } = await supabase.rpc('increment_wallet_balance', {
+                user_id_param: item.requester_id,
+                amount_param: refundAmount
             });
+            if (rpc1) {
+                const { error: rpc2 } = await supabase.rpc('increment_wallet_balance', {
+                    payee_id_param: item.requester_id,
+                    amount_param: refundAmount
+                });
+                if (rpc2) {
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('wallet_balance')
+                        .eq('id', item.requester_id)
+                        .single();
+                    const newBal = Number(profile?.wallet_balance || 0) + refundAmount;
+                    const { error: updateErr } = await supabase
+                        .from('profiles')
+                        .update({ wallet_balance: newBal })
+                        .eq('id', item.requester_id);
+                    refundError = updateErr;
+                }
+            }
             if (refundError) {
                 toast.error('Failed to process refund. Cancellation aborted.');
                 return;
@@ -243,7 +264,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
 
     return (
         <div className="space-y-8 pb-32">
-            <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
                 <ShieldCheck className="w-6 h-6 text-[#BEF264]" />
                 Verification Queue
             </h2>
@@ -266,7 +287,7 @@ export default function InspectionsTab({ userId }: { userId: string }) {
                                         <User className="w-8 h-8" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">{item.requester?.full_name || 'Anonymous Student'}</h3>
+                                        <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">{item.requester?.full_name || 'Anonymous Student'}</h3>
                                         <p className="text-[10px] font-black uppercase tracking-widest text-[#BEF264] mt-1">
                                             {item.requester?.level || '—'} {item.requester?.department || '—'}
                                         </p>

@@ -62,11 +62,33 @@ export default function PayInspectionModal({
                 return;
             }
 
-            // Deduct full amount from wallet
-            const { error: walletError } = await supabase.rpc('increment_wallet_balance', {
-                payee_id_param: user.id,
+            // Deduct full amount from wallet with resilient fallback
+            let { error: walletError } = await supabase.rpc('increment_wallet_balance', {
+                user_id_param: user.id,
                 amount_param: -TOTAL_FEE
             });
+
+            if (walletError) {
+                const { error: rpc2 } = await supabase.rpc('increment_wallet_balance', {
+                    payee_id_param: user.id,
+                    amount_param: -TOTAL_FEE
+                });
+                if (rpc2) {
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('wallet_balance')
+                        .eq('id', user.id)
+                        .single();
+                    const newBal = Number(profile?.wallet_balance || 0) - TOTAL_FEE;
+                    const { error: updateErr } = await supabase
+                        .from('profiles')
+                        .update({ wallet_balance: newBal })
+                        .eq('id', user.id);
+                    walletError = updateErr;
+                } else {
+                    walletError = null;
+                }
+            }
 
             if (walletError) throw walletError;
 
@@ -256,7 +278,7 @@ export default function PayInspectionModal({
                                 </div>
                                 <div className="flex justify-between items-center pt-1">
                                     <span className="font-bold text-gray-600 dark:text-gray-300">Total Fee</span>
-                                    <span className="text-2xl font-black text-emerald-500">₦{TOTAL_FEE.toLocaleString()}</span>
+                                    <span className="text-xl sm:text-2xl font-black text-emerald-500">₦{TOTAL_FEE.toLocaleString()}</span>
                                 </div>
                             </div>
 

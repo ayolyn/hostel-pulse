@@ -57,57 +57,57 @@ const CustomOfferCard = ({ msg, isMine, receiverName, payingOffer, handleOfferPa
 
     return (
         <div className={`flex ${isMine ? "justify-end" : "justify-start"} my-1 w-full`}>
-            <div className={`bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-white/10 text-gray-900 dark:text-white p-1.5 rounded-xl max-w-[200px] shadow-sm flex flex-col relative overflow-hidden ${isExpired ? 'opacity-70 grayscale' : ''}`}>
+            <div className={`bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-white/10 text-gray-900 dark:text-white p-3 rounded-2xl w-full max-w-[260px] sm:max-w-[280px] shadow-sm flex flex-col relative overflow-hidden ${isExpired ? 'opacity-70 grayscale' : ''}`}>
                 <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#BEF264] to-[#0D9488]" />
-                <div className="flex items-center gap-1.5 mb-1.5 mt-0.5">
-                    <div className="w-5 h-5 bg-[#BEF264]/10 rounded flex items-center justify-center text-[#BEF264] shrink-0">
-                        <Tag className="w-3 h-3" />
+                <div className="flex items-center gap-2 mb-2 mt-0.5">
+                    <div className="w-6 h-6 bg-[#BEF264]/10 rounded-lg flex items-center justify-center text-[#BEF264] shrink-0">
+                        <Tag className="w-3.5 h-3.5" />
                     </div>
                     <div className="min-w-0">
-                        <h4 className="text-[8px] font-black uppercase tracking-widest leading-none truncate">{isMine ? 'You' : receiverName.split(' ')[0]} sent offer</h4>
-                        <p className="text-[7px] text-gray-500 font-bold uppercase tracking-widest truncate mt-0.5">{payload.description}</p>
+                        <h4 className="text-[9px] font-black uppercase tracking-widest leading-none truncate">{isMine ? 'You' : receiverName.split(' ')[0]} sent offer</h4>
+                        <p className="text-[8px] text-gray-500 font-bold uppercase tracking-widest truncate mt-0.5">{payload.description || 'Custom Offer'}</p>
                     </div>
                 </div>
-                <div className="bg-gray-50 dark:bg-white/5 p-1.5 rounded mb-1.5 flex flex-col gap-0.5 border border-gray-100 dark:border-white/5">
+                <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-xl mb-2 flex flex-col gap-1 border border-gray-100 dark:border-white/5">
                     <div className="flex justify-between items-center">
-                        <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">Base</span>
-                        <span className="text-[8px] font-black text-gray-600 dark:text-gray-300">₦{Number(payload.price).toLocaleString()}</span>
+                        <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">Base</span>
+                        <span className="text-[9px] font-black text-gray-600 dark:text-gray-300">₦{Number(payload.price).toLocaleString()}</span>
                     </div>
                     {payload.escrowFee !== undefined && (
                         <div className="flex justify-between items-center">
-                            <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">Fee</span>
-                            <span className="text-[8px] font-black text-gray-600 dark:text-gray-300">₦{Number(payload.escrowFee).toLocaleString()}</span>
+                            <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">Fee</span>
+                            <span className="text-[9px] font-black text-gray-600 dark:text-gray-300">₦{Number(payload.escrowFee).toLocaleString()}</span>
                         </div>
                     )}
                     <div className="h-[1px] w-full bg-neutral-200 dark:bg-white/10 my-0.5" />
                     <div className="flex justify-between items-center">
-                        <span className="text-[7px] font-black uppercase tracking-widest text-gray-400">Total</span>
-                        <span className="text-[10px] font-black">₦{Number(payload.totalAmount || payload.price).toLocaleString()}</span>
+                        <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">Total</span>
+                        <span className="text-[11px] font-black">₦{Number(payload.totalAmount || payload.price).toLocaleString()}</span>
                     </div>
                 </div>
                 
                 {isOfferPaid ? (
-                    <button disabled className="w-full bg-neutral-200 dark:bg-neutral-700 text-gray-500 dark:text-gray-400 font-black py-2 rounded-lg uppercase tracking-widest text-[8px] flex items-center justify-center gap-1.5">
-                        <CheckCheck className="w-3 h-3" />
+                    <button disabled className="w-full bg-neutral-200 dark:bg-neutral-700 text-gray-500 dark:text-gray-400 font-black py-2 rounded-xl uppercase tracking-widest text-[9px] flex items-center justify-center gap-1.5">
+                        <CheckCheck className="w-3.5 h-3.5" />
                         Offer Paid ✅
                     </button>
                 ) : isExpired ? (
-                    <button disabled className="w-full bg-red-100 dark:bg-red-900/30 text-red-500 font-black py-2 rounded-lg uppercase tracking-widest text-[8px] flex items-center justify-center gap-1.5 border border-red-200 dark:border-red-900/50">
-                        <X className="w-3 h-3" />
+                    <button disabled className="w-full bg-red-100 dark:bg-red-900/30 text-red-500 font-black py-2 rounded-xl uppercase tracking-widest text-[9px] flex items-center justify-center gap-1.5 border border-red-200 dark:border-red-900/50">
+                        <X className="w-3.5 h-3.5" />
                         Offer Expired
                     </button>
                 ) : isMine ? (
-                    <div className="text-center text-[8px] font-bold text-gray-400 uppercase tracking-widest flex flex-col gap-0.5 items-center">
+                    <div className="text-center text-[9px] font-bold text-gray-400 uppercase tracking-widest flex flex-col gap-0.5 items-center py-1">
                         <span>Waiting for buyer to pay</span>
-                        {timeLeft !== null && <span className="text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded-full mt-0.5 border border-amber-500/20">{formatTime(timeLeft)}</span>}
+                        {timeLeft !== null && <span className="text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full mt-1 border border-amber-500/20 text-[8px] font-black">{formatTime(timeLeft)}</span>}
                     </div>
                 ) : (
                     <button 
                         onClick={() => handleOfferPayment(msg.id, payloadStr)}
                         disabled={payingOffer === msg.id}
-                        className="w-full bg-[#BEF264] text-black font-black py-2 rounded-lg uppercase tracking-widest text-[9px] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5"
+                        className="w-full bg-[#BEF264] text-black font-black py-2.5 rounded-xl uppercase tracking-widest text-[9px] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5"
                     >
-                        {payingOffer === msg.id ? <Loader2 className="w-3 h-3 animate-spin" /> : (
+                        {payingOffer === msg.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : (
                             <>PAY ₦{Number(payload.totalAmount || payload.price).toLocaleString()} {timeLeft !== null && <span className="opacity-70 ml-1">({formatTime(timeLeft)})</span>}</>
                         )}
                     </button>
@@ -422,9 +422,9 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
 
     const calculateEscrowFee = (amount: number) => {
         if (!amount || amount <= 0) return 0;
-        if (amount > 50000) return 1000;
-        if (amount <= 10000) return 500;
-        return Math.floor(amount * 0.025);
+        if (amount < 20000) return 500;
+        if (amount > 50000) return Math.floor(amount * 0.025);
+        return 1000;
     };
 
     const sendCustomOffer = async () => {
@@ -916,8 +916,8 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
 
             {/* Create Offer Modal */}
             {showOfferModal && (
-                <div className="absolute inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-neutral-900 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative border border-neutral-100 dark:border-white/5 animate-in zoom-in-95 duration-200">
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[120] flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-neutral-900 rounded-3xl p-5 sm:p-6 w-full max-w-sm sm:max-w-md shadow-2xl relative border border-neutral-100 dark:border-white/5 animate-in zoom-in-95 duration-200">
                         <button onClick={() => setShowOfferModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black dark:hover:text-white">
                             <X size={20} />
                         </button>
@@ -925,7 +925,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                             <div className="p-2 bg-[#BEF264]/10 rounded-xl text-[#BEF264]">
                                 <Tag size={20} />
                             </div>
-                            <h3 className="font-black uppercase tracking-tighter text-lg">Custom Offer</h3>
+                            <h3 className="font-black uppercase tracking-tighter text-base sm:text-lg">Custom Offer</h3>
                         </div>
                         <div className="space-y-4">
                             <div>

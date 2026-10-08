@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -20,6 +20,7 @@ interface Props {
     protectionFee: number;
     totalAmount: number;
     studentId: string;
+    listingType?: string;
 }
 
 export default function CheckoutClient({
@@ -34,6 +35,7 @@ export default function CheckoutClient({
     protectionFee,
     totalAmount,
     studentId,
+    listingType = 'rent',
 }: Props) {
     const [isProcessingWallet, setIsProcessingWallet] = useState(false);
     const [checkInDate, setCheckInDate] = useState("");
@@ -95,7 +97,7 @@ export default function CheckoutClient({
     // ── Wallet payment path ────────────────────────────────────────────────
     const handleWalletPayment = async () => {
         if (!checkInDate) {
-            toast.error("Please select a move-in date");
+            toast.error(listingType === 'buy' ? "Please select a target handover / closing date" : "Please select a move-in date");
             return;
         }
         if (walletBalance === null || walletBalance < totalAmount) {
@@ -106,11 +108,25 @@ export default function CheckoutClient({
         setIsProcessingWallet(true);
         const toastId = toast.loading("Processing wallet payment…");
         try {
-            // Deduct from wallet
-            const { error: walletError } = await supabase.rpc(
+            // Deduct from wallet using user_id_param with fallback
+            let walletError: any = null;
+            const { error: rpcError } = await supabase.rpc(
                 "increment_wallet_balance",
-                { payee_id_param: studentId, amount_param: -totalAmount }
+                { user_id_param: studentId, amount_param: -totalAmount }
             );
+            if (rpcError) {
+                const { data: profile } = await supabase
+                    .from("profiles")
+                    .select("wallet_balance")
+                    .eq("id", studentId)
+                    .single();
+                const newBal = Number(profile?.wallet_balance || 0) - totalAmount;
+                const { error: updateErr } = await supabase
+                    .from("profiles")
+                    .update({ wallet_balance: newBal })
+                    .eq("id", studentId);
+                if (updateErr) walletError = updateErr;
+            }
             if (walletError) throw walletError;
 
             // Create escrow record
@@ -126,6 +142,7 @@ export default function CheckoutClient({
                     legal_fee: legalFee,
                     service_fee: protectionFee,
                     status: "Held",
+                    type: listingType === 'buy' ? 'Buy Property' : 'RENT',
                     tx_ref,
                     created_at: new Date().toISOString(),
                 });
@@ -203,9 +220,9 @@ export default function CheckoutClient({
                 </div>
                 <div className="flex-1 text-center md:text-left">
                     <p className="text-[#0D9488] font-black uppercase tracking-widest text-xs mb-1">
-                        Secure Booking
+                        {listingType === 'buy' ? 'Secure Property Purchase' : 'Secure Booking'}
                     </p>
-                    <h2 className="text-xl font-black text-gray-900 tracking-tight">
+                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
                         {propertyTitle}
                     </h2>
                     <p className="text-gray-500 font-medium text-sm mt-1 flex items-center justify-center md:justify-start gap-2">
@@ -220,8 +237,8 @@ export default function CheckoutClient({
                     {/* ── Left: Move-in date + escrow info ──────────────── */}
                     <div className="space-y-6">
                         <div>
-                            <label className="block text-xs font-black uppercase tracking-widest text-gray-900 mb-2 flex items-center gap-2">
-                                <Calendar className="w-4 h-4" /> Move-In Date
+                            <label htmlFor="checkin-date" className="block text-xs font-black uppercase tracking-widest text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                                <Calendar className="w-4 h-4" /> {listingType === 'buy' ? 'Target Handover / Closing Date' : 'Move-In Date'}
                             </label>
                             <input
                                 id="checkin-date"
@@ -235,13 +252,14 @@ export default function CheckoutClient({
                         </div>
 
                         <div className="bg-[#BEF264]/10 rounded-2xl p-6 border border-[#BEF264]/30">
-                            <h4 className="font-black text-gray-900 uppercase tracking-widest text-xs flex items-center gap-2 mb-2">
+                            <h4 className="font-black text-gray-900 dark:text-white uppercase tracking-widest text-xs flex items-center gap-2 mb-2">
                                 <Lock className="w-4 h-4" /> HostelPulse Escrow
                             </h4>
-                            <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                                Your money is held safely by HostelPulse. It is only released
-                                to the landlord{" "}
-                                <strong>after</strong> you inspect and confirm the property.
+                            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                                {listingType === 'buy' 
+                                    ? 'Your money is held safely by HostelPulse Escrow. It is only released to the seller/agent after you inspect the property, verify title documents, and confirm handover.' 
+                                    : 'Your money is held safely by HostelPulse. It is only released to the landlord after you inspect and confirm the property.'
+                                }
                             </p>
                         </div>
                     </div>
@@ -254,14 +272,14 @@ export default function CheckoutClient({
 
                         <div className="space-y-3 mb-6">
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600 dark:text-gray-400 font-medium">1 Year Rent</span>
+                                <span className="text-gray-600 dark:text-gray-400 font-medium">{listingType === 'buy' ? 'Purchase Price' : '1 Year Rent'}</span>
                                 <span className="font-bold text-gray-900 dark:text-white">
                                     ₦{basePrice.toLocaleString()}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center text-sm">
                                 <span className="text-gray-600 dark:text-gray-400 font-medium">
-                                    Legal / Agency (5%)
+                                    {listingType === 'buy' ? 'Legal & Deed Conveyance (5%)' : 'Legal / Agency (5%)'}
                                 </span>
                                 <span className="font-bold text-gray-900 dark:text-white">
                                     ₦{legalFee.toLocaleString()}
@@ -297,7 +315,7 @@ export default function CheckoutClient({
                                     walletBalance === null ||
                                     walletBalance < totalAmount
                                 }
-                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-95 flex items-center justify-between px-6 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full bg-[#BEF264] text-black font-black uppercase tracking-widest py-3 rounded-2xl hover:bg-[#a6d456] transition-transform active:scale-[0.98] flex items-center justify-between px-6 shadow-lg shadow-[#BEF264]/20 disabled:opacity-50 disabled:cursor-not-allowed text-xs"
                             >
                                 <span className="flex items-center gap-2">
                                     {isProcessingWallet ? (
@@ -325,7 +343,7 @@ export default function CheckoutClient({
                                     payer_id: studentId,
                                     property_id: propertyId,
                                     agent_id: providerId,
-                                    type: "rent",
+                                    type: listingType === 'buy' ? "buy" : "rent",
                                     legal_fee: legalFee,
                                     protection_fee: protectionFee,
                                 }}

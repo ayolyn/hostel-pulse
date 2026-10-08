@@ -38,7 +38,7 @@ export function QRGenerator({ transactionId, itemTitle, onClose }: QRGeneratorPr
           <Smartphone size={32} className="text-[#BEF264]" />
         </div>
 
-        <h2 className="text-2xl font-black text-black dark:text-white mb-2 uppercase tracking-tighter">Verification QR</h2>
+        <h2 className="text-xl sm:text-2xl font-black text-black dark:text-white mb-2 uppercase tracking-tighter">Verification QR</h2>
         <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest mb-8">
           Show this to the buyer for {itemTitle}
         </p>
