@@ -2,13 +2,14 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Send, User, ChevronLeft, Loader2, Camera, Image as ImageIcon, X, Calendar, ShieldCheck, CheckCheck, Check, Tag, ShoppingCart } from 'lucide-react';
+import { Send, User, ChevronLeft, Loader2, Camera, Image as ImageIcon, X, Calendar, ShieldCheck, CheckCheck, Check, Tag, ShoppingCart, Wallet, AlertCircle, ArrowRight } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import NextImage from 'next/image';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { MarketCheckout } from '@/components/market/MarketCheckout';
-import { processCustomOffer } from '@/app/actions/escrow';
+import { processCustomOffer, recordCardCustomOffer } from '@/app/actions/escrow';
+import FlutterwaveButton from '@/components/ui/FlutterwaveButton';
 
 interface Message {
     id: string;
@@ -23,7 +24,19 @@ interface Message {
     errorDetails?: string;
 }
 
-const CustomOfferCard = ({ msg, isMine, receiverName, payingOffer, handleOfferPayment }: { msg: Message, isMine: boolean, receiverName: string, payingOffer: string | null, handleOfferPayment: (msgId: string, payloadStr: string) => void }) => {
+const CustomOfferCard = ({ 
+    msg, 
+    isMine, 
+    receiverName, 
+    payingOffer, 
+    onOpenPaymentModal 
+}: { 
+    msg: Message; 
+    isMine: boolean; 
+    receiverName: string; 
+    payingOffer: string | null; 
+    onOpenPaymentModal: (msgId: string, payload: any, payloadStr: string) => void;
+}) => {
     const isOfferPaid = msg.content.startsWith('[OFFER_PAID]:::');
     const payloadStr = msg.content.replace('[CUSTOM_OFFER_PAYLOAD]:::', '').replace('[OFFER_PAID]:::', '');
     let payload: any = {};
@@ -103,9 +116,9 @@ const CustomOfferCard = ({ msg, isMine, receiverName, payingOffer, handleOfferPa
                     </div>
                 ) : (
                     <button 
-                        onClick={() => handleOfferPayment(msg.id, payloadStr)}
+                        onClick={() => onOpenPaymentModal(msg.id, payload, payloadStr)}
                         disabled={payingOffer === msg.id}
-                        className="w-full bg-[#BEF264] text-black font-black py-2.5 rounded-xl uppercase tracking-widest text-[9px] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5"
+                        className="w-full bg-[#BEF264] text-black font-black py-2.5 rounded-xl uppercase tracking-widest text-[9px] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-1.5 shadow-sm"
                     >
                         {payingOffer === msg.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : (
                             <>PAY ₦{Number(payload.totalAmount || payload.price).toLocaleString()} {timeLeft !== null && <span className="opacity-70 ml-1">({formatTime(timeLeft)})</span>}</>
@@ -116,6 +129,195 @@ const CustomOfferCard = ({ msg, isMine, receiverName, payingOffer, handleOfferPa
         </div>
     );
 };
+
+interface CustomOfferPaymentModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    offer: { msgId: string; payload: any; payloadStr: string };
+    receiverId: string;
+    receiverName: string;
+    currentUser: any;
+    onPaymentSuccess: (msgId: string, payloadStr: string) => void;
+}
+
+function CustomOfferPaymentModal({
+    isOpen,
+    onClose,
+    offer,
+    receiverId,
+    receiverName,
+    currentUser,
+    onPaymentSuccess
+}: CustomOfferPaymentModalProps) {
+    const [paymentMethod, setPaymentMethod] = useState<'wallet' | 'card'>('wallet');
+    const [loadingWallet, setLoadingWallet] = useState(false);
+
+    if (!isOpen || !offer) return null;
+
+    const { msgId, payload, payloadStr } = offer;
+    const basePrice = Number(payload.price || 0);
+    const escrowFee = Number(payload.escrowFee || 0);
+    const totalAmount = Number(payload.totalAmount || (basePrice + escrowFee));
+    const walletBalance = Number(currentUser?.wallet_balance || 0);
+    const hasEnoughBalance = walletBalance >= totalAmount;
+
+    const handleWalletPay = async () => {
+        if (!hasEnoughBalance) {
+            toast.error('Insufficient wallet balance. Please pay via card or top up.');
+            return;
+        }
+        setLoadingWallet(true);
+        try {
+            const res = await processCustomOffer(payload.id || msgId, totalAmount, receiverId, currentUser?.id);
+            if (res.error) {
+                toast.error(res.error);
+                return;
+            }
+            onPaymentSuccess(msgId, payloadStr);
+        } catch (err: any) {
+            toast.error(err.message || 'Payment failed');
+        } finally {
+            setLoadingWallet(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[130] flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-neutral-900 rounded-3xl p-5 sm:p-6 w-full max-w-sm sm:max-w-md shadow-2xl relative border border-neutral-100 dark:border-white/5 animate-in zoom-in-95 duration-200">
+                <button 
+                    onClick={onClose} 
+                    className="absolute top-5 right-5 p-2 text-gray-400 hover:text-black dark:hover:text-white transition-colors z-10 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800"
+                >
+                    <X size={18} />
+                </button>
+
+                <div className="flex items-center gap-2.5 mb-4 pr-10">
+                    <div className="p-2 bg-[#BEF264]/10 rounded-xl text-[#BEF264]">
+                        <Tag size={20} />
+                    </div>
+                    <div>
+                        <h3 className="font-black uppercase tracking-tight text-base sm:text-lg text-gray-900 dark:text-white">Pay Custom Offer</h3>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest truncate">From {receiverName}</p>
+                    </div>
+                </div>
+
+                {/* Price summary */}
+                <div className="space-y-2.5 mb-5 bg-gray-50 dark:bg-neutral-800/60 p-4 rounded-2xl border border-gray-100 dark:border-white/5">
+                    <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider truncate max-w-[180px]">{payload.description || 'Custom Agreed Item'}</span>
+                        <span className="font-black text-gray-900 dark:text-white">₦{basePrice.toLocaleString()}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-[#0D9488] uppercase tracking-wider">Escrow Protection Fee</span>
+                        <span className="font-bold text-[#0D9488]">₦{escrowFee.toLocaleString()}</span>
+                    </div>
+
+                    <div className="h-px bg-neutral-200 dark:bg-white/10 my-1" />
+
+                    <div className="flex justify-between items-center pt-0.5">
+                        <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-widest">Total to Pay</span>
+                        <span className="text-xl font-black text-black dark:text-[#BEF264]">₦{totalAmount.toLocaleString()}</span>
+                    </div>
+                </div>
+
+                {/* Payment Method Selector */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                    <button
+                        type="button"
+                        onClick={() => setPaymentMethod('wallet')}
+                        className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${
+                            paymentMethod === 'wallet'
+                                ? 'border-[#BEF264] bg-[#BEF264]/10 text-gray-900 dark:text-white'
+                                : 'border-gray-200 dark:border-white/10 text-gray-500 hover:border-[#BEF264]/50'
+                        }`}
+                    >
+                        <Wallet className={`w-4 h-4 mb-1 ${paymentMethod === 'wallet' ? 'text-[#BEF264]' : 'text-gray-400'}`} />
+                        <span className="text-[10px] font-black uppercase tracking-wider">Wallet Balance</span>
+                        <span className="text-[9px] font-bold text-gray-400 mt-0.5">₦{walletBalance.toLocaleString()}</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setPaymentMethod('card')}
+                        className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${
+                            paymentMethod === 'card'
+                                ? 'border-[#BEF264] bg-[#BEF264]/10 text-gray-900 dark:text-white'
+                                : 'border-gray-200 dark:border-white/10 text-gray-500 hover:border-[#BEF264]/50'
+                        }`}
+                    >
+                        <ShieldCheck className={`w-4 h-4 mb-1 ${paymentMethod === 'card' ? 'text-[#BEF264]' : 'text-gray-400'}`} />
+                        <span className="text-[10px] font-black uppercase tracking-wider">Card / Bank</span>
+                        <span className="text-[9px] font-bold text-emerald-500 mt-0.5">Instant Escrow</span>
+                    </button>
+                </div>
+
+                {/* Protection notice */}
+                <div className="bg-[#BEF264]/5 border border-[#BEF264]/20 p-3 rounded-xl mb-4 flex gap-2">
+                    <ShieldCheck className="w-4 h-4 text-[#BEF264] shrink-0 mt-0.5" />
+                    <p className="text-[10px] text-gray-600 dark:text-gray-400 leading-snug font-medium">
+                        Funds are safely locked in Escrow until you inspect and accept delivery.
+                    </p>
+                </div>
+
+                {/* Payment button / Flutterwave */}
+                {paymentMethod === 'wallet' ? (
+                    <div>
+                        {!hasEnoughBalance && (
+                            <div className="bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 p-2.5 rounded-xl mb-3 flex items-start gap-2">
+                                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                <p className="text-[10px] font-bold uppercase tracking-wider leading-relaxed">
+                                    Insufficient wallet balance (₦{walletBalance.toLocaleString()}). Select Card / Bank above to pay directly.
+                                </p>
+                            </div>
+                        )}
+                        <button
+                            onClick={handleWalletPay}
+                            disabled={loadingWallet || !hasEnoughBalance}
+                            className="w-full bg-[#BEF264] text-black font-black py-3 rounded-xl uppercase tracking-widest text-xs hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-[#BEF264]/10"
+                        >
+                            {loadingWallet ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                                <>
+                                    <Wallet className="w-4 h-4" />
+                                    <span>Pay ₦{totalAmount.toLocaleString()} from Wallet</span>
+                                    <ArrowRight className="w-4 h-4" />
+                                </>
+                            )}
+                        </button>
+                    </div>
+                ) : (
+                    <div>
+                        <FlutterwaveButton
+                            amount={totalAmount}
+                            customerEmail={currentUser?.contact_email || currentUser?.email || 'buyer@hostelpulse.app'}
+                            customerName={currentUser?.full_name || 'HostelPulse Buyer'}
+                            customerPhone={currentUser?.phone || ''}
+                            hostelName={payload.description || 'Custom Offer'}
+                            meta={{
+                                type: 'market',
+                                listing_id: payload.itemId || null,
+                                seller_id: receiverId,
+                                payer_id: currentUser?.id,
+                                is_custom_offer: true,
+                                offer_id: msgId
+                            }}
+                            label={`Pay ₦${totalAmount.toLocaleString()} via Card`}
+                            className="w-full bg-[#BEF264] text-black font-black py-3 rounded-xl uppercase tracking-widest text-xs hover:bg-[#a6d456] active:scale-[0.98] transition-all shadow-xl"
+                            onSuccess={async (tx_ref, amount, flw_id) => {
+                                try {
+                                    await recordCardCustomOffer(msgId, tx_ref, String(flw_id), amount, receiverId, currentUser?.id, payload);
+                                    onPaymentSuccess(msgId, payloadStr);
+                                } catch (e: any) {
+                                    toast.error(e.message || 'Error confirming card offer');
+                                }
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
 
 export function PrivateChat({ receiverId }: { receiverId: string }) {
     const [messages, setMessages] = useState<Message[]>([]);
@@ -148,6 +350,8 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
     const [offerDescription, setOfferDescription] = useState('');
     const [processingOffer, setProcessingOffer] = useState(false);
     const [payingOffer, setPayingOffer] = useState<string | null>(null);
+    const [currentUserProfile, setCurrentUserProfile] = useState<any>(null);
+    const [selectedOfferForPay, setSelectedOfferForPay] = useState<{ msgId: string; payload: any; payloadStr: string } | null>(null);
 
     // Strict URL param sanitization
     const sanitizeId = (id: string | null) => {
@@ -170,6 +374,13 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
             setUserId(user.id);
+
+            const { data: myProfile } = await supabase.from('profiles').select('id, full_name, contact_email, phone, wallet_balance').eq('id', user.id).single();
+            if (myProfile) {
+                setCurrentUserProfile(myProfile);
+            } else {
+                setCurrentUserProfile({ id: user.id, contact_email: user.email, full_name: user.user_metadata?.full_name || 'Buyer' });
+            }
 
             // Fetch receiver's name and avatar across all account types
             const [
@@ -489,6 +700,22 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
         }
     };
 
+    const handleOfferPaidSuccess = async (msgId: string, payloadStr: string) => {
+        try {
+            const newContent = `[OFFER_PAID]:::${payloadStr}`;
+            await supabase.from('messages').update({ content: newContent }).eq('id', msgId);
+            setMessages(prev => prev.map(m => m.id === msgId ? { ...m, content: newContent } : m));
+            toast.success('Custom Offer Paid Successfully! 🎉');
+            setSelectedOfferForPay(null);
+            if (userId) {
+                const { data: updatedProf } = await supabase.from('profiles').select('id, full_name, contact_email, phone, wallet_balance').eq('id', userId).single();
+                if (updatedProf) setCurrentUserProfile(updatedProf);
+            }
+        } catch (err: any) {
+            console.error('Failed to update offer message status:', err);
+        }
+    };
+
     const handleOfferPayment = async (msgId: string, payloadStr: string) => {
         setPayingOffer(msgId);
         try {
@@ -499,11 +726,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
             const res = await processCustomOffer(payload.id || msgId, payload.totalAmount || payload.price, receiverId, user.id);
             if (res.error) throw new Error(res.error);
 
-            // Update message to paid
-            const newContent = `[OFFER_PAID]:::${payloadStr}`;
-            await supabase.from('messages').update({ content: newContent }).eq('id', msgId);
-            toast.success('Custom Offer Paid Successfully!');
-
+            await handleOfferPaidSuccess(msgId, payloadStr);
         } catch (error: any) {
             toast.error(error.message || 'Payment failed');
         } finally {
@@ -795,7 +1018,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                                 isMine={isMine} 
                                 receiverName={receiverName} 
                                 payingOffer={payingOffer} 
-                                handleOfferPayment={handleOfferPayment} 
+                                onOpenPaymentModal={(id, p, ps) => setSelectedOfferForPay({ msgId: id, payload: p, payloadStr: ps })} 
                             />
                         );
                     }
@@ -803,6 +1026,8 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                     const isInspectionConfirmed = msg.content.includes('✅ INSPECTION CONFIRMED');
 
                     if (isInspectionLink || isInspectionConfirmed) {
+                        const effectivePropId = propertyId || searchParams.get('item_id') || context?.data?.id || '';
+
                         return (
                             <div key={msg.id} className="flex justify-center my-6">
                                 <div className="bg-[#BEF264] text-black p-5 rounded-[2.5rem] max-w-md text-center shadow-2xl border-4 border-black/5 flex flex-col items-center">
@@ -823,7 +1048,7 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                                         <>
                                             <h4 className="text-xl font-black uppercase tracking-tighter mb-4 leading-tight">Inspection Link Received</h4>
                                             <Link 
-                                                href={`/pay/escrow?msg_id=${msg.id}&prop_id=${propertyId}&amount=2000`}
+                                                href={`/pay/escrow?msg_id=${msg.id}&prop_id=${effectivePropId}&amount=2000`}
                                                 className="bg-black text-[#BEF264] px-10 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all w-full shadow-xl"
                                             >
                                                 Pay Inspection Fee (₦2,000)
@@ -1012,6 +1237,19 @@ export function PrivateChat({ receiverId }: { receiverId: string }) {
                         onClose={() => setShowMarketCheckout(false)} 
                     />
                 </div>
+            )}
+
+            {/* Custom Offer Payment Modal */}
+            {selectedOfferForPay && (
+                <CustomOfferPaymentModal
+                    isOpen={Boolean(selectedOfferForPay)}
+                    onClose={() => setSelectedOfferForPay(null)}
+                    offer={selectedOfferForPay}
+                    receiverId={receiverId}
+                    receiverName={receiverName}
+                    currentUser={currentUserProfile}
+                    onPaymentSuccess={handleOfferPaidSuccess}
+                />
             )}
         </div>
     );

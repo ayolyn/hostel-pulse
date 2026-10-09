@@ -71,6 +71,10 @@ export function PropertyFilterBar({ mode = 'buy', basePath }: { mode?: 'buy' | '
         });
 
         const baseUrl = resolvedBasePath;
+        if (baseUrl.includes('/dashboard/') && !params.has('tab')) {
+            const defaultTab = mode === 'buy' ? 'buy' : mode === 'shortlet' ? 'shortlet' : 'find-hostel';
+            params.set('tab', defaultTab);
+        }
         router.push(`${baseUrl}?${params.toString()}`, { scroll: false });
     };
 
@@ -84,6 +88,10 @@ export function PropertyFilterBar({ mode = 'buy', basePath }: { mode?: 'buy' | '
         if (v === 'map') params.set('view', 'map');
         else params.delete('view');
         const baseUrl = resolvedBasePath;
+        if (baseUrl.includes('/dashboard/') && !params.has('tab')) {
+            const defaultTab = mode === 'buy' ? 'buy' : mode === 'shortlet' ? 'shortlet' : 'find-hostel';
+            params.set('tab', defaultTab);
+        }
         router.push(`${baseUrl}?${params.toString()}`, { scroll: false });
     };
 

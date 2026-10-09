@@ -450,7 +450,8 @@ export default function MessagingTab({ userId, userRole }: { userId: string, use
     };
 
     const sendInspectionLink = async () => {
-        if (!activeRoom?.property || userRole === 'buyer' || userRole === 'student') return;
+        const roleLower = userRole?.toLowerCase();
+        if (!activeRoom?.property || roleLower === 'buyer' || roleLower === 'student') return;
         setSending(true);
         try {
             const newMsg = await createInspectionLinkAction(activeRoom.property.id, activeRoom.id, null, userId);

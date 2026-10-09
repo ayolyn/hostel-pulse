@@ -91,7 +91,11 @@ export default async function PropertyPage({ params }: { params: { id: string } 
 
             {/* Header/Nav for Mobile */}
             <div className="md:hidden sticky top-0 z-40 bg-white/80 backdrop-blur-md p-4 flex justify-between items-center border-b border-gray-100">
-                <Link href="/rent" className="p-2 rounded-full hover:bg-gray-100">
+                <Link 
+                    href={property.listing_type?.toLowerCase() === 'buy' ? '/buy' : property.listing_type?.toLowerCase() === 'shortlet' ? '/shortlet' : '/rent'} 
+                    className="p-2 rounded-full hover:bg-gray-100"
+                    aria-label="Back to listings"
+                >
                     <ArrowLeft className="w-5 h-5 text-gray-700" />
                 </Link>
             </div>

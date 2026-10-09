@@ -402,7 +402,7 @@ export async function processCustomOffer(offerId: string, amount: number, seller
 
     // 0. Verify offer has not expired
     let offerPayload: any = null;
-    const { data: msg } = await db.from('messages').select('content').eq('id', offerId).single();
+    const { data: msg } = await db.from('messages').select('content').eq('id', offerId).maybeSingle();
     if (msg && msg.content) {
         const payloadStr = msg.content.replace('[CUSTOM_OFFER_PAYLOAD]:::', '').replace('[OFFER_PAID]:::', '');
         try {
@@ -433,14 +433,15 @@ export async function processCustomOffer(offerId: string, amount: number, seller
 
     const currentBalance = Number(buyerProfile.wallet_balance || 0);
     if (currentBalance < amount) {
-        return { error: 'Insufficient funds' };
+        return { error: 'Insufficient funds. Please fund your wallet or pay via Card.' };
     }
 
-    // 2. Deduct amount from Buyer's wallet
+    // 2. Deduct amount from Buyer's wallet with atomic gte guard
     const { error: updateErr } = await db
         .from('profiles')
         .update({ wallet_balance: currentBalance - amount })
-        .eq('id', buyerId);
+        .eq('id', buyerId)
+        .gte('wallet_balance', amount);
 
     if (updateErr) {
         return { error: 'Failed to deduct funds' };
@@ -453,25 +454,41 @@ export async function processCustomOffer(offerId: string, amount: number, seller
 
     const escrowRecord: any = {
         payer_id: buyerId,
+        payer_type: 'student',
         payee_id: sellerId,
+        payee_type: 'student',
         amount: amount,
-        status: 'Locked',
+        status: 'Held',
         type: offerType,
         item_name: offerDesc
     };
 
     if (isMarketOffer) {
         escrowRecord.listing_id = offerPayload.itemId;
+        escrowRecord.item_id = offerPayload.itemId;
     }
 
-    let { error: insertErr } = await db
+    let { data: insertedEscrow, error: insertErr } = await db
         .from('escrow_transactions')
-        .insert(escrowRecord);
+        .insert(escrowRecord)
+        .select('id')
+        .single();
 
-    if (insertErr && (insertErr.message?.includes('listing_id') || insertErr.message?.toLowerCase().includes('schema cache'))) {
-        delete escrowRecord.listing_id;
-        const retry = await db.from('escrow_transactions').insert(escrowRecord);
+    if (insertErr) {
+        // Fallback retry without optional columns
+        const minimalRecord: any = {
+            payer_id: buyerId,
+            payee_id: sellerId,
+            amount: amount,
+            status: 'Held',
+            type: offerType
+        };
+        if (isMarketOffer) {
+            minimalRecord.listing_id = offerPayload.itemId;
+        }
+        const retry = await db.from('escrow_transactions').insert(minimalRecord).select('id').single();
         insertErr = retry.error;
+        insertedEscrow = retry.data;
     }
 
     if (insertErr) {
@@ -514,5 +531,74 @@ export async function processCustomOffer(offerId: string, amount: number, seller
         );
     }
 
-    return { success: true };
+    return { success: true, escrowId: insertedEscrow?.id };
+}
+
+export async function recordCardCustomOffer(
+    offerId: string,
+    txRef: string,
+    flwId: string,
+    amount: number,
+    sellerId: string,
+    buyerId: string,
+    payload: any
+) {
+    const db = getAdminClient();
+
+    const offerDesc = payload?.description ? `Custom Offer: ${payload.description}` : 'Custom Negotiation Offer';
+    const isMarketOffer = Boolean(payload?.itemId && payload.itemId !== sellerId);
+    const offerType = isMarketOffer ? 'Market Offer' : 'Custom Offer';
+
+    const escrowRecord: any = {
+        payer_id: buyerId,
+        payer_type: 'student',
+        payee_id: sellerId,
+        payee_type: 'student',
+        amount: amount,
+        status: 'Held',
+        type: offerType,
+        item_name: offerDesc,
+        tx_ref: txRef,
+        flw_id: String(flwId)
+    };
+
+    if (isMarketOffer) {
+        escrowRecord.listing_id = payload.itemId;
+        escrowRecord.item_id = payload.itemId;
+    }
+
+    let { data: insertedEscrow, error: insertErr } = await db
+        .from('escrow_transactions')
+        .insert(escrowRecord)
+        .select('id')
+        .single();
+
+    if (insertErr) {
+        const minimalRecord: any = {
+            payer_id: buyerId,
+            payee_id: sellerId,
+            amount: amount,
+            status: 'Held',
+            type: offerType,
+            tx_ref: txRef,
+            flw_id: String(flwId)
+        };
+        if (isMarketOffer) minimalRecord.listing_id = payload.itemId;
+        const retry = await db.from('escrow_transactions').insert(minimalRecord).select('id').single();
+        insertedEscrow = retry.data;
+    }
+
+    if (isMarketOffer && payload?.itemId) {
+        await db.from('market_listings').update({ status: 'pending' }).eq('id', payload.itemId);
+    }
+
+    await createNotification(
+        sellerId,
+        'Offer Paid via Card',
+        `A custom offer of ₦${amount.toLocaleString()} for "${payload?.description || 'Custom Offer'}" has been paid via Card and is locked in Escrow.`,
+        '/dashboard/student?tab=wallet',
+        'new_sale'
+    );
+
+    return { success: true, escrowId: insertedEscrow?.id };
 }

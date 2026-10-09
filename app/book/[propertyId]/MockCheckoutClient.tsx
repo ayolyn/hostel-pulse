@@ -222,7 +222,7 @@ export default function CheckoutClient({
                     <p className="text-[#0D9488] font-black uppercase tracking-widest text-xs mb-1">
                         {listingType === 'buy' ? 'Secure Property Purchase' : 'Secure Booking'}
                     </p>
-                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
+                    <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white tracking-tight">
                         {propertyTitle}
                     </h2>
                     <p className="text-gray-500 font-medium text-sm mt-1 flex items-center justify-center md:justify-start gap-2">

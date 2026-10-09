@@ -175,14 +175,14 @@ Note: ${notes}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
                             className="w-full md:w-[600px] bg-white dark:bg-[#111] rounded-t-3xl md:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto pointer-events-auto"
                         >
-                            <div className="flex justify-between items-center mb-6">
-                                <div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">Request Inspection</h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">for {propertyName}</p>
+                            <div className="flex justify-between items-center mb-6 gap-3">
+                                <div className="min-w-0 flex-1">
+                                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">Request Inspection</h3>
+                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">for {propertyName}</p>
                                 </div>
                                 <button
                                     onClick={onClose}
-                                    className="p-2 bg-gray-100 dark:bg-neutral-800 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors pointer-events-auto"
+                                    className="p-2 bg-gray-100 dark:bg-neutral-800 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors pointer-events-auto shrink-0"
                                 >
                                     <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                                 </button>

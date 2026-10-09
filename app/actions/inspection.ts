@@ -36,12 +36,22 @@ export async function createInspectionLinkAction(propertyId: string, roomId: str
     // 4. Construct Message Payload
     const msgContent = `🚀 INSPECTION LINK: I am ready to show you ${property.title}! Please secure your pickup slot here so we can meet. (₦2,000 Security Deposit required)\n\nLink: /pay/escrow`;
 
-    const { data: room } = await supabase.from('chat_rooms').select('participant_a, participant_b').eq('id', roomId).single();
-    if (!room) {
-        throw new Error('Room not found');
+    let receiverId: string | null = null;
+    const { data: room } = await supabase.from('chat_rooms').select('*').eq('id', roomId).maybeSingle();
+    if (room) {
+        const p1 = (room as any).participant_one_id || (room as any).participant_a;
+        const p2 = (room as any).participant_two_id || (room as any).participant_b;
+        receiverId = p1 === user.id ? p2 : p1;
+    } else {
+        const { data: conv } = await supabase.from('conversations').select('participant_a, participant_b').eq('id', roomId).maybeSingle();
+        if (conv) {
+            receiverId = conv.participant_a === user.id ? conv.participant_b : conv.participant_a;
+        }
     }
 
-    const receiverId = room.participant_a === user.id ? room.participant_b : room.participant_a;
+    if (!receiverId) {
+        throw new Error('Room participant not found');
+    }
 
     // 5. Insert Message
     const { data: insertedMsg, error: insertError } = await supabase.from('messages').insert({

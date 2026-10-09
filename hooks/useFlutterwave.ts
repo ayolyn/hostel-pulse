@@ -26,6 +26,8 @@ export interface FlutterwavePaymentConfig {
         type: "inspection" | "rent" | "buy" | "market" | "deposit";
         legal_fee?: number;
         protection_fee?: number;
+        is_custom_offer?: boolean;
+        offer_id?: string;
     };
     /** Display title in the Flutterwave modal */
     title?: string;
@@ -126,6 +128,12 @@ export const useFlutterwave = () => {
                                 // Client-side safety net: upsert the escrow record.
                                 // The webhook will also do this — the onConflict: 'tx_ref'
                                 // makes this idempotent (no duplicate records).
+                                const isMarket = config.meta.type === 'market';
+                                const payeeId = config.meta.seller_id || config.meta.agent_id || config.meta.landlord_id || null;
+                                const txType = config.meta.type === 'buy' ? 'Buy Property' :
+                                               isMarket ? 'Market Item' :
+                                               config.meta.type === 'inspection' ? 'INSPECTION_FEE' : 'RENT';
+
                                 await supabase.from("escrow_transactions").upsert(
                                     {
                                         tx_ref,
@@ -134,14 +142,16 @@ export const useFlutterwave = () => {
                                         amount: config.amount,
                                         property_id: config.meta.property_id ?? null,
                                         payer_id: config.meta.payer_id,
+                                        payee_id: payeeId,
                                         agent_id: config.meta.agent_id ?? null,
                                         landlord_id: config.meta.landlord_id ?? null,
+                                        listing_id: config.meta.listing_id ?? null,
+                                        item_id: config.meta.listing_id ?? null,
                                         legal_fee: config.meta.legal_fee ?? 0,
                                         service_fee: config.meta.protection_fee ?? 0,
-                                        payer_type:
-                                            config.meta.type === "market"
-                                                ? "buyer"
-                                                : "student",
+                                        type: txType,
+                                        payer_type: isMarket ? "buyer" : "student",
+                                        payee_type: isMarket ? "student" : null,
                                         created_at: new Date().toISOString(),
                                     },
                                     { onConflict: "tx_ref" }
@@ -153,6 +163,15 @@ export const useFlutterwave = () => {
                                         .from("bookings")
                                         .update({ status: "CONFIRMED", payment_status: "PAID" })
                                         .eq("id", config.meta.booking_id);
+                                }
+
+                                // If a market item, decrement quantity safely
+                                if (isMarket && config.meta.listing_id) {
+                                    try {
+                                        await supabase.rpc('decrement_market_quantity', { listing_id_param: config.meta.listing_id });
+                                    } catch (decErr) {
+                                        console.warn('Market quantity decrement error:', decErr);
+                                    }
                                 }
                             }
 

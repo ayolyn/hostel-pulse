@@ -195,9 +195,11 @@ export async function POST(req: NextRequest) {
                         legal_fee: meta?.legal_fee ?? 0,
                         service_fee: meta?.protection_fee ?? 0,
                         payer_type: isMarket ? "buyer" : "student",
-                        payee_id: meta?.seller_id ?? null,
+                        payee_id: meta?.seller_id ?? meta?.agent_id ?? meta?.landlord_id ?? null,
                         payee_type: isMarket ? "student" : null,
                         listing_id: meta?.listing_id ?? null,
+                        item_id: meta?.listing_id ?? null,
+                        type: meta?.type === 'buy' ? 'Buy Property' : isMarket ? 'Market Item' : meta?.type === 'inspection' ? 'INSPECTION_FEE' : 'RENT',
                         created_at: new Date().toISOString(),
                     },
                     { onConflict: "tx_ref" }

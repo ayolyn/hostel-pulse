@@ -95,7 +95,7 @@ export function EscrowCheckoutModal({ item, onClose, onSuccess }: EscrowCheckout
             </button>
 
             <div className="p-5 sm:p-6 overflow-y-auto max-h-[85vh] custom-scrollbar">
-                <div className="text-center flex flex-col items-center mb-5">
+                <div className="text-center flex flex-col items-center mb-5 px-8">
                     <div className="w-12 h-12 bg-[#BEF264]/20 rounded-2xl flex items-center justify-center mb-3">
                         <ShieldCheck className="w-6 h-6 text-[#BEF264]" />
                     </div>

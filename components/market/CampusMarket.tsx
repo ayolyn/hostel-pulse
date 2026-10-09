@@ -110,19 +110,22 @@ export function CampusMarket() {
                 }));
                 setItems(mappedData);
 
-                // Fetch Escrow Statuses for these items
+                // Fetch Escrow Statuses for these items (supports listing_id and item_id)
                 const itemIds = mappedData.map((i: any) => i.id);
                 const { data: escrowData } = await supabase
                     .from('escrow_transactions')
-                    .select('id, item_id, status')
-                    .in('item_id', itemIds);
+                    .select('id, listing_id, item_id, status')
+                    .or(`listing_id.in.(${itemIds.join(',')}),item_id.in.(${itemIds.join(',')})`);
                 
                 if (escrowData) {
                     const statusMap: Record<string, string> = {};
                     const idMap: Record<string, string> = {};
                     escrowData.forEach((t: any) => {
-                        statusMap[t.item_id] = t.status;
-                        idMap[t.item_id] = t.id; // Map item_id to transaction_id
+                        const targetId = t.listing_id || t.item_id;
+                        if (targetId) {
+                            statusMap[targetId] = t.status;
+                            idMap[targetId] = t.id; // Map item/listing id to transaction_id
+                        }
                     });
                     setEscrowStatuses(statusMap);
                     // Store the transaction IDs for QR generation
@@ -258,7 +261,7 @@ export function CampusMarket() {
         return (
             <div className="flex flex-col items-center justify-center p-20 bg-gray-50 dark:bg-neutral-900 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-white/10 text-center">
                 <Lock size={48} className="text-gray-300 dark:text-gray-600 mb-6 mx-auto" />
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter mb-2">Market Locked</h2>
+                <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2">Market Locked</h2>
                 <p className="text-gray-500 font-medium mb-8 max-w-sm">Your LAUTECH Student ID must be verified to access Campus Market. Upload your ID in the Profile section — our AI verifies it instantly.</p>
                 <button 
                     onClick={() => router.push('/dashboard/student?tab=profile')}
@@ -384,12 +387,13 @@ export function CampusMarket() {
                                                     Mark as Unavailable
                                                 </button>
                                             )}
-                                            {escrowStatuses[item.id] === 'Locked' && (
+                                            {Boolean(escrowStatuses[item.id] && ['locked', 'held', 'pending'].includes(escrowStatuses[item.id].toLowerCase())) && (
                                                 <button 
                                                     onClick={(e) => { 
                                                         e.stopPropagation(); 
                                                         const tid = (window as any)._transactionIds?.[item.id];
                                                         if (tid) setQrTransaction({ id: tid, title: item.title });
+                                                        else toast.error("Escrow transaction not found.");
                                                     }}
                                                     className="bg-[#BEF264] text-black p-2 rounded-xl text-[8px] font-black uppercase tracking-tight shadow-lg shadow-[#BEF264]/20 hover:scale-105 transition-all flex items-center gap-1"
                                                 >

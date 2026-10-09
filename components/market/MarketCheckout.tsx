@@ -119,13 +119,13 @@ export function MarketCheckout({ item, onClose, onSuccess }: MarketCheckoutProps
             <div className="p-5 sm:p-6 overflow-y-auto max-h-[85vh] custom-scrollbar">
                 {step === 1 ? (
                     <div className="animate-in fade-in slide-in-from-bottom-3 duration-300">
-                        <div className="flex items-center gap-2 mb-5">
-                            <div className="p-2.5 bg-[#BEF264]/10 rounded-xl">
+                        <div className="flex items-center gap-2 mb-5 pr-10">
+                            <div className="p-2.5 bg-[#BEF264]/10 rounded-xl shrink-0">
                                 <ShieldCheck className="w-5 h-5 text-[#BEF264]" />
                             </div>
-                            <div>
-                                <h3 className="font-black text-lg sm:text-xl text-gray-900 dark:text-white uppercase tracking-tight">Secure Checkout</h3>
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">HostelPulse Escrow Protected</p>
+                            <div className="min-w-0">
+                                <h3 className="font-black text-lg sm:text-xl text-gray-900 dark:text-white uppercase tracking-tight truncate">Secure Checkout</h3>
+                                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 truncate">HostelPulse Escrow Protected</p>
                             </div>
                         </div>
 

@@ -254,14 +254,14 @@ export default function PayInspectionModal({
                             exit={{ scale: 0.95, opacity: 0 }}
                             className="w-full max-w-md bg-white dark:bg-neutral-900 rounded-3xl p-6 shadow-2xl pointer-events-auto border border-gray-100 dark:border-white/5"
                         >
-                            <div className="flex justify-between items-center mb-6">
-                                <div>
-                                    <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Confirm Inspection</h3>
-                                    <p className="text-sm text-gray-500 font-bold">{propertyName}</p>
+                            <div className="flex justify-between items-center mb-6 gap-3">
+                                <div className="min-w-0 flex-1">
+                                    <h3 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight truncate">Confirm Inspection</h3>
+                                    <p className="text-xs sm:text-sm text-gray-500 font-bold truncate">{propertyName}</p>
                                 </div>
                                 <button
                                     onClick={onClose}
-                                    className="p-2 bg-gray-100 dark:bg-neutral-800 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors"
+                                    className="p-2 bg-gray-100 dark:bg-neutral-800 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors shrink-0"
                                 >
                                     <X className="w-5 h-5 text-gray-500" />
                                 </button>

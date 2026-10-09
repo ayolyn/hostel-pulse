@@ -15,7 +15,7 @@ function EscrowPaymentContent() {
     const { handlePayment } = useFlutterwave();
 
     const msgId = searchParams.get('msg_id');
-    const propId = searchParams.get('prop_id');
+    const propId = searchParams.get('prop_id') || searchParams.get('item_id');
     const rawAmount = searchParams.get('amount') || '2000';
     const amount = Number(rawAmount) > 0 ? Number(rawAmount) : 2000;
 
@@ -82,8 +82,9 @@ function EscrowPaymentContent() {
         setIsProcessingWallet(true);
 
         try {
-            // Find property payee if possible
+            // Find property or market payee if possible
             let payeeId: string | null = null;
+            let isMarketItem = false;
             if (propId) {
                 const { data: property } = await supabase
                     .from('properties')
@@ -93,10 +94,20 @@ function EscrowPaymentContent() {
 
                 if (property) {
                     payeeId = property.agent_id || property.landlord_id || property.owner_id;
+                } else {
+                    const { data: marketItem } = await supabase
+                        .from('market_listings')
+                        .select('seller_id')
+                        .eq('id', propId)
+                        .maybeSingle();
+                    if (marketItem) {
+                        payeeId = marketItem.seller_id;
+                        isMarketItem = true;
+                    }
                 }
             }
 
-            // Fallback: check message sender if property lookup yielded nothing
+            // Fallback: check message sender if lookup yielded nothing
             if (!payeeId && msgId) {
                 const { data: msg } = await supabase
                     .from('messages')
@@ -136,10 +147,12 @@ function EscrowPaymentContent() {
             await supabase.from('escrow_transactions').insert({
                 payer_id: user.id,
                 payee_id: payeeId,
-                property_id: propId || null,
+                property_id: isMarketItem ? null : (propId || null),
+                listing_id: isMarketItem ? propId : null,
+                item_id: isMarketItem ? propId : null,
                 amount: amount,
                 status: 'Held',
-                type: 'INSPECTION_FEE',
+                type: isMarketItem ? 'Market Inspection' : 'INSPECTION_FEE',
                 dispute_status: 'NONE'
             });
 
@@ -168,8 +181,9 @@ function EscrowPaymentContent() {
         setIsProcessingCard(true);
 
         try {
-            // Find property payee
+            // Find property or market payee
             let payeeId: string | undefined = undefined;
+            let isMarketItem = false;
             if (propId) {
                 const { data: property } = await supabase
                     .from('properties')
@@ -179,6 +193,27 @@ function EscrowPaymentContent() {
 
                 if (property) {
                     payeeId = property.agent_id || property.landlord_id || property.owner_id;
+                } else {
+                    const { data: marketItem } = await supabase
+                        .from('market_listings')
+                        .select('seller_id')
+                        .eq('id', propId)
+                        .maybeSingle();
+                    if (marketItem) {
+                        payeeId = marketItem.seller_id;
+                        isMarketItem = true;
+                    }
+                }
+            }
+
+            if (!payeeId && msgId) {
+                const { data: msg } = await supabase
+                    .from('messages')
+                    .select('sender_id')
+                    .eq('id', msgId)
+                    .maybeSingle();
+                if (msg?.sender_id) {
+                    payeeId = msg.sender_id;
                 }
             }
 
@@ -191,12 +226,14 @@ function EscrowPaymentContent() {
                 },
                 meta: {
                     payer_id: user.id,
-                    property_id: propId || undefined,
+                    property_id: isMarketItem ? undefined : (propId || undefined),
+                    listing_id: isMarketItem ? propId : undefined,
                     agent_id: payeeId,
-                    type: 'inspection'
+                    seller_id: payeeId,
+                    type: isMarketItem ? 'market' : 'inspection'
                 },
-                title: 'Inspection Fee Escrow',
-                description: 'HostelPulse Escrow-Protected Inspection Fee',
+                title: isMarketItem ? 'Market Inspection Escrow' : 'Inspection Fee Escrow',
+                description: isMarketItem ? 'HostelPulse Campus Market Inspection Escrow' : 'HostelPulse Escrow-Protected Inspection Fee',
                 onSuccess: async () => {
                     await completeInspectionMessage();
                     setIsSuccess(true);

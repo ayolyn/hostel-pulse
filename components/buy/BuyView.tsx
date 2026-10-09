@@ -84,7 +84,16 @@ export function BuyView({ isEmbedded = false }: { isEmbedded?: boolean }) {
         <div className={isEmbedded ? "animate-in fade-in slide-in-from-bottom-4 duration-700" : ""}>
             {isEmbedded && (
                 <div className="mb-4">
-                    <button onClick={() => router.push('/dashboard/student')} className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest text-xs font-black">
+                    <button 
+                        onClick={() => {
+                            if (typeof window !== 'undefined' && window.history.length > 1) {
+                                router.back();
+                            } else {
+                                router.push('/dashboard/student');
+                            }
+                        }} 
+                        className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest text-xs font-black"
+                    >
                         <ArrowLeft className="w-4 h-4" />
                         Back
                     </button>
@@ -97,7 +106,10 @@ export function BuyView({ isEmbedded = false }: { isEmbedded?: boolean }) {
                 </p>
             </div>
 
-            <PropertyFilterBar mode="buy" basePath={isEmbedded ? "/dashboard/student" : "/buy"} />
+            <PropertyFilterBar 
+                mode="buy" 
+                basePath={isEmbedded ? (typeof window !== 'undefined' && window.location.pathname.includes('/agent') ? '/dashboard/agent' : typeof window !== 'undefined' && window.location.pathname.includes('/landlord') ? '/dashboard/landlord' : '/dashboard/student') : "/buy"} 
+            />
 
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-32">
@@ -115,7 +127,7 @@ export function BuyView({ isEmbedded = false }: { isEmbedded?: boolean }) {
                     <PropertyMap properties={properties as any} />
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-20 mt-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 pb-20 mt-6 sm:mt-10">
                     {properties.map(p => (
                         <Link key={p.id} href={`/property/${p.id}`} className="block group">
                             <PropertyCard
