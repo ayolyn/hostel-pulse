@@ -36,14 +36,14 @@ export default async function AdminLayout({
     }
 
     return (
-        <div className="flex min-h-screen bg-[#0F172A]">
+        <div className="flex h-screen w-full bg-[#0F172A] overflow-hidden">
             {/* Client-driven sidebar — wrapped in Suspense for useSearchParams compliance */}
             <Suspense fallback={
-                <aside className="w-64 bg-gray-900 border-r border-white/5 h-screen" />
+                <aside className="w-64 bg-gray-900 border-r border-white/5 h-screen shrink-0 hidden lg:flex" />
             }>
                 <AdminSidebar />
             </Suspense>
-            <div className="flex-1 w-full overflow-y-auto bg-[#0F172A]">
+            <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-[#0F172A]">
                 {children}
             </div>
         </div>

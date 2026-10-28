@@ -110,8 +110,8 @@ export default function AdminCaseRoomClient({
     };
 
     return (
-        <div className="h-screen flex flex-col bg-[#0F172A] text-white">
-            <header className="h-20 border-b border-white/5 flex items-center justify-between px-4 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-10 shrink-0">
+        <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-[#0F172A] text-white">
+            <header className="h-16 lg:h-20 border-b border-white/5 flex items-center justify-between px-4 sm:px-6 bg-[#1e293b]/70 backdrop-blur-md sticky top-0 z-10 shrink-0">
                 <div className="flex items-center gap-4">
                     <Link href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c?tab=disputes" className="w-10 h-10 rounded-full hover:bg-white/5 flex items-center justify-center transition-colors">
                         <ChevronLeft className="w-5 h-5" />

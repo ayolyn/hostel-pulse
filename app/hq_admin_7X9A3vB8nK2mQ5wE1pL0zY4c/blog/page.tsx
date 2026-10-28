@@ -41,20 +41,20 @@ export default function BlogCMS() {
     };
 
     return (
-        <div className="flex h-screen bg-[#0F172A] text-white overflow-hidden w-full">
-            <main className="flex-1 flex flex-col h-screen overflow-y-auto w-full">
-                <header className="h-20 border-b border-white/5 flex items-center justify-between px-4 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-10">
-                    <div className="flex items-center gap-4">
-                        <Link href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c" className="text-gray-400 hover:text-white transition-colors text-sm font-bold uppercase tracking-widest">
-                            ← Back to Dashboard
-                        </Link>
-                        <h2 className="text-xl font-black uppercase tracking-widest border-l border-white/10 pl-4">
-                            Blog CMS
-                        </h2>
-                    </div>
-                </header>
+        <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden text-white bg-[#0F172A]">
+            <header className="h-16 lg:h-20 border-b border-white/5 flex items-center justify-between px-4 sm:px-6 bg-[#1e293b]/70 backdrop-blur-md shrink-0 z-10">
+                <div className="flex items-center gap-4">
+                    <Link href="/hq_admin_7X9A3vB8nK2mQ5wE1pL0zY4c" className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm font-bold uppercase tracking-widest">
+                        ← Back to Dashboard
+                    </Link>
+                    <h2 className="text-base sm:text-xl font-black uppercase tracking-widest border-l border-white/10 pl-4">
+                        Blog CMS
+                    </h2>
+                </div>
+            </header>
 
-                <div className="p-5 max-w-4xl mx-auto w-full">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+                <div className="max-w-4xl mx-auto w-full">
                     <div className="bg-[#1e293b] rounded-[2.5rem] p-5 border border-white/5 shadow-2xl">
                         <div className="flex items-center gap-3 mb-8">
                             <BookOpen className="w-8 h-8 text-[#BEF264]" />
@@ -155,7 +155,7 @@ export default function BlogCMS() {
                         </form>
                     </div>
                 </div>
-            </main>
+            </div>
         </div>
     );
 }

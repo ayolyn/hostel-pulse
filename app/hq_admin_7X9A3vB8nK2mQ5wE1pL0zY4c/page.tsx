@@ -29,14 +29,31 @@ import {
     MapPin,
     Search,
     ChevronRight,
+    ChevronLeft,
     Bell,
     Wallet,
     HeadphonesIcon,
     Megaphone,
     XCircle,
     UserX,
-    ShieldOff
+    ShieldOff,
+    Menu
 } from 'lucide-react';
+
+const TAB_TITLES: Record<string, string> = {
+    analytics: 'Analytics Engine',
+    payouts: 'Payout Approvals',
+    properties: 'Property Review',
+    duplicates: 'Duplicate Review',
+    verifications: 'Account Queue',
+    users: 'User Management',
+    escrow: 'Escrow Control',
+    services: 'Student Services',
+    support: 'Support Desk',
+    disputes: 'Dispute Center',
+    alerts: 'System Alerts',
+    blog: 'Blog CMS',
+};
 
 const AccountApprovalCard = ({ account, onApprove, onReject }: { account: any, onApprove: () => void, onReject: () => void }) => {
     const isLandlord = account._tableName === 'landlord_accounts';
@@ -226,16 +243,151 @@ const AdminHqPortal = () => {
     };
 
     return (
-        <div className="flex h-screen bg-[#0F172A] text-white overflow-hidden w-full">
-             <main className="flex-1 flex flex-col h-screen overflow-y-auto w-full">
-                 {/* Topbar */}
-                 <header className="h-20 border-b border-white/5 flex items-center justify-between px-4 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-10">
-                     <h2 className="text-xl font-black uppercase tracking-widest">
-                         {activeTab}
-                     </h2>
-                 </header>
+        <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden text-white bg-[#0F172A]">
+            {/* Pinned Topbar */}
+            <header className="h-16 lg:h-20 border-b border-white/5 flex items-center justify-between px-4 sm:px-6 bg-[#1e293b]/70 backdrop-blur-md shrink-0 z-10">
+                <div className="flex items-center gap-3 min-w-0">
+                    <button
+                        type="button"
+                        onClick={() => window.dispatchEvent(new CustomEvent('toggle-admin-mobile-sidebar'))}
+                        className="lg:hidden p-2 text-gray-400 hover:text-white rounded-xl hover:bg-white/5 transition-colors shrink-0"
+                        aria-label="Open Navigation"
+                    >
+                        <Menu className="w-6 h-6" />
+                    </button>
+                    <h2 className="text-base sm:text-xl font-black uppercase tracking-widest truncate">
+                        {TAB_TITLES[activeTab] || activeTab}
+                    </h2>
+                </div>
 
-                 <div className="p-5 max-w-7xl mx-auto w-full">
+                <div className="flex items-center gap-3 shrink-0">
+                    <div className="hidden sm:flex items-center gap-2 bg-[#BEF264]/10 border border-[#BEF264]/20 px-3 py-1.5 rounded-full">
+                        <span className="w-2 h-2 rounded-full bg-[#BEF264] animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#BEF264]">HQ Active</span>
+                    </div>
+                </div>
+            </header>
+
+            {/* Main Content Area */}
+            {activeTab === 'support' ? (
+                <div className="flex-1 flex flex-col min-h-0 overflow-hidden p-4 sm:p-6 lg:p-8">
+                    <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* Tickets List */}
+                        <div className={`col-span-1 bg-[#1e293b] rounded-[2rem] border border-white/5 overflow-hidden flex-col h-full min-h-0 shadow-2xl ${activeTicket ? 'hidden lg:flex' : 'flex'}`}>
+                            <div className="p-5 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/[0.02]">
+                                <div className="flex items-center gap-2">
+                                    <HeadphonesIcon className="w-5 h-5 text-purple-400" />
+                                    <h3 className="text-xs font-black text-white uppercase tracking-widest">Active Tickets</h3>
+                                </div>
+                                <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                                    {supportTickets.length}
+                                </span>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar min-h-0">
+                                {supportTickets.length === 0 ? (
+                                    <div className="h-full flex flex-col items-center justify-center text-center p-6 text-gray-500">
+                                        <HeadphonesIcon className="w-12 h-12 text-white/5 mb-3" />
+                                        <p className="text-xs uppercase font-bold tracking-widest">No Active Tickets</p>
+                                    </div>
+                                ) : supportTickets.map(ticket => (
+                                    <button 
+                                        key={ticket.id}
+                                        onClick={() => setActiveTicket(ticket)}
+                                        className={`w-full text-left p-4 rounded-2xl border transition-all ${
+                                            activeTicket?.id === ticket.id 
+                                            ? 'bg-purple-500/20 border-purple-500/50 shadow-lg shadow-purple-500/10' 
+                                            : 'bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/[0.08]'
+                                        }`}
+                                    >
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className={`text-[8px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest ${
+                                                ticket.status === 'Open' ? 'bg-blue-500/20 text-blue-400' :
+                                                ticket.status === 'Pending Admin' ? 'bg-orange-500/20 text-orange-400 animate-pulse border border-orange-500/50' :
+                                                ticket.status === 'Pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                'bg-emerald-500/20 text-emerald-400'
+                                            }`}>
+                                                {ticket.status}
+                                            </span>
+                                            <span className="text-[10px] text-gray-500 font-bold">{new Date(ticket.created_at).toLocaleDateString()}</span>
+                                        </div>
+                                        <p className="font-bold text-white text-sm truncate">{ticket.subject}</p>
+                                        <p className="text-xs text-gray-400 mt-1 truncate">{ticket.profiles?.full_name || 'Anonymous User'}</p>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Chat View */}
+                        <div className={`col-span-1 lg:col-span-2 bg-[#1e293b] rounded-[2rem] border border-white/5 overflow-hidden flex-col h-full min-h-0 shadow-2xl ${!activeTicket ? 'hidden lg:flex' : 'flex'}`}>
+                            {activeTicket ? (
+                                <>
+                                    <div className="p-4 sm:p-5 border-b border-white/5 flex flex-wrap gap-3 justify-between items-center bg-white/[0.02] shrink-0">
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <button 
+                                                type="button"
+                                                onClick={() => setActiveTicket(null)}
+                                                className="lg:hidden p-2 text-gray-400 hover:text-white rounded-xl hover:bg-white/5 transition-colors shrink-0"
+                                                title="Back to Tickets"
+                                            >
+                                                <ChevronLeft className="w-5 h-5" />
+                                            </button>
+                                            <div className="min-w-0">
+                                                <h3 className="font-black text-white text-base sm:text-lg truncate">{activeTicket.subject}</h3>
+                                                <p className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-widest font-bold mt-0.5 truncate">User: {activeTicket.profiles?.full_name || 'Anonymous'}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                                            <select 
+                                                value={activeTicket.status}
+                                                onChange={async (e) => {
+                                                    const newStatus = e.target.value as any;
+                                                    await updateTicketStatus(activeTicket.id, newStatus);
+                                                    setActiveTicket({ ...activeTicket, status: newStatus });
+                                                    setSupportTickets(supportTickets.map(t => t.id === activeTicket.id ? { ...t, status: newStatus } : t));
+                                                }}
+                                                className="bg-black/50 border border-white/10 rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-widest text-gray-300 focus:border-purple-500/50 outline-none"
+                                            >
+                                                <option value="Open">Open</option>
+                                                <option value="Pending">Pending</option>
+                                                <option value="Pending Admin">Pending Admin</option>
+                                                <option value="Resolved">Resolved</option>
+                                            </select>
+                                            {activeTicket.status !== 'Resolved' && (
+                                                <button
+                                                    onClick={async () => {
+                                                        const newStatus = 'Resolved';
+                                                        await updateTicketStatus(activeTicket.id, newStatus);
+                                                        setActiveTicket({ ...activeTicket, status: newStatus });
+                                                        setSupportTickets(supportTickets.map(t => t.id === activeTicket.id ? { ...t, status: newStatus } : t));
+                                                        
+                                                        const db = createClient();
+                                                        await db.from('ticket_messages').insert({
+                                                            ticket_id: activeTicket.id,
+                                                            sender_role: 'system',
+                                                            content: 'This ticket has been resolved by an Admin.'
+                                                        });
+                                                    }}
+                                                    className="bg-emerald-500 hover:bg-emerald-600 text-black px-3 sm:px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+                                                >
+                                                    Resolve
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <AdminChatWindow ticketId={activeTicket.id} />
+                                </>
+                            ) : (
+                                <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
+                                    <HeadphonesIcon className="w-20 h-20 text-white/5 mb-6" />
+                                    <p className="text-gray-500 font-bold uppercase tracking-widest text-sm">Select a ticket to begin resolution</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+                    <div className="max-w-7xl mx-auto w-full space-y-8">
 
                 {activeTab === 'payouts' && <PayoutRequestsTab />}
                 {activeTab === 'properties' && <PropertiesTab />}
@@ -638,114 +790,6 @@ const AdminHqPortal = () => {
                 )}
 
                 {/* ======================================= */}
-                {/* LIVE SUPPORT MODULE */}
-                {/* ======================================= */}
-                {activeTab === 'support' && (
-                    <div className="animate-in slide-in-from-bottom-4 duration-500">
-                        <div className="flex items-center justify-between px-4 mb-8">
-                            <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight flex items-center gap-3">
-                                <HeadphonesIcon className="w-8 h-8 text-purple-500" /> Support Desk
-                            </h2>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[70vh]">
-                            {/* Tickets List */}
-                            <div className="col-span-1 bg-[#1e293b] rounded-[2.5rem] border border-white/5 overflow-hidden flex flex-col">
-                                <div className="p-6 border-b border-white/5">
-                                    <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest">Active Tickets</h3>
-                                </div>
-                                <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                                    {supportTickets.length === 0 ? (
-                                        <p className="text-center text-gray-500 text-sm mt-10 uppercase font-bold tracking-widest">No Active Tickets</p>
-                                    ) : supportTickets.map(ticket => (
-                                        <button 
-                                            key={ticket.id}
-                                            onClick={() => setActiveTicket(ticket)}
-                                            className={`w-full text-left p-5 rounded-2xl border transition-all ${
-                                                activeTicket?.id === ticket.id 
-                                                ? 'bg-purple-500/20 border-purple-500/50 shadow-lg shadow-purple-500/10' 
-                                                : 'bg-white/5 border-white/5 hover:border-white/20'
-                                            }`}
-                                        >
-                                            <div className="flex justify-between items-center mb-2">
-                                                <span className={`text-[8px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${
-                                                    ticket.status === 'Open' ? 'bg-blue-500/20 text-blue-400' :
-                                                    ticket.status === 'Pending Admin' ? 'bg-orange-500/20 text-orange-400 animate-pulse border border-orange-500/50' :
-                                                    ticket.status === 'Pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                    'bg-emerald-500/20 text-emerald-400'
-                                                }`}>
-                                                    {ticket.status}
-                                                </span>
-                                                <span className="text-[10px] text-gray-500 font-bold">{new Date(ticket.created_at).toLocaleDateString()}</span>
-                                            </div>
-                                            <p className="font-bold text-white text-sm truncate">{ticket.subject}</p>
-                                            <p className="text-xs text-gray-400 mt-1 truncate">{ticket.profiles?.full_name}</p>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Chat View */}
-                            <div className="col-span-1 lg:col-span-2 bg-[#1e293b] rounded-[2.5rem] border border-white/5 overflow-hidden flex flex-col">
-                                {activeTicket ? (
-                                    <>
-                                        <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
-                                            <div>
-                                                <h3 className="font-black text-white text-lg">{activeTicket.subject}</h3>
-                                                <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mt-1">User: {activeTicket.profiles?.full_name}</p>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <select 
-                                                    value={activeTicket.status}
-                                                    onChange={async (e) => {
-                                                        const newStatus = e.target.value as any;
-                                                        await updateTicketStatus(activeTicket.id, newStatus);
-                                                        setActiveTicket({ ...activeTicket, status: newStatus });
-                                                        setSupportTickets(supportTickets.map(t => t.id === activeTicket.id ? { ...t, status: newStatus } : t));
-                                                    }}
-                                                    className="bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-300 focus:border-purple-500/50 outline-none"
-                                                >
-                                                    <option value="Open">Open</option>
-                                                    <option value="Pending">Pending</option>
-                                                    <option value="Pending Admin">Pending Admin</option>
-                                                    <option value="Resolved">Resolved</option>
-                                                </select>
-                                                {activeTicket.status !== 'Resolved' && (
-                                                    <button
-                                                        onClick={async () => {
-                                                            const newStatus = 'Resolved';
-                                                            await updateTicketStatus(activeTicket.id, newStatus);
-                                                            setActiveTicket({ ...activeTicket, status: newStatus });
-                                                            setSupportTickets(supportTickets.map(t => t.id === activeTicket.id ? { ...t, status: newStatus } : t));
-                                                            
-                                                            const db = createClient();
-                                                            await db.from('ticket_messages').insert({
-                                                                ticket_id: activeTicket.id,
-                                                                sender_role: 'system',
-                                                                content: 'This ticket has been resolved by an Admin.'
-                                                            });
-                                                        }}
-                                                        className="bg-emerald-500 hover:bg-emerald-600 text-black px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
-                                                    >
-                                                        Mark as Resolved
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <AdminChatWindow ticketId={activeTicket.id} />
-                                    </>
-                                ) : (
-                                    <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
-                                        <HeadphonesIcon className="w-20 h-20 text-white/5 mb-6" />
-                                        <p className="text-gray-500 font-bold uppercase tracking-widest">Select a ticket to begin resolution</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* ======================================= */}
                 {/* SYSTEM ALERTS MODULE */}
                 {/* ======================================= */}
                 {activeTab === 'alerts' && (
@@ -814,8 +858,9 @@ const AdminHqPortal = () => {
                         </div>
                     </div>
                 )}
-                 </div>
-             </main>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
